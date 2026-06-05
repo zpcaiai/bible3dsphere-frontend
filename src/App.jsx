@@ -3161,9 +3161,6 @@ function SeekersStandalonePage() {
       }>
         <SeekersClassView />
       </Suspense>
-      <div style={{ padding: '10px 0 18px', textAlign: 'center' }}>
-        <a href="/" style={{ color: 'rgba(90,200,250,0.85)', fontSize: 13, textDecoration: 'none' }}>✨ 进入属灵星球 →</a>
-      </div>
     </div>
   )
 }
