@@ -170,6 +170,52 @@ const SEEKERS_META = {
 
 // 慕道班视频课程改为 R2 (cdn.holiness.uk/seekers-class/) 动态列表，后端按固定课程顺序排列
 
+// 每个视频课程配套课件 PPT（R2 ppt/ 目录），手风琴式展开、Office Online 在线查看
+const SEEKERS_PPT_BASE = 'https://cdn.holiness.uk/ppt/'
+const SEEKERS_PPT_KEYWORDS = ['认识圣经', '认识创造', '认识罪', '认识耶稣', '认识洗礼']
+const pptUrlFor = kw => `${SEEKERS_PPT_BASE}${encodeURIComponent(kw)}.pptx`
+const pptKeywordFor = filename => SEEKERS_PPT_KEYWORDS.find(kw => (filename || '').includes(kw)) || null
+
+function SeekersPptAccordion({ kw, isOpen, onToggle }) {
+  const pptUrl = pptUrlFor(kw)
+  const viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(pptUrl)}`
+  return (
+    <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+      <div
+        onClick={onToggle}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', cursor: 'pointer',
+          background: isOpen ? 'rgba(255,179,64,0.08)' : 'transparent', transition: 'background 0.2s',
+        }}
+      >
+        <span style={{ fontSize: 15 }}>📊</span>
+        <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: 'rgba(255,179,64,0.92)' }}>
+          课件 PPT · {kw}
+        </span>
+        <a
+          href={pptUrl} target="_blank" rel="noopener noreferrer"
+          onClick={e => e.stopPropagation()}
+          style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', padding: '2px 8px', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 6 }}
+        >⬇ 下载</a>
+        <span style={{
+          fontSize: 12, color: 'rgba(255,179,64,0.8)',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s',
+        }}>▼</span>
+      </div>
+      <div style={{ maxHeight: isOpen ? 430 : 0, overflow: 'hidden', transition: 'max-height 0.35s ease' }}>
+        {isOpen && (
+          <iframe
+            src={viewerUrl}
+            title={`${kw} 课件PPT`}
+            allowFullScreen
+            style={{ width: '100%', height: 420, border: 'none', display: 'block', background: '#0d0d20' }}
+          />
+        )}
+      </div>
+    </div>
+  )
+}
+
 const SEEKERS_SHARE_URL = 'https://holiness.uk/seekers'
 
 function SeekersShareButton() {
@@ -202,6 +248,7 @@ export function SeekersClassView() {
   const [courses, setCourses] = useState(null)
   const [err, setErr] = useState('')
   const [playing, setPlaying] = useState(null)   // url of currently playing video
+  const [openPpt, setOpenPpt] = useState(null)   // 当前展开的课件PPT关键字（手风琴：同时只开一个）
 
   useEffect(() => {
     fetchSeekersClassCourses()
@@ -343,6 +390,15 @@ export function SeekersClassView() {
                 >✕</button>
               )}
             </div>
+
+            {/* 配套课件 PPT — 手风琴展开，Office Online 在线查看 */}
+            {isVideo && pptKeywordFor(c.filename) && (
+              <SeekersPptAccordion
+                kw={pptKeywordFor(c.filename)}
+                isOpen={openPpt === pptKeywordFor(c.filename)}
+                onToggle={() => setOpenPpt(openPpt === pptKeywordFor(c.filename) ? null : pptKeywordFor(c.filename))}
+              />
+            )}
           </div>
         )
       })}
