@@ -36,6 +36,7 @@ class RealtimeStore {
     this.enabled = wantEnabled
     if (!wantEnabled) { this.stop(); return }
     this.closedByUs = false
+    this.attempts = 0
     this._connect()
   }
 
@@ -69,6 +70,9 @@ class RealtimeStore {
 
   _scheduleReconnect() {
     this.attempts += 1
+    // 连续失败上限：握手被拒(如token已失效,服务器403)时停止无限重连刷屏；
+    // 重新登录会调用 start() 重置计数恢复连接
+    if (this.attempts > 10) { this._setState({ connected: false }); return }
     const delay = Math.min(15000, 1000 * 2 ** Math.min(this.attempts, 4))
     this.reconnectTimer = setTimeout(() => this._connect(), delay)
   }
