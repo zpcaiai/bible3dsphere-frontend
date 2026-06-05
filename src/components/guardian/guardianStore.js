@@ -19,6 +19,7 @@ export const useGuardianStore = create((set, get) => ({
 
   setWidgetMode: (m) => set({ widgetMode: m }),
   setChatMode: (m) => set({ chatMode: m }),
+  setSpriteState: (s) => set({ spriteState: s }),
 
   sendMessage: async (text) => {
     const { chatMode, messages, sending } = get()
