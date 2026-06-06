@@ -229,7 +229,7 @@ export default function HymnPlayer() {
   const [cur, setCur] = useState(0)
   const [dur, setDur] = useState(0)
   const [audioErr, setAudioErr] = useState(false)
-  const [scoreErr, setScoreErr] = useState(false)
+  const [scoreExt, setScoreExt] = useState('svg')  // svg -> png -> '' (占位)
   const audioRef = useRef(null)
 
   const hymn = HYMNS[idx]
@@ -239,7 +239,7 @@ export default function HymnPlayer() {
     setCur(0)
     setDur(0)
     setAudioErr(false)
-    setScoreErr(false)
+    setScoreExt('svg')
     const a = audioRef.current
     if (a) { a.pause(); a.currentTime = 0 }
   }, [idx])
@@ -304,12 +304,12 @@ export default function HymnPlayer() {
 
       {/* 曲谱展示 */}
       <div className="hymn-score">
-        {!scoreErr ? (
+        {scoreExt ? (
           <img
-            src={`/hymns/${hymn.id}.png`}
+            src={`/hymns/${hymn.id}.${scoreExt}`}
             alt={`${hymn.title} 曲谱`}
             className="hymn-score-img"
-            onError={() => setScoreErr(true)}
+            onError={() => setScoreExt(scoreExt === 'svg' ? 'png' : '')}
           />
         ) : (
           <ScorePlaceholder title={hymn.title} />
