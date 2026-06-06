@@ -143,8 +143,14 @@ export default function JerusalemSandbox({ onBack }) {
     }
 
     boot(TOKEN ? 'mapbox' : 'maplibre')
+    let ro = null
+    if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
+      ro = new ResizeObserver(() => { try { mapRef.current && mapRef.current.resize() } catch (_) {} })
+      ro.observe(containerRef.current)
+    }
     return () => {
       disposed = true; passionRunRef.current = false
+      if (ro) ro.disconnect()
       clearMarkers()
       if (mapRef.current) { try { mapRef.current.remove() } catch (_) {} mapRef.current = null }
     }
@@ -158,6 +164,9 @@ export default function JerusalemSandbox({ onBack }) {
 
   // —— 地图就绪：建立图层 + 首次渲染当前时期 ——
   function onMapReady(gl, map, eng) {
+    // 容器若在初始化时尺寸为 0（懒显示/页签切换），Mapbox/MapLibre 会黑屏不加载瓦片；load 后强制 resize。
+    try { map.resize() } catch (_) {}
+    setTimeout(() => { try { mapRef.current && mapRef.current.resize() } catch (_) {} }, 300)
     try {
       map.addControl(new gl.NavigationControl({ visualizePitch: true }), 'top-left')
     } catch (_) {}

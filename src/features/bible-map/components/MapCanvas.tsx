@@ -99,12 +99,28 @@ export function MapCanvas({
       map.on('mouseleave', LAYER_IDS.territoryFill, () => { map.getCanvas().style.cursor = '' })
 
       loadedRef.current = true
+      // 容器在子页签切换时可能初始为 0 尺寸 → Mapbox 算出空视口、不加载瓦片而呈黑屏；
+      // load 后强制 resize 一次，纠正视口并触发底图瓦片加载。
+      map.resize()
       const src = map.getSource(SOURCE_IDS.territories)
       if (src && 'setData' in src) (src as mapboxgl.GeoJSONSource).setData(territoriesToFeatureCollection(territories))
     })
 
+    // 监听容器尺寸变化（懒显示/响应式/侧栏收展），自动 resize 保证地图始终铺满且加载瓦片。
+    let ro: ResizeObserver | null = null
+    if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
+      ro = new ResizeObserver(() => { mapRef.current?.resize() })
+      ro.observe(containerRef.current)
+    }
+    // 兜底：首帧后再 resize 两次，覆盖 CSS 过渡/可见性切换的时序。
+    const t1 = setTimeout(() => mapRef.current?.resize(), 250)
+    const t2 = setTimeout(() => mapRef.current?.resize(), 800)
+
     return () => {
       loadedRef.current = false
+      if (ro) ro.disconnect()
+      clearTimeout(t1)
+      clearTimeout(t2)
       map.remove()
       mapRef.current = null
     }
