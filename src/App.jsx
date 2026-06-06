@@ -1652,8 +1652,6 @@ function AppContent() {
                       { icon: '📈', label: '灵命成长', panel: 'engineering' },
                       { icon: '🤝', label: '属灵伙伴', panel: 'partner' },
                       { icon: '📖', label: '通读', panel: 'bible-reading' },
-                      { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
-                                      { icon: '🎙', label: '语音通话', panel: 'voice' },
                     ].map((item, i) => (
                       <button key={i}
                         onClick={() => item.action ? item.action() : handlePanelSwitch(item.panel)}
@@ -1731,6 +1729,26 @@ function AppContent() {
                   )}
                 </section>
               )}
+
+              {/* 圣经地图 / 语音通话 快捷入口（今日灵命快照 与 倾心吐意 之间）*/}
+              <div style={{ display: 'flex', gap: '8px', margin: '0 0 4px' }}>
+                {[
+                  { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
+                  { icon: '🎙', label: '语音通话', panel: 'voice' },
+                ].map((item) => (
+                  <button key={item.panel}
+                    onClick={() => handlePanelSwitch(item.panel)}
+                    style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                      fontSize: '13px', padding: '10px 12px',
+                      background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                      borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>{item.icon}</span>{item.label}
+                  </button>
+                ))}
+              </div>
 
               <section className="mobile-card glass">
                 <div className="section-title" style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px'}}>
