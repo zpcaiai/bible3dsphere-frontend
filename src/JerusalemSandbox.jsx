@@ -122,9 +122,11 @@ export default function JerusalemSandbox({ onBack }) {
           })
           map.on('load', () => { if (!disposed) onMapReady(gl, map, 'mapbox') })
         } else {
-          loadCss(CDN.maplibreCss); await loadScript(CDN.maplibreJs)
+          // MapLibre 走本地打包（国内 jsDelivr/CDN 不可靠，CDN 加载常失败导致无地图）
+          const mod = await import('maplibre-gl')
+          await import('maplibre-gl/dist/maplibre-gl.css')
           if (disposed) return
-          const gl = window.maplibregl
+          const gl = mod.default || mod
           const map = new gl.Map({
             container: containerRef.current,
             style: MAPLIBRE_STYLE,

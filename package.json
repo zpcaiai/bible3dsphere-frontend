@@ -27,6 +27,7 @@
     "livekit-client": "^2.7.0",
     "@livekit/krisp-noise-filter": "^0.2.16",
     "mapbox-gl": "^3.9.0",
+    "maplibre-gl": "^1.15.2",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0",
     "@deck.gl/core": "^9.0.0",
