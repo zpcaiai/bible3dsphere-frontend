@@ -1603,6 +1603,26 @@ function AppContent() {
           <section className="mobile-pane" style={{display: 'block'}}>
             <div className="mobile-card-stack">
 
+              {/* 圣经地图 / 语音通话 快捷入口（置于今日灵命快照上方）*/}
+              <div style={{ display: 'flex', gap: '8px', margin: '0 0 4px' }}>
+                {[
+                  { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
+                  { icon: '🎙', label: '语音通话', panel: 'voice' },
+                ].map((item) => (
+                  <button key={item.panel}
+                    onClick={() => handlePanelSwitch(item.panel)}
+                    style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                      fontSize: '13px', padding: '10px 12px',
+                      background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                      borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>{item.icon}</span>{item.label}
+                  </button>
+                ))}
+              </div>
+
               {/* 今日灵命快照卡 */}
               {user && dailySnapshot && (
                 <section className="mobile-card glass" style={{
@@ -1729,26 +1749,6 @@ function AppContent() {
                   )}
                 </section>
               )}
-
-              {/* 圣经地图 / 语音通话 快捷入口（今日灵命快照 与 倾心吐意 之间）*/}
-              <div style={{ display: 'flex', gap: '8px', margin: '0 0 4px' }}>
-                {[
-                  { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
-                  { icon: '🎙', label: '语音通话', panel: 'voice' },
-                ].map((item) => (
-                  <button key={item.panel}
-                    onClick={() => handlePanelSwitch(item.panel)}
-                    style={{
-                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                      fontSize: '13px', padding: '10px 12px',
-                      background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-                      borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
-                    }}
-                  >
-                    <span style={{ fontSize: '16px' }}>{item.icon}</span>{item.label}
-                  </button>
-                ))}
-              </div>
 
               <section className="mobile-card glass">
                 <div className="section-title" style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px'}}>
