@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchDevotions, saveDevotion } from './guardianApi'
 import { C, S } from './guardianStyles'
+import { t } from '../../i18n/runtime'
 
 export default function DailyDevotionCard() {
   const [scripture, setScripture] = useState(null)
@@ -21,7 +22,7 @@ export default function DailyDevotionCard() {
       await saveDevotion({ scripture: scripture?.reference || '', observation, application, prayer })
       setSaved(true)
     } catch (err) {
-      setError(err.message || '保存失败')
+      setError(err.message || t("保存失败"))
     } finally {
       setSaving(false)
     }
@@ -32,25 +33,25 @@ export default function DailyDevotionCard() {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 8, padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 30 }}>📖</div>
-        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>今天的灵修已保存。愿这节经文一路陪着你。</p>
+        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>{t("今天的灵修已保存。愿这节经文一路陪着你。")}</p>
       </div>
     )
   }
 
   const fields = [
-    { label: 'O · 观察 — 这段经文在说什么？', value: observation, set: setObservation },
-    { label: 'A · 应用 — 对你今天意味着什么？', value: application, set: setApplication },
-    { label: 'P · 祷告 — 用一句话回应神', value: prayer, set: setPrayer },
+    { label: t("O · 观察 — 这段经文在说什么？"), value: observation, set: setObservation },
+    { label: t("A · 应用 — 对你今天意味着什么？"), value: application, set: setApplication },
+    { label: t("P · 祷告 — 用一句话回应神"), value: prayer, set: setPrayer },
   ]
 
   return (
     <div style={{ padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <h3 style={S.sectionTitle}>📖 今日灵修（SOAP）</h3>
+      <h3 style={S.sectionTitle}>{t("📖 今日灵修（SOAP）")}</h3>
 
       <div style={{ borderRadius: 12, border: '1px solid rgba(255,179,71,0.4)',
         background: 'rgba(255,179,71,0.1)', padding: 12 }}>
         <p style={{ fontSize: 13.5, lineHeight: 1.7, color: C.text, margin: 0 }}>
-          {scripture ? `「${scripture.text}」` : '加载今日经文…'}
+          {scripture ? `「${scripture.text}」` : t("加载今日经文…")}
         </p>
         {scripture && (
           <p style={{ fontSize: 11.5, color: C.glow, textAlign: 'right', margin: '4px 0 0' }}>
@@ -70,7 +71,7 @@ export default function DailyDevotionCard() {
 
       <button type="button" onClick={submit} disabled={saving}
         style={{ ...S.primaryBtn, opacity: saving ? 0.4 : 1 }}>
-        {saving ? '保存中…' : '保存今日灵修'}
+        {saving ? t("保存中…") : t("保存今日灵修")}
       </button>
     </div>
   )

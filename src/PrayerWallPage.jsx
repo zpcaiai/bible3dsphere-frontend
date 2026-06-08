@@ -7,6 +7,7 @@ import usePullToRefresh from './hooks/usePullToRefresh'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 import HymnPlayer from './HymnPlayer'
 import DiscipleFormationView from './DiscipleFormationView'
+import { t } from './i18n/runtime'
 
 // Deepgram API Key for voice input - 支持从环境变量读取
 const DEEPGRAM_API_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY || 'a87cbb2d1ec9b07a456fb55319a104731924b12f'
@@ -23,7 +24,7 @@ function saveAmened(set) {
 
 function timeAgo(ts) {
   const diff = Math.floor(Date.now() / 1000 - ts)
-  if (diff < 60) return '刚刚'
+  if (diff < 60) return t("刚刚")
   if (diff < 3600) return `${Math.floor(diff / 60)} 分钟前`
   if (diff < 86400) return `${Math.floor(diff / 3600)} 小时前`
   if (diff < 86400 * 7) return `${Math.floor(diff / 86400)} 天前`
@@ -140,7 +141,7 @@ async function exportAllPrayersToPdf(items) {
       pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
     }
     pdf.save(`代祷墙_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert('PDF 生成失败，请重试') }
+  } catch (err) { console.error('PDF generation failed:', err); alert(t("PDF 生成失败，请重试")) }
   finally { document.body.removeChild(el) }
 }
 
@@ -229,7 +230,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
   async function handleSubmit() {
     if (!draft.trim() || submitting) return
     if (!token) {
-      setError('请先登录后再提交代祷')
+      setError(t("请先登录后再提交代祷"))
       return
     }
     setSubmitting(true)
@@ -243,12 +244,12 @@ export default function PrayerWallPage({ user, token, onBack }) {
       setTimeout(() => setSubmitDone(false), 3000)
     } catch (e) {
       const msg = e.message || ''
-      if (msg.includes('请先加入或创建教会')) {
-        setError('请先加入或创建一个教会才能提交代祷')
-      } else if (msg.includes('401') || msg.includes('Unauthorized') || msg.includes('未登录')) {
-        setError('请先登录后再提交代祷')
+      if (msg.includes(t("请先加入或创建教会"))) {
+        setError(t("请先加入或创建一个教会才能提交代祷"))
+      } else if (msg.includes('401') || msg.includes('Unauthorized') || msg.includes(t("未登录"))) {
+        setError(t("请先登录后再提交代祷"))
       } else {
-        setError(msg || '提交失败')
+        setError(msg || t("提交失败"))
       }
     } finally {
       setSubmitting(false)
@@ -260,9 +261,9 @@ export default function PrayerWallPage({ user, token, onBack }) {
     try {
       await requestFriend(email)
       setFriendRequested(prev => ({ ...prev, [email]: true }))
-      window.showToast?.('好友请求已发送', 'success')
+      window.showToast?.(t("好友请求已发送"), 'success')
     } catch (e) {
-      window.showToast?.(e.message || '发送失败', 'error')
+      window.showToast?.(e.message || t("发送失败"), 'error')
     }
   }
 
@@ -331,7 +332,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
       audioChunksRef.current = []
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setRecordingError('语音功能需要 HTTPS 环境，请通过 https:// 访问本页面')
+        setRecordingError(t("语音功能需要 HTTPS 环境，请通过 https:// 访问本页面"))
         return
       }
 
@@ -357,7 +358,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
       setIsRecording(true)
     } catch (err) {
       console.error('录音启动失败:', err)
-      setRecordingError('无法访问麦克风，请检查权限设置')
+      setRecordingError(t("无法访问麦克风，请检查权限设置"))
     }
   }
 
@@ -396,7 +397,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
   // 使用 Deepgram 进行语音识别（支持多语言自动检测）
   async function transcribeAudio(audioBlob, onTranscript) {
     try {
-      setRecordingError('正在识别语音...')
+      setRecordingError(t("正在识别语音..."))
 
       // 使用 Nova-2 多语言模型，自动检测语言
       const response = await fetch('https://api.deepgram.com/v1/listen?model=nova-2&punctuate=true&paragraphs=true&smart_format=true', {
@@ -427,12 +428,12 @@ export default function PrayerWallPage({ user, token, onBack }) {
         let bilingualText = transcript.trim()
         if (textLang === 'zh') {
           // 中文转英文
-          setRecordingError('正在翻译成英文...')
+          setRecordingError(t("正在翻译成英文..."))
           const englishText = await translateText(transcript.trim(), 'en')
           bilingualText = `${transcript.trim()}\n\n[English] ${englishText}`
         } else if (textLang === 'en') {
           // 英文转中文
-          setRecordingError('正在翻译成中文...')
+          setRecordingError(t("正在翻译成中文..."))
           const chineseText = await translateText(transcript.trim(), 'zh')
           bilingualText = `[中文] ${chineseText}\n\n${transcript.trim()}`
         }
@@ -440,11 +441,11 @@ export default function PrayerWallPage({ user, token, onBack }) {
         onTranscript(bilingualText)
         setRecordingError(null)
       } else {
-        setRecordingError('未能识别到语音内容，请重试')
+        setRecordingError(t("未能识别到语音内容，请重试"))
       }
     } catch (err) {
       console.error('语音识别失败:', err)
-      setRecordingError(err.message || '语音识别失败，请检查网络连接')
+      setRecordingError(err.message || t("语音识别失败，请检查网络连接"))
     }
   }
 
@@ -464,7 +465,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
       onPolished(polished)
     } catch (err) {
       console.error('润色失败:', err)
-      setRecordingError('文字润色失败，请检查网络连接')
+      setRecordingError(t("文字润色失败，请检查网络连接"))
     } finally {
       setIsPolishing(false)
     }
@@ -476,20 +477,20 @@ export default function PrayerWallPage({ user, token, onBack }) {
     <div className="pw-page">
       {/* Header */}
       <header className="pw-header">
-        <button className="checkin-back-btn" onClick={onBack} aria-label="返回">
+        <button className="checkin-back-btn" onClick={onBack} aria-label={t("返回")}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div className="pw-header-center">
-          <div className="pw-title">{subTab === 'hymn' ? '🎵 诗歌' : subTab === 'disciple' ? '🧬 门徒塑造' : '🙏 代祷墙'}</div>
-          <div className="pw-subtitle">{subTab === 'hymn' ? '安静敬拜 · 曲谱与歌词' : subTab === 'disciple' ? '从慕道友到倍增者 · 门徒塑造引擎' : (total > 0 ? `共 ${total} 条祷告` : '众人的祷告')}</div>
+          <div className="pw-title">{subTab === 'hymn' ? t("🎵 诗歌") : subTab === 'disciple' ? t("🧬 门徒塑造") : t("🙏 代祷墙")}</div>
+          <div className="pw-subtitle">{subTab === 'hymn' ? t("安静敬拜 · 曲谱与歌词") : subTab === 'disciple' ? t("从慕道友到倍增者 · 门徒塑造引擎") : (total > 0 ? `共 ${total} 条祷告` : t("众人的祷告"))}</div>
         </div>
         {subTab === 'wall' && (
         <button
           className="pw-compose-btn"
           onClick={() => setShowCompose(true)}
-          title="提交祷告"
+          title={t("提交祷告")}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12h14" />
@@ -500,9 +501,9 @@ export default function PrayerWallPage({ user, token, onBack }) {
 
       {/* 子标签：代祷墙 / 诗歌 */}
       <div className="ev-subtabs">
-        <button className={`ev-subtab ${subTab === 'wall' ? 'active' : ''}`} onClick={() => setSubTab('wall')}>🙏 代祷墙</button>
-        <button className={`ev-subtab ${subTab === 'hymn' ? 'active' : ''}`} onClick={() => setSubTab('hymn')}>🎵 诗歌</button>
-        <button className={`ev-subtab ${subTab === 'disciple' ? 'active' : ''}`} onClick={() => setSubTab('disciple')}>🧬 门徒塑造</button>
+        <button className={`ev-subtab ${subTab === 'wall' ? 'active' : ''}`} onClick={() => setSubTab('wall')}>{t("🙏 代祷墙")}</button>
+        <button className={`ev-subtab ${subTab === 'hymn' ? 'active' : ''}`} onClick={() => setSubTab('hymn')}>{t("🎵 诗歌")}</button>
+        <button className={`ev-subtab ${subTab === 'disciple' ? 'active' : ''}`} onClick={() => setSubTab('disciple')}>{t("🧬 门徒塑造")}</button>
       </div>
 
       {/* 诗歌子页 */}
@@ -516,14 +517,14 @@ export default function PrayerWallPage({ user, token, onBack }) {
       <>
       {/* Success toast */}
       {submitDone && (
-        <div className="pw-toast">✅ 祷告已提交，愿神垂听</div>
+        <div className="pw-toast">{t("✅ 祷告已提交，愿神垂听")}</div>
       )}
 
       {/* Compose sheet */}
       {showCompose && (
         <div className="pw-compose-overlay" onClick={e => e.target === e.currentTarget && setShowCompose(false)}>
           <div className="pw-compose-sheet glass">
-            <div className="pw-compose-title">📝 提交代祷</div>
+            <div className="pw-compose-title">{t("📝 提交代祷")}</div>
 
             {/* Current User Info */}
             <div style={{
@@ -559,7 +560,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                   color: '#fff',
                   fontWeight: 600,
                 }}>
-                  {user?.nickname?.[0] || '弟'}
+                  {user?.nickname?.[0] || t("弟")}
                 </div>
               )}
               <div style={{ flex: 1 }}>
@@ -568,13 +569,13 @@ export default function PrayerWallPage({ user, token, onBack }) {
                   color: 'rgba(255,255,255,0.9)',
                   fontWeight: 600,
                 }}>
-                  {user?.nickname || '弟兄/姐妹'}
+                  {user?.nickname || t("弟兄/姐妹")}
                 </div>
                 <div style={{
                   fontSize: '11px',
                   color: 'rgba(255,255,255,0.4)',
                 }}>
-                  {`以${user?.nickname || '我'}的名义提交代祷`}
+                  {`以${user?.nickname || t("我")}的名义提交代祷`}
                 </div>
               </div>
             </div>
@@ -583,7 +584,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
               <textarea
                 ref={textareaRef}
                 className="pw-compose-textarea"
-                placeholder="写下你想让弟兄姊妹为你代祷的内容…（最多 500 字）"
+                placeholder={t("写下你想让弟兄姊妹为你代祷的内容…（最多 500 字）")}
                 value={draft}
                 onChange={e => setDraft(e.target.value.slice(0, 500))}
                 rows={5}
@@ -619,7 +620,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                   transition: 'all 0.2s ease',
                   zIndex: 10,
                 }}
-                title={isRecording ? '点击停止录音' : '点击开始语音输入'}
+                title={isRecording ? t("点击停止录音") : t("点击开始语音输入")}
               >
                 {isRecording ? '🔴' : '🎤'}
               </button>
@@ -650,7 +651,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                   transition: 'all 0.2s ease',
                   zIndex: 10,
                 }}
-                title="润色文字"
+                title={t("润色文字")}
               >
                 {isPolishing ? '✨' : '✏️'}
               </button>
@@ -671,12 +672,12 @@ export default function PrayerWallPage({ user, token, onBack }) {
             <div className="pw-compose-count">{draft.length} / 500</div>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.55)', cursor: 'pointer', userSelect: 'none', margin: '8px 0 4px' }}>
               <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} style={{ accentColor: '#007aff' }} />
-              🌍 公开请全平台代祷
+              {t("🌍 公开请全平台代祷")}
             </label>
             <div className="pw-compose-actions">
               <button className="pw-cancel-btn" onClick={() => setShowCompose(false)}>
                 <span style={{ fontSize: '16px', marginRight: '4px' }}>✕</span>
-                取消
+                {t("取消")}
               </button>
               <button
                 className="primary-btn"
@@ -687,12 +688,12 @@ export default function PrayerWallPage({ user, token, onBack }) {
                 {submitting ? (
                   <>
                     <span className="spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }} />
-                    提交中…
+                    {t("提交中…")}
                   </>
                 ) : (
                   <>
                     <span>🙏</span>
-                    提交
+                    {t("提交")}
                   </>
                 )}
               </button>
@@ -728,10 +729,10 @@ export default function PrayerWallPage({ user, token, onBack }) {
           }}>
             <div style={{ fontSize: '40px', marginBottom: '12px' }}>⚠️</div>
             <div style={{ fontSize: '17px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', marginBottom: '8px' }}>
-              确定要删除这条祷告吗？
+              {t("确定要删除这条祷告吗？")}
             </div>
             <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>
-              删除后无法恢复，请谨慎操作
+              {t("删除后无法恢复，请谨慎操作")}
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
               <button
@@ -752,7 +753,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                 }}
               >
                 <span>✕</span>
-                取消
+                {t("取消")}
               </button>
               <button
                 onClick={handleDelete}
@@ -773,7 +774,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                 }}
               >
                 <span>🗑️</span>
-                删除
+                {t("删除")}
               </button>
             </div>
           </div>
@@ -786,25 +787,25 @@ export default function PrayerWallPage({ user, token, onBack }) {
         {loading ? (
           <div className="pw-loading">
             <div className="pw-loading-dots"><span /><span /><span /></div>
-            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 12 }}>加载中…</div>
+            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 12 }}>{t("加载中…")}</div>
           </div>
         ) : error ? (
           <div className="pw-error">
             <div style={{ fontSize: 32 }}>⚠️</div>
             <div>{error}</div>
-            <button className="pw-retry-btn" onClick={() => load()}>重试</button>
+            <button className="pw-retry-btn" onClick={() => load()}>{t("重试")}</button>
           </div>
         ) : items.length === 0 ? (
           <div className="pw-empty">
             <div className="pw-empty-icon">🕊️</div>
-            <div className="pw-empty-title">还没有代祷</div>
-            <div className="pw-empty-sub">成为第一个分享代祷事项的人</div>
+            <div className="pw-empty-title">{t("还没有代祷")}</div>
+            <div className="pw-empty-sub">{t("成为第一个分享代祷事项的人")}</div>
             <button
               className="primary-btn"
               style={{ maxWidth: 200, marginTop: 20 }}
               onClick={() => setShowCompose(true)}
             >
-              提交代祷
+              {t("提交代祷")}
             </button>
           </div>
         ) : (
@@ -843,7 +844,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                                 padding: '2px 6px',
                                 borderRadius: '4px'
                               }}>
-                                已删除
+                                {t("已删除")}
                               </span>
                             )}
                           </span>
@@ -856,7 +857,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                               <>
                                 <button
                                   onClick={() => startEdit(prayer)}
-                                  title="编辑"
+                                  title={t("编辑")}
                                   style={{
                                     padding: '6px',
                                     background: 'rgba(255,255,255,0.08)',
@@ -876,7 +877,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                                 </button>
                                 <button
                                   onClick={() => confirmDelete(prayer.id)}
-                                  title="删除"
+                                  title={t("删除")}
                                   style={{
                                     padding: '6px',
                                     background: 'rgba(239,68,68,0.15)',
@@ -900,7 +901,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                                 {user.email === 'zpclord@sina.com' && (
                                   <button
                                     onClick={() => handleRestore(prayer.id)}
-                                    title="恢复"
+                                    title={t("恢复")}
                                     style={{
                                       padding: '6px',
                                       background: 'rgba(34,197,94,0.15)',
@@ -975,7 +976,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                                 transition: 'all 0.2s ease',
                                 zIndex: 10,
                               }}
-                              title={isRecording ? '点击停止录音' : '点击开始语音输入'}
+                              title={isRecording ? t("点击停止录音") : t("点击开始语音输入")}
                             >
                               {isRecording ? '🔴' : '🎤'}
                             </button>
@@ -1006,7 +1007,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                                 transition: 'all 0.2s ease',
                                 zIndex: 10,
                               }}
-                              title="润色文字"
+                              title={t("润色文字")}
                             >
                               {isPolishing ? '✨' : '✏️'}
                             </button>
@@ -1040,7 +1041,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                               }}
                             >
                               <span>✕</span>
-                              取消
+                              {t("取消")}
                             </button>
                             <button
                               onClick={handleUpdate}
@@ -1060,7 +1061,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                               }}
                             >
                               <span>💾</span>
-                              保存
+                              {t("保存")}
                             </button>
                           </div>
                         </div>
@@ -1070,9 +1071,9 @@ export default function PrayerWallPage({ user, token, onBack }) {
                       {prayer.status && (
                         <div style={{ padding: '4px 0 2px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                           {prayer.status === 'answered' ? (
-                            <span style={{ color: '#34c759', background: 'rgba(52,199,89,0.12)', border: '1px solid rgba(52,199,89,0.3)', borderRadius: '12px', padding: '2px 9px' }}>✅ 已蒙恩答应</span>
+                            <span style={{ color: '#34c759', background: 'rgba(52,199,89,0.12)', border: '1px solid rgba(52,199,89,0.3)', borderRadius: '12px', padding: '2px 9px' }}>{t("✅ 已蒙恩答应")}</span>
                           ) : prayer.status === 'waiting' ? (
-                            <span style={{ color: '#ffd700', background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', borderRadius: '12px', padding: '2px 9px' }}>⏳ 仍在等候</span>
+                            <span style={{ color: '#ffd700', background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', borderRadius: '12px', padding: '2px 9px' }}>{t("⏳ 仍在等候")}</span>
                           ) : null}
                         </div>
                       )}
@@ -1084,7 +1085,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                         >
                           <span className="pw-amen-icon">🙏</span>
                           <span className="pw-amen-label">
-                            {amened.has(prayer.id) ? '已同心' : '同心'}
+                            {amened.has(prayer.id) ? t("已同心") : t("同心")}
                           </span>
                           {prayer.amen_count > 0 && (
                             <span className="pw-amen-count">{prayer.amen_count}</span>
@@ -1097,7 +1098,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                             onClick={() => handleAddFriend(prayer.email)}
                             style={{ fontSize: 11, padding: '3px 8px', borderRadius: 10, border: '1px solid rgba(0,122,255,0.4)', background: friendRequested[prayer.email] ? 'rgba(0,122,255,0.15)' : 'none', color: '#60a5fa', cursor: 'pointer' }}
                           >
-                            {friendRequested[prayer.email] ? '已请求 ✓' : '➕ 加好友'}
+                            {friendRequested[prayer.email] ? t("已请求 ✓") : t("➕ 加好友")}
                           </button>
                         )}
                         {prayer.is_own && (
@@ -1112,7 +1113,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                               }}
                               style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '10px', border: '1px solid rgba(52,199,89,0.4)', background: prayer.status === 'answered' ? 'rgba(52,199,89,0.2)' : 'none', color: '#34c759', cursor: 'pointer' }}
                             >
-                              {prayer.status === 'answered' ? '↩ 取消' : '✅ 已答应'}
+                              {prayer.status === 'answered' ? t("↩ 取消") : t("✅ 已答应")}
                             </button>
                             <button
                               onClick={async () => {
@@ -1124,7 +1125,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                               }}
                               style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '10px', border: '1px solid rgba(255,215,0,0.3)', background: prayer.status === 'waiting' ? 'rgba(255,215,0,0.15)' : 'none', color: '#ffd700', cursor: 'pointer' }}
                             >
-                              {prayer.status === 'waiting' ? '↩ 取消' : '⏳ 等候中'}
+                              {prayer.status === 'waiting' ? t("↩ 取消") : t("⏳ 等候中")}
                             </button>
                           </>
                         )}
@@ -1145,18 +1146,18 @@ export default function PrayerWallPage({ user, token, onBack }) {
                 {loadingMore ? (
                   <>
                     <span className="spinner" style={{ width: '14px', height: '14px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }} />
-                    加载中…
+                    {t("加载中…")}
                   </>
                 ) : (
                   <>
                     <span>↓</span>
-                    加载更多 ({total - items.length})
+                    {t("加载更多 (")}{total - items.length})
                   </>
                 )}
               </button>
             )}
             <div className="pw-footer-tip">
-              愿神垂听每一个呼求 · 以弗所书 6:18
+              {t("愿神垂听每一个呼求 · 以弗所书 6:18")}
             </div>
           </>
         )}
@@ -1165,7 +1166,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
       {/* Export Bar */}
       {!loading && !error && items.length > 0 && (
         <div className="sj-export-bar">
-          <button className="sj-export-btn-bottom" onClick={() => exportAllPrayersToTxt(items)} title="导出TXT">
+          <button className="sj-export-btn-bottom" onClick={() => exportAllPrayersToTxt(items)} title={t("导出TXT")}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -1175,7 +1176,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
             </svg>
             TXT
           </button>
-          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllPrayersToPdf(items), "生成 PDF 中…", "✅ PDF 已导出")} title="导出PDF">
+          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllPrayersToPdf(items), t("生成 PDF 中…"), t("✅ PDF 已导出"))} title={t("导出PDF")}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>

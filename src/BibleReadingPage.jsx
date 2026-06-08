@@ -7,77 +7,78 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture } from './api'
 import { TTSFullBar, TTSButton } from './useGlobalAudio.jsx'
+import { t } from './i18n/runtime'
 
 // ── 全部 66 卷（旧约 39 + 新约 27）────────────────────────────────────────────
 const BOOKS = [
   // ── 旧约 ──────────────────────────────────────────────────────────────────
-  { name: '创世记',       chapters: 50, testament: 'OT' },
-  { name: '出埃及记',     chapters: 40, testament: 'OT' },
-  { name: '利未记',       chapters: 27, testament: 'OT' },
-  { name: '民数记',       chapters: 36, testament: 'OT' },
-  { name: '申命记',       chapters: 34, testament: 'OT' },
-  { name: '约书亚记',     chapters: 24, testament: 'OT' },
-  { name: '士师记',       chapters: 21, testament: 'OT' },
-  { name: '路得记',       chapters: 4,  testament: 'OT' },
-  { name: '撒母耳记上',   chapters: 31, testament: 'OT' },
-  { name: '撒母耳记下',   chapters: 24, testament: 'OT' },
-  { name: '列王纪上',     chapters: 22, testament: 'OT' },
-  { name: '列王纪下',     chapters: 25, testament: 'OT' },
-  { name: '历代志上',     chapters: 29, testament: 'OT' },
-  { name: '历代志下',     chapters: 36, testament: 'OT' },
-  { name: '以斯拉记',     chapters: 10, testament: 'OT' },
-  { name: '尼希米记',     chapters: 13, testament: 'OT' },
-  { name: '以斯帖记',     chapters: 10, testament: 'OT' },
-  { name: '约伯记',       chapters: 42, testament: 'OT' },
-  { name: '诗篇',         chapters: 150, testament: 'OT' },
-  { name: '箴言',         chapters: 31, testament: 'OT' },
-  { name: '传道书',       chapters: 12, testament: 'OT' },
-  { name: '雅歌',         chapters: 8,  testament: 'OT' },
-  { name: '以赛亚书',     chapters: 66, testament: 'OT' },
-  { name: '耶利米书',     chapters: 52, testament: 'OT' },
-  { name: '耶利米哀歌',   chapters: 5,  testament: 'OT' },
-  { name: '以西结书',     chapters: 48, testament: 'OT' },
-  { name: '但以理书',     chapters: 12, testament: 'OT' },
-  { name: '何西阿书',     chapters: 14, testament: 'OT' },
-  { name: '约珥书',       chapters: 3,  testament: 'OT' },
-  { name: '阿摩司书',     chapters: 9,  testament: 'OT' },
-  { name: '俄巴底亚书',   chapters: 1,  testament: 'OT' },
-  { name: '约拿书',       chapters: 4,  testament: 'OT' },
-  { name: '弥迦书',       chapters: 7,  testament: 'OT' },
-  { name: '那鸿书',       chapters: 3,  testament: 'OT' },
-  { name: '哈巴谷书',     chapters: 3,  testament: 'OT' },
-  { name: '西番雅书',     chapters: 3,  testament: 'OT' },
-  { name: '哈该书',       chapters: 2,  testament: 'OT' },
-  { name: '撒迦利亚书',   chapters: 14, testament: 'OT' },
-  { name: '玛拉基书',     chapters: 4,  testament: 'OT' },
+  { name: t("创世记"),       chapters: 50, testament: 'OT' },
+  { name: t("出埃及记"),     chapters: 40, testament: 'OT' },
+  { name: t("利未记"),       chapters: 27, testament: 'OT' },
+  { name: t("民数记"),       chapters: 36, testament: 'OT' },
+  { name: t("申命记"),       chapters: 34, testament: 'OT' },
+  { name: t("约书亚记"),     chapters: 24, testament: 'OT' },
+  { name: t("士师记"),       chapters: 21, testament: 'OT' },
+  { name: t("路得记"),       chapters: 4,  testament: 'OT' },
+  { name: t("撒母耳记上"),   chapters: 31, testament: 'OT' },
+  { name: t("撒母耳记下"),   chapters: 24, testament: 'OT' },
+  { name: t("列王纪上"),     chapters: 22, testament: 'OT' },
+  { name: t("列王纪下"),     chapters: 25, testament: 'OT' },
+  { name: t("历代志上"),     chapters: 29, testament: 'OT' },
+  { name: t("历代志下"),     chapters: 36, testament: 'OT' },
+  { name: t("以斯拉记"),     chapters: 10, testament: 'OT' },
+  { name: t("尼希米记"),     chapters: 13, testament: 'OT' },
+  { name: t("以斯帖记"),     chapters: 10, testament: 'OT' },
+  { name: t("约伯记"),       chapters: 42, testament: 'OT' },
+  { name: t("诗篇"),         chapters: 150, testament: 'OT' },
+  { name: t("箴言"),         chapters: 31, testament: 'OT' },
+  { name: t("传道书"),       chapters: 12, testament: 'OT' },
+  { name: t("雅歌"),         chapters: 8,  testament: 'OT' },
+  { name: t("以赛亚书"),     chapters: 66, testament: 'OT' },
+  { name: t("耶利米书"),     chapters: 52, testament: 'OT' },
+  { name: t("耶利米哀歌"),   chapters: 5,  testament: 'OT' },
+  { name: t("以西结书"),     chapters: 48, testament: 'OT' },
+  { name: t("但以理书"),     chapters: 12, testament: 'OT' },
+  { name: t("何西阿书"),     chapters: 14, testament: 'OT' },
+  { name: t("约珥书"),       chapters: 3,  testament: 'OT' },
+  { name: t("阿摩司书"),     chapters: 9,  testament: 'OT' },
+  { name: t("俄巴底亚书"),   chapters: 1,  testament: 'OT' },
+  { name: t("约拿书"),       chapters: 4,  testament: 'OT' },
+  { name: t("弥迦书"),       chapters: 7,  testament: 'OT' },
+  { name: t("那鸿书"),       chapters: 3,  testament: 'OT' },
+  { name: t("哈巴谷书"),     chapters: 3,  testament: 'OT' },
+  { name: t("西番雅书"),     chapters: 3,  testament: 'OT' },
+  { name: t("哈该书"),       chapters: 2,  testament: 'OT' },
+  { name: t("撒迦利亚书"),   chapters: 14, testament: 'OT' },
+  { name: t("玛拉基书"),     chapters: 4,  testament: 'OT' },
   // ── 新约 ──────────────────────────────────────────────────────────────────
-  { name: '马太福音',       chapters: 28, testament: 'NT' },
-  { name: '马可福音',       chapters: 16, testament: 'NT' },
-  { name: '路加福音',       chapters: 24, testament: 'NT' },
-  { name: '约翰福音',       chapters: 21, testament: 'NT' },
-  { name: '使徒行传',       chapters: 28, testament: 'NT' },
-  { name: '罗马书',         chapters: 16, testament: 'NT' },
-  { name: '哥林多前书',     chapters: 16, testament: 'NT' },
-  { name: '哥林多后书',     chapters: 13, testament: 'NT' },
-  { name: '加拉太书',       chapters: 6,  testament: 'NT' },
-  { name: '以弗所书',       chapters: 6,  testament: 'NT' },
-  { name: '腓立比书',       chapters: 4,  testament: 'NT' },
-  { name: '歌罗西书',       chapters: 4,  testament: 'NT' },
-  { name: '帖撒罗尼迦前书', chapters: 5,  testament: 'NT' },
-  { name: '帖撒罗尼迦后书', chapters: 3,  testament: 'NT' },
-  { name: '提摩太前书',     chapters: 6,  testament: 'NT' },
-  { name: '提摩太后书',     chapters: 4,  testament: 'NT' },
-  { name: '提多书',         chapters: 3,  testament: 'NT' },
-  { name: '腓利门书',       chapters: 1,  testament: 'NT' },
-  { name: '希伯来书',       chapters: 13, testament: 'NT' },
-  { name: '雅各书',         chapters: 5,  testament: 'NT' },
-  { name: '彼得前书',       chapters: 5,  testament: 'NT' },
-  { name: '彼得后书',       chapters: 3,  testament: 'NT' },
-  { name: '约翰一书',       chapters: 5,  testament: 'NT' },
-  { name: '约翰二书',       chapters: 1,  testament: 'NT' },
-  { name: '约翰三书',       chapters: 1,  testament: 'NT' },
-  { name: '犹大书',         chapters: 1,  testament: 'NT' },
-  { name: '启示录',         chapters: 22, testament: 'NT' },
+  { name: t("马太福音"),       chapters: 28, testament: 'NT' },
+  { name: t("马可福音"),       chapters: 16, testament: 'NT' },
+  { name: t("路加福音"),       chapters: 24, testament: 'NT' },
+  { name: t("约翰福音"),       chapters: 21, testament: 'NT' },
+  { name: t("使徒行传"),       chapters: 28, testament: 'NT' },
+  { name: t("罗马书"),         chapters: 16, testament: 'NT' },
+  { name: t("哥林多前书"),     chapters: 16, testament: 'NT' },
+  { name: t("哥林多后书"),     chapters: 13, testament: 'NT' },
+  { name: t("加拉太书"),       chapters: 6,  testament: 'NT' },
+  { name: t("以弗所书"),       chapters: 6,  testament: 'NT' },
+  { name: t("腓立比书"),       chapters: 4,  testament: 'NT' },
+  { name: t("歌罗西书"),       chapters: 4,  testament: 'NT' },
+  { name: t("帖撒罗尼迦前书"), chapters: 5,  testament: 'NT' },
+  { name: t("帖撒罗尼迦后书"), chapters: 3,  testament: 'NT' },
+  { name: t("提摩太前书"),     chapters: 6,  testament: 'NT' },
+  { name: t("提摩太后书"),     chapters: 4,  testament: 'NT' },
+  { name: t("提多书"),         chapters: 3,  testament: 'NT' },
+  { name: t("腓利门书"),       chapters: 1,  testament: 'NT' },
+  { name: t("希伯来书"),       chapters: 13, testament: 'NT' },
+  { name: t("雅各书"),         chapters: 5,  testament: 'NT' },
+  { name: t("彼得前书"),       chapters: 5,  testament: 'NT' },
+  { name: t("彼得后书"),       chapters: 3,  testament: 'NT' },
+  { name: t("约翰一书"),       chapters: 5,  testament: 'NT' },
+  { name: t("约翰二书"),       chapters: 1,  testament: 'NT' },
+  { name: t("约翰三书"),       chapters: 1,  testament: 'NT' },
+  { name: t("犹大书"),         chapters: 1,  testament: 'NT' },
+  { name: t("启示录"),         chapters: 22, testament: 'NT' },
 ]
 
 const TOTAL_CHAPTERS = BOOKS.reduce((s, b) => s + b.chapters, 0)
@@ -128,7 +129,7 @@ function CrossRefText({ text, autoExpand = false }) {
       const refStr = book + chapter + ':' + verses
       fetchScripture(refStr)
         .then(data => setExpanded(prev => ({ ...prev, [raw]: { verses: data.verses || [] } })))
-        .catch(() => setExpanded(prev => ({ ...prev, [raw]: { err: '无法加载' } })))
+        .catch(() => setExpanded(prev => ({ ...prev, [raw]: { err: t("无法加载") } })))
     }
   }, [text, autoExpand])
 
@@ -159,7 +160,7 @@ function CrossRefText({ text, autoExpand = false }) {
       const vv = data.verses || []
       setExpanded(prev => ({ ...prev, [ref.raw]: { verses: vv } }))
     } catch (e) {
-      setExpanded(prev => ({ ...prev, [ref.raw]: { err: '无法加载经文' } }))
+      setExpanded(prev => ({ ...prev, [ref.raw]: { err: t("无法加载经文") } }))
     }
   }
 
@@ -239,9 +240,9 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
       .then(r => r.json())
       .then(d => {
         if (d.ok && d.verses?.length) setVerses(d.verses)
-        else setLoadErr(d.error || '暂无经文内容')
+        else setLoadErr(d.error || t("暂无经文内容"))
       })
-      .catch(() => setLoadErr('加载失败，请检查网络'))
+      .catch(() => setLoadErr(t("加载失败，请检查网络")))
   }, [book.name, chapter])
 
   useEffect(() => {
@@ -258,7 +259,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
   async function handleMark() {
     if (!user || marking || isDone || marked) return
     setMarking(true)
-    if (window.showToast) window.showToast("保存中…", "loading")
+    if (window.showToast) window.showToast(t("保存中…"), "loading")
     try {
       await onMark(book.name, chapter, highlight)
       setMarked(true)
@@ -270,7 +271,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
     setStudyLoading(true)
     setStudyErr('')
     setStudy(null)
-    if (window.showToast) window.showToast("📖 正在生成查经材料…", "loading", 60000)
+    if (window.showToast) window.showToast(t("📖 正在生成查经材料…"), "loading", 60000)
     setOpenSections({ summary: true })
     setTimeout(() => studyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
     try {
@@ -278,7 +279,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
       setStudy(data.study)
       setOpenSections({ summary: true, verse_comments: true })
     } catch (e) {
-      setStudyErr(e.message || '生成失败，请重试')
+      setStudyErr(e.message || t("生成失败，请重试"))
     } finally {
       setStudyLoading(false)
     }
@@ -315,9 +316,9 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
         </button>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{book.name} · 第{chapter}章</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{book.name} {t("· 第")}{chapter}{t("章")}</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
-            {isDone || marked ? '✅ 已读' : `第 ${chapter}/${book.chapters} 章`}
+            {isDone || marked ? t("✅ 已读") : `第 ${chapter}/${book.chapters} 章`}
           </div>
         </div>
         {/* 查经 button */}
@@ -332,7 +333,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
               display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap',
             }}
           >
-            {studyLoading ? '⏳' : '📖'} {studyLoading ? '生成中…' : study ? '重新查经' : '查经'}
+            {studyLoading ? '⏳' : '📖'} {studyLoading ? t("生成中…") : study ? t("重新查经") : t("查经")}
           </button>
         )}
 
@@ -350,12 +351,12 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
         <div ref={topRef} />
 
         {!verses && !loadErr && (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(90,200,250,0.5)', fontSize: 14 }}>经文加载中…</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(90,200,250,0.5)', fontSize: 14 }}>{t("经文加载中…")}</div>
         )}
         {loadErr && (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
             <div style={{ color: 'rgba(255,100,100,0.7)', marginBottom: 16 }}>{loadErr}</div>
-            <button onClick={load} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'rgba(0,122,255,0.4)', color: '#fff', cursor: 'pointer' }}>重试</button>
+            <button onClick={load} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'rgba(0,122,255,0.4)', color: '#fff', cursor: 'pointer' }}>{t("重试")}</button>
           </div>
         )}
 
@@ -364,7 +365,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
             {/* Chapter title + TTS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <div style={{ fontSize: 12, color: 'rgba(90,200,250,0.6)', fontWeight: 600, letterSpacing: '0.05em' }}>
-                {book.name} {chapter}章 · 共{verses.length}节
+                {book.name} {chapter}{t("章 · 共")}{verses.length}{t("节")}
               </div>
               <TTSButton
                 text={`${book.name}第${chapter}章。\n` + verses.map(v => `第${v.verse}节。${v.text}`).join('\n')}
@@ -387,32 +388,32 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
               {studyLoading && (
                 <div style={{ padding: '28px 0', textAlign: 'center', color: 'rgba(255,200,50,0.6)', fontSize: 14 }}>
                   <div style={{ fontSize: 24, marginBottom: 10 }}>📖</div>
-                  正在生成查经材料，请稍候…<br />
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 6, display: 'block' }}>通常需要 15-30 秒</span>
+                  {t("正在生成查经材料，请稍候…")}<br />
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 6, display: 'block' }}>{t("通常需要 15-30 秒")}</span>
                 </div>
               )}
               {studyErr && (
                 <div style={{ padding: '14px 16px', borderRadius: 10, background: 'rgba(255,59,48,0.1)', border: '1px solid rgba(255,59,48,0.25)', color: '#ff6b6b', fontSize: 13, marginBottom: 8 }}>
                   {studyErr}
-                  <button onClick={handleGenerateStudy} style={{ marginLeft: 12, background: 'none', border: 'none', color: '#5ac8fa', cursor: 'pointer', fontSize: 13 }}>重试</button>
+                  <button onClick={handleGenerateStudy} style={{ marginLeft: 12, background: 'none', border: 'none', color: '#5ac8fa', cursor: 'pointer', fontSize: 13 }}>{t("重试")}</button>
                 </div>
               )}
               {study && (() => {
                 // Support both new schema (verse_by_verse) and old (verse_comments)
                 const vbv = study.verse_by_verse || study.verse_comments || []
                 const SECTIONS = [
-                  { key: 'overview',      icon: '🗺️', title: '章节概览' },
-                  { key: 'summary',       icon: '📋', title: '核心要义' },
-                  { key: 'context',       icon: '🏛️', title: '历史文化背景' },
-                  { key: 'structure',     icon: '📐', title: '段落结构' },
+                  { key: 'overview',      icon: '🗺️', title: t("章节概览") },
+                  { key: 'summary',       icon: '📋', title: t("核心要义") },
+                  { key: 'context',       icon: '🏛️', title: t("历史文化背景") },
+                  { key: 'structure',     icon: '📐', title: t("段落结构") },
                   { key: '__vbv__',       icon: '🔍', title: `逐节详解（共${vbv.length}节）` },
-                  { key: 'key_words',     icon: '🔑', title: '关键词语原文解析' },
-                  { key: 'cross_refs',    icon: '🔗', title: '串珠平行经文' },
-                  { key: 'theology',      icon: '✝️',  title: '核心神学主题' },
-                  { key: 'echoes',        icon: '📜', title: '历史印证' },
-                  { key: 'application',   icon: '✨', title: '时代应用' },
-                  { key: 'practice',      icon: '🚶', title: '操练建议' },
-                  { key: 'prayer',        icon: '🙏', title: '祷告引导' },
+                  { key: 'key_words',     icon: '🔑', title: t("关键词语原文解析") },
+                  { key: 'cross_refs',    icon: '🔗', title: t("串珠平行经文") },
+                  { key: 'theology',      icon: '✝️',  title: t("核心神学主题") },
+                  { key: 'echoes',        icon: '📜', title: t("历史印证") },
+                  { key: 'application',   icon: '✨', title: t("时代应用") },
+                  { key: 'practice',      icon: '🚶', title: t("操练建议") },
+                  { key: 'prayer',        icon: '🙏', title: t("祷告引导") },
                 ]
                 // Open overview by default on first render
                 return (
@@ -422,17 +423,17 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                         <span style={{ fontSize: 18 }}>📖</span>
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: '#ffd60a' }}>查经 — {book.name} 第{chapter}章</div>
-                          <div style={{ fontSize: 11, color: 'rgba(255,200,50,0.55)', marginTop: 2 }}>逐节精解 · 神学主题 · 祷告引导</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#ffd60a' }}>{t("查经 —")} {book.name} {t("第")}{chapter}{t("章")}</div>
+                          <div style={{ fontSize: 11, color: 'rgba(255,200,50,0.55)', marginTop: 2 }}>{t("逐节精解 · 神学主题 · 祷告引导")}</div>
                         </div>
                       </div>
                       {/* 全篇朗读 */}
                       <TTSFullBar
-                        label="全篇朗读"
+                        label={t("全篇朗读")}
                         buildText={() => {
                           const parts = []
                           const KEYS = ['overview','summary','context','structure','key_words','cross_refs','theology','echoes','application','practice','prayer']
-                          const LABELS = {overview:'章节概览',summary:'核心要义',context:'历史文化背景',structure:'段落结构',key_words:'关键词语',cross_refs:'串珠平行经文',theology:'核心神学主题',echoes:'历史印证',application:'时代应用',practice:'操练建议',prayer:'祷告引导'}
+                          const LABELS = {overview:t("章节概览"),summary:t("核心要义"),context:t("历史文化背景"),structure:t("段落结构"),key_words:t("关键词语"),cross_refs:t("串珠平行经文"),theology:t("核心神学主题"),echoes:t("历史印证"),application:t("时代应用"),practice:t("操练建议"),prayer:t("祷告引导")}
                           KEYS.forEach(k => {
                             const v = study[k]
                             if (!v) return
@@ -443,9 +444,9 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                           if (vbv.length) {
                             const vtext = vbv.map(item => {
                               const n = item.verse ?? item.range
-                              return `第${n}节：${item.comment || ''}${item.apply ? '　应用：' + item.apply : ''}`
+                              return `第${n}节：${item.comment || ''}${item.apply ? t("　应用：") + item.apply : ''}`
                             }).join('　')
-                            parts.splice(3, 0, '逐节详解。' + vtext)
+                            parts.splice(3, 0, t("逐节详解。") + vtext)
                           }
                           return parts.join('\n\n')
                         }}
@@ -461,7 +462,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                       const sectionTtsText = isVbv
                         ? vbv.map(item => {
                             const n = item.verse ?? item.range
-                            return `第${n}节：${item.comment || ''}${item.apply ? '　应用：' + item.apply : ''}`
+                            return `第${n}节：${item.comment || ''}${item.apply ? t("　应用：") + item.apply : ''}`
                           }).join('　')
                         : (typeof content === 'string' ? content : '')
 
@@ -491,7 +492,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                                     const comment  = item.comment || ''
                                     const wordNote = item.word || ''
                                     const applyNote= item.apply || ''
-                                    const vbvTts   = `第${verseNum}节：${comment}${applyNote ? '　应用：' + applyNote : ''}`
+                                    const vbvTts   = `第${verseNum}节：${comment}${applyNote ? t("　应用：") + applyNote : ''}`
                                     return (
                                       <div key={i} style={{ borderRadius: 10, border: '1px solid rgba(90,200,250,0.15)', background: 'rgba(90,200,250,0.04)', overflow: 'hidden' }}>
                                         {/* Verse badge row + per-verse TTS */}
@@ -511,13 +512,13 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                                         <div style={{ padding: '10px 12px', fontSize: 13, color: 'rgba(255,255,255,0.82)', lineHeight: 1.85, whiteSpace: 'pre-wrap' }}>{comment}</div>
                                         {wordNote && (
                                           <div style={{ margin: '0 12px 10px', padding: '8px 12px', borderRadius: 8, background: 'rgba(88,86,214,0.12)', border: '1px solid rgba(88,86,214,0.25)' }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(180,170,255,0.7)', letterSpacing: '0.06em' }}>🔑 原文词语　</span>
+                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(180,170,255,0.7)', letterSpacing: '0.06em' }}>{t("🔑 原文词语")}　</span>
                                             <span style={{ fontSize: 12, color: 'rgba(200,190,255,0.9)', lineHeight: 1.75 }}>{wordNote}</span>
                                           </div>
                                         )}
                                         {applyNote && (
                                           <div style={{ margin: '0 12px 12px', padding: '7px 12px', borderRadius: 8, background: 'rgba(52,199,89,0.08)', border: '1px solid rgba(52,199,89,0.2)' }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(100,220,120,0.7)', letterSpacing: '0.06em' }}>💚 应用提示　</span>
+                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(100,220,120,0.7)', letterSpacing: '0.06em' }}>{t("💚 应用提示")}　</span>
                                             <span style={{ fontSize: 12, color: 'rgba(160,240,180,0.9)', lineHeight: 1.7 }}>{applyNote}</span>
                                           </div>
                                         )}
@@ -556,20 +557,20 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
               <div style={{ marginTop: 28, padding: '16px', background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
                 {isDone || marked ? (
                   <div style={{ textAlign: 'center', color: 'rgba(52,199,89,0.8)', fontSize: 14, padding: '8px 0' }}>
-                    ✅ 已标记为已读
+                    {t("✅ 已标记为已读")}
                   </div>
                 ) : (
                   <>
-                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>读完了？记录一句遇见神的话：</div>
+                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>{t("读完了？记录一句遇见神的话：")}</div>
                     <input
                       value={highlight}
                       onChange={e => setHighlight(e.target.value)}
-                      placeholder="可选：摘录一节经文或灵感（可留空）"
+                      placeholder={t("可选：摘录一节经文或灵感（可留空）")}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: '#fff', fontSize: 13, outline: 'none', boxSizing: 'border-box', marginBottom: 12 }}
                     />
                     <button onClick={handleMark} disabled={marking}
                       style={{ width: '100%', padding: '11px', borderRadius: 10, border: 'none', background: marking ? 'rgba(0,122,255,0.3)' : 'linear-gradient(135deg,#007aff,#5856d6)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                      {marking ? '保存中…' : '✓ 标记本章已读'}
+                      {marking ? t("保存中…") : t("✓ 标记本章已读")}
                     </button>
                   </>
                 )}
@@ -580,12 +581,12 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
             <div style={{ display: 'flex', gap: 10, marginTop: 16, marginBottom: 20 }}>
               {hasPrev && (
                 <button onClick={prev} style={{ flex: 1, padding: '11px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer' }}>
-                  ← 上一章
+                  {t("← 上一章")}
                 </button>
               )}
               {hasNext && (
                 <button onClick={next} style={{ flex: 1, padding: '11px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer' }}>
-                  下一章 →
+                  {t("下一章 →")}
                 </button>
               )}
             </div>
@@ -663,15 +664,15 @@ export default function BibleReadingPage({ user, token, onBack }) {
         </button>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
-            {view === 'chapters' && selectedBook ? `📖 ${selectedBook.name}` : '📖 圣经通读'}
+            {view === 'chapters' && selectedBook ? `📖 ${selectedBook.name}` : t("📖 圣经通读")}
           </div>
           {view === 'books' ? (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
-              {totalDone} / {TOTAL_CHAPTERS} 章 · {pct}% 已读完
+              {totalDone} / {TOTAL_CHAPTERS} {t("章 ·")} {pct}{t("% 已读完")}
             </div>
           ) : selectedBook ? (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
-              {(progress.by_book[selectedBook.name] || []).length} / {selectedBook.chapters} 章已读
+              {(progress.by_book[selectedBook.name] || []).length} / {selectedBook.chapters} {t("章已读")}
             </div>
           ) : null}
         </div>
@@ -680,20 +681,20 @@ export default function BibleReadingPage({ user, token, onBack }) {
       {/* Completed book toast */}
       {completedBook && (
         <div style={{ background: 'linear-gradient(135deg,#ffd700,#ff9500)', padding: '10px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#000', flexShrink: 0 }}>
-          🎉 你读完了整卷《{completedBook}》！
+          {t("🎉 你读完了整卷《")}{completedBook}》！
         </div>
       )}
 
       {/* OT / NT tabs — only on books view */}
       {view === 'books' && (
         <div style={S.tabBar}>
-          {[['NT', '新约'], ['OT', '旧约']].map(([k, l]) => (
+          {[['NT', t("新约")], ['OT', t("旧约")]].map(([k, l]) => (
             <button key={k} onClick={() => setTestament(k)} style={S.tab(testament === k)}>{l}</button>
           ))}
           <div style={{ flex: 1 }} />
           {user && (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', alignSelf: 'center' }}>
-              全本 {pct}% ✓
+              {t("全本")} {pct}% ✓
             </div>
           )}
         </div>
@@ -712,7 +713,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
         )}
 
         {loadingProgress ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>加载中…</div>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>{t("加载中…")}</div>
         ) : view === 'books' ? (
           // ── Book list ─────────────────────────────────────────────────────
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(128px, 1fr))', gap: 8 }}>
@@ -730,7 +731,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
                   <div style={{ height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 5 }}>
                     <div style={{ height: '100%', width: `${bPct}%`, background: complete ? '#007aff' : '#5856d6', borderRadius: 2 }} />
                   </div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>{done}/{book.chapters} 章</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>{done}/{book.chapters} {t("章")}</div>
                 </div>
               )
             })}
@@ -739,7 +740,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
           // ── Chapter grid ──────────────────────────────────────────────────
           <div>
             <div style={{ marginBottom: 16, fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
-              点击章节数字可阅读全章经文
+              {t("点击章节数字可阅读全章经文")}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', gap: 8 }}>
               {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map(ch => {
@@ -757,10 +758,10 @@ export default function BibleReadingPage({ user, token, onBack }) {
             {/* Legend */}
             <div style={{ marginTop: 18, display: 'flex', gap: 16, fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 16, height: 16, background: 'linear-gradient(135deg,#007aff,#5856d6)', borderRadius: 4, display: 'inline-block' }} />已读
+                <span style={{ width: 16, height: 16, background: 'linear-gradient(135deg,#007aff,#5856d6)', borderRadius: 4, display: 'inline-block' }} />{t("已读")}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 16, height: 16, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 4, display: 'inline-block' }} />未读
+                <span style={{ width: 16, height: 16, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 4, display: 'inline-block' }} />{t("未读")}
               </span>
             </div>
           </div>

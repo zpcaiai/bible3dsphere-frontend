@@ -7,22 +7,23 @@
 import { useEffect, useState } from 'react'
 import { API_BASE } from './api.js'
 import { TTSButton } from './useGlobalAudio.jsx'
+import { t } from './i18n/runtime'
 
 const DIM_META = {
-  humility:           { label: '谦卑', icon: '🙇', desc: '降卑自己、以他人为优先的心态' },
-  fear_tendency:      { label: '惧怕', icon: '😰', desc: '焦虑与属灵惧怕的程度（越低越好）', inverse: true },
-  pride_tendency:     { label: '骄傲', icon: '🏛', desc: '自我中心与骄傲的倾向（越低越好）', inverse: true },
-  emotional_stability:{ label: '情绪稳定', icon: '⚖️', desc: '内在平安与情绪调节能力' },
-  truth_alignment:    { label: '真理对齐', icon: '📖', desc: '生命与圣经真理的吻合程度' },
-  relational_health:  { label: '关系健康', icon: '🤝', desc: '与人建立真实团契的能力' },
-  resilience:         { label: '属灵韧性', icon: '🌿', desc: '在苦难中保持信仰的能力' },
-  spiritual_clarity:  { label: '属灵清醒', icon: '✨', desc: '分辨属灵处境与神旨意的清晰度' },
+  humility:           { label: t("谦卑"), icon: '🙇', desc: t("降卑自己、以他人为优先的心态") },
+  fear_tendency:      { label: t("惧怕"), icon: '😰', desc: t("焦虑与属灵惧怕的程度（越低越好）"), inverse: true },
+  pride_tendency:     { label: t("骄傲"), icon: '🏛', desc: t("自我中心与骄傲的倾向（越低越好）"), inverse: true },
+  emotional_stability:{ label: t("情绪稳定"), icon: '⚖️', desc: t("内在平安与情绪调节能力") },
+  truth_alignment:    { label: t("真理对齐"), icon: '📖', desc: t("生命与圣经真理的吻合程度") },
+  relational_health:  { label: t("关系健康"), icon: '🤝', desc: t("与人建立真实团契的能力") },
+  resilience:         { label: t("属灵韧性"), icon: '🌿', desc: t("在苦难中保持信仰的能力") },
+  spiritual_clarity:  { label: t("属灵清醒"), icon: '✨', desc: t("分辨属灵处境与神旨意的清晰度") },
 }
 
 const STAGE_META = {
-  stable:    { label: '稳健成长', color: '#34c759', bg: 'rgba(52,199,89,0.12)', bar: '#34c759' },
-  growing:   { label: '正在成长', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', bar: '#fbbf24' },
-  blind_spot:{ label: '成长空间', color: '#f87171', bg: 'rgba(248,113,113,0.12)', bar: '#f87171' },
+  stable:    { label: t("稳健成长"), color: '#34c759', bg: 'rgba(52,199,89,0.12)', bar: '#34c759' },
+  growing:   { label: t("正在成长"), color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', bar: '#fbbf24' },
+  blind_spot:{ label: t("成长空间"), color: '#f87171', bg: 'rgba(248,113,113,0.12)', bar: '#f87171' },
 }
 
 function getStage(score, inverse) {
@@ -159,9 +160,9 @@ export default function EngineeringPage({ onBack, user, token }) {
           background: 'rgba(255,255,255,0.07)', color: '#fff', cursor: 'pointer', fontSize: 18,
         }}>←</button>
         <div>
-          <div style={{ fontSize: 17, fontWeight: 700 }}>🌱 灵命成长分析</div>
+          <div style={{ fontSize: 17, fontWeight: 700 }}>{t("🌱 灵命成长分析")}</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>
-            八个维度 · 当前状态 · 成长建议
+            {t("八个维度 · 当前状态 · 成长建议")}
           </div>
         </div>
       </div>
@@ -173,16 +174,16 @@ export default function EngineeringPage({ onBack, user, token }) {
             color: 'rgba(255,255,255,0.5)', fontSize: 14,
           }}>
             <div style={{ fontSize: 36, marginBottom: 12 }}>🔒</div>
-            <div style={{ fontWeight: 700, marginBottom: 6 }}>登录后查看灵命成长分析</div>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>{t("登录后查看灵命成长分析")}</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
-              根据你的灵修记录、情绪打卡和属灵操练，系统会评估8个灵命维度的成长状态
+              {t("根据你的灵修记录、情绪打卡和属灵操练，系统会评估8个灵命维度的成长状态")}
             </div>
           </div>
         )}
 
         {user && loading && (
           <div style={{ textAlign: 'center', padding: '32px', color: 'rgba(255,255,255,0.4)' }}>
-            ✨ 分析中…
+            {t("✨ 分析中…")}
           </div>
         )}
 
@@ -204,7 +205,7 @@ export default function EngineeringPage({ onBack, user, token }) {
                 background: 'rgba(90,200,250,0.07)', border: '1px solid rgba(90,200,250,0.15)',
               }}>
                 <div style={{ fontSize: 12, color: 'rgba(90,200,250,0.7)', fontWeight: 700, marginBottom: 8, letterSpacing: '0.04em' }}>
-                  ✨ 今日聚焦维度
+                  {t("✨ 今日聚焦维度")}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 28 }}>
@@ -246,21 +247,21 @@ export default function EngineeringPage({ onBack, user, token }) {
                   marginTop: 8, padding: '8px 12px', background: 'rgba(255,255,255,0.04)',
                   borderRadius: 10, fontSize: 13, color: 'rgba(255,255,255,0.6)',
                 }}>
-                  💡 今日可行一步 — {formation.stage_action}
+                  {t("💡 今日可行一步 —")} {formation.stage_action}
                 </div>
               </div>
             )}
 
             {/* 8 dimensions overview */}
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10, letterSpacing: '0.04em' }}>
-              📊 八维灵命评估
+              {t("📊 八维灵命评估")}
             </div>
             <div style={{
               padding: '12px 14px', borderRadius: 14, marginBottom: 14,
               background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
               fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7,
             }}>
-              评分来自你的情绪打卡、灵修日记和属灵操练记录。每次互动后自动更新，帮助你看见灵命成长的轨迹。
+              {t("评分来自你的情绪打卡、灵修日记和属灵操练记录。每次互动后自动更新，帮助你看见灵命成长的轨迹。")}
             </div>
             {Object.entries(DIM_META).map(([key, meta]) => {
               // We don't have individual scores here, show placeholder bars based on focus_dim
@@ -276,7 +277,7 @@ export default function EngineeringPage({ onBack, user, token }) {
               background: 'rgba(52,199,89,0.06)', border: '1px solid rgba(52,199,89,0.15)',
               fontSize: 12, color: 'rgba(52,199,89,0.7)', textAlign: 'center',
             }}>
-              💬 持续使用灵修日记与情绪打卡，系统会更准确地评估你的灵命维度
+              {t("💬 持续使用灵修日记与情绪打卡，系统会更准确地评估你的灵命维度")}
             </div>
           </>
         )}

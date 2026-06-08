@@ -15,15 +15,16 @@ import PatternInsightCard from './PatternInsightCard'
 import IdolMonitorCard from './IdolMonitorCard'
 import { C, S } from './guardianStyles'
 import './guardian.css'
+import { t } from '../../i18n/runtime'
 
 const TABS = [
-  { key: 'chat', label: '聊天', icon: '💬' },
-  { key: 'emotion', label: '心情', icon: '🫶' },
-  { key: 'spiritual', label: '灵程', icon: '🌿' },
-  { key: 'prayer', label: '祷告', icon: '🙏' },
-  { key: 'devotion', label: '灵修', icon: '📖' },
-  { key: 'reflection', label: '镜子', icon: '🪞' },
-  { key: 'memory', label: '记忆', icon: '💭' },
+  { key: 'chat', label: t("聊天"), icon: '💬' },
+  { key: 'emotion', label: t("心情"), icon: '🫶' },
+  { key: 'spiritual', label: t("灵程"), icon: '🌿' },
+  { key: 'prayer', label: t("祷告"), icon: '🙏' },
+  { key: 'devotion', label: t("灵修"), icon: '📖' },
+  { key: 'reflection', label: t("镜子"), icon: '🪞' },
+  { key: 'memory', label: t("记忆"), icon: '💭' },
 ]
 
 const TAB_TO_WIDGET_MODE = {
@@ -43,10 +44,10 @@ function ReflectionPanel() {
 
   return (
     <div style={{ padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h3 style={S.sectionTitle}>🪞 行为模式与心的方向</h3>
+      <h3 style={S.sectionTitle}>{t("🪞 行为模式与心的方向")}</h3>
       {patterns.length === 0 && idolSignals.length === 0 && (
         <p style={{ ...S.dimText, textAlign: 'center', padding: '12px 0' }}>
-          还没有足够的觉察。继续记录心情，我会温柔地陪你看见自己。
+          {t("还没有足够的觉察。继续记录心情，我会温柔地陪你看见自己。")}
         </p>
       )}
       {patterns.map((p) => <PatternInsightCard key={p.id} pattern={p} />)}
@@ -144,13 +145,13 @@ export default function GuardianWidget() {
             <GuardianSprite state={spriteState} size={36} />
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 13.5, fontWeight: 600, color: C.text, margin: 0 }}>
-                {profile?.name || '属灵守护者'}
+                {profile?.name || t("属灵守护者")}
               </p>
               <p style={{ fontSize: 11, color: C.dim, margin: 0 }}>
-                {profile ? `${profile.stageEmoji} ${profile.stageZh} · ` : ''}同行者，不是替代者
+                {profile ? `${profile.stageEmoji} ${profile.stageZh} · ` : ''}{t("同行者，不是替代者")}
               </p>
             </div>
-            <button type="button" data-no-drag onClick={() => setWidgetMode('collapsed')} aria-label="收起"
+            <button type="button" data-no-drag onClick={() => setWidgetMode('collapsed')} aria-label={t("收起")}
               style={{ background: 'none', border: 'none', cursor: 'pointer',
                 color: C.dim, fontSize: 14, padding: '4px 8px' }}>─</button>
           </div>
@@ -190,7 +191,7 @@ export default function GuardianWidget() {
       )}
 
       {/* 小鸽子（可拖动，点按开合） */}
-      <button type="button" aria-label="打开属灵守护者（按住可拖动）"
+      <button type="button" aria-label={t("打开属灵守护者（按住可拖动）")}
         onClick={() => { if (movedRef.current) { movedRef.current = false; return } setWidgetMode(expanded ? 'collapsed' : 'expanded') }}
         onPointerDown={onSpritePointerDown}
         onPointerMove={onSpritePointerMove}

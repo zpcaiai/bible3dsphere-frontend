@@ -1,3 +1,4 @@
+import { t } from './i18n/runtime'
 /**
  * PlanetHome — 属灵星球 · 成长地图（IA v1，增量、不删现有功能）
  * 把愿景的五大陆作为「人格塑造路径」的导航，路由到已有功能。
@@ -5,41 +6,41 @@
  */
 const CONTINENTS = [
   {
-    icon: '🧭', name: '认识自己', en: 'Self Discovery', color: '#da77f2',
-    q: '我为什么软弱、焦虑、重复跌倒？',
-    by: '钟马田 · 看见真实的自己',
-    chips: [['偶像监测', 'idolatry'], ['低潮体检', 'checkup'], ['今日省察', 'examen']],
+    icon: '🧭', name: t("认识自己"), en: 'Self Discovery', color: '#da77f2',
+    q: t("我为什么软弱、焦虑、重复跌倒？"),
+    by: t("钟马田 · 看见真实的自己"),
+    chips: [[t("偶像监测"), 'idolatry'], [t("低潮体检"), 'checkup'], [t("今日省察"), 'examen']],
   },
   {
-    icon: '✝️', name: '回到福音', en: 'Gospel Center', color: '#ffd43b',
-    q: '我的伤口，福音如何回应？',
-    by: '从情绪挖到不信，再挖回基督',
-    chips: [['福音诊断室', 'gospel'], ['决策辨识', 'discern'], ['属灵牧者对话', 'agent']],
+    icon: '✝️', name: t("回到福音"), en: 'Gospel Center', color: '#ffd43b',
+    q: t("我的伤口，福音如何回应？"),
+    by: t("从情绪挖到不信，再挖回基督"),
+    chips: [[t("福音诊断室"), 'gospel'], [t("决策辨识"), 'discern'], [t("属灵牧者对话"), 'agent']],
   },
   {
-    icon: '🌅', name: '与神同行', en: 'Walk With God', color: '#34c759',
-    q: '今天如何亲近基督？',
-    by: '司布真 · 看见荣耀的基督',
-    chips: [['灵修操练', 'hub'], ['养料库', 'fuel']],
-    note: '清晨甘露 · 读经计划 · 背经，都在底部「灵修」里',
+    icon: '🌅', name: t("与神同行"), en: 'Walk With God', color: '#34c759',
+    q: t("今天如何亲近基督？"),
+    by: t("司布真 · 看见荣耀的基督"),
+    chips: [[t("灵修操练"), 'hub'], [t("养料库"), 'fuel']],
+    note: t("清晨甘露 · 读经计划 · 背经，都在底部「灵修」里"),
   },
   {
-    icon: '🕯️', name: '等候上帝', en: 'Waiting for God', color: '#5ac8fa',
-    q: '我在等什么？神在等待中塑造我什么？',
-    by: '从等待戈多，到等候上帝',
-    chips: [['等候之路', 'waiting']],
+    icon: '🕯️', name: t("等候上帝"), en: 'Waiting for God', color: '#5ac8fa',
+    q: t("我在等什么？神在等待中塑造我什么？"),
+    by: t("从等待戈多，到等候上帝"),
+    chips: [[t("等候之路"), 'waiting']],
   },
   {
-    icon: '🗺️', name: '天路客', en: 'Pilgrim Journey', color: '#51cf66',
-    q: '此刻，我走在天路历程的哪一处？',
-    by: '本仁《天路历程》· 据你的状态定位',
-    chips: [['进入天路历程', 'pilgrim']],
+    icon: '🗺️', name: t("天路客"), en: 'Pilgrim Journey', color: '#51cf66',
+    q: t("此刻，我走在天路历程的哪一处？"),
+    by: t("本仁《天路历程》· 据你的状态定位"),
+    chips: [[t("进入天路历程"), 'pilgrim']],
   },
   {
-    icon: '✦', name: '人格塑造', en: 'Formation', color: '#a78bfa',
-    q: '我今天，更像耶稣了吗？',
-    by: '信 · 望 · 爱 · 谦卑 · 顺服',
-    chips: [['信望爱星系', 'fhl'], ['本周牧养小结', '_close'], ['八维概览', '_close']],
+    icon: '✦', name: t("人格塑造"), en: 'Formation', color: '#a78bfa',
+    q: t("我今天，更像耶稣了吗？"),
+    by: t("信 · 望 · 爱 · 谦卑 · 顺服"),
+    chips: [[t("信望爱星系"), 'fhl'], [t("本周牧养小结"), '_close'], [t("八维概览"), '_close']],
   },
 ]
 
@@ -49,14 +50,14 @@ export default function PlanetHome({ onClose, go }) {
     <div style={{ width: '100%', height: '100%', background: 'radial-gradient(circle at 50% 12%, rgba(139,92,246,0.18), #05060c 60%)', color: '#fff', overflowY: 'auto', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, position: 'sticky', top: 0, zIndex: 100, background: 'rgba(5,6,12,0.7)', backdropFilter: 'blur(10px)' }}>
         <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: 36, height: 36, color: '#fff', fontSize: 20, cursor: 'pointer' }}>‹</button>
-        <div><div style={{ fontSize: 17, fontWeight: 600 }}>属灵星球</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>你不是在课程里学习，而是在一颗星球上成长</div></div>
+        <div><div style={{ fontSize: 17, fontWeight: 600 }}>{t("属灵星球")}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>{t("你不是在课程里学习，而是在一颗星球上成长")}</div></div>
       </div>
 
       <div style={{ textAlign: 'center', padding: '8px 16px 16px' }}>
         <div style={{ fontSize: 46 }}>🪐</div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 420, margin: '6px auto 0' }}>
-          状态 → 识别 → 引导 → 行动 → 复盘 → 人格形成。<br />一条把你塑造得越来越像基督的成长路径。
+          {t("状态 → 识别 → 引导 → 行动 → 复盘 → 人格形成。")}<br />{t("一条把你塑造得越来越像基督的成长路径。")}
         </div>
       </div>
 
@@ -80,7 +81,7 @@ export default function PlanetHome({ onClose, go }) {
           </div>
         ))}
         <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.3)', textAlign: 'center', lineHeight: 1.7, marginTop: 4 }}>
-          内容只是燃料，养料库随你的状态被自动调用。<br />愿你在这颗星球上，越来越有信、有望、有爱，越来越像祂。
+          {t("内容只是燃料，养料库随你的状态被自动调用。")}<br />{t("愿你在这颗星球上，越来越有信、有望、有爱，越来越像祂。")}
         </div>
       </div>
     </div>

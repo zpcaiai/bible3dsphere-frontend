@@ -5,6 +5,7 @@ import { fetchSermonJournals, saveSermonJournal, deleteSermonJournal, toggleShar
 import usePullToRefresh from './hooks/usePullToRefresh'
 import { TTSFullBar } from './useGlobalAudio.jsx'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
+import { t } from './i18n/runtime'
 
 
 function toISODate(d) {
@@ -92,12 +93,12 @@ function emptyJournal() {
 }
 
 const SECTION_CONFIG = [
-  { key: 'summary',      icon: '📖', label: '信息主要内容',   placeholder: '本次信息的核心内容、主题经文、主要论点…', type: 'textarea', rows: 4 },
-  { key: 'bibleStudy',   icon: '🔍', label: '查经心得',        placeholder: '本周围绕信息经文的个人查经反思、新发现…', type: 'textarea', rows: 3 },
-  { key: 'reflection',   icon: '🪞', label: '行道反思',        placeholder: '本周实践行道的过程中，哪里做到了？哪里仍然挣扎？', type: 'textarea', rows: 3 },
-  { key: 'lesson',       icon: '🌱', label: '生命功课',        placeholder: '神借这段经历在我生命中刻下的功课…', type: 'textarea', rows: 3 },
-  { key: 'conclusion',   icon: '⚖️',  label: '总结得失',        placeholder: '这一周的得与失，坦诚面对自己…', type: 'textarea', rows: 3 },
-  { key: 'encouragement',icon: '🌟', label: '鼓励与感恩',      placeholder: '一句话鼓励自己，或记录一个感恩的时刻…', type: 'textarea', rows: 2 },
+  { key: 'summary',      icon: '📖', label: t("信息主要内容"),   placeholder: t("本次信息的核心内容、主题经文、主要论点…"), type: 'textarea', rows: 4 },
+  { key: 'bibleStudy',   icon: '🔍', label: t("查经心得"),        placeholder: t("本周围绕信息经文的个人查经反思、新发现…"), type: 'textarea', rows: 3 },
+  { key: 'reflection',   icon: '🪞', label: t("行道反思"),        placeholder: t("本周实践行道的过程中，哪里做到了？哪里仍然挣扎？"), type: 'textarea', rows: 3 },
+  { key: 'lesson',       icon: '🌱', label: t("生命功课"),        placeholder: t("神借这段经历在我生命中刻下的功课…"), type: 'textarea', rows: 3 },
+  { key: 'conclusion',   icon: '⚖️',  label: t("总结得失"),        placeholder: t("这一周的得与失，坦诚面对自己…"), type: 'textarea', rows: 3 },
+  { key: 'encouragement',icon: '🌟', label: t("鼓励与感恩"),      placeholder: t("一句话鼓励自己，或记录一个感恩的时刻…"), type: 'textarea', rows: 2 },
 ]
 
 const ADMIN_EMAIL = 'zpclord@sina.com'
@@ -124,18 +125,18 @@ export default function SermonJournalPage({ user, token, onBack }) {
       if (j[key]?.trim()) t += `${label}：${j[key]}。`
     })
     if (j.questions?.some(q => q.trim())) {
-      t += '思考题：'
+      t += t("思考题：")
       j.questions.filter(q => q.trim()).forEach((q, i) => { t += `第${i + 1}题，${q}。` })
     }
     if (j.practices?.some(p => p.trim())) {
-      t += '实践计划：'
+      t += t("实践计划：")
       j.practices.filter(p => p.trim()).forEach((p, i) => { t += `第${i + 1}项，${p}。` })
     }
     return t
   }
 
   function handleSpeak() {
-    if (!window.speechSynthesis) { alert('浏览器不支持语音播放'); return }
+    if (!window.speechSynthesis) { alert(t("浏览器不支持语音播放")); return }
     if (ttsState === 'playing') {
       window.speechSynthesis.pause()
       setTtsState('paused')
@@ -147,7 +148,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
       return
     }
     const text = buildSpeechText(current)
-    if (!text) { alert('没有可播放的内容'); return }
+    if (!text) { alert(t("没有可播放的内容")); return }
     window.speechSynthesis.cancel()
     const utter = new SpeechSynthesisUtterance(text)
     utter.lang = 'zh-CN'
@@ -172,7 +173,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
       const res = await toggleShareSermonJournal(journal.id, token)
       setJournals(prev => prev.map(j => j.id === journal.id ? { ...j, shared: res.shared } : j))
     } catch (err) {
-      alert(err.message || '操作失败，请重试')
+      alert(err.message || t("操作失败，请重试"))
     }
   }
 
@@ -231,7 +232,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
       }
     } catch (e) {
       console.error('Failed to create journal:', e)
-      alert('创建失败: ' + e.message)
+      alert(t("创建失败: ") + e.message)
     }
   }
 
@@ -308,7 +309,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
     } catch (e) {
       console.error('Failed to save:', e)
       setSaveStatus('')
-      alert('保存失败: ' + e.message)
+      alert(t("保存失败: ") + e.message)
     }
   }
 
@@ -316,7 +317,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
     if (!current) return
     let content = `主日信息\n\n`
     content += `日期：${current.date}\n`
-    content += `讲题：${current.title || '（未填写）'}\n`
+    content += `讲题：${current.title || t("（未填写）")}\n`
     if (current.scripture) content += `经文：${current.scripture}\n`
     if (current.preacher) content += `讲道者：${current.preacher}\n`
     content += `\n`
@@ -354,7 +355,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
     const now = new Date()
     const pad = (n) => String(n).padStart(2, '0')
     const datetime = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-    const title = (current.title || '主日信息').replace(/[\\/:*?"<>|]/g, '')
+    const title = (current.title || t("主日信息")).replace(/[\\/:*?"<>|]/g, '')
     a.download = `${title}_${datetime}.txt`
     a.click()
     URL.revokeObjectURL(url)
@@ -385,13 +386,13 @@ export default function SermonJournalPage({ user, token, onBack }) {
     const now = new Date()
     const pad = (n) => String(n).padStart(2, '0')
     const datetime = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-    const filename = `${(current.title || '主日信息').replace(/[\\/:*?"<>|]/g, '')}_${datetime}.pdf`
+    const filename = `${(current.title || t("主日信息")).replace(/[\\/:*?"<>|]/g, '')}_${datetime}.pdf`
 
     try {
       await addBlock(`
         <div style="text-align:center;margin-bottom:10px;border-bottom:1px solid #2e3c52;padding-bottom:10px;">
           <h1 style="color:#007aff;font-size:22px;margin:0 0 6px 0;">主日信息</h1>
-          <div style="color:#9a9a9a;font-size:13px;">日期：${escapeHtml(current.date)}${current.preacher ? ' | 讲道者：' + escapeHtml(current.preacher) : ''}</div>
+          <div style="color:#9a9a9a;font-size:13px;">日期：${escapeHtml(current.date)}${current.preacher ? t(" | 讲道者：") + escapeHtml(current.preacher) : ''}</div>
         </div>
       `)
       if (current.title) {
@@ -440,7 +441,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
         pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
       }
       pdf.save(filename)
-    } catch (err) { console.error('PDF generation failed:', err); alert('PDF 生成失败，请重试') }
+    } catch (err) { console.error('PDF generation failed:', err); alert(t("PDF 生成失败，请重试")) }
     finally { document.body.removeChild(el) }
   }
 
@@ -458,17 +459,17 @@ export default function SermonJournalPage({ user, token, onBack }) {
     <div className="sj-page">
       {/* Header */}
       <header className="sj-header">
-        <button className="checkin-back-btn" onClick={view === 'list' ? onBack : () => setView('list')} aria-label="返回">
+        <button className="checkin-back-btn" onClick={view === 'list' ? onBack : () => setView('list')} aria-label={t("返回")}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div className="sj-header-center">
           <div className="sj-title">
-            {view === 'list' ? '📖 主日信息' : view === 'edit' ? '✏️ 编辑信息' : '📖 主日信息'}
+            {view === 'list' ? t("📖 主日信息") : view === 'edit' ? t("✏️ 编辑信息") : t("📖 主日信息")}
           </div>
           {view === 'list' && (
-            <div className="sj-subtitle">{journals.length > 0 ? `共 ${journals.length} 篇` : '记录你的属灵成长'}</div>
+            <div className="sj-subtitle">{journals.length > 0 ? `共 ${journals.length} 篇` : t("记录你的属灵成长")}</div>
           )}
           {view === 'edit' && current && (
             <div className="sj-progress-bar">
@@ -478,7 +479,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
         </div>
         {view === 'list' ? (
           isAdmin && (
-            <button className="sj-new-btn" onClick={newJournal} title="新建信息">
+            <button className="sj-new-btn" onClick={newJournal} title={t("新建信息")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 5v14M5 12h14" />
               </svg>
@@ -488,19 +489,19 @@ export default function SermonJournalPage({ user, token, onBack }) {
           view === 'edit' ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {saveStatus === 'saving' && (
-                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>保存中…</span>
+                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>{t("保存中…")}</span>
               )}
               {saveStatus === 'saved' && (
-                <span style={{ fontSize: '12px', color: '#34c759' }}>✓ 已保存</span>
+                <span style={{ fontSize: '12px', color: '#34c759' }}>{t("✓ 已保存")}</span>
               )}
-              <button className="sj-new-btn" onClick={handleSave} title="保存">
+              <button className="sj-new-btn" onClick={handleSave} title={t("保存")}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                   <polyline points="17 21 17 13 7 13 7 21"/>
                   <polyline points="7 3 7 8 15 8"/>
                 </svg>
               </button>
-              <button className="sj-new-btn" onClick={() => setView('detail')} title="预览">
+              <button className="sj-new-btn" onClick={() => setView('detail')} title={t("预览")}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                 </svg>
@@ -508,7 +509,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             </div>
           ) : (
             isAdmin && (
-              <button className="sj-new-btn" onClick={() => setView('edit')} title="编辑">
+              <button className="sj-new-btn" onClick={() => setView('edit')} title={t("编辑")}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
@@ -525,11 +526,11 @@ export default function SermonJournalPage({ user, token, onBack }) {
           {journals.length === 0 ? (
             <div className="sj-empty">
               <div className="sj-empty-icon">📖</div>
-              <div className="sj-empty-title">还没有主日信息</div>
-              <div className="sj-empty-sub">{isAdmin ? '点击右上角 + 开始记录本周信息' : '暂无主日信息'}</div>
+              <div className="sj-empty-title">{t("还没有主日信息")}</div>
+              <div className="sj-empty-sub">{isAdmin ? t("点击右上角 + 开始记录本周信息") : t("暂无主日信息")}</div>
               {isAdmin && (
                 <button className="checkin-submit-btn" style={{ maxWidth: 220, marginTop: 20 }} onClick={newJournal}>
-                  ➕ 新建信息
+                  {t("➕ 新建信息")}
                 </button>
               )}
             </div>
@@ -546,7 +547,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                     return Math.round(((filled + qFilled + pFilled) / (fields.length + 2)) * 100)
                   })()}%</div>
                 </div>
-                <div className="sj-card-title">{j.title || '（未填写讲题）'}</div>
+                <div className="sj-card-title">{j.title || t("（未填写讲题）")}</div>
                 {j.scripture && <div className="sj-card-scripture">📜 {j.scripture}</div>}
                 {j.preacher && <div className="sj-card-preacher">🎙 {j.preacher}</div>}
                 {j.summary && <div className="sj-card-preview">{j.summary.slice(0, 60)}{j.summary.length > 60 ? '…' : ''}</div>}
@@ -573,13 +574,13 @@ export default function SermonJournalPage({ user, token, onBack }) {
                         <><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>
                       )}
                     </svg>
-                    {j.shared ? '撤回' : '分享'}
+                    {j.shared ? t("撤回") : t("分享")}
                   </button>
                   {isAdmin && (
                     <>
                       <button
                         onClick={() => openEdit(j.id)}
-                        title="编辑"
+                        title={t("编辑")}
                         style={{
                           padding: '4px 10px',
                           fontSize: '11px',
@@ -596,11 +597,11 @@ export default function SermonJournalPage({ user, token, onBack }) {
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                         </svg>
-                        编辑
+                        {t("编辑")}
                       </button>
                       <button
-                        onClick={() => { if (window.confirm('确定删除此信息？')) deleteJournal(j.id) }}
-                        title="删除"
+                        onClick={() => { if (window.confirm(t("确定删除此信息？"))) deleteJournal(j.id) }}
+                        title={t("删除")}
                         style={{
                           padding: '4px 10px',
                           fontSize: '11px',
@@ -617,7 +618,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                         </svg>
-                        删除
+                        {t("删除")}
                       </button>
                     </>
                   )}
@@ -634,15 +635,15 @@ export default function SermonJournalPage({ user, token, onBack }) {
           <div className="sj-form">
             {/* Meta info */}
             <section className="sj-section glass">
-              <div className="sj-section-title">🗓 主日基本信息</div>
+              <div className="sj-section-title">{t("🗓 主日基本信息")}</div>
               <div className="sj-field-group">
                 <div className="sj-field">
-                  <label className="sj-label">主日日期</label>
+                  <label className="sj-label">{t("主日日期")}</label>
                   <div className="sj-date-picker" style={{ flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                     <button
                       className="sj-date-btn"
                       onClick={() => updateField('date', getNextSunday(current.date))}
-                      title="下一周"
+                      title={t("下一周")}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polyline points="18 15 12 9 6 15" />
@@ -654,7 +655,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                     <button
                       className="sj-date-btn"
                       onClick={() => updateField('date', getPreviousSunday(current.date))}
-                      title="上一周"
+                      title={t("上一周")}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polyline points="6 9 12 15 18 9" />
@@ -663,30 +664,30 @@ export default function SermonJournalPage({ user, token, onBack }) {
                   </div>
                 </div>
                 <div className="sj-field">
-                  <label className="sj-label">讲题</label>
+                  <label className="sj-label">{t("讲题")}</label>
                   <input
                     className="sj-input"
                     value={current.title}
                     onChange={e => updateField('title', e.target.value)}
-                    placeholder="本次信息的题目"
+                    placeholder={t("本次信息的题目")}
                   />
                 </div>
                 <div className="sj-field">
-                  <label className="sj-label">主要经文</label>
+                  <label className="sj-label">{t("主要经文")}</label>
                   <input
                     className="sj-input"
                     value={current.scripture}
                     onChange={e => updateField('scripture', e.target.value)}
-                    placeholder="如：约翰福音 15:1-17"
+                    placeholder={t("如：约翰福音 15:1-17")}
                   />
                 </div>
                 <div className="sj-field">
-                  <label className="sj-label">讲道者</label>
+                  <label className="sj-label">{t("讲道者")}</label>
                   <input
                     className="sj-input"
                     value={current.preacher}
                     onChange={e => updateField('preacher', e.target.value)}
-                    placeholder="牧师 / 传道人姓名"
+                    placeholder={t("牧师 / 传道人姓名")}
                   />
                 </div>
               </div>
@@ -708,7 +709,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
 
             {/* Questions */}
             <section className="sj-section glass">
-              <div className="sj-section-title">💬 思考题</div>
+              <div className="sj-section-title">{t("💬 思考题")}</div>
               <div className="sj-list-fields">
                 {current.questions.map((q, i) => (
                   <div key={i} className="sj-list-row">
@@ -725,13 +726,13 @@ export default function SermonJournalPage({ user, token, onBack }) {
                     )}
                   </div>
                 ))}
-                <button className="sj-add-btn" onClick={() => addListItem('questions')}>➕ 思考题</button>
+                <button className="sj-add-btn" onClick={() => addListItem('questions')}>{t("➕ 思考题")}</button>
               </div>
             </section>
 
             {/* Practices */}
             <section className="sj-section glass">
-              <div className="sj-section-title">🚶 本周实践行道</div>
+              <div className="sj-section-title">{t("🚶 本周实践行道")}</div>
               <div className="sj-list-fields">
                 {current.practices.map((p, i) => (
                   <div key={i} className="sj-list-row">
@@ -747,7 +748,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                     )}
                   </div>
                 ))}
-                <button className="sj-add-btn" onClick={() => addListItem('practices')}>➕ 实践</button>
+                <button className="sj-add-btn" onClick={() => addListItem('practices')}>{t("➕ 实践")}</button>
               </div>
             </section>
 
@@ -779,14 +780,14 @@ export default function SermonJournalPage({ user, token, onBack }) {
                       <polyline points="23 4 23 10 17 10"/>
                       <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                     </svg>
-                    保存中…
+                    {t("保存中…")}
                   </>
                 ) : saveStatus === 'saved' ? (
                   <>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
-                    已保存
+                    {t("已保存")}
                   </>
                 ) : (
                   <>
@@ -795,14 +796,14 @@ export default function SermonJournalPage({ user, token, onBack }) {
                       <polyline points="17 21 17 13 7 13 7 21"/>
                       <polyline points="7 3 7 8 15 8"/>
                     </svg>
-                    保存
+                    {t("保存")}
                   </>
                 )}
               </button>
             </div>
 
             <div className="sj-export-bar">
-              <button className="sj-export-btn-bottom" onClick={exportToTxt} title="导出TXT">
+              <button className="sj-export-btn-bottom" onClick={exportToTxt} title={t("导出TXT")}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -812,7 +813,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                 </svg>
                 TXT
               </button>
-              <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, exportToPdf, "生成 PDF 中…", "✅ PDF 已导出")} title="导出PDF">
+              <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, exportToPdf, t("生成 PDF 中…"), t("✅ PDF 已导出"))} title={t("导出PDF")}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -834,18 +835,18 @@ export default function SermonJournalPage({ user, token, onBack }) {
             {/* Title block */}
             <div className="sj-detail-hero glass">
               <div className="sj-detail-date">{current.date}</div>
-              <div className="sj-detail-title">{current.title || '（未填写讲题）'}</div>
+              <div className="sj-detail-title">{current.title || t("（未填写讲题）")}</div>
               {current.scripture && <div className="sj-detail-scripture">📜 {current.scripture}</div>}
               {current.preacher && <div className="sj-detail-preacher">🎙 {current.preacher}</div>}
               <div className="sj-detail-progress-wrap">
                 <div className="sj-detail-progress-bar">
                   <div className="sj-progress-fill" style={{ width: `${progress}%` }} />
                 </div>
-                <span className="sj-detail-progress-label">完成度 {progress}%</span>
+                <span className="sj-detail-progress-label">{t("完成度")} {progress}%</span>
               </div>
             </div>
 
-            <TTSFullBar buildText={() => buildSpeechText(current)} label="完整播放" />
+            <TTSFullBar buildText={() => buildSpeechText(current)} label={t("完整播放")} />
 
             {SECTION_CONFIG.map(({ key, icon, label }) => current[key]?.trim() ? (
               <div key={key} className="sj-detail-block glass">
@@ -856,7 +857,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
 
             {current.questions.some(q => q.trim()) && (
               <div className="sj-detail-block glass">
-                <div className="sj-detail-block-title">💬 思考题</div>
+                <div className="sj-detail-block-title">{t("💬 思考题")}</div>
                 {current.questions.filter(q => q.trim()).map((q, i) => (
                   <div key={i} className="sj-detail-q-row">
                     <span className="sj-detail-q-num">Q{i + 1}</span>
@@ -868,7 +869,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
 
             {current.practices.some(p => p.trim()) && (
               <div className="sj-detail-block glass">
-                <div className="sj-detail-block-title">🚶 本周实践行道</div>
+                <div className="sj-detail-block-title">{t("🚶 本周实践行道")}</div>
                 {current.practices.filter(p => p.trim()).map((p, i) => (
                   <div key={i} className="sj-detail-practice-row">
                     <span className="sj-detail-check">○</span>
@@ -886,7 +887,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             )}
 
             <div className="sj-export-bar">
-              <button className="sj-export-btn-bottom" onClick={exportToTxt} title="导出TXT">
+              <button className="sj-export-btn-bottom" onClick={exportToTxt} title={t("导出TXT")}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
@@ -896,7 +897,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                 </svg>
                 TXT
               </button>
-              <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, exportToPdf, "生成 PDF 中…", "✅ PDF 已导出")} title="导出PDF">
+              <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, exportToPdf, t("生成 PDF 中…"), t("✅ PDF 已导出"))} title={t("导出PDF")}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>

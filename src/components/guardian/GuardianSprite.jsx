@@ -2,6 +2,7 @@
 // 真实鸽子位图 + CSS 动画光层：柔光晕、光环呼吸、星尘环、celebrating 撒光点
 // 状态：idle | listening | comforting | praying | celebrating | resting
 import './guardian.css'
+import { t } from '../../i18n/runtime'
 
 const SPARKLES = [0, 60, 120, 180, 240, 300]
 const DOVE_SRC = '/guardian/dove.png'
@@ -44,7 +45,7 @@ export default function GuardianSprite({ state = 'idle', size = 64 }) {
       {/* 和平鸽本体（保留 body 类的轻微浮动/状态动画） */}
       <img
         src={DOVE_SRC}
-        alt="守护者和平鸽"
+        alt={t("守护者和平鸽")}
         draggable="false"
         className={`guardian-body guardian-body--${state}`}
         style={{

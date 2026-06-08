@@ -2,17 +2,18 @@ import { useState } from 'react'
 import { checkinEmotion } from './guardianApi'
 import { useGuardianStore } from './guardianStore'
 import { C, S } from './guardianStyles'
+import { t } from '../../i18n/runtime'
 
 const EMOTIONS = [
-  { key: 'joy', label: '喜乐', emoji: '😊' },
-  { key: 'peace', label: '平安', emoji: '😌' },
-  { key: 'gratitude', label: '感恩', emoji: '🙏' },
-  { key: 'sadness', label: '难过', emoji: '😢' },
-  { key: 'anxiety', label: '焦虑', emoji: '😰' },
-  { key: 'anger', label: '愤怒', emoji: '😠' },
-  { key: 'shame', label: '自责', emoji: '😞' },
-  { key: 'loneliness', label: '孤单', emoji: '🫥' },
-  { key: 'tired', label: '疲惫', emoji: '😮‍💨' },
+  { key: 'joy', label: t("喜乐"), emoji: '😊' },
+  { key: 'peace', label: t("平安"), emoji: '😌' },
+  { key: 'gratitude', label: t("感恩"), emoji: '🙏' },
+  { key: 'sadness', label: t("难过"), emoji: '😢' },
+  { key: 'anxiety', label: t("焦虑"), emoji: '😰' },
+  { key: 'anger', label: t("愤怒"), emoji: '😠' },
+  { key: 'shame', label: t("自责"), emoji: '😞' },
+  { key: 'loneliness', label: t("孤单"), emoji: '🫥' },
+  { key: 'tired', label: t("疲惫"), emoji: '😮‍💨' },
 ]
 
 export default function EmotionCheckIn({ onDone }) {
@@ -33,7 +34,7 @@ export default function EmotionCheckIn({ onDone }) {
       refresh()
       setTimeout(() => onDone?.(), 900)
     } catch (err) {
-      setError(err.message || '保存失败')
+      setError(err.message || t("保存失败"))
     } finally {
       setSaving(false)
     }
@@ -44,14 +45,14 @@ export default function EmotionCheckIn({ onDone }) {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 8, padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 30 }}>🕊️</div>
-        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>已经记下了。谢谢你诚实地面对自己的感受。</p>
+        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>{t("已经记下了。谢谢你诚实地面对自己的感受。")}</p>
       </div>
     )
   }
 
   return (
     <div style={{ padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <h3 style={S.sectionTitle}>此刻，你的心情更接近——</h3>
+      <h3 style={S.sectionTitle}>{t("此刻，你的心情更接近——")}</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
         {EMOTIONS.map((e) => (
           <button key={e.key} type="button" onClick={() => setSelected(e.key)}
@@ -68,20 +69,20 @@ export default function EmotionCheckIn({ onDone }) {
       </div>
 
       <div>
-        <label style={S.dimText}>强度：{intensity}/10</label>
+        <label style={S.dimText}>{t("强度：")}{intensity}/10</label>
         <input type="range" min={1} max={10} value={intensity}
           onChange={(e) => setIntensity(Number(e.target.value))}
           style={{ width: '100%', accentColor: C.flame }} />
       </div>
 
-      <textarea value={note} rows={2} placeholder="（可选）是什么带来了这个感受？"
+      <textarea value={note} rows={2} placeholder={t("（可选）是什么带来了这个感受？")}
         onChange={(e) => setNote(e.target.value)} style={S.input} />
 
       {error && <p style={{ ...S.dimText, color: '#ff9f8a', margin: 0 }}>{error}</p>}
 
       <button type="button" onClick={submit} disabled={!selected || saving}
         style={{ ...S.primaryBtn, opacity: !selected || saving ? 0.4 : 1 }}>
-        {saving ? '记录中…' : '记录这个感受'}
+        {saving ? t("记录中…") : t("记录这个感受")}
       </button>
     </div>
   )

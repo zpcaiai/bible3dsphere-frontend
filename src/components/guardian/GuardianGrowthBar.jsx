@@ -1,6 +1,7 @@
 import { useGuardianStore } from './guardianStore'
 import { C, S } from './guardianStyles'
 import './guardian.css'
+import { t } from '../../i18n/runtime'
 
 // 成长阶段 + 信望爱三维度（信心之火 / 盼望之树 / 爱之河流）
 export default function GuardianGrowthBar() {
@@ -8,9 +9,9 @@ export default function GuardianGrowthBar() {
   const stateView = useGuardianStore((s) => s.stateView)
 
   const dims = [
-    { label: '信心之火', emoji: '🔥', value: stateView?.faithLevel ?? 5, color: '#ffa94d' },
-    { label: '盼望之树', emoji: '🌳', value: stateView?.hopeLevel ?? 5, color: '#69db7c' },
-    { label: '爱之河流', emoji: '🌊', value: stateView?.loveLevel ?? 5, color: '#74c0fc' },
+    { label: t("信心之火"), emoji: '🔥', value: stateView?.faithLevel ?? 5, color: '#ffa94d' },
+    { label: t("盼望之树"), emoji: '🌳', value: stateView?.hopeLevel ?? 5, color: '#69db7c' },
+    { label: t("爱之河流"), emoji: '🌊', value: stateView?.loveLevel ?? 5, color: '#74c0fc' },
   ]
 
   const track = { height: 6, borderRadius: 999, background: 'rgba(42,51,88,0.5)', overflow: 'hidden' }
@@ -18,9 +19,9 @@ export default function GuardianGrowthBar() {
   return (
     <div style={{ ...S.card, display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={S.dimText}>成长阶段</span>
+        <span style={S.dimText}>{t("成长阶段")}</span>
         <span style={{ fontSize: 13.5, color: C.text }}>
-          {profile ? `${profile.stageEmoji} ${profile.stageZh}` : '🌱 种子'}
+          {profile ? `${profile.stageEmoji} ${profile.stageZh}` : t("🌱 种子")}
         </span>
       </div>
       <div style={track}>

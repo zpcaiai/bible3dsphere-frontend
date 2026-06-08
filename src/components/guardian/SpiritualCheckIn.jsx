@@ -2,19 +2,20 @@ import { useState } from 'react'
 import { checkinSpiritual } from './guardianApi'
 import { useGuardianStore } from './guardianStore'
 import { C, S } from './guardianStyles'
+import { t } from '../../i18n/runtime'
 
 const STATES = [
-  { key: 'growing', label: '在成长' },
-  { key: 'steady', label: '平稳' },
-  { key: 'seeking', label: '在寻求' },
-  { key: 'dry', label: '有些干渴' },
-  { key: 'struggling', label: '在挣扎' },
+  { key: 'growing', label: t("在成长") },
+  { key: 'steady', label: t("平稳") },
+  { key: 'seeking', label: t("在寻求") },
+  { key: 'dry', label: t("有些干渴") },
+  { key: 'struggling', label: t("在挣扎") },
 ]
 
 const DIMS = [
-  { key: 'faithLevel', label: '信心之火', emoji: '🔥' },
-  { key: 'hopeLevel', label: '盼望之树', emoji: '🌳' },
-  { key: 'loveLevel', label: '爱之河流', emoji: '🌊' },
+  { key: 'faithLevel', label: t("信心之火"), emoji: '🔥' },
+  { key: 'hopeLevel', label: t("盼望之树"), emoji: '🌳' },
+  { key: 'loveLevel', label: t("爱之河流"), emoji: '🌊' },
 ]
 
 export default function SpiritualCheckIn({ onDone }) {
@@ -34,7 +35,7 @@ export default function SpiritualCheckIn({ onDone }) {
       refresh()
       setTimeout(() => onDone?.(), 900)
     } catch (err) {
-      setError(err.message || '保存失败')
+      setError(err.message || t("保存失败"))
     } finally {
       setSaving(false)
     }
@@ -45,14 +46,14 @@ export default function SpiritualCheckIn({ onDone }) {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 8, padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 30 }}>🌿</div>
-        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>已经记下了。每个属灵季节都被神看见。</p>
+        <p style={{ fontSize: 13.5, color: C.text, margin: 0 }}>{t("已经记下了。每个属灵季节都被神看见。")}</p>
       </div>
     )
   }
 
   return (
     <div style={{ padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <h3 style={S.sectionTitle}>这段日子，你与神的关系——</h3>
+      <h3 style={S.sectionTitle}>{t("这段日子，你与神的关系——")}</h3>
 
       {DIMS.map((d) => (
         <div key={d.key}>
@@ -73,14 +74,14 @@ export default function SpiritualCheckIn({ onDone }) {
         ))}
       </div>
 
-      <textarea value={note} rows={2} placeholder="（可选）想对神或对自己说点什么？"
+      <textarea value={note} rows={2} placeholder={t("（可选）想对神或对自己说点什么？")}
         onChange={(e) => setNote(e.target.value)} style={S.input} />
 
       {error && <p style={{ ...S.dimText, color: '#ff9f8a', margin: 0 }}>{error}</p>}
 
       <button type="button" onClick={submit} disabled={saving}
         style={{ ...S.primaryBtn, opacity: saving ? 0.4 : 1 }}>
-        {saving ? '记录中…' : '记录属灵状态'}
+        {saving ? t("记录中…") : t("记录属灵状态")}
       </button>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createMapAdapter } from './map/createMapAdapter'
 import { loadBibleMap, BIBLE_MAPS, confidenceMeta, fetchTimeSlice, fetchRegions, fetchRelations, fetchLandmarks, landmarkNoteBySlug } from './data/bibleGeoSource'
+import { t } from './i18n/runtime'
 
 function popupHtml(p, cm, order) {
   return `<div class="biblemap-pop">
@@ -41,7 +42,7 @@ function orderedStations(dataset, variant) {
 function eraOf(eras, year) {
   return eras.find((e) => year >= e.start && year < e.end) || eras[eras.length - 1]
 }
-const REL_LABEL = { within: '隶属于', contains: '包含', adjacent: '相邻', capital_of: '首都：', borders: '接壤' }
+const REL_LABEL = { within: t("隶属于"), contains: t("包含"), adjacent: t("相邻"), capital_of: t("首都："), borders: t("接壤") }
 
 export default function BibleMapPage() {
   const mapNodeRef = useRef(null)   // 当前已初始化地图的 DOM 节点
@@ -100,7 +101,7 @@ export default function BibleMapPage() {
     adapter
       .init(node, { center: [34, 31], zoom: 5, scrollWheelZoom: false })
       .then(() => { if (adapterRef.current === adapter) setReady(true) })
-      .catch((e) => setMapError(e.message || '地图加载失败'))
+      .catch((e) => setMapError(e.message || t("地图加载失败")))
   }, [])
 
   // 卸载时清理
@@ -250,7 +251,7 @@ export default function BibleMapPage() {
   if (!dataset) {
     return (
       <div className="biblemap-page">
-        <div className="biblemap-loading">地图数据加载中…</div>
+        <div className="biblemap-loading">{t("地图数据加载中…")}</div>
       </div>
     )
   }
@@ -270,8 +271,8 @@ export default function BibleMapPage() {
       <div ref={mountMap} className="biblemap-map" />
       {mapError && (
         <div className="biblemap-map-fallback">
-          🗺️ 地图瓦片加载失败{mapError ? `（${mapError}）` : ''}<br />
-          <span>可能处于离线状态，下方仍可浏览经文与时代信息</span>
+          {t("🗺️ 地图瓦片加载失败")}{mapError ? `（${mapError}）` : ''}<br />
+          <span>{t("可能处于离线状态，下方仍可浏览经文与时代信息")}</span>
         </div>
       )}
     </div>
@@ -289,7 +290,7 @@ export default function BibleMapPage() {
       <div className="biblemap-page">
         {DatasetSelector}
         <div className="biblemap-hypo-desc">{dataset.subtitle}
-          <span className="biblemap-src">{slice?.source === 'api' ? '· 数据源：后端' : '· 数据源：本地'}</span>
+          <span className="biblemap-src">{slice?.source === 'api' ? t("· 数据源：后端") : t("· 数据源：本地")}</span>
         </div>
         {MapBox}
         <div className="biblemap-timeline">
@@ -316,7 +317,7 @@ export default function BibleMapPage() {
             <div className="biblemap-detail-sub">{dataset.kind === 'regions'
               ? `${yLabel(era.start)} – ${eraEndLabel} · ${slice?.regions?.length || 0} 个疆域`
               : `${slice?.name_en || era.name_en} · ${yLabel(era.start)} – ${eraEndLabel}`}</div>
-            <span className="biblemap-conf-badge" style={{ color: confidenceMeta.approximate.color, borderColor: confidenceMeta.approximate.color }}>● 疆域范围为示意</span>
+            <span className="biblemap-conf-badge" style={{ color: confidenceMeta.approximate.color, borderColor: confidenceMeta.approximate.color }}>{t("● 疆域范围为示意")}</span>
           </div>
           <div className="biblemap-events">
             <div className="biblemap-event">
@@ -350,12 +351,12 @@ export default function BibleMapPage() {
               </div>
               {regionRel && (
                 <div className="biblemap-relations">
-                  <div className="biblemap-relations-title">{regionRel.name} · 拓扑关系</div>
+                  <div className="biblemap-relations-title">{regionRel.name} {t("· 拓扑关系")}</div>
                   {regionRel.rels.length ? regionRel.rels.map((rl, i) => (
                     <div key={i} className="biblemap-relation">
                       {REL_LABEL[rl.relation_type] || rl.relation_type} <b>{rl.other_name || rl.other_slug}</b>
                     </div>
-                  )) : <div className="biblemap-relation biblemap-relation-empty">（暂无关系记录，或后端未启用）</div>}
+                  )) : <div className="biblemap-relation biblemap-relation-empty">{t("（暂无关系记录，或后端未启用）")}</div>}
                 </div>
               )}
             </>
@@ -370,7 +371,7 @@ export default function BibleMapPage() {
     return (
       <div className="biblemap-page">
         {DatasetSelector}
-        <div className="biblemap-loading">加载中…</div>
+        <div className="biblemap-loading">{t("加载中…")}</div>
       </div>
     )
   }
@@ -395,14 +396,14 @@ export default function BibleMapPage() {
         ))}
       </div>
       <div className="biblemap-hypo-desc">{variant.description}
-        <span className="biblemap-src">{dataset.source === 'api' ? '· 数据源：后端' : '· 数据源：本地'}</span>
+        <span className="biblemap-src">{dataset.source === 'api' ? t("· 数据源：后端") : t("· 数据源：本地")}</span>
       </div>
       {MapBox}
       <div className="biblemap-controls">
-        <button onClick={() => step(-1)} aria-label="上一站">‹</button>
-        <button className={`biblemap-play ${playing ? 'on' : ''}`} onClick={togglePlay}>{playing ? '⏸ 暂停' : '▶ 播放行程'}</button>
-        <button onClick={() => step(1)} aria-label="下一站">›</button>
-        <span className="biblemap-counter">第 {idx + 1} 站 / {STN.length}</span>
+        <button onClick={() => step(-1)} aria-label={t("上一站")}>‹</button>
+        <button className={`biblemap-play ${playing ? 'on' : ''}`} onClick={togglePlay}>{playing ? t("⏸ 暂停") : t("▶ 播放行程")}</button>
+        <button onClick={() => step(1)} aria-label={t("下一站")}>›</button>
+        <span className="biblemap-counter">{t("第")} {idx + 1} {t("站 /")} {STN.length}</span>
       </div>
       <div className="biblemap-journey-axis">
         {hasYears && <div className="biblemap-year biblemap-year-sm">{jYLabel(curYear)}</div>}
@@ -413,7 +414,7 @@ export default function BibleMapPage() {
           step={1}
           value={hasYears ? curYear : (idx < 0 ? 0 : idx)}
           onChange={(e) => hasYears ? selectByYear(parseInt(e.target.value, 10)) : selectStation(STN[parseInt(e.target.value, 10)])}
-          aria-label="行程进度"
+          aria-label={t("行程进度")}
         />
         <div className="biblemap-axis-ends">
           <span>{STN[0]?.properties.name_zh}{hasYears ? ` · ${jYLabel(stationYears[0])}` : ''}</span>
@@ -422,7 +423,7 @@ export default function BibleMapPage() {
       </div>
       <div className="biblemap-detail">
         <div className="biblemap-detail-head">
-          <div className="biblemap-detail-no">第 {idx + 1} 站{p.scriptureRef ? ` · ${p.scriptureRef}` : ''}</div>
+          <div className="biblemap-detail-no">{t("第")} {idx + 1} {t("站")}{p.scriptureRef ? ` · ${p.scriptureRef}` : ''}</div>
           <div className="biblemap-detail-title">{p.name_zh}</div>
           <div className="biblemap-detail-sub">{p.name_en}{p.name_he ? ` · ${p.name_he}` : ''}</div>
           <span className="biblemap-conf-badge" style={{ color: cm.color, borderColor: cm.color }}>● {cm.label}</span>
@@ -433,7 +434,7 @@ export default function BibleMapPage() {
               <div key={i} className="biblemap-event">
                 <div className="biblemap-event-title">
                   {ev.title}<span className="biblemap-event-ref">{ev.ref}</span>
-                  <button className="biblemap-tts" onClick={() => speak(`${ev.title}。${ev.summary}`)} title="朗读" aria-label="朗读">🔊</button>
+                  <button className="biblemap-tts" onClick={() => speak(`${ev.title}。${ev.summary}`)} title={t("朗读")} aria-label={t("朗读")}>🔊</button>
                 </div>
                 <div className="biblemap-event-summary">{ev.summary}</div>
                 {ev.image && (
@@ -445,7 +446,7 @@ export default function BibleMapPage() {
             ))}
           </div>
         ) : (
-          <div className="biblemap-noevent">此站为途经地，圣经未记载具体事件。</div>
+          <div className="biblemap-noevent">{t("此站为途经地，圣经未记载具体事件。")}</div>
         )}
       </div>
       <div className="biblemap-strip">

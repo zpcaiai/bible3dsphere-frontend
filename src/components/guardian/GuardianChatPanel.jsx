@@ -3,15 +3,16 @@ import { useGuardianStore } from './guardianStore'
 import { useGuardianVoice } from './useGuardianVoice'
 import { C, S } from './guardianStyles'
 import './guardian.css'
+import { t } from '../../i18n/runtime'
 
 const MODES = [
-  { key: 'companion', label: '陪伴' },
-  { key: 'comfort', label: '安慰' },
-  { key: 'prayer', label: '祷告' },
-  { key: 'devotion', label: '灵修' },
-  { key: 'reflection', label: '反思' },
-  { key: 'idol-monitor', label: '觉察' },
-  { key: 'growth', label: '成长' },
+  { key: 'companion', label: t("陪伴") },
+  { key: 'comfort', label: t("安慰") },
+  { key: 'prayer', label: t("祷告") },
+  { key: 'devotion', label: t("灵修") },
+  { key: 'reflection', label: t("反思") },
+  { key: 'idol-monitor', label: t("觉察") },
+  { key: 'growth', label: t("成长") },
 ]
 
 export default function GuardianChatPanel() {
@@ -123,7 +124,7 @@ export default function GuardianChatPanel() {
           </div>
         ))}
         {sending && (
-          <div style={{ fontSize: 13, color: C.dim, padding: '4px 2px' }}>守护者正在轻轻回应…</div>
+          <div style={{ fontSize: 13, color: C.dim, padding: '4px 2px' }}>{t("守护者正在轻轻回应…")}</div>
         )}
         <div ref={bottomRef} />
       </div>
@@ -136,21 +137,21 @@ export default function GuardianChatPanel() {
           {voice.isRecording && <span className="guardian-rec-dot" />}
           {voice.isRecording
             ? `正在聆听… ${voice.recordingSeconds}s（再按 🎤 结束）`
-            : voice.recordingError || (callMode ? '对话模式开启：说完会自动回复并继续听你说' : '')}
+            : voice.recordingError || (callMode ? t("对话模式开启：说完会自动回复并继续听你说") : '')}
         </div>
       )}
 
       <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end',
         borderTop: `1px solid ${C.lineSoft}`, padding: 12 }}>
         {/* 🎤 单次语音输入 */}
-        <button type="button" onClick={toggleMic} title={voice.isRecording ? '结束并识别' : '语音输入'}
+        <button type="button" onClick={toggleMic} title={voice.isRecording ? t("结束并识别") : t("语音输入")}
           style={iconBtn(voice.isRecording)}
           className={voice.isRecording ? 'guardian-rec-pulse' : ''}>
           🎤
         </button>
         {/* 📞 连续语音对话 */}
         <button type="button" onClick={toggleCallMode}
-          title={callMode ? '结束语音对话' : '开始语音对话（自动朗读+自动聆听）'}
+          title={callMode ? t("结束语音对话") : t("开始语音对话（自动朗读+自动聆听）")}
           style={iconBtn(callMode)}>
           {callMode ? '🔴' : '📞'}
         </button>
@@ -160,13 +161,13 @@ export default function GuardianChatPanel() {
             if (autoSpeak) { setAutoSpeak(false); voice.stopSpeaking() }
             else setAutoSpeak(true)
           }}
-          title={autoSpeak ? '关闭自动朗读' : '自动朗读守护者的回复'}
+          title={autoSpeak ? t("关闭自动朗读") : t("自动朗读守护者的回复")}
           style={iconBtn(autoSpeak || voice.speaking)}>
           {autoSpeak ? '🔊' : '🔇'}
         </button>
 
         <textarea
-          value={input} rows={1} placeholder={callMode ? '对话模式中，也可以打字…' : '说说你现在的感受…'}
+          value={input} rows={1} placeholder={callMode ? t("对话模式中，也可以打字…") : t("说说你现在的感受…")}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() }
@@ -175,7 +176,7 @@ export default function GuardianChatPanel() {
         />
         <button type="button" onClick={submit} disabled={sending || !input.trim()}
           style={{ ...S.primaryBtn, opacity: sending || !input.trim() ? 0.4 : 1 }}>
-          发送
+          {t("发送")}
         </button>
       </div>
     </div>

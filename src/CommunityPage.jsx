@@ -6,6 +6,7 @@ import {
 } from './api'
 import { requestFriend } from './realtime/realtimeApi'
 import { COMMUNITY_STATUS_GROUPS } from './communityStatuses'
+import { t } from './i18n/runtime'
 
 const PAGE = 20
 
@@ -14,7 +15,7 @@ function relTime(iso) {
   const t = new Date(iso).getTime()
   if (Number.isNaN(t)) return ''
   const s = Math.floor((Date.now() - t) / 1000)
-  if (s < 60) return '刚刚'
+  if (s < 60) return t("刚刚")
   if (s < 3600) return `${Math.floor(s / 60)} 分钟前`
   if (s < 86400) return `${Math.floor(s / 3600)} 小时前`
   if (s < 7 * 86400) return `${Math.floor(s / 86400)} 天前`
@@ -25,7 +26,7 @@ function Avatar({ avatar, nickname }) {
   if (avatar && /^https?:\/\//.test(avatar)) {
     return <img className="cmty-avatar" src={avatar} alt="" />
   }
-  const ch = avatar || (nickname || '友').trim().charAt(0)
+  const ch = avatar || (nickname || t("友")).trim().charAt(0)
   return <span className="cmty-avatar cmty-avatar-text">{ch}</span>
 }
 
@@ -50,7 +51,7 @@ function Comments({ postId, token, user, onCountChange }) {
     try {
       const d = await createCommunityComment(postId, content, token)
       setItems(prev => [...(prev || []), {
-        id: d.id, nickname: user?.nickname || '弟兄姐妹', avatar: user?.avatar || '',
+        id: d.id, nickname: user?.nickname || t("弟兄姐妹"), avatar: user?.avatar || '',
         content, is_own: true, created_at: d.created_at,
       }])
       setText('')
@@ -68,8 +69,8 @@ function Comments({ postId, token, user, onCountChange }) {
 
   return (
     <div className="cmty-comments">
-      {items === null && <div className="cmty-dim">加载评论…</div>}
-      {items && items.length === 0 && <div className="cmty-dim">还没有评论，来写第一条吧</div>}
+      {items === null && <div className="cmty-dim">{t("加载评论…")}</div>}
+      {items && items.length === 0 && <div className="cmty-dim">{t("还没有评论，来写第一条吧")}</div>}
       {items && items.map(c => (
         <div key={c.id} className="cmty-comment">
           <Avatar avatar={c.avatar} nickname={c.nickname} />
@@ -77,7 +78,7 @@ function Comments({ postId, token, user, onCountChange }) {
             <div className="cmty-comment-head">
               <span className="cmty-name">{c.nickname}</span>
               <span className="cmty-time">{relTime(c.created_at)}</span>
-              {c.is_own && <button className="cmty-del" onClick={() => remove(c.id)}>删除</button>}
+              {c.is_own && <button className="cmty-del" onClick={() => remove(c.id)}>{t("删除")}</button>}
             </div>
             <div className="cmty-comment-text">{c.content}</div>
           </div>
@@ -86,10 +87,10 @@ function Comments({ postId, token, user, onCountChange }) {
       {user ? (
         <div className="cmty-comment-compose">
           <input value={text} onChange={e => setText(e.target.value)} maxLength={500}
-            placeholder="写下你的回应或祝福…" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} />
-          <button disabled={busy || !text.trim()} onClick={submit}>{busy ? '…' : '评论'}</button>
+            placeholder={t("写下你的回应或祝福…")} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() } }} />
+          <button disabled={busy || !text.trim()} onClick={submit}>{busy ? '…' : t("评论")}</button>
         </div>
-      ) : <div className="cmty-dim">登录后可评论</div>}
+      ) : <div className="cmty-dim">{t("登录后可评论")}</div>}
       {err && <div className="cmty-err">{err}</div>}
     </div>
   )
@@ -127,7 +128,7 @@ export default function CommunityPage({ user, token, onBack }) {
 
   async function submitPost() {
     const text = content.trim()
-    if (!status && !text) { setPostErr('请选择一个状态，或写点什么'); return }
+    if (!status && !text) { setPostErr(t("请选择一个状态，或写点什么")); return }
     setPosting(true); setPostErr('')
     try {
       await createCommunityPost({
@@ -138,10 +139,10 @@ export default function CommunityPage({ user, token, onBack }) {
       await load(0)
     } catch (e) {
       const msg = e.message || ''
-      if (msg.includes('请先加入或创建教会')) {
-        setPostErr('请先加入或创建一个教会才能发布内容')
+      if (msg.includes(t("请先加入或创建教会"))) {
+        setPostErr(t("请先加入或创建一个教会才能发布内容"))
       } else {
-        setPostErr(msg || '发布失败')
+        setPostErr(msg || t("发布失败"))
       }
     } finally { setPosting(false) }
   }
@@ -151,9 +152,9 @@ export default function CommunityPage({ user, token, onBack }) {
     try {
       await requestFriend(email)
       setFriendRequested(prev => ({ ...prev, [email]: true }))
-      window.showToast?.('好友请求已发送', 'success')
+      window.showToast?.(t("好友请求已发送"), 'success')
     } catch (e) {
-      window.showToast?.(e.message || '发送失败', 'error')
+      window.showToast?.(e.message || t("发送失败"), 'error')
     }
   }
 
@@ -172,7 +173,7 @@ export default function CommunityPage({ user, token, onBack }) {
   }
 
   async function removePost(post) {
-    if (!window.confirm('确定删除这条状态？')) return
+    if (!window.confirm(t("确定删除这条状态？"))) return
     try {
       await deleteCommunityPost(post.id, token)
       setPosts(prev => prev.filter(p => p.id !== post.id))
@@ -188,10 +189,10 @@ export default function CommunityPage({ user, token, onBack }) {
   return (
     <div className="cmty">
       <div className="cmty-head">
-        {onBack && <button className="cmty-back" onClick={onBack}>← 返回</button>}
+        {onBack && <button className="cmty-back" onClick={onBack}>{t("← 返回")}</button>}
         <div className="cmty-title">
-          <h2>🌐 在线社区</h2>
-          <p>分享你此刻的状态与心声，彼此守望、回应、代祷</p>
+          <h2>{t("🌐 在线社区")}</h2>
+          <p>{t("分享你此刻的状态与心声，彼此守望、回应、代祷")}</p>
         </div>
       </div>
 
@@ -200,7 +201,7 @@ export default function CommunityPage({ user, token, onBack }) {
         <div className="cmty-composer">
           <div className="cmty-compose-top">
             <button className={`cmty-status-pick ${status ? 'has' : ''}`} onClick={() => setPickerOpen(o => !o)}>
-              {status ? <span>{status.emoji} {status.label}</span> : <span>＋ 选择状态</span>}
+              {status ? <span>{status.emoji} {status.label}</span> : <span>{t("＋ 选择状态")}</span>}
             </button>
             {status && <button className="cmty-status-clear" onClick={() => setStatus(null)}>×</button>}
           </div>
@@ -223,28 +224,28 @@ export default function CommunityPage({ user, token, onBack }) {
             </div>
           )}
           <textarea className="cmty-textarea" value={content} maxLength={1000}
-            onChange={e => setContent(e.target.value)} placeholder="说点什么吧…（也可只发一个状态）" rows={3} />
+            onChange={e => setContent(e.target.value)} placeholder={t("说点什么吧…（也可只发一个状态）")} rows={3} />
           <div className="cmty-compose-actions">
             <span className="cmty-count">{content.length}/1000</span>
             <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,0.55)', cursor: 'pointer', userSelect: 'none' }}>
               <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} style={{ accentColor: '#007aff' }} />
-              🌍 公开到全平台
+              {t("🌍 公开到全平台")}
             </label>
             <button className="cmty-post-btn" disabled={posting || (!status && !content.trim())} onClick={submitPost}>
-              {posting ? '发布中…' : '发布'}
+              {posting ? t("发布中…") : t("发布")}
             </button>
           </div>
           {postErr && <div className="cmty-err">{postErr}</div>}
         </div>
       ) : (
-        <div className="cmty-login-hint">👋 登录后即可发布状态与消息（现在也能浏览大家的分享）</div>
+        <div className="cmty-login-hint">{t("👋 登录后即可发布状态与消息（现在也能浏览大家的分享）")}</div>
       )}
 
       {/* 信息流 */}
       {error && <div className="cmty-err">{error}</div>}
-      {loading && posts.length === 0 && <div className="cmty-dim">加载中…</div>}
+      {loading && posts.length === 0 && <div className="cmty-dim">{t("加载中…")}</div>}
       {!loading && posts.length === 0 && !error && (
-        <div className="cmty-empty">还没有人分享，成为第一个吧 🌱</div>
+        <div className="cmty-empty">{t("还没有人分享，成为第一个吧 🌱")}</div>
       )}
 
       <div className="cmty-feed">
@@ -259,31 +260,31 @@ export default function CommunityPage({ user, token, onBack }) {
                     <span className="cmty-status-badge">{post.status.emoji} {post.status.label}</span>
                   )}
                   {post.is_public && !post.same_church && !post.is_own && (
-                    <span style={{ fontSize: 10, background: 'rgba(0,122,255,0.15)', border: '1px solid rgba(0,122,255,0.35)', color: '#60a5fa', borderRadius: 6, padding: '1px 6px', marginLeft: 4 }}>🌍 全平台</span>
+                    <span style={{ fontSize: 10, background: 'rgba(0,122,255,0.15)', border: '1px solid rgba(0,122,255,0.35)', color: '#60a5fa', borderRadius: 6, padding: '1px 6px', marginLeft: 4 }}>{t("🌍 全平台")}</span>
                   )}
                 </div>
                 <span className="cmty-time">{relTime(post.created_at)}</span>
               </div>
-              {post.is_own && <button className="cmty-del" onClick={() => removePost(post)}>删除</button>}
+              {post.is_own && <button className="cmty-del" onClick={() => removePost(post)}>{t("删除")}</button>}
             </div>
             {post.content && <div className="cmty-post-content">{post.content}</div>}
             <div className="cmty-post-actions">
               <button className={`cmty-act ${post.amened ? 'on' : ''}`} disabled={!user}
-                onClick={() => toggleAmen(post)} title={user ? '阿们' : '登录后可阿们'}>
-                🙏 阿们{post.amen_count > 0 ? ` · ${post.amen_count}` : ''}
+                onClick={() => toggleAmen(post)} title={user ? t("阿们") : t("登录后可阿们")}>
+                {t("🙏 阿们")}{post.amen_count > 0 ? ` · ${post.amen_count}` : ''}
               </button>
               <button className="cmty-act"
                 onClick={() => setOpenComments(o => ({ ...o, [post.id]: !o[post.id] }))}>
-                💬 评论{post.comment_count > 0 ? ` · ${post.comment_count}` : ''}
+                {t("💬 评论")}{post.comment_count > 0 ? ` · ${post.comment_count}` : ''}
               </button>
               {post.is_public && !post.same_church && !post.is_own && post.author_email && user && (
                 <button
                   className="cmty-act"
                   disabled={!!friendRequested[post.author_email]}
                   onClick={() => handleAddFriend(post.author_email)}
-                  title="加为好友"
+                  title={t("加为好友")}
                 >
-                  {friendRequested[post.author_email] ? '已请求 ✓' : '➕ 加好友'}
+                  {friendRequested[post.author_email] ? t("已请求 ✓") : t("➕ 加好友")}
                 </button>
               )}
             </div>
@@ -297,7 +298,7 @@ export default function CommunityPage({ user, token, onBack }) {
 
       {posts.length < total && (
         <button className="cmty-more" disabled={loading} onClick={() => load(offset + PAGE)}>
-          {loading ? '加载中…' : '加载更多'}
+          {loading ? t("加载中…") : t("加载更多")}
         </button>
       )}
     </div>

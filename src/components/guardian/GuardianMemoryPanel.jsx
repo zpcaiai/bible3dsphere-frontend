@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { fetchGuardianMemories } from './guardianApi'
 import { C, S } from './guardianStyles'
+import { t } from '../../i18n/runtime'
 
 const TYPE_LABELS = {
-  event: '事件', stressor: '压力源', goal: '目标',
-  'prayer-item': '祷告事项', relationship: '关系', preference: '偏好',
+  event: t("事件"), stressor: t("压力源"), goal: t("目标"),
+  'prayer-item': t("祷告事项"), relationship: t("关系"), preference: t("偏好"),
 }
 
 export default function GuardianMemoryPanel() {
@@ -16,10 +17,10 @@ export default function GuardianMemoryPanel() {
 
   return (
     <div style={{ padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h3 style={S.sectionTitle}>💭 守护者记得的事</h3>
+      <h3 style={S.sectionTitle}>{t("💭 守护者记得的事")}</h3>
       {memories.length === 0 && (
         <p style={{ ...S.dimText, textAlign: 'center', padding: '12px 0' }}>
-          还没有记忆。多聊一些，我会慢慢记住对你重要的事。
+          {t("还没有记忆。多聊一些，我会慢慢记住对你重要的事。")}
         </p>
       )}
       {memories.map((m) => (

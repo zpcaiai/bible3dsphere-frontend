@@ -13,32 +13,33 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchTTS } from './api'
+import { t } from './i18n/runtime'
 
 // ── Bible reference expansion ────────────────────────────────────────────────
 // Expands abbreviated references like "太 六 10" → "马太福音6章10节" before TTS.
 const _BOOK_ABBR = {
   // ── 多字简写（优先匹配，放前面）────────────────────────────────────────
-  '撒上':'撒母耳记上', '撒下':'撒母耳记下',
-  '王上':'列王纪上',   '王下':'列王纪下',
-  '代上':'历代志上',   '代下':'历代志下',
-  '林前':'哥林多前书', '林后':'哥林多后书',
-  '帖前':'帖撒罗尼迦前书', '帖后':'帖撒罗尼迦后书',
-  '提前':'提摩太前书', '提后':'提摩太后书',
-  '彼前':'彼得前书',   '彼后':'彼得后书',
-  '约壹':'约翰一书',   '约贰':'约翰二书', '约叁':'约翰三书',
+  '撒上':t("撒母耳记上"), '撒下':t("撒母耳记下"),
+  '王上':t("列王纪上"),   '王下':t("列王纪下"),
+  '代上':t("历代志上"),   '代下':t("历代志下"),
+  '林前':t("哥林多前书"), '林后':t("哥林多后书"),
+  '帖前':t("帖撒罗尼迦前书"), '帖后':t("帖撒罗尼迦后书"),
+  '提前':t("提摩太前书"), '提后':t("提摩太后书"),
+  '彼前':t("彼得前书"),   '彼后':t("彼得后书"),
+  '约壹':t("约翰一书"),   '约贰':t("约翰二书"), '约叁':t("约翰三书"),
   // ── 单字简写 ─────────────────────────────────────────────────────────
-  '创':'创世记', '出':'出埃及记', '利':'利未记', '民':'民数记', '申':'申命记',
-  '书':'约书亚记', '士':'士师记', '得':'路得记',
-  '拉':'以斯拉记', '尼':'尼希米记', '斯':'以斯帖记', '伯':'约伯记',
-  '诗':'诗篇', '箴':'箴言', '传':'传道书', '歌':'雅歌',
-  '赛':'以赛亚书', '耶':'耶利米书', '哀':'耶利米哀歌', '结':'以西结书', '但':'但以理书',
-  '何':'何西阿书', '珥':'约珥书', '摩':'阿摩司书', '俄':'俄巴底亚书', '拿':'约拿书',
-  '弥':'弥迦书', '鸿':'那鸿书', '哈':'哈巴谷书', '番':'西番雅书', '该':'哈该书',
-  '亚':'撒迦利亚书', '玛':'玛拉基书',
-  '太':'马太福音', '可':'马可福音', '路':'路加福音', '约':'约翰福音', '徒':'使徒行传',
-  '罗':'罗马书', '加':'加拉太书', '弗':'以弗所书', '腓':'腓立比书',
-  '西':'歌罗西书', '多':'提多书', '门':'腓利门书',
-  '来':'希伯来书', '雅':'雅各书', '犹':'犹大书', '启':'启示录',
+  '创':t("创世记"), '出':t("出埃及记"), '利':t("利未记"), '民':t("民数记"), '申':t("申命记"),
+  '书':t("约书亚记"), '士':t("士师记"), '得':t("路得记"),
+  '拉':t("以斯拉记"), '尼':t("尼希米记"), '斯':t("以斯帖记"), '伯':t("约伯记"),
+  '诗':t("诗篇"), '箴':t("箴言"), '传':t("传道书"), '歌':t("雅歌"),
+  '赛':t("以赛亚书"), '耶':t("耶利米书"), '哀':t("耶利米哀歌"), '结':t("以西结书"), '但':t("但以理书"),
+  '何':t("何西阿书"), '珥':t("约珥书"), '摩':t("阿摩司书"), '俄':t("俄巴底亚书"), '拿':t("约拿书"),
+  '弥':t("弥迦书"), '鸿':t("那鸿书"), '哈':t("哈巴谷书"), '番':t("西番雅书"), '该':t("哈该书"),
+  '亚':t("撒迦利亚书"), '玛':t("玛拉基书"),
+  '太':t("马太福音"), '可':t("马可福音"), '路':t("路加福音"), '约':t("约翰福音"), '徒':t("使徒行传"),
+  '罗':t("罗马书"), '加':t("加拉太书"), '弗':t("以弗所书"), '腓':t("腓立比书"),
+  '西':t("歌罗西书"), '多':t("提多书"), '门':t("腓利门书"),
+  '来':t("希伯来书"), '雅':t("雅各书"), '犹':t("犹大书"), '启':t("启示录"),
 }
 
 // Chinese numeral → Arabic integer
@@ -64,7 +65,7 @@ const _ABBR_PAT = Object.keys(_BOOK_ABBR)
   .sort((a, b) => b.length - a.length)
   .map(a => a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
   .join('|')
-const _NUM = '[零一二三四五六七八九十百千\\d]+'
+const _NUM = t("[零一二三四五六七八九十百千\\d]+")
 // Matches: <abbr> <space?> <chapter> <space?> [章/:] <space?> <verse?> [节?]
 const _BIBLE_RE = new RegExp(
   `(${_ABBR_PAT})\\s*(${_NUM})\\s*[章篇卷:：]?\\s*(${_NUM})?\\s*节?`,
@@ -267,7 +268,7 @@ export function TTSButton({ text, style }) {
     <button
       type="button"
       onClick={handleClick}
-      title={isActive ? '停止' : '朗读'}
+      title={isActive ? t("停止") : t("朗读")}
       style={{
         background: 'none',
         border: 'none',
@@ -291,7 +292,7 @@ export function TTSButton({ text, style }) {
  * TTSFullBar — full-width play bar for reading a long piece of content.
  * Props: buildText (fn → string), label (optional string)
  */
-export function TTSFullBar({ buildText, label = '全文朗读' }) {
+export function TTSFullBar({ buildText, label = t("全文朗读") }) {
   const { ttsState, speak, stop } = useGlobalAudio()
 
   const isIdle = ttsState === 'idle'
@@ -338,7 +339,7 @@ export function TTSFullBar({ buildText, label = '全文朗读' }) {
         }}
       >
         {isLoading ? '⏳' : isActive ? '🔄' : '🔊'}
-        <span>{isLoading ? '加载中...' : isActive ? '重新播放' : label}</span>
+        <span>{isLoading ? t("加载中...") : isActive ? t("重新播放") : label}</span>
       </button>
 
       {(isPlaying || isPaused || isLoading) && (
@@ -355,13 +356,13 @@ export function TTSFullBar({ buildText, label = '全文朗读' }) {
             cursor: 'pointer',
           }}
         >
-          ⏹ 停止
+          {t("⏹ 停止")}
         </button>
       )}
 
       {isIdle && (
         <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginLeft: 4 }}>
-          小晓语音 · XiaoxiaoNeural
+          {t("小晓语音 · XiaoxiaoNeural")}
         </span>
       )}
     </div>

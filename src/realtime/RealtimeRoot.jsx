@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import realtimeStore from './realtimeStore'
 import { useRealtimeState } from './useRealtimeStore'
 import LiveKitCall from './LiveKitCall'
+import { t } from '../i18n/runtime'
 
 export default function RealtimeRoot({ user }) {
   useEffect(() => {
@@ -38,10 +39,10 @@ export default function RealtimeRoot({ user }) {
       {incomingCall && !activeCall && (
         <div className="communion-invite-overlay">
           <div className="communion-invite glass">
-            <div className="communion-invite-title">📞 {incomingCall.name} 邀请你语音通话</div>
+            <div className="communion-invite-title">📞 {incomingCall.name} {t("邀请你语音通话")}</div>
             <div className="communion-invite-actions">
-              <button className="communion-accept" onClick={() => realtimeStore.acceptIncoming()}>接听</button>
-              <button className="communion-decline" onClick={() => realtimeStore.declineIncoming()}>拒绝</button>
+              <button className="communion-accept" onClick={() => realtimeStore.acceptIncoming()}>{t("接听")}</button>
+              <button className="communion-decline" onClick={() => realtimeStore.declineIncoming()}>{t("拒绝")}</button>
             </div>
           </div>
         </div>

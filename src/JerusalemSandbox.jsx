@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { JERU_ERAS, TEMPLE_CENTER, PASSION_WEEK, eraGeoJSON, locationsFor, JERU_LOCATIONS } from './data/jerusalemChronology'
 import { TEMPLE_GEOJSON, TEMPLE_PARTS, TEMPLE_LABELS, TEMPLE_CAMERA } from './data/templeStructure'
+import { t } from './i18n/runtime'
 
 const TOKEN = (import.meta.env && (import.meta.env.NEXT_PUBLIC_MAPBOX_TOKEN || import.meta.env.VITE_MAPBOX_TOKEN)) || ''
 const MAPBOX_VER = '3.7.0'
@@ -23,7 +24,7 @@ function loadScript(src) {
     const el = document.createElement('script')
     el.src = src; el.async = true
     el.onload = () => resolve()
-    el.onerror = () => reject(new Error('脚本加载失败：' + src))
+    el.onerror = () => reject(new Error(t("脚本加载失败：") + src))
     document.head.appendChild(el)
   })
 }
@@ -176,7 +177,7 @@ export default function JerusalemSandbox({ onBack }) {
         if (eng === 'mapbox' && !triedFallbackRef.current) {
           triedFallbackRef.current = true; setEngine('maplibre'); boot('maplibre')
         } else {
-          setStatus('error'); setErrMsg(e.message || '地图加载失败（请检查网络）')
+          setStatus('error'); setErrMsg(e.message || t("地图加载失败（请检查网络）"))
         }
       }
     }
@@ -442,10 +443,10 @@ export default function JerusalemSandbox({ onBack }) {
   return (
     <div className="jeru">
       <div className="biblemap-head">
-        <button className="biblemap-back" onClick={onBack}>← 返回</button>
+        <button className="biblemap-back" onClick={onBack}>{t("← 返回")}</button>
         <div className="biblemap-title">
-          <h2>🏛 耶路撒冷数字孪生沙盘</h2>
-          <p>圣城变迁与圣殿结构 · 时间轴剥离 · 受难周 FPV 步行 · {engine === 'mapbox' ? 'Mapbox GL v3' : 'MapLibre GL v1（免 token）'}</p>
+          <h2>{t("🏛 耶路撒冷数字孪生沙盘")}</h2>
+          <p>{t("圣城变迁与圣殿结构 · 时间轴剥离 · 受难周 FPV 步行 ·")} {engine === 'mapbox' ? 'Mapbox GL v3' : t("MapLibre GL v1（免 token）")}</p>
         </div>
       </div>
 
@@ -463,11 +464,11 @@ export default function JerusalemSandbox({ onBack }) {
         <div ref={containerRef} className="jeru-map" />
         {status !== 'ready' && (
           <div className="jeru-overlay">
-            {status === 'loading' && <div className="jeru-loading">🌍 正在加载{engine === 'mapbox' ? ' Mapbox' : ' MapLibre'} 三维沙盘…</div>}
+            {status === 'loading' && <div className="jeru-loading">{t("🌍 正在加载")}{engine === 'mapbox' ? ' Mapbox' : ' MapLibre'} {t("三维沙盘…")}</div>}
             {status === 'error' && (
               <div className="jeru-err">
                 <p>⚠ {errMsg}</p>
-                <p className="dim">该功能需要联网加载地图库与瓦片。若 Mapbox 配额/令牌不可用，会自动回退到免费的 MapLibre。</p>
+                <p className="dim">{t("该功能需要联网加载地图库与瓦片。若 Mapbox 配额/令牌不可用，会自动回退到免费的 MapLibre。")}</p>
               </div>
             )}
           </div>
@@ -475,18 +476,18 @@ export default function JerusalemSandbox({ onBack }) {
 
         {/* 控制条 */}
         <div className="jeru-controls">
-          <button onClick={resetView} title="复位到圣殿山视角">🎯 复位视角</button>
+          <button onClick={resetView} title={t("复位到圣殿山视角")}>{t("🎯 复位视角")}</button>
           {!passionActive
-            ? <button className="primary" onClick={playPassion}>✝ 受难周 FPV 巡游</button>
-            : <button className="primary" onClick={stopPassion}>⏹ 停止巡游</button>}
+            ? <button className="primary" onClick={playPassion}>{t("✝ 受难周 FPV 巡游")}</button>
+            : <button className="primary" onClick={stopPassion}>{t("⏹ 停止巡游")}</button>}
           {engine === 'maplibre' && (
-            <button className={showOsm ? 'on' : ''} onClick={() => setShowOsm(s => !s)}>🗺 现代底图</button>
+            <button className={showOsm ? 'on' : ''} onClick={() => setShowOsm(s => !s)}>{t("🗺 现代底图")}</button>
           )}
           {status === 'ready' && (!templeMode
-            ? <button className="primary" onClick={enterTemple}>🏛 圣殿3D结构</button>
+            ? <button className="primary" onClick={enterTemple}>{t("🏛 圣殿3D结构")}</button>
             : <>
-                <button className={cutaway ? 'on' : ''} onClick={() => setCutaway(c => !c)}>✂ 剖视{cutaway ? '·开' : '·关'}</button>
-                <button onClick={exitTemple}>🚪 离开圣殿</button>
+                <button className={cutaway ? 'on' : ''} onClick={() => setCutaway(c => !c)}>{t("✂ 剖视")}{cutaway ? t("·开") : t("·关")}</button>
+                <button onClick={exitTemple}>{t("🚪 离开圣殿")}</button>
               </>)}
         </div>
       </div>
@@ -503,7 +504,7 @@ export default function JerusalemSandbox({ onBack }) {
 
       {/* 受难周分站 */}
       <div className="jeru-passion">
-        <div className="jeru-passion-h">✝ 受难周步行轨迹（希律时期 · 点击任一站定位）</div>
+        <div className="jeru-passion-h">{t("✝ 受难周步行轨迹（希律时期 · 点击任一站定位）")}</div>
         <div className="jeru-stops">
           {PASSION_WEEK.map((s, i) => (
             <button key={i} className={`jeru-stop ${passionStop === i ? 'on' : ''}`} onClick={() => jumpStop(i)}>
@@ -522,7 +523,7 @@ export default function JerusalemSandbox({ onBack }) {
       {/* 圣殿模式提示 */}
       {templeMode && (
         <div className="jeru-temple-hint">
-          🏛 所罗门第一圣殿（王上6–7，按肘比例示意复原）· 点击任一部件看经文与尺寸 · ✂ 剖视揭开殿顶察看圣所与至圣所
+          {t("🏛 所罗门第一圣殿（王上6–7，按肘比例示意复原）· 点击任一部件看经文与尺寸 · ✂ 剖视揭开殿顶察看圣所与至圣所")}
         </div>
       )}
 
@@ -546,8 +547,8 @@ export default function JerusalemSandbox({ onBack }) {
       )}
 
       <div className="jeru-foot">
-        城墙与建筑轮廓为示意性复原（schematic），用于教学呈现各时期相对范围与圣殿"平地起高楼"，非精确考古测绘。
-        {engine === 'maplibre' && !TOKEN && ' · 当前为免费 MapLibre 模式；配置 VITE_MAPBOX_TOKEN 可启用 Mapbox 卫星底图。'}
+        {t("城墙与建筑轮廓为示意性复原（schematic），用于教学呈现各时期相对范围与圣殿\"平地起高楼\"，非精确考古测绘。")}
+        {engine === 'maplibre' && !TOKEN && t(" · 当前为免费 MapLibre 模式；配置 VITE_MAPBOX_TOKEN 可启用 Mapbox 卫星底图。")}
       </div>
     </div>
   )
