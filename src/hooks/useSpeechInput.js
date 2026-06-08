@@ -4,8 +4,8 @@
  * Browser microphone capture + Deepgram transcription.
  *
  * 录音质量优化（针对「低声/轻声常识别不到」）：
- *  1. 显式启用 autoGainControl + 软件增益(GainNode)+ 压缩器(Compressor)，
- *     把轻声放大、把音量拉平，让识别引擎拿到足够响度。
+ *  1. 显式启用浏览器内置 autoGainControl，放大轻声/耳语的响度。
+ *     （不经 WebAudio 重路由，避免个别浏览器产出 Deepgram 无法解码的容器。）
  *  2. 自动选择浏览器支持的录音容器(webm/mp4)，修复 iOS Safari 不支持 webm 的问题。
  *  3. Deepgram 加 detect_language（中英自动识别），避免按英语硬解中文导致空结果。
  *  4. 网络/5xx 失败自动重试一次。
@@ -13,7 +13,6 @@
 import { useState, useRef, useCallback } from 'react'
 
 const MAX_RECORDING_SECONDS = 120
-const GAIN_BOOST = 2.2 // 软件增益倍数（轻声放大）
 
 // 选择当前浏览器支持的录音 mimeType（iOS Safari 只支持 mp4）。
 function pickMimeType () {
@@ -172,37 +171,14 @@ export function useSpeechInput ({
         return
       }
 
-      // 软件增益链：source → compressor（拉平动态）→ gain（整体放大）→ dest。
-      // 让低声/耳语达到识别引擎需要的响度，同时压缩器避免大声破音。
-      let recordStream = stream
-      try {
-        const AC = window.AudioContext || window.webkitAudioContext
-        if (AC) {
-          const ctx = new AC()
-          if (ctx.state === 'suspended') { try { await ctx.resume() } catch (_) {} }
-          const src = ctx.createMediaStreamSource(stream)
-          const comp = ctx.createDynamicsCompressor()
-          comp.threshold.value = -50
-          comp.knee.value = 30
-          comp.ratio.value = 12
-          comp.attack.value = 0.003
-          comp.release.value = 0.25
-          const gain = ctx.createGain()
-          gain.gain.value = GAIN_BOOST
-          const dest = ctx.createMediaStreamDestination()
-          src.connect(comp); comp.connect(gain); gain.connect(dest)
-          recordStream = dest.stream
-          audioCtxRef.current = ctx
-        }
-      } catch (_) {
-        recordStream = stream // WebAudio 不可用则用原始流
-      }
-
+      // 直接录原始麦克风流（轻声放大交给浏览器内置 autoGainControl）。
+      // 不再经 WebAudio 重路由——某些浏览器会产出 Deepgram 无法解码的容器
+      // （“corrupt or unsupported data”）。
       const mime = pickMimeType()
       mimeTypeRef.current = mime
       const mediaRecorder = mime
-        ? new MediaRecorder(recordStream, { mimeType: mime })
-        : new MediaRecorder(recordStream)
+        ? new MediaRecorder(stream, { mimeType: mime })
+        : new MediaRecorder(stream)
 
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data)

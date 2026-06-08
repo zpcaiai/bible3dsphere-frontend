@@ -1,4 +1,4 @@
-import { pickMimeType, contentTypeFor, makeBoostedStream, AUDIO_CONSTRAINTS } from './hooks/recorderUtils'
+import { pickMimeType, contentTypeFor, AUDIO_CONSTRAINTS } from './hooks/recorderUtils'
 import { useEffect, useRef, useState } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
@@ -562,11 +562,10 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: AUDIO_CONSTRAINTS })
       if (cancelStartRef.current) { stream.getTracks().forEach(tr => tr.stop()); setIsRecording(false); return }
-      const _boost = makeBoostedStream(stream)
       const _mt = pickMimeType()
       const mediaRecorder = _mt
-        ? new MediaRecorder(_boost.stream, { mimeType: _mt })
-        : new MediaRecorder(_boost.stream)
+        ? new MediaRecorder(stream, { mimeType: _mt })
+        : new MediaRecorder(stream)
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -578,7 +577,6 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
         const _tooShort = Date.now() - startedAt < 1000
         // 停止所有音轨
         stream.getTracks().forEach(track => track.stop())
-        try { _boost.ctx && _boost.ctx.close() } catch (_) {}
         if (_tooShort) { setRecordingError(t("说话时间太短，请按住至少 1 秒")); return }
         const _mime = mediaRecorder.mimeType || 'audio/webm'
         const audioBlob = new Blob(audioChunksRef.current, { type: _mime })
