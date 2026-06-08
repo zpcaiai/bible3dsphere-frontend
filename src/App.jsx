@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { API_BASE, fetchBiblicalExample, fetchBibleVideo, fetchCommunityHeatmap, fetchDailySnapshot, fetchEmotionTrajectory, fetchFaithQA, fetchFeatureDetail, fetchGuidance, fetchHistory, fetchLayout, fetchMeditationQuestions, fetchSermon, fetchStats, fetchTTS, fetchVersePrayer, runQuery, saveJournal, trackStats, updateUserProfile, fetchMyChurch, regenerateChurchCode, leaveChurch } from './api'
+import { API_BASE, fetchHomeBootstrap, fetchBiblicalExample, fetchBibleVideo, fetchCommunityHeatmap, fetchDailySnapshot, fetchEmotionTrajectory, fetchFaithQA, fetchFeatureDetail, fetchGuidance, fetchHistory, fetchLayout, fetchMeditationQuestions, fetchSermon, fetchStats, fetchTTS, fetchVersePrayer, runQuery, saveJournal, trackStats, updateUserProfile, fetchMyChurch, regenerateChurchCode, leaveChurch } from './api'
 import ChurchOnboardingModal from './ChurchOnboardingModal'
 import GuardianWidget from './components/guardian/GuardianWidget'
 import SOSModal, { checkSOSKeywords } from './SOSModal'
@@ -197,8 +197,20 @@ function AppContent() {
   const [showQuickDevotion, setShowQuickDevotion] = useState(false)
 
   useEffect(() => {
-    fetchLayout().then((data) => setLayoutItems(data.items || [])).catch((err) => setError(String(err)))
-    fetchHistory().then((data) => setHistoryItems(data.items || [])).catch(() => {})
+    // 首屏聚合：一次请求拿 layout + history（替代两次跨境往返）。
+    // 聚合失败则回退到各自单接口（仍走 SWR 缓存）。
+    fetchHomeBootstrap().then((boot) => {
+      if (boot && boot.layout) {
+        setLayoutItems(boot.layout.items || [])
+        setHistoryItems(boot.history?.items || [])
+      } else {
+        fetchLayout().then((data) => setLayoutItems(data.items || [])).catch((err) => setError(String(err)))
+        fetchHistory().then((data) => setHistoryItems(data.items || [])).catch(() => {})
+      }
+    }).catch(() => {
+      fetchLayout().then((data) => setLayoutItems(data.items || [])).catch((err) => setError(String(err)))
+      fetchHistory().then((data) => setHistoryItems(data.items || [])).catch(() => {})
+    })
   }, [setLayoutItems, setHistoryItems, setError])
 
   useEffect(() => {

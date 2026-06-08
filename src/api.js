@@ -1954,3 +1954,15 @@ export function fetchEmotionTrajectory(token, limit = 30) {
 export function fetchCommunityHeatmap(windowHours = 24, topN = 8) {
   return swr('heatmap:' + windowHours + ':' + topN, () => _fetchCommunityHeatmapRaw(windowHours, topN), 3 * 60 * 1000)
 }
+
+// 首屏聚合：layout + ai_status + history 一次取回（替代 3 次跨境往返）。
+// 失败时返回 null，调用方回退到单接口。
+export async function fetchHomeBootstrap() {
+  try {
+    const res = await fetch(`${API_BASE}/home-bootstrap`)
+    if (!res.ok) return null
+    return await res.json()
+  } catch {
+    return null
+  }
+}
