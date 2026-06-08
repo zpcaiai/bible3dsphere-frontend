@@ -1497,9 +1497,6 @@ function AppContent() {
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <LanguageToggle />
-            {layoutItems.length > 0 && (
-              <span className="topbar-pill">{t('topbar.emotions', { n: layoutItems.length })}</span>
-            )}
             {user ? (
               <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
                 {user.avatar ? (
