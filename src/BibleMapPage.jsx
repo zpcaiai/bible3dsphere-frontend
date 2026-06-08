@@ -44,7 +44,7 @@ function eraOf(eras, year) {
 const REL_LABEL = { within: '隶属于', contains: '包含', adjacent: '相邻', capital_of: '首都：', borders: '接壤' }
 
 export default function BibleMapPage() {
-  const mapRef = useRef(null)
+  const mapNodeRef = useRef(null)   // 当前已初始化地图的 DOM 节点
   const adapterRef = useRef(null)
   const markersRef = useRef({})
   const playRef = useRef(null)
@@ -80,20 +80,33 @@ export default function BibleMapPage() {
     return () => { cancelled = true }
   }, [datasetId])
 
-  // 初始化地图（一次）
-  useEffect(() => {
-    let cancelled = false
+  // 地图容器 callback ref：组件重渲染会换 DOM 节点（dataset 加载前是占位节点，
+  // 加载后是真实可见节点）。每拿到一个新节点就把地图初始化/迁移过去，
+  // 否则地图会绑在已卸载的旧节点上 → 可见容器永远空白（整片灰）。
+  const mountMap = useCallback((node) => {
+    if (!node || node === mapNodeRef.current) {
+      // 节点未变：确保尺寸正确（子tab切回时容器从隐藏变可见）
+      if (node && adapterRef.current?.map?.invalidateSize) {
+        setTimeout(() => { try { adapterRef.current.map.invalidateSize() } catch (e) {} }, 60)
+      }
+      return
+    }
+    // 换了新节点 → 销毁旧地图，在新节点上重建
+    if (adapterRef.current) { try { adapterRef.current.destroy() } catch (e) {} ; adapterRef.current = null }
+    setReady(false)
+    mapNodeRef.current = node
     const adapter = createMapAdapter()
     adapterRef.current = adapter
     adapter
-      .init(mapRef.current, { center: [34, 31], zoom: 5, scrollWheelZoom: false })
-      .then(() => { if (cancelled) { adapter.destroy() } else setReady(true) })
-      .catch((e) => { if (!cancelled) setMapError(e.message || '地图加载失败') })
-    return () => {
-      cancelled = true
-      if (playRef.current) clearInterval(playRef.current)
-      adapter.destroy()
-    }
+      .init(node, { center: [34, 31], zoom: 5, scrollWheelZoom: false })
+      .then(() => { if (adapterRef.current === adapter) setReady(true) })
+      .catch((e) => setMapError(e.message || '地图加载失败'))
+  }, [])
+
+  // 卸载时清理
+  useEffect(() => () => {
+    if (playRef.current) clearInterval(playRef.current)
+    if (adapterRef.current) { try { adapterRef.current.destroy() } catch (e) {} }
   }, [])
 
   const variant = dataset && !dataset.temporal ? (dataset.variants.find((v) => v.id === variantId) || dataset.variants[0]) : null
@@ -237,10 +250,6 @@ export default function BibleMapPage() {
   if (!dataset) {
     return (
       <div className="biblemap-page">
-        {/* Keep map container in DOM so mapRef is always available for Leaflet init */}
-        <div style={{ visibility: 'hidden', pointerEvents: 'none' }}>
-          <div className="biblemap-map-wrap"><div ref={mapRef} className="biblemap-map" /></div>
-        </div>
         <div className="biblemap-loading">地图数据加载中…</div>
       </div>
     )
@@ -258,7 +267,7 @@ export default function BibleMapPage() {
 
   const MapBox = (
     <div className="biblemap-map-wrap">
-      <div ref={mapRef} className="biblemap-map" />
+      <div ref={mountMap} className="biblemap-map" />
       {mapError && (
         <div className="biblemap-map-fallback">
           🗺️ 地图瓦片加载失败{mapError ? `（${mapError}）` : ''}<br />
@@ -361,8 +370,6 @@ export default function BibleMapPage() {
     return (
       <div className="biblemap-page">
         {DatasetSelector}
-        {/* Keep map container in DOM so mapRef is always available for Leaflet init */}
-        <div style={{ visibility: 'hidden', pointerEvents: 'none' }}>{MapBox}</div>
         <div className="biblemap-loading">加载中…</div>
       </div>
     )
