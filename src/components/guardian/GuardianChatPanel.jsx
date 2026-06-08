@@ -182,7 +182,8 @@ export default function GuardianChatPanel() {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() }
           }}
-          style={{ ...S.input, flex: 1, maxHeight: 96 }}
+          style={{ ...S.input, flex: 1, padding: '4px 12px', lineHeight: 1.3,
+            fontSize: 'clamp(12px, 3.4vw, 13.5px)', maxHeight: 'min(48px, 10vh)' }}
         />
         <button type="button" onClick={submit} disabled={sending || !input.trim()}
           style={{ ...S.primaryBtn, opacity: sending || !input.trim() ? 0.4 : 1 }}>
