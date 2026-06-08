@@ -1,12 +1,14 @@
 // Guardian Widget API — 调用 bible3dsphere 后端 /api/guardian/*
 import { API_BASE, swr } from '../../api'
 import { getToken } from '../../auth'
+import { getRuntimeLang } from '../../i18n/runtime'
 
 const headers = (json = false) => {
   const token = getToken()
   return {
     ...(json ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    'X-Lang': getRuntimeLang(),
   }
 }
 

@@ -15,7 +15,6 @@ const namespacedZh = {
   'lang.switchTitle': '切换语言 / Switch language',
 
   'topbar.title': '属灵星球',
-  'topbar.emotions': '{n} 情绪',
   'topbar.defaultNickname': '弟兄',
   'topbar.userAlt': '用户',
   'topbar.community': '社区',
@@ -68,7 +67,6 @@ const namespacedEn = {
   'lang.switchTitle': '切换语言 / Switch language',
 
   'topbar.title': 'Soul Planet',
-  'topbar.emotions': '{n} emotions',
   'topbar.defaultNickname': 'Friend',
   'topbar.userAlt': 'User',
   'topbar.community': 'Community',
