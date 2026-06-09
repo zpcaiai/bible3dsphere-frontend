@@ -2,6 +2,7 @@
 // 支持「对话模式」：守护者说完后自动开麦，形成连续语音对话循环。
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpeechInput } from '../../hooks/useSpeechInput'
+import { pickVoiceFor, speechLangFor } from '../../voice'
 
 const DEEPGRAM_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY || 'a87cbb2d1ec9b07a456fb55319a104731924b12f'
 
@@ -60,9 +61,10 @@ export function useGuardianVoice({ onTranscript } = {}) {
     if (!synth || !cleaned) { onEnd?.(); return }
     synth.cancel()
     const utter = new SpeechSynthesisUtterance(cleaned)
-    const voice = pickVoice()
+    // EN 模式用英文嗓音(守护者文本在 EN 模式下已是英文)，ZH 用中文女声
+    const voice = pickVoiceFor(cleaned) || pickVoice()
     if (voice) utter.voice = voice
-    utter.lang = voice?.lang || 'zh-CN'
+    utter.lang = speechLangFor(cleaned) || voice?.lang || 'zh-CN'
     utter.rate = 0.95   // 慢一点，温柔陪伴的节奏
     utter.pitch = 1.05
     onSpeechEndRef.current = onEnd || null

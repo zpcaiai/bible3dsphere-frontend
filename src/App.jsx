@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { pickVoiceFor, speechLangFor } from './voice'
 import { API_BASE, fetchHomeBootstrap, fetchBiblicalExample, fetchBibleVideo, fetchCommunityHeatmap, fetchDailySnapshot, fetchEmotionTrajectory, fetchFaithQA, fetchFeatureDetail, fetchGuidance, fetchHistory, fetchLayout, fetchMeditationQuestions, fetchSermon, fetchStats, fetchTTS, fetchVersePrayer, runQuery, saveJournal, trackStats, updateUserProfile, fetchMyChurch, regenerateChurchCode, leaveChurch } from './api'
 import ChurchOnboardingModal from './ChurchOnboardingModal'
 import GuardianWidget from './components/guardian/GuardianWidget'
@@ -526,12 +527,12 @@ function AppContent() {
     
     window.speechSynthesis.cancel()
     const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'zh-CN'
+    utter.lang = speechLangFor(text)
     utter.rate = 0.85
     utter.pitch = 1.05
     
     let voices = window.speechSynthesis.getVoices()
-    const bestVoice = selectBestVoice(voices)
+    const bestVoice = pickVoiceFor(text) || selectBestVoice(voices)
     if (bestVoice) {
       utter.voice = bestVoice
       console.log('[TTS Native] 使用语音:', bestVoice.name)

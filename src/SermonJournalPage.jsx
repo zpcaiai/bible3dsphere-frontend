@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { pickVoiceFor, speechLangFor } from './voice'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { fetchSermonJournals, saveSermonJournal, deleteSermonJournal, toggleShareSermonJournal } from './api'
@@ -153,12 +154,11 @@ export default function SermonJournalPage({ user, token, onBack }) {
     if (!text) { alert(t("没有可播放的内容")); return }
     window.speechSynthesis.cancel()
     const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'zh-CN'
+    utter.lang = speechLangFor(text)
     utter.rate = 0.9
     utter.pitch = 1.05
-    const voices = window.speechSynthesis.getVoices()
-    const zhVoice = voices.find(v => v.lang?.startsWith('zh'))
-    if (zhVoice) utter.voice = zhVoice
+    const voice = pickVoiceFor(text)
+    if (voice) utter.voice = voice
     utter.onend = () => setTtsState('idle')
     utter.onerror = () => setTtsState('idle')
     window.speechSynthesis.speak(utter)

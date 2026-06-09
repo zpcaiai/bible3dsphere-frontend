@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { pickVoiceFor, speechLangFor } from './voice'
 import { createMapAdapter } from './map/createMapAdapter'
 import { loadBibleMap, BIBLE_MAPS, confidenceMeta, fetchTimeSlice, fetchRegions, fetchRelations, fetchLandmarks, landmarkNoteBySlug } from './data/bibleGeoSource'
 import { t } from './i18n/runtime'
@@ -25,7 +26,9 @@ function speak(text) {
     if (!('speechSynthesis' in window)) return
     window.speechSynthesis.cancel()
     const u = new SpeechSynthesisUtterance(text)
-    u.lang = 'zh-CN'
+    u.lang = speechLangFor(text)
+    const v = pickVoiceFor(text)
+    if (v) u.voice = v
     window.speechSynthesis.speak(u)
   } catch (e) { /* ignore */ }
 }
