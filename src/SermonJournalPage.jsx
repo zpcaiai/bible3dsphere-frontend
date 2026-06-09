@@ -840,7 +840,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             <div className="sj-detail-hero glass">
               <div className="sj-detail-date">{current.date}</div>
               <div className="sj-detail-title"><AutoText text={current.title || t("（未填写讲题）")} /></div>
-              {current.scripture && <div className="sj-detail-scripture">📜 {current.scripture}</div>}
+              {current.scripture && <div className="sj-detail-scripture">📜 <AutoText>{current.scripture}</AutoText></div>}
               {current.preacher && <div className="sj-detail-preacher">🎙 {current.preacher}</div>}
               <div className="sj-detail-progress-wrap">
                 <div className="sj-detail-progress-bar">
@@ -877,7 +877,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                 {current.practices.filter(p => p.trim()).map((p, i) => (
                   <div key={i} className="sj-detail-practice-row">
                     <span className="sj-detail-check">○</span>
-                    <span>{p}</span>
+                    <span><AutoText>{p}</AutoText></span>
                   </div>
                 ))}
               </div>
