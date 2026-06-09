@@ -11,15 +11,53 @@
 //  - 渐进：首帧先显示「auto-en 预填译文 / 原文」占位，机翻到达后替换。
 //  - ZH 模式：直接走 t()（即既有静态 auto-en 词典），不发任何请求。
 import { useEffect, useState } from 'react'
-import { getRuntimeLang, t } from './i18n/runtime'
+import { getRuntimeLang, t, setEnEntry, registerTranslationMiss } from './i18n/runtime'
 import { translateTexts } from './api'
 
 const CJK = /[一-鿿]/
 const cache = new Map()      // src -> translated
 const pending = new Set()    // 待翻译
 const inflight = new Set()   // 翻译中
+const tried = new Set()      // 已尝试(成功入缓存或失败)，避免渲染中重复请求
 const listeners = new Set()  // 重渲染订阅者
 let scheduled = false
+
+const LS_KEY = 'auto-tr-en-cache'
+
+// 启动注水：把上次会话译好的内容填回内存缓存 + en 词典，
+// 使静态 t() 文案与动态内容在「下次加载」即同步命中英文（不再闪中文）。
+function hydrate() {
+  if (typeof window === 'undefined') return
+  try {
+    const raw = window.localStorage.getItem(LS_KEY)
+    if (!raw) return
+    const obj = JSON.parse(raw)
+    for (const k in obj) { if (obj[k]) { cache.set(k, obj[k]); setEnEntry(k, obj[k]) } }
+  } catch { /* ignore */ }
+}
+hydrate()
+
+let _persistTimer = null
+function persist() {
+  if (typeof window === 'undefined' || _persistTimer) return
+  _persistTimer = setTimeout(() => {
+    _persistTimer = null
+    try {
+      const obj = {}
+      cache.forEach((v, k) => { obj[k] = v })
+      window.localStorage.setItem(LS_KEY, JSON.stringify(obj))
+    } catch { /* 配额满等忽略 */ }
+  }, 800)
+}
+
+// 统一入队（去重）
+function enqueue(s) {
+  if (!s || cache.has(s) || inflight.has(s) || tried.has(s)) return
+  tried.add(s); pending.add(s); schedule()
+}
+
+// 注入「EN 缺词」处理器：runtime.t() 缺词时把中文丢进来后台机翻
+registerTranslationMiss(enqueue)
 
 function notify() {
   listeners.forEach((fn) => { try { fn() } catch { /* ignore */ } })
@@ -34,7 +72,8 @@ function flush() {
   translateTexts(batch, 'en')
     .then((res) => {
       if (Array.isArray(res)) {
-        batch.forEach((s, i) => { const v = res[i]; if (v) cache.set(s, v) })
+        batch.forEach((s, i) => { const v = res[i]; if (v) { cache.set(s, v); setEnEntry(s, v) } })
+        persist()
       }
     })
     .catch(() => { /* 失败保留原文占位 */ })
@@ -61,7 +100,7 @@ export function requestTranslation(s) {
   // auto-en 预填命中（已是纯英文）：直接采用，省一次网络请求
   const pre = t(str)
   if (pre && pre !== str && !CJK.test(pre)) { cache.set(str, pre); return pre }
-  if (!inflight.has(str)) { pending.add(str); schedule() }
+  enqueue(str)
   return pre && pre !== str ? pre : str                // 占位
 }
 

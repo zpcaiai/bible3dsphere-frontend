@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { LanguageProvider } from './i18n/LanguageContext'
+import './autoTranslate.jsx' // 注册 EN 缺词实时翻译 + 注水缓存（须在页面模块前）
 import { registerServiceWorker } from './pwa'
 import './styles.css'
 

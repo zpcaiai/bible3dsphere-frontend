@@ -36,6 +36,15 @@ export function getRuntimeLang() {
 
 export { STORAGE_KEY }
 
+const _CJK = /[一-鿿]/
+let _missHandler = null
+// 注册「EN 缺词」处理器（由 autoTranslate 引擎注入：后台实时机翻 + 写回词典）
+export function registerTranslationMiss(fn) { _missHandler = fn }
+// 把运行时译好的「中文→英文」写回 en 词典，供后续 t() 同步命中
+export function setEnEntry(zh, en) {
+  if (zh && en && translations.en) translations.en[zh] = en
+}
+
 function interpolate(str, params) {
   if (!params) return str
   return str.replace(/\{(\w+)\}/g, (m, k) => (k in params ? String(params[k]) : m))
@@ -49,6 +58,11 @@ export function t(key, params) {
   const raw = (table && key in table) ? table[key]
     : (fallback && key in fallback) ? fallback[key]
     : key
+  // EN 模式仍是中文（auto-en 缺词）→ 触发后台实时机翻；译好写回词典 + localStorage，
+  // 下次（含下次加载）同步命中英文。本次先返回中文占位。
+  if (currentLang === 'en' && typeof raw === 'string' && _CJK.test(raw) && _missHandler) {
+    _missHandler(raw)
+  }
   return typeof raw === 'string' ? interpolate(raw, params) : raw
 }
 

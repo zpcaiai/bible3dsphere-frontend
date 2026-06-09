@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run i18n:fill",
     "build": "vite build",
     "i18n:fill": "node scripts/i18n_autoen_fill.mjs",
     "i18n:fill:dry": "node scripts/i18n_autoen_fill.mjs --dry-run",
