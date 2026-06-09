@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { API_BASE } from './api.js'
+import { API_BASE, langHeaders } from './api.js'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 import { t } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
@@ -227,7 +227,7 @@ function ScriptureVerses({ scriptureRef }) {
     setLoading(true)
     setVerses(null)
     setError(null)
-    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(scriptureRef)}`)
+    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(scriptureRef)}`, { headers: langHeaders(false) })
       .then(r => r.json())
       .then(d => {
         if (d.ok && d.verses?.length) setVerses(d)

@@ -964,8 +964,8 @@ export async function updateUserProfile(payload, token) {
 
 // ── Google Cloud Text-to-Speech ─────────────────────────────────
 export async function fetchScripture(ref) {
-  // ref e.g. "以赛亚书40:3" or "创世记1"
-  const r = await fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(ref)}`)
+  // ref e.g. "以赛亚书40:3" or "创世记1"; X-Lang=en → ESV English text
+  const r = await fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(ref)}`, { headers: langHeaders(false) })
   if (!r.ok) throw new Error(`scripture ${r.status}`)
   return r.json()  // {ok, ref, verses:[{verse,text},...]}
 }
@@ -1014,7 +1014,7 @@ export async function fetchSharedNotes(token = null, page = 1, limit = 20) {
 
 export async function fetchBibleStudy(book, chapter, verses, token = null) {
   console.log(`[api] fetchBibleStudy ${book} ${chapter}`)
-  const headers = { 'Content-Type': 'application/json' }
+  const headers = langHeaders(true)   // X-Lang=en → English study
   if (token) headers['Authorization'] = `Bearer ${token}`
   const response = await fetch(`${API_BASE}/bible/study`, {
     method: 'POST',

@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
-import { API_BASE } from './api.js'
+import { API_BASE, langHeaders } from './api.js'
 import { t } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
 
@@ -65,7 +65,7 @@ function ScriptureVerses({ scriptureRef, initialOpen = false }) {
   useEffect(() => {
     if (!scriptureRef) return
     setLoading(true); setVerses(null); setError(null)
-    fetch(`${API}/scripture?ref=${encodeURIComponent(scriptureRef)}`)
+    fetch(`${API}/scripture?ref=${encodeURIComponent(scriptureRef)}`, { headers: langHeaders(false) })
       .then(r => r.json())
       .then(d => { if (d.ok && d.verses?.length) setVerses(d); else setError(d.error || t("暂无经文")) })
       .catch(() => setError(t("加载失败")))

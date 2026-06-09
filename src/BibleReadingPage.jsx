@@ -5,7 +5,7 @@
  *   书卷列表 → 章节网格 → 章节阅读（完整经文 + 标记已读 + 上/下章）
  */
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture } from './api'
+import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture, langHeaders } from './api'
 import { TTSFullBar, TTSButton } from './useGlobalAudio.jsx'
 import { t } from './i18n/runtime'
 
@@ -236,7 +236,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
 
   const load = useCallback(() => {
     setVerses(null); setLoadErr(null)
-    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(book.name + chapter)}`)
+    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(book.name + chapter)}`, { headers: langHeaders(false) })
       .then(r => r.json())
       .then(d => {
         if (d.ok && d.verses?.length) setVerses(d.verses)
