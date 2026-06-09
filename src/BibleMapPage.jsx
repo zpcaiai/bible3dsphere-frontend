@@ -2,13 +2,18 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { pickVoiceFor, speechLangFor } from './voice'
 import { createMapAdapter } from './map/createMapAdapter'
 import { loadBibleMap, BIBLE_MAPS, confidenceMeta, fetchTimeSlice, fetchRegions, fetchRelations, fetchLandmarks, landmarkNoteBySlug } from './data/bibleGeoSource'
-import { t } from './i18n/runtime'
+import { t, getRuntimeLang } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 function popupHtml(p, cm, order) {
+  const en = getRuntimeLang() === 'en'
+  const title = en && p.name_en ? p.name_en : p.name_zh
+  const sub = en ? (p.name_zh || '') : (p.name_en || '')
+  const stn = en ? `Stop ${order}` : `第 ${order} 站`
   return `<div class="biblemap-pop">
-    <div class="biblemap-pop-no">第 ${order} 站 · ${p.scriptureRef || ''}</div>
-    <div class="biblemap-pop-name">${p.name_zh}</div>
-    <div class="biblemap-pop-en">${p.name_en || ''}</div>
+    <div class="biblemap-pop-no">${stn} · ${p.scriptureRef || ''}</div>
+    <div class="biblemap-pop-name">${title}</div>
+    <div class="biblemap-pop-en">${sub}</div>
     <div class="biblemap-pop-conf" style="color:${cm.color}">● ${cm.label}</div>
   </div>`
 }
@@ -286,13 +291,14 @@ export default function BibleMapPage() {
     const era = eraOf(dataset.eras, year)
     const minY = dataset.eras[0].start
     const maxY = dataset.eras[dataset.eras.length - 1].end
-    const yLabel = (y) => (y < 0 ? `公元前 ${-y}` : `公元 ${y}`)
-    const eraEndLabel = era.end <= 0 ? yLabel(era.end) : `公元 ${era.end}`
+    const _en = getRuntimeLang() === 'en'
+    const yLabel = (y) => (y < 0 ? (_en ? `${-y} BC` : `公元前 ${-y}`) : (_en ? `AD ${y}` : `公元 ${y}`))
+    const eraEndLabel = era.end <= 0 ? yLabel(era.end) : (_en ? `AD ${era.end}` : `公元 ${era.end}`)
     const colorBySlug = dataset.colorBySlug || {}
     return (
       <div className="biblemap-page">
         {DatasetSelector}
-        <div className="biblemap-hypo-desc">{dataset.subtitle}
+        <div className="biblemap-hypo-desc"><AutoText>{dataset.subtitle}</AutoText>
           <span className="biblemap-src">{slice?.source === 'api' ? t("· 数据源：后端") : t("· 数据源：本地")}</span>
         </div>
         {MapBox}
@@ -308,23 +314,23 @@ export default function BibleMapPage() {
               <button key={e.id}
                 className={`biblemap-era-chip ${e.id === era.id ? 'active' : ''}`}
                 onClick={() => setYear(Math.round((e.start + e.end) / 2))}>
-                {e.name_zh || e.label}
+                <AutoText>{e.name_zh || e.label}</AutoText>
               </button>
             ))}
           </div>
         </div>
         <div className="biblemap-detail">
           <div className="biblemap-detail-head">
-            <div className="biblemap-detail-no">{era.label} · {era.ref}</div>
-            <div className="biblemap-detail-title">{dataset.kind === 'regions' ? era.label : (slice?.name_zh || era.name_zh)}</div>
+            <div className="biblemap-detail-no"><AutoText>{era.label}</AutoText> · {era.ref}</div>
+            <div className="biblemap-detail-title">{dataset.kind === 'regions' ? <AutoText>{era.label}</AutoText> : (getRuntimeLang() === 'en' ? (slice?.name_en || era.name_en || slice?.name_zh || era.name_zh) : (slice?.name_zh || era.name_zh))}</div>
             <div className="biblemap-detail-sub">{dataset.kind === 'regions'
-              ? `${yLabel(era.start)} – ${eraEndLabel} · ${slice?.regions?.length || 0} 个疆域`
+              ? `${yLabel(era.start)} – ${eraEndLabel} · ${slice?.regions?.length || 0} ${_en ? 'regions' : '个疆域'}`
               : `${slice?.name_en || era.name_en} · ${yLabel(era.start)} – ${eraEndLabel}`}</div>
             <span className="biblemap-conf-badge" style={{ color: confidenceMeta.approximate.color, borderColor: confidenceMeta.approximate.color }}>{t("● 疆域范围为示意")}</span>
           </div>
           <div className="biblemap-events">
             <div className="biblemap-event">
-              <div className="biblemap-event-summary">{era.note}</div>
+              <div className="biblemap-event-summary"><AutoText>{era.note}</AutoText></div>
             </div>
           </div>
 
@@ -332,7 +338,7 @@ export default function BibleMapPage() {
             <div className="biblemap-region-grid">
               {slice.landmarks.map((l) => (
                 <span key={l.slug} className="biblemap-region-chip biblemap-region-chip-static">
-                  <i style={{ background: '#22d3ee' }} />{l.name_zh}
+                  <i style={{ background: '#22d3ee' }} />{getRuntimeLang() === 'en' && l.name_en ? l.name_en : l.name_zh}
                 </span>
               ))}
             </div>
@@ -346,9 +352,9 @@ export default function BibleMapPage() {
                     className={`biblemap-region-chip ${regionRel?.slug === r.slug ? 'active' : ''}`}
                     onClick={async () => {
                       const rels = await fetchRelations(r.slug, year)
-                      setRegionRel({ slug: r.slug, name: r.name_zh, rels })
+                      setRegionRel({ slug: r.slug, name: (getRuntimeLang() === 'en' && r.name_en ? r.name_en : r.name_zh), rels })
                     }}>
-                    <i style={{ background: colorBySlug[r.slug] || '#ffd700' }} />{r.name_zh}
+                    <i style={{ background: colorBySlug[r.slug] || '#ffd700' }} />{getRuntimeLang() === 'en' && r.name_en ? r.name_en : r.name_zh}
                   </button>
                 ))}
               </div>
@@ -357,7 +363,7 @@ export default function BibleMapPage() {
                   <div className="biblemap-relations-title">{regionRel.name} {t("· 拓扑关系")}</div>
                   {regionRel.rels.length ? regionRel.rels.map((rl, i) => (
                     <div key={i} className="biblemap-relation">
-                      {REL_LABEL[rl.relation_type] || rl.relation_type} <b>{rl.other_name || rl.other_slug}</b>
+                      {REL_LABEL[rl.relation_type] || rl.relation_type} <b><AutoText>{rl.other_name || rl.other_slug}</AutoText></b>
                     </div>
                   )) : <div className="biblemap-relation biblemap-relation-empty">{t("（暂无关系记录，或后端未启用）")}</div>}
                 </div>
@@ -383,7 +389,7 @@ export default function BibleMapPage() {
   const idx = STN.findIndex((s) => s.properties.id === selected.properties.id)
   const hasYears = variant?.startYear != null && variant?.endYear != null && STN.length > 1
   const stationYears = hasYears ? STN.map((_, i) => Math.round(variant.startYear + (variant.endYear - variant.startYear) * i / (STN.length - 1))) : null
-  const jYLabel = (y) => (y < 0 ? `约公元前 ${-y}` : `约公元 ${y}`)
+  const jYLabel = (y) => (getRuntimeLang() === 'en' ? (y < 0 ? `c. ${-y} BC` : `c. AD ${y}`) : (y < 0 ? `约公元前 ${-y}` : `约公元 ${y}`))
   const curYear = hasYears ? stationYears[idx < 0 ? 0 : idx] : null
   const selectByYear = (y) => { if (!stationYears) return; let i = 0; for (let k = 0; k < stationYears.length; k++) { if (stationYears[k] <= y) i = k }; selectStation(STN[i]) }
 
@@ -394,11 +400,11 @@ export default function BibleMapPage() {
         {dataset.variants.map((h) => (
           <button key={h.id} className={`biblemap-hypo-btn ${h.id === variantId ? 'active' : ''}`}
             style={{ '--hc': h.color }} onClick={() => setVariantId(h.id)} title={h.description}>
-            <i style={{ background: h.color }} />{h.label}
+            <i style={{ background: h.color }} /><AutoText>{h.label}</AutoText>
           </button>
         ))}
       </div>
-      <div className="biblemap-hypo-desc">{variant.description}
+      <div className="biblemap-hypo-desc"><AutoText>{variant.description}</AutoText>
         <span className="biblemap-src">{dataset.source === 'api' ? t("· 数据源：后端") : t("· 数据源：本地")}</span>
       </div>
       {MapBox}
@@ -420,14 +426,14 @@ export default function BibleMapPage() {
           aria-label={t("行程进度")}
         />
         <div className="biblemap-axis-ends">
-          <span>{STN[0]?.properties.name_zh}{hasYears ? ` · ${jYLabel(stationYears[0])}` : ''}</span>
-          <span>{STN[STN.length - 1]?.properties.name_zh}{hasYears ? ` · ${jYLabel(stationYears[STN.length - 1])}` : ''}</span>
+          <span>{getRuntimeLang() === 'en' && STN[0]?.properties.name_en ? STN[0].properties.name_en : STN[0]?.properties.name_zh}{hasYears ? ` · ${jYLabel(stationYears[0])}` : ''}</span>
+          <span>{getRuntimeLang() === 'en' && STN[STN.length - 1]?.properties.name_en ? STN[STN.length - 1].properties.name_en : STN[STN.length - 1]?.properties.name_zh}{hasYears ? ` · ${jYLabel(stationYears[STN.length - 1])}` : ''}</span>
         </div>
       </div>
       <div className="biblemap-detail">
         <div className="biblemap-detail-head">
           <div className="biblemap-detail-no">{t("第")} {idx + 1} {t("站")}{p.scriptureRef ? ` · ${p.scriptureRef}` : ''}</div>
-          <div className="biblemap-detail-title">{p.name_zh}</div>
+          <div className="biblemap-detail-title">{getRuntimeLang() === 'en' && p.name_en ? p.name_en : p.name_zh}</div>
           <div className="biblemap-detail-sub">{p.name_en}{p.name_he ? ` · ${p.name_he}` : ''}</div>
           <span className="biblemap-conf-badge" style={{ color: cm.color, borderColor: cm.color }}>● {cm.label}</span>
         </div>
@@ -436,10 +442,10 @@ export default function BibleMapPage() {
             {p.events.map((ev, i) => (
               <div key={i} className="biblemap-event">
                 <div className="biblemap-event-title">
-                  {ev.title}<span className="biblemap-event-ref">{ev.ref}</span>
+                  <AutoText>{ev.title}</AutoText><span className="biblemap-event-ref">{ev.ref}</span>
                   <button className="biblemap-tts" onClick={() => speak(`${ev.title}。${ev.summary}`)} title={t("朗读")} aria-label={t("朗读")}>🔊</button>
                 </div>
-                <div className="biblemap-event-summary">{ev.summary}</div>
+                <div className="biblemap-event-summary"><AutoText>{ev.summary}</AutoText></div>
                 {ev.image && (
                   <img className="biblemap-event-img" src={ev.image} alt={ev.title} loading="lazy"
                     onError={(e) => { e.currentTarget.style.display = 'none' }} />
@@ -458,7 +464,7 @@ export default function BibleMapPage() {
             style={{ '--c': (confidenceMeta[f.properties.confidence] || confidenceMeta.unknown).color }}
             onClick={() => selectStation(f)}>
             <span className="biblemap-chip-no">{i + 1}</span>
-            <span className="biblemap-chip-name">{f.properties.name_zh}</span>
+            <span className="biblemap-chip-name">{getRuntimeLang() === 'en' && f.properties.name_en ? f.properties.name_en : f.properties.name_zh}</span>
           </button>
         ))}
       </div>

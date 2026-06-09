@@ -2,6 +2,7 @@
 // 失败/离线时回退到本地静态 GeoJSON。后端只提供几何+时代正确的地名+经文，
 // 事件(events)与置信度(confidence)等展示元数据始终来自本地静态文件，按 order 合并。
 import { API_BASE } from '../api'
+import { getRuntimeLang } from '../i18n/runtime'
 import { exodusStations, exodusRoute, routeHypotheses, confidenceMeta } from './exodusStations'
 
 const LOCAL_STATIONS = exodusStations.features
@@ -17,7 +18,7 @@ async function tryFetchExodus() {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
-    const res = await fetch(`${API_BASE}/geo/exodus`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/exodus`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
     if (!data?.stations?.features?.length) throw new Error('空数据')
@@ -90,7 +91,7 @@ async function tryFetchPaul() {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
-    const res = await fetch(`${API_BASE}/geo/paul`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/paul`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
     if (!data?.features?.length) throw new Error('空数据')
@@ -164,7 +165,7 @@ export async function fetchLandmarks(year) {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
-    const res = await fetch(`${API_BASE}/geo/landmarks?year=${year}`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/landmarks?year=${year}`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const fc = await res.json()
     return { fc, source: 'api' }
@@ -179,7 +180,7 @@ export async function fetchTimeSlice(slug, year) {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
-    const res = await fetch(`${API_BASE}/geo/timeline?slug=${encodeURIComponent(slug)}&year=${year}`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/timeline?slug=${encodeURIComponent(slug)}&year=${year}`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
     if (!data?.geometry) throw new Error('空')
@@ -207,7 +208,7 @@ export async function fetchRegions(year) {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
-    const res = await fetch(`${API_BASE}/geo/regions?year=${year}`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/regions?year=${year}`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const fc = await res.json()
     if (!fc?.features?.length) throw new Error('空')
@@ -223,7 +224,7 @@ export async function fetchRelations(slug, year) {
   const t = setTimeout(() => ctrl.abort(), 3500)
   try {
     const q = year != null ? `?slug=${encodeURIComponent(slug)}&year=${year}` : `?slug=${encodeURIComponent(slug)}`
-    const res = await fetch(`${API_BASE}/geo/relations${q}`, { signal: ctrl.signal })
+    const res = await fetch(`${API_BASE}/geo/relations${q}`, { signal: ctrl.signal, headers: { 'X-Lang': getRuntimeLang() } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
     return data.relations || []

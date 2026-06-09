@@ -8,6 +8,8 @@ import { DetailPanel } from './DetailPanel'
 import { AICommentaryPanel } from './AICommentaryPanel'
 import { DEFAULT_YEAR, DISCLAIMER } from '../domain/constants'
 import { formatYear } from '../lib/format'
+import { t, getRuntimeLang } from '../../../i18n/runtime'
+import { pickVal } from '../../../i18n/pickLang'
 import { PROPHECY_COLORS } from '../lib/colors'
 import { fetchTerritories, fetchEvents, fetchProphecies, fetchCampaigns } from '../lib/dataSource'
 import type {
@@ -65,7 +67,7 @@ export function BibleMapClient() {
     if (layer === 'prophecies') {
       return (
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <div className="mb-2 text-xs text-gray-400">先知预言（点击发射预言射线）</div>
+          <div className="mb-2 text-xs text-gray-400">{t('先知预言（点击发射预言射线）')}</div>
           <ul className="space-y-1.5">
             {prophecies.map((p) => (
               <li key={p.id}>
@@ -77,7 +79,7 @@ export function BibleMapClient() {
                   }`}
                 >
                   <span className="mr-2 inline-block h-2 w-2 rounded-full align-middle" style={{ background: PROPHECY_COLORS[p.prophecyType] }} />
-                  <span className="font-semibold text-gray-100">{p.book} {p.chapterStart} · 论{p.targetNationZh}</span>
+                  <span className="font-semibold text-gray-100">{p.book} {p.chapterStart} · {getRuntimeLang() === 'en' ? 'on ' : '论'}{pickVal(p.targetNationZh, p.targetNation)}</span>
                 </button>
               </li>
             ))}
@@ -88,7 +90,7 @@ export function BibleMapClient() {
     if (layer === 'campaigns') {
       return (
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <div className="mb-2 text-xs text-gray-400">战役（点击播放路线）</div>
+          <div className="mb-2 text-xs text-gray-400">{t('战役（点击播放路线）')}</div>
           <ul className="space-y-1.5">
             {campaigns.map((c) => (
               <li key={c.id}>
@@ -99,8 +101,8 @@ export function BibleMapClient() {
                     campaignForMap?.id === c.id ? 'border-amber-400/60 bg-amber-400/10' : 'border-white/10 bg-white/[0.03] hover:bg-white/10'
                   }`}
                 >
-                  <div className="font-semibold text-gray-100">{c.nameZh}</div>
-                  <div className="text-[11px] text-gray-400">{formatYear(c.startYear)}{c.commanderZh ? ` · ${c.commanderZh}` : ''}</div>
+                  <div className="font-semibold text-gray-100">{pickVal(c.nameZh, c.name)}</div>
+                  <div className="text-[11px] text-gray-400">{formatYear(c.startYear)}{(c.commanderZh || c.commander) ? ` · ${pickVal(c.commanderZh, c.commander)}` : ''}</div>
                 </button>
               </li>
             ))}

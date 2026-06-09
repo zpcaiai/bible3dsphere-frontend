@@ -6,6 +6,7 @@ import { territoriesToFeatureCollection, SOURCE_IDS, LAYER_IDS } from '../lib/ma
 import { featureCollection, feature, point, lineBetween, bboxOf } from '../lib/geojson'
 import { PROPHECY_COLORS } from '../lib/colors'
 import { DEFAULT_CENTER, DEFAULT_ZOOM, JERUSALEM } from '../domain/constants'
+import { t } from '../../../i18n/runtime'
 import type {
   BibleCampaignDTO,
   BibleMapEventDTO,
@@ -101,7 +102,7 @@ export function MapCanvas({
     // 兜底：某些环境 'load' 迟迟不触发（后台标签 rAF 节流、首帧延迟）→ 6s 强制进入。
     const loadTimer = setTimeout(() => {
       if (!loadedRef.current) {
-        try { enter() } catch { setPhase('error'); setErrMsg('地图加载失败（请检查网络后重试）') }
+        try { enter() } catch { setPhase('error'); setErrMsg(t('地图加载失败（请检查网络后重试）')) }
       }
     }, 6000)
 
@@ -331,13 +332,13 @@ export function MapCanvas({
             {phase === 'error' ? (
               <>
                 <div className="mb-2 text-3xl">🗺️</div>
-                <p className="text-sm text-gray-300">{errMsg || '地图加载失败'}</p>
-                <p className="mt-1 text-xs text-gray-500">左侧时间轴、图层、事件与右侧详情仍可正常使用。</p>
+                <p className="text-sm text-gray-300">{errMsg || t('地图加载失败')}</p>
+                <p className="mt-1 text-xs text-gray-500">{t('左侧时间轴、图层、事件与右侧详情仍可正常使用。')}</p>
               </>
             ) : (
               <>
                 <div className="mb-2 animate-pulse text-2xl">🗺️</div>
-                <p className="text-sm text-gray-400">地图加载中…</p>
+                <p className="text-sm text-gray-400">{t('地图加载中…')}</p>
               </>
             )}
           </div>

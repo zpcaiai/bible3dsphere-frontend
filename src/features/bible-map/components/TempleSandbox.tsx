@@ -9,6 +9,8 @@ import {
 import { formatYear } from '../lib/format'
 import { DISCLAIMER } from '../domain/constants'
 import type { GeoJsonPolygon } from '../domain/types'
+import { t } from '../../../i18n/runtime'
+import { AutoText } from '../../../autoTranslate.jsx'
 
 const SRC = 'temple-structures'
 const LYR = 'temple-structures-3d'
@@ -113,11 +115,11 @@ export function TempleSandbox({ onBack }: Props) {
     <div className="flex h-screen flex-col">
       <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
         <div>
-          <h1 className="text-lg font-bold text-white">🏛️ 圣殿山数字孪生沙盘</h1>
-          <p className="text-xs text-gray-400">拖动时间轴，看耶路撒冷圣殿山从禾场到希律圣殿的「平地起高楼」</p>
+          <h1 className="text-lg font-bold text-white">{t('🏛️ 圣殿山数字孪生沙盘')}</h1>
+          <p className="text-xs text-gray-400">{t('拖动时间轴，看耶路撒冷圣殿山从禾场到希律圣殿的「平地起高楼」')}</p>
         </div>
         <button onClick={onBack} className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-200 hover:bg-white/10">
-          ‹ 返回地图
+          {t('‹ 返回地图')}
         </button>
       </header>
 
@@ -127,22 +129,22 @@ export function TempleSandbox({ onBack }: Props) {
         {/* 时代信息卡 */}
         <div className="absolute left-4 top-4 max-w-sm rounded-xl border border-white/10 bg-black/70 p-4 backdrop-blur">
           <div className="text-xs text-amber-400">{formatYear(era.year)}</div>
-          <h2 className="mb-1 text-base font-bold text-white">{era.label}</h2>
-          <p className="text-sm leading-relaxed text-gray-300">{era.note}</p>
+          <h2 className="mb-1 text-base font-bold text-white"><AutoText>{era.label}</AutoText></h2>
+          <p className="text-sm leading-relaxed text-gray-300"><AutoText>{era.note}</AutoText></p>
         </div>
       </div>
 
       {/* 时间轴 */}
       <div className="border-t border-white/10 px-4 py-3">
         <div className="mb-1 flex items-center justify-between">
-          <span className="text-xs text-gray-400">时代</span>
+          <span className="text-xs text-gray-400">{t('时代')}</span>
           <span className="text-sm font-bold text-amber-400">{formatYear(year)}</span>
         </div>
         <input
           type="range" min={YEAR_MIN} max={YEAR_MAX} step={10} value={year}
           onChange={(e) => setYear(Number.parseInt(e.target.value, 10))}
           className="w-full accent-amber-400"
-          aria-label="圣殿时代时间轴"
+          aria-label={t('圣殿时代时间轴')}
         />
         <div className="mt-2 flex flex-wrap gap-2">
           {templeEras.map((e) => (
@@ -156,7 +158,7 @@ export function TempleSandbox({ onBack }: Props) {
                   : 'border-white/10 bg-white/5 text-gray-300 hover:bg-white/10'
               }`}
             >
-              {e.label}
+              <AutoText>{e.label}</AutoText>
             </button>
           ))}
         </div>

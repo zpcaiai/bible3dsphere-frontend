@@ -1,4 +1,5 @@
 import './bible-map.css'
+import { t, getRuntimeLang } from '../../i18n/runtime'
 import { useState } from 'react'
 import { BibleMapClient } from './components/BibleMapClient'
 import { TempleSandbox } from './components/TempleSandbox'
@@ -29,15 +30,15 @@ export default function BibleAtlasPage({ onBack }: Props) {
             </button>
           )}
           <div>
-            <h1 className="text-lg font-bold text-white">圣经地图集 · Bible Atlas</h1>
-            <p className="text-xs text-gray-400">十二支派 · 士师 · 列国兴衰 · 先知预言 · 帝国扩张 · 基甸战役</p>
+            <h1 className="text-lg font-bold text-white">{getRuntimeLang() === 'en' ? 'Bible Atlas' : '圣经地图集 · Bible Atlas'}</h1>
+            <p className="text-xs text-gray-400">{t('十二支派 · 士师 · 列国兴衰 · 先知预言 · 帝国扩张 · 基甸战役')}</p>
           </div>
         </div>
         <button
           onClick={() => setView('temple')}
           className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-sm text-amber-300 hover:bg-amber-400/20"
         >
-          🏛️ 3D 圣殿沙盘
+          {t('🏛️ 3D 圣殿沙盘')}
         </button>
       </header>
       <div className="flex-1">

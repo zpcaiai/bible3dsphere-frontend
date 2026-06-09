@@ -5,7 +5,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { JERU_ERAS, TEMPLE_CENTER, PASSION_WEEK, eraGeoJSON, locationsFor, JERU_LOCATIONS } from './data/jerusalemChronology'
 import { TEMPLE_GEOJSON, TEMPLE_PARTS, TEMPLE_LABELS, TEMPLE_CAMERA } from './data/templeStructure'
-import { t } from './i18n/runtime'
+import { t, getRuntimeLang } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const TOKEN = (import.meta.env && (import.meta.env.NEXT_PUBLIC_MAPBOX_TOKEN || import.meta.env.VITE_MAPBOX_TOKEN)) || ''
 const MAPBOX_VER = '3.7.0'
@@ -454,8 +455,8 @@ export default function JerusalemSandbox({ onBack }) {
       <div className="jeru-timeline">
         {JERU_ERAS.map((e, i) => (
           <button key={e.id} className={`jeru-era ${i === eraIdx ? 'on' : ''}`} onClick={() => setEraIdx(i)}>
-            <span className="y">{e.year < 0 ? `前${Math.abs(e.year)}` : e.year}</span>
-            <span className="l">{e.label}</span>
+            <span className="y">{e.year < 0 ? (getRuntimeLang() === 'en' ? `${Math.abs(e.year)} BC` : `前${Math.abs(e.year)}`) : e.year}</span>
+            <span className="l"><AutoText>{e.label}</AutoText></span>
           </button>
         ))}
       </div>
@@ -495,11 +496,11 @@ export default function JerusalemSandbox({ onBack }) {
       {/* 时期说明 */}
       <div className="jeru-erainfo" style={{ borderColor: '#e8b04b55' }}>
         <div className="jeru-erainfo-h">
-          <strong>{era.label}</strong>
+          <strong><AutoText>{era.label}</AutoText></strong>
           <span className="en">{era.en}</span>
           <span className="ref">{era.ref}</span>
         </div>
-        <p>{era.desc}</p>
+        <p><AutoText>{era.desc}</AutoText></p>
       </div>
 
       {/* 受难周分站 */}
@@ -508,14 +509,14 @@ export default function JerusalemSandbox({ onBack }) {
         <div className="jeru-stops">
           {PASSION_WEEK.map((s, i) => (
             <button key={i} className={`jeru-stop ${passionStop === i ? 'on' : ''}`} onClick={() => jumpStop(i)}>
-              <span className="d">{s.day}</span><span className="t">{s.title}</span>
+              <span className="d"><AutoText>{s.day}</AutoText></span><span className="t"><AutoText>{s.title}</AutoText></span>
             </button>
           ))}
         </div>
         {passionStop >= 0 && (
           <div className="jeru-stopdetail">
-            <div className="h"><strong>{PASSION_WEEK[passionStop].title}</strong><span className="ref">{PASSION_WEEK[passionStop].ref}</span></div>
-            <p>{PASSION_WEEK[passionStop].summary}</p>
+            <div className="h"><strong><AutoText>{PASSION_WEEK[passionStop].title}</AutoText></strong><span className="ref">{PASSION_WEEK[passionStop].ref}</span></div>
+            <p><AutoText>{PASSION_WEEK[passionStop].summary}</AutoText></p>
           </div>
         )}
       </div>
@@ -531,9 +532,9 @@ export default function JerusalemSandbox({ onBack }) {
       {selectedPart && (
         <div className="jeru-locdetail" style={{ borderColor: 'rgba(232,176,75,0.55)' }}>
           <button className="x" onClick={() => setSelectedPart(null)}>×</button>
-          <div className="h"><strong>{selectedPart.name}</strong><span className="ref">{selectedPart.ref}</span></div>
-          {selectedPart.dims && <p className="jeru-part-dims">📐 {selectedPart.dims}</p>}
-          <p>{selectedPart.desc}</p>
+          <div className="h"><strong><AutoText>{selectedPart.name}</AutoText></strong><span className="ref">{selectedPart.ref}</span></div>
+          {selectedPart.dims && <p className="jeru-part-dims">📐 <AutoText>{selectedPart.dims}</AutoText></p>}
+          <p><AutoText>{selectedPart.desc}</AutoText></p>
         </div>
       )}
 
@@ -541,8 +542,8 @@ export default function JerusalemSandbox({ onBack }) {
       {selectedLoc && (
         <div className="jeru-locdetail">
           <button className="x" onClick={() => setSelectedLoc(null)}>×</button>
-          <div className="h"><strong>{selectedLoc.name_zh}</strong><span className="en">{selectedLoc.name_en}</span><span className="ref">{selectedLoc.ref}</span></div>
-          <p>{selectedLoc.note}</p>
+          <div className="h"><strong>{getRuntimeLang() === 'en' && selectedLoc.name_en ? selectedLoc.name_en : selectedLoc.name_zh}</strong><span className="en">{selectedLoc.name_en}</span><span className="ref">{selectedLoc.ref}</span></div>
+          <p><AutoText>{selectedLoc.note}</AutoText></p>
         </div>
       )}
 

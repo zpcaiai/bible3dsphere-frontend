@@ -1,3 +1,4 @@
+import { t } from '../i18n/runtime'
 // 出埃及与旷野漂流 — 民数记33章 42个安营站点
 // GeoJSON FeatureCollection。geometry 坐标为 [lng, lat]（GeoJSON 标准）。
 //
@@ -130,9 +131,9 @@ export const exodusRoute = {
 }
 
 export const confidenceMeta = {
-  identified:  { label: '考古较确定', color: '#4ade80' },
-  approximate: { label: '传统推定',   color: '#fbbf24' },
-  unknown:     { label: '地点失考',   color: '#94a3b8' },
+  identified:  { label: t('考古较确定'), color: '#4ade80' },
+  approximate: { label: t('传统推定'),   color: '#fbbf24' },
+  unknown:     { label: t('地点失考'),   color: '#94a3b8' },
 }
 
 // 路线假说变体（供地图选择器使用）
