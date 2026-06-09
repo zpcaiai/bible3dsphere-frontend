@@ -9,6 +9,7 @@ import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 import HymnPlayer from './HymnPlayer'
 import DiscipleFormationView from './DiscipleFormationView'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 // Deepgram API Key for voice input - 支持从环境变量读取
 const DEEPGRAM_API_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY || 'a87cbb2d1ec9b07a456fb55319a104731924b12f'
@@ -1088,7 +1089,7 @@ export default function PrayerWallPage({ user, token, onBack }) {
                           </div>
                         </div>
                       ) : (
-                        <div className="pw-card-content" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7' }}>{prayer.content}</div>
+                        <div className="pw-card-content" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7' }}><AutoText>{prayer.content}</AutoText></div>
                       )}
                       {prayer.status && (
                         <div style={{ padding: '4px 0 2px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>

@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { diagnoseGospel, fetchGospelHistory } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const STEPS = [
   { key: 'event',   q: t("发生了什么事？"), ph: t("客观地描述这件事，像在跟朋友讲…") },
@@ -101,15 +102,15 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
             {/* 司布真 · 牧养 */}
             <div style={{ ...card, borderColor: 'rgba(255,212,59,0.3)' }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#ffd43b', marginBottom: 12 }}>{t("🕊 司布真 · 牧养（带回基督）")}</div>
-              <Block label={t("福音真理")}>{result.gospel_truth}</Block>
+              <Block label={t("福音真理")}><AutoText>{result.gospel_truth}</AutoText></Block>
               {result.scripture?.text && (
                 <div style={{ borderLeft: '3px solid rgba(167,139,250,0.5)', paddingLeft: 10, margin: '10px 0', fontSize: 13, color: 'rgba(255,255,255,0.78)', fontStyle: 'italic' }}>
                   「{result.scripture.text}」<span style={{ color: 'rgba(167,139,250,0.85)', fontStyle: 'normal' }}> —— {result.scripture.ref}</span>
                 </div>
               )}
-              <Block label={t("默想")}>{result.meditation}</Block>
-              <Block label={t("祷告")}>{result.prayer}</Block>
-              <Block label={t("今日信心行动")} color="#5ac8fa">{result.action}</Block>
+              <Block label={t("默想")}><AutoText>{result.meditation}</AutoText></Block>
+              <Block label={t("祷告")}><AutoText>{result.prayer}</AutoText></Block>
+              <Block label={t("今日信心行动")} color="#5ac8fa"><AutoText>{result.action}</AutoText></Block>
             </div>
 
             <button onClick={restart} style={{ ...btn('rgba(255,255,255,0.08)'), color: 'rgba(255,255,255,0.7)' }}>{t("再做一次诊断")}</button>

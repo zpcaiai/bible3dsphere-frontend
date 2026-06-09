@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchDailySoulQuestion, saveSoulAnswer, fetchSoulQuestionHistory } from './api'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const LOOP_LABELS = {
   fear_control_loop: t("🔒 恐惧控制"),
@@ -122,7 +123,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                     {questionData.date} {t("· 今日一问")}
                   </div>
                   <div style={{ fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
-                    {questionData.question}
+                    <AutoText>{questionData.question}</AutoText>
                   </div>
                 </div>
 
@@ -135,7 +136,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                       borderRadius: 12, padding: '16px', fontSize: 15, color: 'rgba(255,255,255,0.85)',
                       lineHeight: 1.7, whiteSpace: 'pre-wrap',
                     }}>
-                      {answer}
+                      <AutoText>{answer}</AutoText>
                     </div>
                     <div style={{ marginTop: 12, fontSize: 12, color: 'rgba(52,199,89,0.8)', textAlign: 'center' }}>
                       {t("✅ 已记录，明日再见")}
@@ -213,10 +214,10 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                     )}
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#e0d4ff', marginBottom: 8, lineHeight: 1.5 }}>
-                    {item.question}
+                    <AutoText>{item.question}</AutoText>
                   </div>
                   <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.65, whiteSpace: 'pre-wrap', borderLeft: '2px solid rgba(88,86,214,0.4)', paddingLeft: 10 }}>
-                    {item.answer}
+                    <AutoText>{item.answer}</AutoText>
                   </div>
                   {item.saved_to_journal && (
                     <div style={{ marginTop: 6, fontSize: 11, color: '#34c759' }}>{t("📔 已存入灵修日记")}</div>

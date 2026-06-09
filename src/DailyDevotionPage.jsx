@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { API_BASE } from './api.js'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 // ── Chinese month / day labels ────────────────────────────────────────────────
 const MONTH_LABELS = [t("一月"),t("二月"),t("三月"),t("四月"),t("五月"),t("六月"),
@@ -401,7 +402,7 @@ export default function DailyDevotionPage({ onBack }) {
                   <span>{t("✨ 今日金句")}</span>
                   <TTSButton text={devotion.quote} />
                 </div>
-                <div style={S.quoteBox}>{devotion.quote}</div>
+                <div style={S.quoteBox}><AutoText>{devotion.quote}</AutoText></div>
               </>
             )}
 
@@ -412,7 +413,7 @@ export default function DailyDevotionPage({ onBack }) {
                   <span>{t("📖 灵修正文")}</span>
                   <TTSButton text={devotion.body} />
                 </div>
-                <div style={S.bodyText}>{devotion.body}</div>
+                <div style={S.bodyText}><AutoText>{devotion.body}</AutoText></div>
               </>
             )}
 

@@ -7,6 +7,7 @@ import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 import { fetchSharedNotes, toggleShareNote, amenSharedNote, toggleShareSermonJournal, fetchSundaySchoolVideos } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 // 读取旧的 localStorage 分享记录（来自 ChatPage / DevotionNotePage / SermonJournalPage）
 function getLegacySharedNotes() {
@@ -294,7 +295,7 @@ function FaithDocumentView() {
                 </button>
                 {open && (
                   <div style={{ padding: '0 14px 14px', fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 1.8 }}>
-                    {item.body}
+                    <AutoText>{item.body}</AutoText>
                   </div>
                 )}
               </div>
@@ -330,7 +331,7 @@ function FaithDocumentView() {
                     </button>
                     {open && (
                       <div style={{ padding: '0 14px 14px', fontSize: 12.5, color: 'rgba(255,255,255,0.65)', lineHeight: 1.85, whiteSpace: 'pre-wrap', fontStyle: sub.creed ? 'italic' : 'normal' }}>
-                        {item.body}
+                        <AutoText>{item.body}</AutoText>
                       </div>
                     )}
                   </div>

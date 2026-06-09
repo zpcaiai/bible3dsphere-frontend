@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { fetchAgentMeta, chatAgent } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 export default function AgentChatPage({ onBack, onNeedLogin }) {
   const [agents, setAgents] = useState([])
@@ -67,7 +68,7 @@ export default function AgentChatPage({ onBack, onNeedLogin }) {
             <div style={{ maxWidth: '82%', padding: '10px 13px', borderRadius: 14, fontSize: 13.5, lineHeight: 1.7,
               background: m.role === 'user' ? 'rgba(90,200,250,0.18)' : `${agentMeta.color}1c`,
               border: `1px solid ${m.role === 'user' ? 'rgba(90,200,250,0.25)' : agentMeta.color + '33'}`,
-              color: 'rgba(255,255,255,0.9)', whiteSpace: 'pre-wrap' }}>{m.content}</div>
+              color: 'rgba(255,255,255,0.9)', whiteSpace: 'pre-wrap' }}><AutoText>{m.content}</AutoText></div>
           </div>
         ))}
         {busy && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', paddingLeft: 4 }}>{agentMeta.name}{t("正在回应…")}</div>}

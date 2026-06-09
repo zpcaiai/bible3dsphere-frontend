@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { fetchFormationProfile, fetchFormationDimensions, saveReflectionAnswers, fetchReflectionAnswers, createHabitsFromFormationPlan } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const REFLECTION_CATEGORIES = [
   {
@@ -1227,7 +1228,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                   <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
                     <span style={{ flexShrink: 0, fontSize: '13px', color: '#fbbf24', marginTop: '1px' }}>·</span>
                     <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.65 }}>
-                      {item.text}
+                      <AutoText>{item.text}</AutoText>
                       <span style={{ marginLeft: '6px', fontSize: '12px', color: 'rgba(251,191,36,0.6)' }}>（{item.ref}）</span>
                     </span>
                   </div>
@@ -1261,7 +1262,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                       fontSize: '11px',
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>{step.n}</span>
-                    <span>{step.text}</span>
+                    <span><AutoText>{step.text}</AutoText></span>
                   </div>
                 ))}
               </div>

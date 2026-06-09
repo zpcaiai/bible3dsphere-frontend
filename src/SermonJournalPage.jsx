@@ -6,6 +6,7 @@ import usePullToRefresh from './hooks/usePullToRefresh'
 import { TTSFullBar } from './useGlobalAudio.jsx'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 
 function toISODate(d) {
@@ -547,10 +548,10 @@ export default function SermonJournalPage({ user, token, onBack }) {
                     return Math.round(((filled + qFilled + pFilled) / (fields.length + 2)) * 100)
                   })()}%</div>
                 </div>
-                <div className="sj-card-title">{j.title || t("（未填写讲题）")}</div>
+                <div className="sj-card-title"><AutoText text={j.title || t("（未填写讲题）")} /></div>
                 {j.scripture && <div className="sj-card-scripture">📜 {j.scripture}</div>}
                 {j.preacher && <div className="sj-card-preacher">🎙 {j.preacher}</div>}
-                {j.summary && <div className="sj-card-preview">{j.summary.slice(0, 60)}{j.summary.length > 60 ? '…' : ''}</div>}
+                {j.summary && <div className="sj-card-preview"><AutoText>{j.summary.slice(0, 60)}</AutoText>{j.summary.length > 60 ? '…' : ''}</div>}
                 <div style={{ display: 'flex', gap: '8px', marginTop: '8px', alignItems: 'center' }} onClick={e => e.stopPropagation()}>
                   <button
                     onClick={() => handleShare(j)}
@@ -835,7 +836,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             {/* Title block */}
             <div className="sj-detail-hero glass">
               <div className="sj-detail-date">{current.date}</div>
-              <div className="sj-detail-title">{current.title || t("（未填写讲题）")}</div>
+              <div className="sj-detail-title"><AutoText text={current.title || t("（未填写讲题）")} /></div>
               {current.scripture && <div className="sj-detail-scripture">📜 {current.scripture}</div>}
               {current.preacher && <div className="sj-detail-preacher">🎙 {current.preacher}</div>}
               <div className="sj-detail-progress-wrap">
@@ -851,7 +852,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             {SECTION_CONFIG.map(({ key, icon, label }) => current[key]?.trim() ? (
               <div key={key} className="sj-detail-block glass">
                 <div className="sj-detail-block-title">{icon} {label}</div>
-                <div className="sj-detail-block-text">{current[key]}</div>
+                <div className="sj-detail-block-text"><AutoText>{current[key]}</AutoText></div>
               </div>
             ) : null)}
 
@@ -861,7 +862,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
                 {current.questions.filter(q => q.trim()).map((q, i) => (
                   <div key={i} className="sj-detail-q-row">
                     <span className="sj-detail-q-num">Q{i + 1}</span>
-                    <span className="sj-detail-q-text">{q}</span>
+                    <span className="sj-detail-q-text"><AutoText>{q}</AutoText></span>
                   </div>
                 ))}
               </div>
@@ -882,7 +883,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
             {current.encouragement?.trim() && (
               <div className="sj-detail-encourage">
                 <span className="sj-detail-encourage-icon">🌟</span>
-                <span className="sj-detail-encourage-text">{current.encouragement}</span>
+                <span className="sj-detail-encourage-text"><AutoText>{current.encouragement}</AutoText></span>
               </div>
             )}
 

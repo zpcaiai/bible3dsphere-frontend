@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 import { API_BASE } from './api.js'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 // ── Mobile detection ──────────────────────────────────────────────────────────
 function useIsMobile() {
@@ -210,9 +211,9 @@ function PersonalCard({ user, token }) {
         <span style={{ fontSize: 18 }}>🌟</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>{t("今日个性化灵修")}</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{t("聚焦 ·")} {data.theme}</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{t("聚焦 ·")} <AutoText>{data.theme}</AutoText></div>
         </div>
-        <span style={S.stageTag(data.stage)}>{data.stage_icon} {data.stage_label}</span>
+        <span style={S.stageTag(data.stage)}>{data.stage_icon} <AutoText>{data.stage_label}</AutoText></span>
         <TTSFullBar buildText={() => ttsText} label={t("朗读")} />
       </div>
 
@@ -232,18 +233,18 @@ function PersonalCard({ user, token }) {
           <span>{t("📖 灵修默想")}</span>
           <TTSButton text={data.devotion_text} />
         </div>
-        <div style={S.body}>{data.devotion_text}</div>
+        <div style={S.body}><AutoText>{data.devotion_text}</AutoText></div>
 
         {/* Prayer */}
         <div style={{ ...S.label, marginTop: 16 }}>
           <span>{t("🙏 今日祷告")}</span>
           <TTSButton text={data.prayer_text} />
         </div>
-        <div style={S.prayer}>{data.prayer_text}</div>
+        <div style={S.prayer}><AutoText>{data.prayer_text}</AutoText></div>
 
         {/* Stage action */}
         <div style={{ marginTop: 14, padding: '10px 12px', background: 'rgba(255,255,255,0.04)', borderRadius: 10, fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-          💡 <strong style={{ color: 'rgba(255,255,255,0.85)' }}>{t("今日可行一步")}</strong> — {data.stage_action}
+          💡 <strong style={{ color: 'rgba(255,255,255,0.85)' }}>{t("今日可行一步")}</strong> — <AutoText>{data.stage_action}</AutoText>
         </div>
       </div>
     </div>

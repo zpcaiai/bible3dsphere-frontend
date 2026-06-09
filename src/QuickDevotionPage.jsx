@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { saveJournal } from './api'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const QUICK_DEVOTIONS = [
   { verse: t("你们要将一切的忧虑卸给神，因为他顾念你们。"), ref: t("彼得前书 5:7"), question: t("今天，你最难以放下的忧虑是什么？") },
@@ -71,7 +72,7 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
       content: (
         <div>
           <div style={{ fontSize: 16, fontWeight: 600, color: '#e0d4ff', lineHeight: 1.6, marginBottom: 20, textAlign: 'center' }}>
-            {devotion.question}
+            <AutoText>{devotion.question}</AutoText>
           </div>
           <textarea
             value={questionAnswer}

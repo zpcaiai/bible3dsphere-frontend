@@ -14,6 +14,7 @@ import {
 } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const SLIDERS = [
   { key: 'anxiety_level',       name: t("焦虑程度"),   hint: t("想到这件事，我有多焦躁不安？") },
@@ -204,7 +205,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
     <>
       {crisis && (
         <div style={{ ...card, borderColor: 'rgba(255,135,135,0.5)', background: 'rgba(255,135,135,0.08)' }}>
-          <div style={{ fontSize: 13, lineHeight: 1.75, color: '#ffb3b3' }}>{a.summary}</div>
+          <div style={{ fontSize: 13, lineHeight: 1.75, color: '#ffb3b3' }}><AutoText>{a.summary}</AutoText></div>
         </div>
       )}
 
@@ -252,7 +253,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
           <div style={{ fontSize: 12, fontWeight: 700, color: '#5ac8fa', marginBottom: 8 }}>{t("温和、可执行的下一步")}</div>
           {a.guidance.map((g, i) => (
             <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: 'rgba(255,255,255,0.76)', lineHeight: 1.65, marginBottom: 6 }}>
-              <span style={{ color: '#5ac8fa' }}>{i + 1}.</span><span>{g}</span>
+              <span style={{ color: '#5ac8fa' }}>{i + 1}.</span><span><AutoText>{g}</AutoText></span>
             </div>
           ))}
         </div>
@@ -263,7 +264,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
         <div style={card}>
           <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{t("带着这些问题安静片刻")}</div>
           {a.reflection_questions.map((q, i) => (
-            <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, marginBottom: 6, fontStyle: 'italic' }}>· {q}</div>
+            <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, marginBottom: 6, fontStyle: 'italic' }}>· <AutoText>{q}</AutoText></div>
           ))}
         </div>
       )}
@@ -287,7 +288,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
           {bundle.reflections.map(r => (
             <div key={r.id} style={{ borderLeft: '2px solid rgba(255,255,255,0.12)', paddingLeft: 10, marginBottom: 10 }}>
               <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>{(r.created_at || '').slice(0, 16).replace('T', ' ')} {t("· 信靠")} {Math.round(r.trust_level)}</div>
-              {r.reflection_text && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', marginTop: 3, lineHeight: 1.6 }}>{r.reflection_text}</div>}
+              {r.reflection_text && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', marginTop: 3, lineHeight: 1.6 }}><AutoText>{r.reflection_text}</AutoText></div>}
               {r.action_taken && <div style={{ fontSize: 11.5, color: '#5ac8fa', marginTop: 3 }}>{t("行动：")}{r.action_taken}</div>}
             </div>
           ))}
@@ -322,7 +323,7 @@ function PracticeCard({ p, onSaved, setError, onNeedLogin }) {
       {open && (
         <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.74)', lineHeight: 1.7, marginBottom: 8 }}>{p.practice_content}</div>
-          <div style={{ fontSize: 12, color: '#a78bfa', fontStyle: 'italic', marginBottom: 8 }}>💭 {p.reflection_prompt}</div>
+          <div style={{ fontSize: 12, color: '#a78bfa', fontStyle: 'italic', marginBottom: 8 }}>💭 <AutoText>{p.reflection_prompt}</AutoText></div>
           <textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder={t("写下你的反思…")} style={{ ...input, resize: 'vertical' }} />
           <button onClick={complete} disabled={busy} style={{ ...primaryBtn, marginTop: 8, padding: 10, fontSize: 13 }}>{busy ? t("保存中…") : (p.completed ? t("更新反思") : t("完成这一天"))}</button>
         </div>

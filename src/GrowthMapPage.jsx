@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { fetchMilestones } from './api'
 import { API_BASE } from './api'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const DIM_LABELS = {
   humility: { zh: t("谦卑"), icon: '🌿', color: '#34c759' },
@@ -172,14 +173,14 @@ export default function GrowthMapPage({ user, token, onBack }) {
                 {profile?.formation?.trajectory_narrative && (
                   <div style={{ marginTop: 16, padding: '14px 16px', background: 'rgba(88,86,214,0.08)', border: '1px solid rgba(88,86,214,0.2)', borderRadius: 12, fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     <div style={{ fontSize: 11, color: '#c4b5fd', fontWeight: 700, marginBottom: 6 }}>{t("🧭 轨迹叙述")}</div>
-                    {profile.formation.trajectory_narrative}
+                    <AutoText>{profile.formation.trajectory_narrative}</AutoText>
                   </div>
                 )}
 
                 {/* Reflective question from SFDS */}
                 {profile?.formation?.reflective_question && (
                   <div style={{ marginTop: 12, padding: '14px 16px', background: 'rgba(255,215,0,0.07)', border: '1px solid rgba(255,215,0,0.2)', borderRadius: 12, fontSize: 14, color: '#ffd700', lineHeight: 1.7, fontStyle: 'italic', textAlign: 'center' }}>
-                    💭 {profile.formation.reflective_question}
+                    💭 <AutoText>{profile.formation.reflective_question}</AutoText>
                   </div>
                 )}
               </>

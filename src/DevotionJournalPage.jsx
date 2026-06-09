@@ -6,6 +6,7 @@ import usePullToRefresh from './hooks/usePullToRefresh'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 import EmojiTextarea from './EmojiTextarea'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 // 读取旧的 localStorage 灵修笔记（来自 ChatPage / DevotionNotePage）
 function getLegacyLocalJournals() {
@@ -106,7 +107,7 @@ function JournalCard({ journal, onOpen, onEdit, onDelete }) {
           <button onClick={e => { e.stopPropagation(); onDelete(journal) }} title={t("删除")} style={delBtnStyle}>🗑️</button>
         </div>
       </div>
-      {journal.title && <div className="dj-card-title">{journal.title}</div>}
+      {journal.title && <div className="dj-card-title"><AutoText>{journal.title}</AutoText></div>}
       <div className="dj-card-preview" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', WebkitLineClamp: 'none', maxHeight: 'none', overflow: 'visible' }}>{preview}</div>
       <div className="dj-card-footer">
         <span className="dj-card-time">{t("更新于")} {timeAgo(journal.updated_at)}</span>
@@ -389,7 +390,7 @@ function JournalDetail({ journal, onEdit, onBack }) {
           </svg>
         </button>
         <div className="dj-editor-hcenter">
-          <div className="dj-editor-htitle">{journal.title || t("灵修日记")}</div>
+          <div className="dj-editor-htitle"><AutoText text={journal.title || t("灵修日记")} /></div>
           <div className="dj-editor-hdate">{formatDate(journal.date)}</div>
         </div>
         <button className="dj-save-btn" onClick={onEdit}>✏️</button>
@@ -405,7 +406,7 @@ function JournalDetail({ journal, onEdit, onBack }) {
         {sections.map(f => (
           <div key={f.key} className="dj-detail-section glass">
             <div className="dj-detail-section-title">{f.label}</div>
-            <div className="dj-detail-section-content" style={{ whiteSpace: 'pre-wrap' }}>{journal[f.key]}</div>
+            <div className="dj-detail-section-content" style={{ whiteSpace: 'pre-wrap' }}><AutoText>{journal[f.key]}</AutoText></div>
           </div>
         ))}
 

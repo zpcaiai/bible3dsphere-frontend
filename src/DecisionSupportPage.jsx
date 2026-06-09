@@ -6,6 +6,7 @@ import PersonalityPage from './PersonalityPage'
 import SoulTabs from './components/SoulTabs'
 import SoulDashboard from './components/SoulDashboard'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const sfdsUrl = (path) => `${API_BASE}/sfds${path}`
 const MVFE_BASE = API_BASE + '/mvfe'
@@ -1467,7 +1468,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                 flex: '1 1 calc(50% - 8px)',
                 minWidth: '140px',
               }}>
-                <div>{p.text}</div>
+                <div><AutoText>{p.text}</AutoText></div>
                 <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>
                   {p.ref}
                 </div>
@@ -1560,7 +1561,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
               <div style={{ fontWeight: 600, fontSize: '15px', flex: 1, marginRight: '8px' }}>
-                {d.title}
+                <AutoText>{d.title}</AutoText>
               </div>
               <span style={{
                 padding: '2px 8px',
@@ -1604,7 +1605,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           marginBottom: '12px',
         }}>
           <div style={{ fontSize: '15px', fontWeight: 500, marginBottom: '8px', lineHeight: 1.5 }}>
-            "{p.text}"
+            "<AutoText>{p.text}</AutoText>"
           </div>
           <div style={{ fontSize: '12px', color: '#007aff' }}>
             — {p.ref}

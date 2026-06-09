@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { fetchDewToday } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const card = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 18, marginBottom: 12 }
 const TIERS = [[5, t("5 分钟")], [10, t("10 分钟")], [15, t("15 分钟")]]
@@ -41,11 +42,11 @@ export default function MorningDewPage() {
                 <div style={{ fontSize: 12.5, color: '#ffd43b', marginTop: 8, textAlign: 'right' }}>—— {dew.scripture.ref}</div>
               </div>
             )}
-            <Sec title={t("默想")}>{dew.meditation}</Sec>
-            {dew.christ && <Sec title={t("基督连结")} color="#a78bfa">{dew.christ}</Sec>}
-            {dew.reflection && <Sec title={t("反思")} color="#5ac8fa"><span style={{ fontStyle: 'italic' }}>{dew.reflection}</span></Sec>}
-            {dew.prayer && <Sec title={t("祷告")}>{dew.prayer}</Sec>}
-            {dew.action && <Sec title={t("今日信心行动")} color="#34c759">{dew.action}</Sec>}
+            <Sec title={t("默想")}><AutoText>{dew.meditation}</AutoText></Sec>
+            {dew.christ && <Sec title={t("基督连结")} color="#a78bfa"><AutoText>{dew.christ}</AutoText></Sec>}
+            {dew.reflection && <Sec title={t("反思")} color="#5ac8fa"><span style={{ fontStyle: 'italic' }}><AutoText>{dew.reflection}</AutoText></span></Sec>}
+            {dew.prayer && <Sec title={t("祷告")}><AutoText>{dew.prayer}</AutoText></Sec>}
+            {dew.action && <Sec title={t("今日信心行动")} color="#34c759"><AutoText>{dew.action}</AutoText></Sec>}
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', marginTop: 8, lineHeight: 1.6 }}>
               {t("愿这滴甘露润泽你一整天。默想不为知识，乃为与主相会。")}
             </div>

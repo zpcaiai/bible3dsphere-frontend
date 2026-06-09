@@ -10,7 +10,7 @@ import {
 import realtimeStore from './realtime/realtimeStore'
 import { useRealtimeState, useRealtimeMessages } from './realtime/useRealtimeStore'
 import { t } from './i18n/runtime'
-import Translatable from './Translatable'
+import { AutoText } from './autoTranslate.jsx'
 
 const showToast = (m) => window.showToast?.(m, 'info')
 function shortName(email, nickname) {
@@ -354,7 +354,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                           {mine ? t("你撤回了一条消息") : `${m.sender_name} 撤回了一条消息`}
                         </div>
                       ) : (
-                        <Translatable className="communion-bubble" text={m.body} />
+                        <AutoText className="communion-bubble" text={m.body} />
                       )}
                       <div className="communion-msg-time">
                         {timeLabel(m.created_at)}
@@ -405,7 +405,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                         {m.mine ? t("你撤回了一条消息") : t("对方撤回了一条消息")}
                       </div>
                     ) : (
-                      <Translatable className="communion-bubble" text={m.body} />
+                      <AutoText className="communion-bubble" text={m.body} />
                     )}
                     <div className="communion-msg-time">
                       {timeLabel(m.created_at)}

@@ -10,6 +10,7 @@ import {
 } from './api'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const IDOLS = [
   { type: 'success',          emoji: '🏆', name: t("成就 / 表现"),  mani: t("不成功就觉得自己没价值") },
@@ -219,7 +220,7 @@ function ResultView({ result, onAgain }) {
     <>
       <div style={{ ...card, background: 'linear-gradient(135deg, rgba(52,199,89,0.10), rgba(90,200,250,0.08))' }}>
         <div style={{ fontSize: 12, color: 'rgba(52,199,89,0.8)', fontWeight: 700, marginBottom: 8 }}>{t("✦ 整体观察")}</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: 'rgba(255,255,255,0.85)' }}>{result.summary}</div>
+        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: 'rgba(255,255,255,0.85)' }}><AutoText>{result.summary}</AutoText></div>
       </div>
 
       {(result.patterns || []).map((p, i) => (
@@ -269,7 +270,7 @@ function PatternCard({ p }) {
           </div>
           {(p.graph.breaks || []).slice(0, 2).map((b, idx) => (
             <div key={idx} style={{ marginTop: 8, fontSize: 11.5, color: '#51cf66', display: 'flex', gap: 6 }}>
-              <span>✝</span><span>{b.note || b.principle}</span>
+              <span>✝</span><span><AutoText text={b.note || b.principle} /></span>
             </div>
           ))}
         </div>
@@ -310,7 +311,7 @@ function HistoryView({ sessions, loading }) {
           <span style={{ fontSize: 11, color: r.color, fontWeight: 700 }}>{r.label} · {Math.round((s.top_intensity || 0) * 100)}</span>
         </div>
         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{(s.created_at || '').slice(0, 16).replace('T', ' ')}</div>
-        <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>{s.summary}</div>
+        <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}><AutoText>{s.summary}</AutoText></div>
       </div>
     )
   })
