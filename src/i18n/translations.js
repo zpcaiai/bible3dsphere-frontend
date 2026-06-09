@@ -39,7 +39,7 @@ const namespacedZh = {
   'home.snapshot.growthMap': '灵命图谱',
   'home.snapshot.growth': '灵命成长',
   'home.snapshot.partner': '属灵伙伴',
-  'home.snapshot.bibleReading': '通读',
+  'home.snapshot.bibleReading': '读经&查经',
 
   'home.trajectory.title': '近30天情感轨迹',
 
@@ -91,7 +91,7 @@ const namespacedEn = {
   'home.snapshot.growthMap': 'Growth Map',
   'home.snapshot.growth': 'Spiritual Growth',
   'home.snapshot.partner': 'Prayer Partner',
-  'home.snapshot.bibleReading': 'Read-through',
+  'home.snapshot.bibleReading': 'Bible Reading & Study',
 
   'home.trajectory.title': 'Emotional Journey (last 30 days)',
 

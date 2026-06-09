@@ -20,6 +20,7 @@ import TranslatableParagraph from './TranslatableParagraph'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 import { useLang } from './i18n/LanguageContext'
 import LanguageToggle from './i18n/LanguageToggle'
+import { AutoText } from './autoTranslate.jsx'
 import { t, featureLabel, formatEmotionList, getRuntimeLang, localizeEmotionName } from './i18n/runtime'
 
 const CheckInPage = lazy(() => import('./CheckInPage'))
@@ -1772,6 +1773,10 @@ function AppContent() {
                       </button>
                     ))}
                   </div>
+                  {/* 读经&查经 下方的灵修勉励语 */}
+                  <p style={{ marginTop: '10px', fontSize: '12px', lineHeight: 1.75, color: 'rgba(255,255,255,0.72)' }}>
+                    <AutoText>{"稳定的灵修生活是基督徒得力的源泉，也是基督徒生命成长的秘诀。祂的儿女蒙恩的方式，就是建立并操练每日灵修的习惯。坚持长期主义，必做元帅的精兵。每天太阳照常升起，我们也要每天向着天国奔跑，直到太阳不再升起的日子！"}</AutoText>
+                  </p>
                 </section>
               )}
 
