@@ -305,6 +305,12 @@ function AppContent() {
   const verseGroups = useMemo(() => verseGroupsFromResult(queryResult, languageFilter), [queryResult, languageFilter])
   const comparisonRows = useMemo(() => buildComparisonRows(queryResult), [queryResult])
 
+  useEffect(() => {
+    if (getRuntimeLang() === 'en' && languageFilter === 'cuv') {
+      setLanguageFilter('esv')
+    }
+  }, [languageFilter, setLanguageFilter])
+
   async function doQuery() {
     if (!query.trim()) {
       setError(t("请先输入你想倾诉的内容"))

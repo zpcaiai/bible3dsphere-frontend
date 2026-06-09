@@ -1,4 +1,9 @@
 import { create } from 'zustand'
+import { getRuntimeLang } from './i18n/runtime'
+
+export function defaultLanguageFilter() {
+  return getRuntimeLang() === 'en' ? 'esv' : 'cuv'
+}
 
 export const useEmotionStore = create((set) => ({
   layoutItems: [],
@@ -9,7 +14,7 @@ export const useEmotionStore = create((set) => ({
   sphereGuidance: null,
   sphereBiblicalExample: null,
   queryResult: null,
-  languageFilter: 'cuv',
+  languageFilter: defaultLanguageFilter(),
   topFeatures: 6,
   topVerses: 5,
   zoomLevel: 'far',
