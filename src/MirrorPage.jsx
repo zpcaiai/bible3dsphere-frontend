@@ -118,6 +118,40 @@ const BOOK_MAP = {
   '约三':'3jn','犹':'jud','启':'rev'
 }
 
+// 全名 + 别名 → 代码：补充缩写表，修复 Read-through 打开 bible「无法识别书卷名」
+// （数据里混有全名如「马太福音/诗篇/使徒行传」及带前缀引用如「持守：赛」「用约一」「主，弥迦」）
+const BOOK_NAME_TO_CODE = {
+  ...BOOK_MAP,
+  '创世记':'gen','出埃及记':'exo','利未记':'lev','民数记':'num','申命记':'deu',
+  '约书亚记':'jos','士师记':'jdg','路得记':'rut','撒母耳记上':'1sa','撒母耳记下':'2sa',
+  '列王纪上':'1ki','列王纪下':'2ki','历代志上':'1ch','历代志下':'2ch','以斯拉记':'ezr',
+  '尼希米记':'neh','以斯帖记':'est','约伯记':'job','诗篇':'psa','箴言':'pro','传道书':'ecc',
+  '雅歌':'sng','以赛亚书':'isa','耶利米书':'jer','耶利米哀歌':'lam','哀歌':'lam','以西结书':'eze',
+  '但以理书':'dan','何西阿书':'hos','约珥书':'joe','阿摩司书':'amo','俄巴底亚书':'oba',
+  '约拿书':'jon','弥迦书':'mic','弥迦':'mic','那鸿书':'nah','哈巴谷书':'hab','西番雅书':'zep',
+  '哈该书':'hag','撒迦利亚书':'zec','玛拉基书':'mal',
+  '马太福音':'mat','马可福音':'mrk','路加福音':'luk','约翰福音':'jhn','使徒行传':'act',
+  '罗马书':'rom','哥林多前书':'1co','哥林多后书':'2co','加拉太书':'gal','以弗所书':'eph',
+  '腓立比书':'php','歌罗西书':'col','帖撒罗尼迦前书':'1th','帖撒罗尼迦后书':'2th',
+  '提摩太前书':'1ti','提摩太后书':'2ti','提多书':'tit','腓利门书':'phm','希伯来书':'heb',
+  '雅各书':'jas','彼得前书':'1pe','彼得后书':'2pe',
+  '约翰一书':'1jn','约翰二书':'2jn','约翰三书':'3jn','约翰壹书':'1jn','约翰贰书':'2jn','约翰叁书':'3jn',
+  '犹大书':'jud','启示录':'rev',
+}
+// 长键优先，便于「最长结尾匹配」正确区分 约一/约、撒上/撒 等
+const BOOK_KEYS_DESC = Object.keys(BOOK_NAME_TO_CODE).sort((a, b) => b.length - a.length)
+
+// 健壮解析书卷码：先精确，再「该书卷名部分以之结尾的最长已知书卷名」(剥离前缀杂字)
+function resolveBookCode(bookPart) {
+  if (!bookPart) return null
+  const sBook = String(bookPart).replace(/\s/g, '')
+  if (BOOK_NAME_TO_CODE[sBook]) return BOOK_NAME_TO_CODE[sBook]
+  for (const k of BOOK_KEYS_DESC) {
+    if (sBook.endsWith(k)) return BOOK_NAME_TO_CODE[k]
+  }
+  return null
+}
+
 function toWdBibleUrl(ref) {
   const cleaned = ref.trim()
   const match = cleaned.match(/^([^\d]+)(\d+)(?:[:：](\d+)(?:[–\-](\d+))?)?/)
@@ -125,7 +159,7 @@ function toWdBibleUrl(ref) {
   const bookZh = match[1].trim()
   const chapter = match[2]
   const verse = match[3]
-  const bookCode = BOOK_MAP[bookZh]
+  const bookCode = resolveBookCode(bookZh)
   if (!bookCode) return `https://wd.bible/bible`
   if (verse) return `https://wd.bible/verse/${bookCode}.${chapter}.${verse}.cunps`
   return `https://wd.bible/${bookCode}.${chapter}.cunps`
@@ -138,7 +172,7 @@ function toVerseProxyUrl(ref) {
   const bookZh = match[1].trim()
   const chapter = match[2]
   const verse = match[3]
-  const bookCode = BOOK_MAP[bookZh]
+  const bookCode = resolveBookCode(bookZh)
   if (!bookCode || !verse) return null
   return `/wdbible/verse/${bookCode}.${chapter}.${verse}.cunps`
 }
