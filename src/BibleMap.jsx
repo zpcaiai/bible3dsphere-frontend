@@ -4,7 +4,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import MapScene, { resolveScene } from './MapScenes'
 import { fetchFaithQA, API_BASE } from './api'
-import { t } from './i18n/runtime'
+import { t, getRuntimeLang } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const VB_W = 1000
 const VB_H = 720
@@ -237,7 +238,12 @@ export default function BibleMap({ config, onBack }) {
     setActiveLayerIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
   }
 
-  const yearLabel = (y) => (y < 0 ? `公元前 ${Math.abs(y)}` : `公元 ${y}`)
+  const enMode = getRuntimeLang() === 'en'
+  const yearLabel = (y) => (y < 0
+    ? (enMode ? `${Math.abs(y)} BC` : `公元前 ${Math.abs(y)}`)
+    : (enMode ? `AD ${y}` : `公元 ${y}`))
+  // 地名：EN 模式优先用数据自带的 name_en（地名无须机翻），否则回退中文
+  const placeName = (p) => ((enMode && p && p.name_en) ? p.name_en : (p?.name_zh || p?.name_en || ''))
   const profileLayer = config.profile ? (activeLayers[0] || config.layers[0]) : null
 
   return (
@@ -245,8 +251,8 @@ export default function BibleMap({ config, onBack }) {
       <div className="biblemap-head">
         <button className="biblemap-back" onClick={onBack}>{t("← 返回")}</button>
         <div className="biblemap-title">
-          <h2>{config.title}</h2>
-          <p>{config.subtitle}{config.era ? ` · ${config.era}` : ''}</p>
+          <h2><AutoText>{config.title}</AutoText></h2>
+          <p><AutoText>{config.subtitle}</AutoText>{config.era ? <> · <AutoText>{config.era}</AutoText></> : ''}</p>
         </div>
       </div>
 
@@ -257,7 +263,7 @@ export default function BibleMap({ config, onBack }) {
             <button key={l.id} className={`biblemap-chip ${on ? 'on' : ''}`}
               onClick={() => toggleLayer(l.id)}
               style={on ? { background: l.color + '33', borderColor: l.color, color: l.color } : {}}>
-              <span className="dot" style={{ background: l.color }} />{l.label}
+              <span className="dot" style={{ background: l.color }} /><AutoText>{l.label}</AutoText>
             </button>
           )
         })}
@@ -280,12 +286,12 @@ export default function BibleMap({ config, onBack }) {
           </div>
           <div className="biblemap-profile-body">
             <div className="biblemap-profile-name" style={{ color: profileLayer.color }}>
-              {profileLayer.label}{profileLayer.era && <span className="era">{profileLayer.era}</span>}
+              <AutoText>{profileLayer.label}</AutoText>{profileLayer.era && <span className="era"><AutoText>{profileLayer.era}</AutoText></span>}
             </div>
-            {profileLayer.bio && <p className="biblemap-profile-bio">{profileLayer.bio}</p>}
+            {profileLayer.bio && <p className="biblemap-profile-bio"><AutoText>{profileLayer.bio}</AutoText></p>}
             {Array.isArray(profileLayer.epistles) && profileLayer.epistles.length > 0 && (
               <div className="biblemap-profile-epistles">
-                {t("✉ 相关书信：")}{profileLayer.epistles.map((e, i) => <span key={i} className="ep">{e}</span>)}
+                {t("✉ 相关书信：")}{profileLayer.epistles.map((e, i) => <span key={i} className="ep"><AutoText>{e}</AutoText></span>)}
               </div>
             )}
             <AIExplain compact
@@ -303,7 +309,7 @@ export default function BibleMap({ config, onBack }) {
           <div className="biblemap-eras">
             {(config.eras || []).map(er => (
               <button key={er.label} className={`era ${year >= er.from && year <= er.to ? 'on' : ''}`}
-                onClick={() => setYear(Math.round((er.from + er.to) / 2))}>{er.label}</button>
+                onClick={() => setYear(Math.round((er.from + er.to) / 2))}><AutoText>{er.label}</AutoText></button>
             ))}
           </div>
         </div>
@@ -375,7 +381,7 @@ export default function BibleMap({ config, onBack }) {
                   filter={isSel ? 'url(#bm-glow)' : undefined} />
                 {p.altar && <text x="0" y="-12" textAnchor="middle" fontSize="13">⛪</text>}
                 <text x="10" y="4" fontSize="13" fill="#fff" stroke="#0e1b2e" strokeWidth="3"
-                  paintOrder="stroke" style={{ pointerEvents: 'none' }}>{p.name_zh}</text>
+                  paintOrder="stroke" style={{ pointerEvents: 'none' }}>{placeName(p)}</text>
               </g>
             )
           }))}
@@ -388,28 +394,28 @@ export default function BibleMap({ config, onBack }) {
               <MapScene scene={resolveScene(selected, config.id)} color={selected._color} />
             </div>
             <div className="biblemap-detail-name" style={{ color: selected._color }}>
-              {selected.name_zh}
+              {placeName(selected)}
             </div>
             <div className="biblemap-detail-meta">
               {selected.year != null && <span>🗓 {yearLabel(selected.year)}</span>}
               {selected.age != null && <span>{t("👤 亚伯拉罕")} {selected.age} {t("岁")}</span>}
-              {selected.scriptureRef && <span>📖 {selected.scriptureRef}</span>}
+              {selected.scriptureRef && <span>📖 <AutoText>{selected.scriptureRef}</AutoText></span>}
               {selected.confidence && (
                 <span style={{ color: (CONFIDENCE[selected.confidence] || {}).color }}>
                   ◎ {(CONFIDENCE[selected.confidence] || {}).label}
                 </span>
               )}
             </div>
-            {selected.altar && <div className="biblemap-altar">{t("⛪ 在此筑坛：")}{selected.altar}</div>}
-            {selected.promise && <div className="biblemap-promise">{t("✝ 神的应许：")}{selected.promise}</div>}
-            {selected.note && <p className="biblemap-note">{selected.note}</p>}
+            {selected.altar && <div className="biblemap-altar">{t("⛪ 在此筑坛：")}<AutoText>{selected.altar}</AutoText></div>}
+            {selected.promise && <div className="biblemap-promise">{t("✝ 神的应许：")}<AutoText>{selected.promise}</AutoText></div>}
+            {selected.note && <p className="biblemap-note"><AutoText>{selected.note}</AutoText></p>}
             <div className="biblemap-events">
               {(selected.events || []).map((ev, i) => (
                 <div key={i} className="biblemap-event">
                   <div className="biblemap-event-h">
-                    <strong>{ev.title}</strong>{ev.ref && <span className="ref">{ev.ref}</span>}
+                    <strong><AutoText>{ev.title}</AutoText></strong>{ev.ref && <span className="ref"><AutoText>{ev.ref}</AutoText></span>}
                   </div>
-                  <p>{ev.summary}</p>
+                  <p><AutoText>{ev.summary}</AutoText></p>
                 </div>
               ))}
               {(!selected.events || selected.events.length === 0) && (

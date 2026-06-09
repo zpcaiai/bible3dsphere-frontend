@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useRef } from 'react'
 import { useGlobalAudio, TTSButton as _TTSBtn, TTSFullBar as _TTSFullBar } from './useGlobalAudio.jsx'
 import { MIRROR_CHARACTERS, MIRROR_THEMES } from './mirrorData'
 import { emotionZhKey, getRuntimeLang, t } from './i18n/runtime'
+import { useAutoTranslate } from './autoTranslate.jsx'
 import { saveJournal } from './api'
 import BibleMap from './BibleMap'
 import { CHARACTER_JOURNEYS, buildCharacterMapConfig } from './data/characterJourneys'
@@ -169,8 +170,9 @@ function CharacterAvatar({ name, en, size = 56 }) {
 }
 
 function CharacterCard({ char, onClick }) {
-  const typeTag = char.tags.find(t => ["正面榜样","警戒为主","混合型"].includes(t)) || char.type
-  const lessonText = mirrorText(char.lesson, t("Tap to view the full profile"))
+  useAutoTranslate([])
+  const typeTag = char.tags.find(tag => ["正面榜样","警戒为主","混合型"].includes(tag)) || char.type
+  const lessonText = char.lesson ? t(char.lesson) : ""
   return (
     <div onClick={() => onClick(char)} style={{
       background: 'rgba(255,255,255,0.06)', borderRadius: 14,
@@ -216,7 +218,7 @@ function CharacterCard({ char, onClick }) {
             background: (TYPO_COLOR[char.typology.level] || '#888') + '22',
             color: TYPO_COLOR[char.typology.level] || '#aaa',
             border: `1px solid ${TYPO_COLOR[char.typology.level] || '#888'}44` }}>
-            ✝ {char.typology.level}
+            ✝ {mirrorText(char.typology.level)}
           </span>
         )}
       </div>
@@ -243,6 +245,7 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
   const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const [open, setOpen] = useState(false)
+  useAutoTranslate([])
 
   const handleClick = useCallback(async (e) => {
     e.preventDefault()
@@ -275,7 +278,7 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
           fontSize: 13, color: 'rgba(255,255,255,0.88)', lineHeight: 1.75,
           maxWidth: 480 }}>
           {loading ? (
-            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{"加载中…"}</span>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{t("加载中…")}</span>
           ) : text ? (
             <>
               <span>{displayText}</span>
@@ -288,11 +291,11 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
               <a href={toWdBibleUrl(refStr)} target="_blank" rel="noopener noreferrer"
                 style={{ display: 'block', marginTop: 6, fontSize: 11,
                   color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
-                {"新标点和合本 · 在 wd.bible 查看 ↗"}
+                {t("新标点和合本 · 在 wd.bible 查看 ↗")}
               </a>
             </>
           ) : (
-            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{"点击上方链接在 wd.bible 查看 ↗"}</span>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{t("点击上方链接在 wd.bible 查看 ↗")}</span>
           )}
         </div>
       )}
@@ -311,6 +314,7 @@ function ScriptureChipList({ refs, color, bg, border }) {
 
 function CollapsibleText({ text, limit = 100, color }) {
   const [expanded, setExpanded] = useState(false)
+  useAutoTranslate([])
   text = t(text)
   const isLong = text && text.length > limit
   const displayed = isLong && !expanded ? text.slice(0, limit) + '…' : text
@@ -320,7 +324,7 @@ function CollapsibleText({ text, limit = 100, color }) {
       {isLong && (
         <span onClick={() => setExpanded(e => !e)}
           style={{ color: '#5ac8fa', cursor: 'pointer', marginLeft: 4, fontSize: 12, userSelect: 'none' }}>
-          {expanded ? "收起" : "展开"}
+          {expanded ? t("收起") : t("展开")}
         </span>
       )}
     </span>
@@ -357,6 +361,7 @@ function CharacterDetail({ char, onBack, user, token }) {
   const [commitmentSaved, setCommitmentSaved] = useState(false)
   const [showMap, setShowMap] = useState(false)
   const journey = CHARACTER_JOURNEYS[char.name]
+  useAutoTranslate([])
 
   async function handleSaveCommitment() {
     if (!commitment.trim() || !user) return
@@ -387,27 +392,27 @@ function CharacterDetail({ char, onBack, user, token }) {
       <button onClick={onBack} style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
         color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>{"← 返回列表"}</button>
+      }}>{t("← 返回列表")}</button>
 
       {/* TTS */}
-      <_TTSFullBar buildText={() => buildCharSpeechText(char)} label={"整体朗读"} />
+      <_TTSFullBar buildText={() => buildCharSpeechText(char)} label={t("整体朗读")} />
 
       {/* Header */}
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 28, alignItems: 'center' }}>
         <CharacterAvatar name={char.name} en={char.en} size={80} />
         <div>
-          <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{char.name}</h2>
-          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginTop: 2 }}>{char.en}</div>
+          <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{characterName(char)}</h2>
+          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginTop: 2 }}>{characterSecondaryName(char)}</div>
           <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-            {char.tags.map(t => (
-              <span key={t} style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20,
-                background: (typeColor[t] || eraColor[char.era] || '#555') + '33',
-                color: typeColor[t] || eraColor[char.era] || '#ccc',
-                border: `1px solid ${typeColor[t] || eraColor[char.era] || '#555'}55` }}>{t}</span>
+            {char.tags.map(tag => (
+              <span key={tag} style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20,
+                background: (typeColor[tag] || eraColor[char.era] || '#555') + '33',
+                color: typeColor[tag] || eraColor[char.era] || '#ccc',
+                border: `1px solid ${typeColor[tag] || eraColor[char.era] || '#555'}55` }}>{mirrorText(tag)}</span>
             ))}
             <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20,
               background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
-              {char.era} · {char.ref}
+              {mirrorText(char.era)} · {char.ref}
             </span>
           </div>
         </div>
@@ -416,7 +421,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 1. 人物简介 */}
       <div style={sectionStyle}>
         <div style={{ ...sectionTitle, display: 'flex', alignItems: 'center', gap: 6 }}>
-          {"📖 人物简介"} <_TTSBtn text={`人物简介：${char.summary}`} />
+          {t("📖 人物简介")} <_TTSBtn text={`人物简介：${char.summary}`} />
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.7 }}>{t(char.summary)}</div>
       </div>
@@ -424,7 +429,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 2. 信靠神的核心见证 */}
       {char.witness && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #ffd60a', background: 'rgba(255,214,10,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>{"⭐ 信靠神的核心见证"} <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
+          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>{t("⭐ 信靠神的核心见证")} <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
           <CollapsibleText text={char.witness} limit={100} color="rgba(255,255,255,0.82)" />
         </div>
       )}
@@ -433,16 +438,16 @@ function CharacterDetail({ char, onBack, user, token }) {
       {char.typology && (
         <div style={{ ...sectionStyle, background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)' }}>
           <div style={{ ...sectionTitle, color: '#e8b04b', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            {"✝️ 基督预表"}
+            {t("✝️ 基督预表")}
             <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
               background: (TYPO_COLOR[char.typology.level] || '#888') + '26',
               color: TYPO_COLOR[char.typology.level] || '#aaa',
               border: `1px solid ${TYPO_COLOR[char.typology.level] || '#888'}55`, fontWeight: 600 }}>
-              {char.typology.level}
+              {mirrorText(char.typology.level)}
             </span>
             {char.typology.strength && (
               <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>
-                {STRENGTH_LABEL[char.typology.strength] || char.typology.strength}
+                {mirrorText(STRENGTH_LABEL[char.typology.strength] || char.typology.strength)}
               </span>
             )}
             <_TTSBtn text={`基督预表：${char.typology.summary}`} />
@@ -453,7 +458,7 @@ function CharacterDetail({ char, onBack, user, token }) {
                 <span key={m} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
                   background: 'rgba(192,132,252,0.13)', color: '#c084fc',
                   border: '1px solid rgba(192,132,252,0.35)' }}>
-                  {MOTIF_LABEL[m] || m}
+                  {mirrorText(MOTIF_LABEL[m] || m)}
                 </span>
               ))}
             </div>
@@ -470,7 +475,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 三一真神的作为（按位格分组；此条不列效法点）*/}
       {Array.isArray(char.works) && char.works.length > 0 && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #c084fc', background: 'rgba(192,132,252,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>{"✨ 三一真神的作为"} <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>{t("✨ 三一真神的作为")} <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
           {char.works.map((g, gi) => (
             <div key={gi} style={{ marginBottom: gi < char.works.length - 1 ? 16 : 0 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#c084fc', margin: '4px 0 8px' }}>{t(g.group)}</div>
@@ -490,7 +495,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 3. 可效法的点 */}
       {char.follow && char.follow.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>{"✅ 可效法的点"} <_TTSBtn text={char.follow?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>{t("✅ 可效法的点")} <_TTSBtn text={char.follow?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.follow.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[i]
@@ -498,7 +503,7 @@ function CharacterDetail({ char, onBack, user, token }) {
                 <li key={i} style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
                   <span style={{ color: '#34c759', flexShrink: 0, marginTop: 2 }}>•</span>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-                    <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, lineHeight: 1.65 }}>{item}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, lineHeight: 1.65 }}>{t(item)}</span>
                     {refForItem && (
                       <ScriptureChip scripture={refForItem}
                         color="#34c759" bg="rgba(52,199,89,0.12)" border="rgba(52,199,89,0.3)" />
@@ -514,7 +519,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 4. 需要警戒的点 */}
       {char.caution && char.caution.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(255,59,48,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>{"⚠️ 需要警戒的点"} <_TTSBtn text={char.caution?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>{t("⚠️ 需要警戒的点")} <_TTSBtn text={char.caution?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.caution.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[(char.follow?.length || 0) + i]
@@ -522,7 +527,7 @@ function CharacterDetail({ char, onBack, user, token }) {
                 <li key={i} style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
                   <span style={{ color: '#ff6b6b', flexShrink: 0, marginTop: 2 }}>•</span>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-                    <span style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14, lineHeight: 1.65 }}>{item}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14, lineHeight: 1.65 }}>{t(item)}</span>
                     {refForItem && (
                       <ScriptureChip scripture={refForItem}
                         color="#ff6b6b" bg="rgba(255,59,48,0.12)" border="rgba(255,59,48,0.3)" />
@@ -538,14 +543,14 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 5. 今日实际应用 */}
       {char.applications && char.applications.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(90,200,250,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>{"🌱 今日实际应用"} <_TTSBtn text={char.applications?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>{t("🌱 今日实际应用")} <_TTSBtn text={char.applications?.join('。')} /></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {char.applications.map((app, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                 <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(90,200,250,0.25)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 11, fontWeight: 700, color: '#5ac8fa', flexShrink: 0, marginTop: 1 }}>{i+1}</span>
-                <span style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14, lineHeight: 1.65 }}>{app}</span>
+                <span style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14, lineHeight: 1.65 }}>{t(app)}</span>
               </div>
             ))}
           </div>
@@ -555,7 +560,7 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 6. 相关经文 */}
       {char.scriptures && char.scriptures.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>{"📜 相关经文（点击展开和合本）"}</div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>{t("📜 相关经文（点击展开和合本）")}</div>
           <ScriptureChipList refs={char.scriptures} />
         </div>
       )}
@@ -563,13 +568,13 @@ function CharacterDetail({ char, onBack, user, token }) {
       {/* 生平活动轨迹地图 */}
       {journey && journey.stops && journey.stops.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#e8b04b' }}>{"🗺️ 生平活动轨迹"}</div>
+          <div style={{ ...sectionTitle, color: '#e8b04b' }}>{t("🗺️ 生平活动轨迹")}</div>
           <button onClick={() => setShowMap(true)}
             style={{ width: '100%', padding: '13px 12px', background: 'rgba(232,176,75,0.13)',
               border: '1px solid rgba(232,176,75,0.42)', borderRadius: 10, color: '#e8b04b',
               fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex',
               alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            {"🗺️ 点开地图 · 跟随"}{char.name}{"的脚踪（"}{journey.stops.length}{"站）"}
+            {t("🗺️ 点开地图 · 跟随")}{characterName(char)}{t("的脚踪（")}{journey.stops.length}{t("站）")}
           </button>
         </div>
       )}
@@ -582,25 +587,25 @@ function CharacterDetail({ char, onBack, user, token }) {
 
       {/* 7. 祷告指引 */}
       <div style={{ ...sectionStyle, background: 'rgba(0,122,255,0.06)' }}>
-        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>{"🙏 祷告指引"} <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
+        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>{t("🙏 祷告指引")} <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
         <div style={{ ...quoteStyle, borderLeftColor: '#007aff', background: 'rgba(0,122,255,0.05)',
           padding: '12px 14px', borderRadius: '0 8px 8px 0' }}>
-          {char.prayer}
+          {t(char.prayer)}
         </div>
       </div>
 
       {/* 8. 立志输入框 */}
       <div style={{ ...sectionStyle, background: 'rgba(52,199,89,0.05)', border: '1px solid rgba(52,199,89,0.2)' }}>
-        <div style={{ ...sectionTitle, color: '#34c759' }}>{"✍️ 我的立志"}</div>
+        <div style={{ ...sectionTitle, color: '#34c759' }}>{t("✍️ 我的立志")}</div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>
-          {char.type === "警戒" ? `以${char.name}为警戒，今天我立志：`
-            : char.type === "混合" ? `效法${char.name}的长处、以其失败为警戒，今天我立志：`
-            : `效法${char.name}，今天我立志：`}
+          {char.type === "警戒" ? t(`以${char.name}为警戒，今天我立志：`)
+            : char.type === "混合" ? t(`效法${char.name}的长处、以其失败为警戒，今天我立志：`)
+            : t(`效法${char.name}，今天我立志：`)}
         </div>
         <textarea
           value={commitment}
           onChange={e => setCommitment(e.target.value)}
-          placeholder={char.type === "警戒" ? `例：不像${char.name}那样，当面对试探时，我要警醒祷告，远离罪...` : `例：像${char.name}一样，当面对恐惧时，我要先求问神，再行动...`}
+          placeholder={char.type === "警戒" ? t(`例：不像${char.name}那样，当面对试探时，我要警醒祷告，远离罪...`) : t(`例：像${char.name}一样，当面对恐惧时，我要先求问神，再行动...`)}
           style={{
             width: '100%', minHeight: 80, background: 'rgba(255,255,255,0.07)',
             border: '1px solid rgba(52,199,89,0.3)', borderRadius: 8, color: '#fff',
@@ -609,7 +614,7 @@ function CharacterDetail({ char, onBack, user, token }) {
           }}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, gap: 8, alignItems: 'center' }}>
-          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}>{"✅ 已存入灵修日记"}</span>}
+          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}>{t("✅ 已存入灵修日记")}</span>}
           {user ? (
             <button
               onClick={handleSaveCommitment}
@@ -620,10 +625,10 @@ function CharacterDetail({ char, onBack, user, token }) {
                 padding: '7px 16px', cursor: 'pointer',
               }}
             >
-              {savingCommitment ? "保存中..." : "📔 存入灵修日记"}
+              {savingCommitment ? t("保存中...") : t("📔 存入灵修日记")}
             </button>
           ) : (
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{"登录后可保存立志"}</span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{t("登录后可保存立志")}</span>
           )}
         </div>
       </div>
@@ -645,41 +650,42 @@ function Section({ title, children }) {
 }
 
 function ThemeDetail({ theme, characters, onBack, onCharClick }) {
+  useAutoTranslate([])
   const themeChars = characters.filter(c => theme.characterIds.includes(c.id))
   return (
     <div style={{ padding: '0 0 40px' }}>
       <button onClick={onBack} style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
         color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>{"← 返回主题"}</button>
+      }}>{t("← 返回主题")}</button>
 
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>{theme.emoji}</div>
-        <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{theme.title}</h2>
+        <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{t(theme.title)}</h2>
         <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 8, fontStyle: 'italic' }}>
-          {theme.scripture}
+          {t(theme.scripture)}
         </div>
       </div>
 
-      <Section title={"导言"}>{theme.intro}</Section>
+      <Section title={t("导言")}>{t(theme.intro)}</Section>
 
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}>{"相关人物"}</div>
+        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}>{t("相关人物")}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
           {themeChars.map(c => <CharacterCard key={c.id} char={c} onClick={onCharClick} />)}
         </div>
       </div>
 
-      <Section title={"📌 主题总结"}>{theme.summary}</Section>
+      <Section title={t("📌 主题总结")}>{t(theme.summary)}</Section>
 
       <div style={sectionStyle}>
-        <div style={sectionTitle}>{"🔑 如何应用"}</div>
+        <div style={sectionTitle}>{t("🔑 如何应用")}</div>
         {theme.howToApply.map((step, i) => (
           <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
             <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#007aff',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{i+1}</span>
-            <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.6 }}>{step}</span>
+            <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.6 }}>{t(step)}</span>
           </div>
         ))}
       </div>
@@ -790,6 +796,8 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
       .slice(0, 3)
   }, [guidance])
 
+  useAutoTranslate([])
+
   if (view === 'character' && selectedChar) {
     return (
       <div style={{ padding: '20px 16px' }}>
@@ -832,8 +840,8 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
             >
               <div style={{ fontSize: 32, marginBottom: 8 }}>{theme.emoji}</div>
-              <div style={{ fontWeight: 700, fontSize: 16, color: '#fff', marginBottom: 6 }}>{theme.title}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{theme.intro.slice(0, 60)}…</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: '#fff', marginBottom: 6 }}>{t(theme.title)}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{t(theme.intro).slice(0, 60)}…</div>
               <div style={{ marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
                 {theme.characterIds.length} {t("位人物")}
               </div>

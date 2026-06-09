@@ -3,6 +3,7 @@ import { lazy, Suspense, useState } from 'react'
 import BibleMap from './BibleMap'
 import { BIBLE_MAPS } from './data/bibleMapsData'
 import { t } from './i18n/runtime'
+import { AutoText } from './autoTranslate.jsx'
 
 const JerusalemSandbox = lazy(() => import('./JerusalemSandbox'))
 
@@ -34,9 +35,9 @@ export default function BibleMapsPage({ onBack, embedded, onOpenAtlas }) {
     <button key={m.id} className="biblemap-card" onClick={() => setActiveId(m.id)}>
       <div className="biblemap-card-icon">{ICONS[m.id] || '🗺'}</div>
       <div className="biblemap-card-body">
-        <div className="biblemap-card-title">{m.title}<span className="badge">{m.badge}</span></div>
-        <div className="biblemap-card-sub">{m.subtitle}</div>
-        <div className="biblemap-card-era">{m.era}</div>
+        <div className="biblemap-card-title"><AutoText>{m.title}</AutoText><span className="badge">{m.badge}</span></div>
+        <div className="biblemap-card-sub"><AutoText>{m.subtitle}</AutoText></div>
+        <div className="biblemap-card-era"><AutoText>{m.era}</AutoText></div>
       </div>
       <span className="biblemap-card-arrow">›</span>
     </button>
