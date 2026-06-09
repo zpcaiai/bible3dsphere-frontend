@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture, langHeaders } from './api'
 import { TTSFullBar, TTSButton } from './useGlobalAudio.jsx'
-import { t } from './i18n/runtime'
+import { t, getRuntimeLang } from './i18n/runtime'
 
 // ── 全部 66 卷（旧约 39 + 新约 27）────────────────────────────────────────────
 const BOOKS = [
@@ -406,7 +406,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                   { key: 'summary',       icon: '📋', title: t("核心要义") },
                   { key: 'context',       icon: '🏛️', title: t("历史文化背景") },
                   { key: 'structure',     icon: '📐', title: t("段落结构") },
-                  { key: '__vbv__',       icon: '🔍', title: `逐节详解（共${vbv.length}节）` },
+                  { key: '__vbv__',       icon: '🔍', title: getRuntimeLang() === 'en' ? `Verse-by-Verse (${vbv.length})` : `逐节详解（共${vbv.length}节）` },
                   { key: 'key_words',     icon: '🔑', title: t("关键词语原文解析") },
                   { key: 'cross_refs',    icon: '🔗', title: t("串珠平行经文") },
                   { key: 'theology',      icon: '✝️',  title: t("核心神学主题") },
