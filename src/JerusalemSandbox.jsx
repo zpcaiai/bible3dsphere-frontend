@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react'
 import BackButton from './BackButton'
 import { JERU_ERAS, TEMPLE_CENTER, PASSION_WEEK, eraGeoJSON, locationsFor, JERU_LOCATIONS } from './data/jerusalemChronology'
 import { TEMPLE_GEOJSON, TEMPLE_PARTS, TEMPLE_LABELS, TEMPLE_CAMERA } from './data/templeStructure'
+import { TEMPLE_GEOJSON_HEROD, TEMPLE_PARTS_HEROD, TEMPLE_LABELS_HEROD, TEMPLE_CAMERA_HEROD } from './data/templeStructureHerod'
+import { createModelLayer } from './lib/gltfModelLayer'
 import { t, getRuntimeLang } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
 
@@ -85,6 +87,12 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 // 回退切换引擎时曾导致整个应用崩溃黑屏——统一用安全探测。
 const safeLayer = (map, id) => { try { return map && map.getLayer ? map.getLayer(id) : null } catch (_) { return null } }
 const safeSource = (map, id) => { try { return map && map.getSource ? map.getSource(id) : null } catch (_) { return null } }
+const dataFor = (v) => (v === 'herod' ? TEMPLE_GEOJSON_HEROD : TEMPLE_GEOJSON)
+const partsFor = (v) => (v === 'herod' ? TEMPLE_PARTS_HEROD : TEMPLE_PARTS)
+const labelsFor = (v) => (v === 'herod' ? TEMPLE_LABELS_HEROD : TEMPLE_LABELS)
+const cameraFor = (v) => (v === 'herod' ? TEMPLE_CAMERA_HEROD : TEMPLE_CAMERA)
+const variantForEra = (id) => (id === 'solomon' || id === 'hezekiah' ? 'solomon' : 'herod')
+const MODEL_URL = (import.meta.env && import.meta.env.VITE_TEMPLE_GLTF_URL) || ''
 
 export default function JerusalemSandbox({ onBack }) {
   const containerRef = useRef(null)
@@ -110,6 +118,14 @@ export default function JerusalemSandbox({ onBack }) {
   const [selectedPart, setSelectedPart] = useState(null)
   const templeMarkersRef = useRef([])
   const templeModeRef = useRef(false)
+  const [templeVariant, setTempleVariant] = useState('herod')
+  const templeVariantRef = useRef('herod')
+  // —— 真实高程（hillshade）+ glTF 精模图层 ——
+  const [showTerrain, setShowTerrain] = useState(true)
+  const showTerrainRef = useRef(true)
+  const [modelOn, setModelOn] = useState(false)
+  const [modelStatus, setModelStatus] = useState('')
+  const modelLayerRef = useRef(null)
 
   const era = JERU_ERAS[eraIdx]
   eraIdxRef.current = eraIdx
@@ -248,6 +264,22 @@ export default function JerusalemSandbox({ onBack }) {
     buildLayers()
     if (!layersBuilt) { try { map.on('styledata', buildLayers) } catch (_) {} }
 
+    // —— 真实高程：DEM 山体阴影（免 token，AWS Terrarium；MapLibre v1 不支持真三维 setTerrain，用 hillshade 呈现起伏）——
+    const buildHillshade = () => {
+      try {
+        if (!safeSource(map, 'dem-terrarium')) {
+          map.addSource('dem-terrarium', { type: 'raster-dem', encoding: 'terrarium', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], tileSize: 256, maxzoom: 14, attribution: '© Mapzen / AWS Terrain Tiles' })
+        }
+        if (!safeLayer(map, 'hillshade')) {
+          const beforeId = safeLayer(map, 'jeru-fill') ? 'jeru-fill' : undefined
+          map.addLayer({ id: 'hillshade', type: 'hillshade', source: 'dem-terrarium', layout: { visibility: showTerrainRef.current ? 'visible' : 'none' }, paint: { 'hillshade-exaggeration': 0.55, 'hillshade-shadow-color': '#0d1a2a', 'hillshade-highlight-color': '#fff2d8', 'hillshade-accent-color': '#5a4a3a' } }, beforeId)
+        }
+        if (eng === 'mapbox' && showTerrainRef.current) { try { map.setTerrain({ source: 'dem', exaggeration: 1.2 }) } catch (_) {} }
+      } catch (_) {}
+    }
+    buildHillshade()
+    try { map.on('styledata', buildHillshade) } catch (_) {}
+
     // 圣殿精细结构（默认隐藏，进入圣殿模式时显示）
     try {
       map.addSource('temple', { type: 'geojson', data: TEMPLE_GEOJSON })
@@ -263,8 +295,9 @@ export default function JerusalemSandbox({ onBack }) {
       })
       map.on('click', 'temple-fill', (e) => {
         const f = e.features && e.features[0]
-        if (f && f.properties && TEMPLE_PARTS[f.properties.id]) {
-          setSelectedPart({ id: f.properties.id, ...TEMPLE_PARTS[f.properties.id] })
+        const P = partsFor(templeVariantRef.current)
+        if (f && f.properties && P[f.properties.id]) {
+          setSelectedPart({ id: f.properties.id, ...P[f.properties.id] })
         }
       })
       map.on('mouseenter', 'temple-fill', () => { map.getCanvas().style.cursor = 'pointer' })
@@ -353,16 +386,54 @@ export default function JerusalemSandbox({ onBack }) {
     map.easeTo({ center: TEMPLE_CENTER, zoom: 15.4, pitch: 60, bearing: -22, duration: 900 })
   }
 
+  // —— 地形（hillshade + Mapbox 真三维）开关 ——
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || status !== 'ready') return
+    showTerrainRef.current = showTerrain
+    if (safeLayer(map, 'hillshade')) { try { map.setLayoutProperty('hillshade', 'visibility', showTerrain ? 'visible' : 'none') } catch (_) {} }
+    if (engine === 'mapbox') { try { map.setTerrain(showTerrain ? { source: 'dem', exaggeration: 1.2 } : null) } catch (_) {} }
+  }, [showTerrain, engine, status])
+
+  // —— glTF 精模图层开关（有 VITE_TEMPLE_GLTF_URL 则加载 glTF，否则程序化占位）——
+  function toggleModel() {
+    const map = mapRef.current, gl = glRef.current
+    if (!map || !gl) return
+    if (modelOn) {
+      try { if (safeLayer(map, 'jeru-3dmodel')) map.removeLayer('jeru-3dmodel') } catch (_) {}
+      modelLayerRef.current = null; setModelOn(false); setModelStatus('')
+      return
+    }
+    try {
+      const layer = createModelLayer({ glLib: gl, origin: TEMPLE_CENTER, altitude: 6, modelScale: 1, url: MODEL_URL, onStatus: (st, msg) => setModelStatus(msg || st) })
+      map.addLayer(layer)
+      modelLayerRef.current = layer; setModelOn(true)
+      map.flyTo({ center: TEMPLE_CENTER, zoom: 16.6, pitch: 66, bearing: -22, duration: 1400, essential: true })
+    } catch (e) { setModelStatus((e && e.message) || '模型图层创建失败') }
+  }
+
   // —— 圣殿3D结构模式 ——
   function clearTempleMarkers() {
     templeMarkersRef.current.forEach(m => { try { m.remove() } catch (_) {} })
     templeMarkersRef.current = []
   }
+  function addTempleLabels(gl, map, variant) {
+    labelsFor(variant).forEach(l => {
+      const el = document.createElement('div'); el.className = 'jeru-structlabel'; el.textContent = l.name
+      el.style.pointerEvents = 'auto'; el.style.cursor = 'pointer'
+      el.onclick = (ev) => { ev.stopPropagation(); const P = partsFor(templeVariantRef.current); if (P[l.id]) setSelectedPart({ id: l.id, ...P[l.id] }) }
+      const mk = new gl.Marker({ element: el, anchor: 'center' }).setLngLat(l.coord).addTo(map)
+      templeMarkersRef.current.push(mk)
+    })
+  }
   function enterTemple() {
     const map = mapRef.current, gl = glRef.current
     if (!map || !safeLayer(map, 'temple-fill')) return
     passionRunRef.current = false; setPassionActive(false)
+    const variant = variantForEra(era.id)
+    templeVariantRef.current = variant; setTempleVariant(variant)
     templeModeRef.current = true; setTempleMode(true); setSelectedLoc(null)
+    try { map.getSource('temple').setData(dataFor(variant)) } catch (_) {}
     try {
       map.setLayoutProperty('jeru-fill', 'visibility', 'none')
       map.setLayoutProperty('jeru-wall-line', 'visibility', 'none')
@@ -371,14 +442,19 @@ export default function JerusalemSandbox({ onBack }) {
     } catch (_) {}
     clearMarkers()
     clearTempleMarkers()
-    TEMPLE_LABELS.forEach(l => {
-      const el = document.createElement('div'); el.className = 'jeru-structlabel'; el.textContent = l.name
-      el.style.pointerEvents = 'auto'; el.style.cursor = 'pointer'
-      el.onclick = (ev) => { ev.stopPropagation(); if (TEMPLE_PARTS[l.id]) setSelectedPart({ id: l.id, ...TEMPLE_PARTS[l.id] }) }
-      const mk = new gl.Marker({ element: el, anchor: 'center' }).setLngLat(l.coord).addTo(map)
-      templeMarkersRef.current.push(mk)
-    })
-    map.flyTo({ center: TEMPLE_CAMERA.center, zoom: TEMPLE_CAMERA.zoom, pitch: TEMPLE_CAMERA.pitch, bearing: TEMPLE_CAMERA.bearing, duration: 2200, essential: true })
+    addTempleLabels(gl, map, variant)
+    const cam = cameraFor(variant)
+    map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: cam.pitch, bearing: cam.bearing, duration: 2200, essential: true })
+  }
+  function switchTempleVariant(v) {
+    const map = mapRef.current, gl = glRef.current
+    if (!map || !templeModeRef.current || !safeLayer(map, 'temple-fill')) return
+    templeVariantRef.current = v; setTempleVariant(v); setSelectedPart(null)
+    try { map.getSource('temple').setData(dataFor(v)) } catch (_) {}
+    try { map.setFilter('temple-fill', cutaway ? ['!=', ['get', 'cut'], 1] : null) } catch (_) {}
+    clearTempleMarkers(); addTempleLabels(gl, map, v)
+    const cam = cameraFor(v)
+    map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: cam.pitch, bearing: cam.bearing, duration: 1400, essential: true })
   }
   function exitTemple() {
     const map = mapRef.current, gl = glRef.current
@@ -519,12 +595,19 @@ export default function JerusalemSandbox({ onBack }) {
           {!passionActive
             ? <button className="primary" onClick={playPassion}>{t("✝ 受难周 FPV 巡游")}</button>
             : <button className="primary" onClick={stopPassion}>{t("⏹ 停止巡游")}</button>}
+          {status === 'ready' && (
+            <button className={showTerrain ? 'on' : ''} onClick={() => setShowTerrain(s => !s)} title={t("真实高程山体阴影")}>{t("⛰ 地形")}</button>
+          )}
+          {status === 'ready' && (
+            <button className={modelOn ? 'on' : ''} onClick={toggleModel} title={t("叠加 3D 精模（glTF 或占位）")}>{t("🏛 精模")}</button>
+          )}
           {engine === 'maplibre' && (
             <button className={showOsm ? 'on' : ''} onClick={() => setShowOsm(s => !s)}>{t("🗺 现代底图")}</button>
           )}
           {status === 'ready' && (!templeMode
             ? <button className="primary" onClick={enterTemple}>{t("🏛 圣殿3D结构")}</button>
             : <>
+                <button onClick={() => switchTempleVariant(templeVariant === 'herod' ? 'solomon' : 'herod')}>{templeVariant === 'herod' ? t("⛪ 切第一圣殿") : t("🏛 切第二圣殿")}</button>
                 <button className={cutaway ? 'on' : ''} onClick={() => setCutaway(c => !c)}>{t("✂ 剖视")}{cutaway ? t("·开") : t("·关")}</button>
                 <button onClick={exitTemple}>{t("🚪 离开圣殿")}</button>
               </>)}
@@ -562,7 +645,9 @@ export default function JerusalemSandbox({ onBack }) {
       {/* 圣殿模式提示 */}
       {templeMode && (
         <div className="jeru-temple-hint">
-          {t("🏛 所罗门第一圣殿（王上6–7，按肘比例示意复原）· 点击任一部件看经文与尺寸 · ✂ 剖视揭开殿顶察看圣所与至圣所")}
+          {templeVariant === 'herod'
+            ? t("🏛 希律第二圣殿（约2:20；可13:1-2，按传统尺寸示意复原）· 由外而内：外邦人院→隔墙Soreg→妇女院→以色列人院→祭司院与大祭坛→圣所→至圣所，南接皇家柱廊 · 点件看经文 · ✂ 剖视揭顶察看圣所与至圣所")
+            : t("🏛 所罗门第一圣殿（王上6–7，按肘比例示意复原）· 点击任一部件看经文与尺寸 · ✂ 剖视揭开殿顶察看圣所与至圣所")}
         </div>
       )}
 
@@ -585,6 +670,12 @@ export default function JerusalemSandbox({ onBack }) {
         </div>
       )}
 
+      {modelOn && (
+        <div className="jeru-foot" style={{ marginTop: 6 }}>
+          🏛 {t("精模")}：{modelStatus ? <AutoText>{modelStatus}</AutoText> : null}
+          {!MODEL_URL && t("（未配置 VITE_TEMPLE_GLTF_URL，当前为程序化占位圣殿；设环境变量指向 glTF 即可替换为精模）")}
+        </div>
+      )}
       <div className="jeru-foot">
         {t("城墙与建筑轮廓为示意性复原（schematic），用于教学呈现各时期相对范围与圣殿\"平地起高楼\"，非精确考古测绘。")}
         {engine === 'maplibre' && !TOKEN && t(" · 当前为免费 MapLibre 模式；配置 VITE_MAPBOX_TOKEN 可启用 Mapbox 卫星底图。")}
