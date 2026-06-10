@@ -168,20 +168,45 @@ export default function BibleMap({ config, onBack }) {
     SEA_MAP_IDS.includes(config.id) || layer.route === false ||
     layer.scene === 'boat' || layer.scene === 'sea'
   const [routedGeom, setRoutedGeom] = useState({}) // layerId -> [[lng,lat],...]
+  // 逐段解析路线：ORS 会因为整条请求里任一段不可路由（航段过长超出步行距离上限、
+  // 或跨越水域）而拒绝整条多点请求，导致整条旅程退化为直线。改为「每相邻两点单独请求」，
+  // 可路由的段走真实道路/航线，仅真正不可路由的那一段才退化为直线。陆地段再按
+  // foot-walking → foot-hiking → driving-car 依次回退，长途段也能贴着路网走。
   useEffect(() => {
     if (isTimeline) return
     let cancelled = false
-    activeLayers.forEach(layer => {
+    const chainFor = (sea) => sea ? ['sea'] : ['foot-walking', 'foot-hiking', 'driving-car']
+    const fetchSeg = async (a, b, profile) => {
+      try {
+        const r = await fetch(`${API_BASE}/route`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profile, coordinates: [[a.lng, a.lat], [b.lng, b.lat]] }),
+        })
+        if (!r.ok) return null
+        const d = await r.json()
+        if (!d || !d.ok || !Array.isArray(d.geometry) || d.geometry.length < 2) return null
+        return d.geometry.map(pt => [Number(pt[0]), Number(pt[1])]) // [lng,lat]
+      } catch { return null }
+    }
+    const resolveLeg = async (a, b, chain) => {
+      for (const prof of chain) {
+        const g = await fetchSeg(a, b, prof)
+        if (g && g.length >= 2) return g
+      }
+      return [[a.lng, a.lat], [b.lng, b.lat]] // 该段退化为直线
+    }
+    activeLayers.forEach(async (layer) => {
       if (!layer.route || routedGeom[layer.id]) return
       const pts = [...(layer.points || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       if (pts.length < 2) return
-      fetch(`${API_BASE}/route`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile: isSeaLayer(layer) ? 'sea' : 'foot-walking', coordinates: pts.map(p => [p.lng, p.lat]) }),
-      }).then(r => r.ok ? r.json() : null).then(d => {
-        if (cancelled || !d || !d.ok || !Array.isArray(d.geometry) || d.geometry.length < 2) return
-        setRoutedGeom(prev => ({ ...prev, [layer.id]: d.geometry }))
-      }).catch(() => {})
+      const chain = chainFor(isSeaLayer(layer))
+      const legs = await Promise.all(
+        pts.slice(0, -1).map((a, i) => resolveLeg(a, pts[i + 1], chain))
+      )
+      if (cancelled) return
+      const stitched = []
+      legs.forEach(seg => seg.forEach(pt => stitched.push(pt)))
+      if (stitched.length >= 2) setRoutedGeom(prev => ({ ...prev, [layer.id]: stitched }))
     })
     return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
