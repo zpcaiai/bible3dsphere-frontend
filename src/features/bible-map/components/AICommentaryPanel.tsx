@@ -44,7 +44,7 @@ export function AICommentaryPanel({ selection }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-indigo-500/10 to-fuchsia-500/10 p-4">
+    <div className="bm-ai-panel rounded-xl border border-white/10 bg-gradient-to-br from-indigo-500/10 to-fuchsia-500/10 p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-base">🤖</span>

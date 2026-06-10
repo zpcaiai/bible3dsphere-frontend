@@ -158,8 +158,8 @@ export interface ApiErr {
 export type ApiResult<T> = ApiOk<T> | ApiErr
 
 // ── 关系图谱（Neo4j 预留 + 本地 fallback）────────────────────────────────
-export type GraphNodeKind = 'tribe' | 'empire' | 'nation' | 'prophecy' | 'campaign' | 'commander'
-export type GraphEdgeType = 'AGAINST' | 'LED_BY' | 'CONQUERED' | 'NEIGHBORS' | 'SUCCEEDED'
+export type GraphNodeKind = 'tribe' | 'empire' | 'nation' | 'prophecy' | 'campaign' | 'commander' | 'person' | 'place' | 'event'
+export type GraphEdgeType = 'AGAINST' | 'LED_BY' | 'CONQUERED' | 'NEIGHBORS' | 'SUCCEEDED' | 'TRAVELED_TO' | 'HAPPENED_AT' | 'FEATURES'
 
 export interface GraphNode {
   id: string

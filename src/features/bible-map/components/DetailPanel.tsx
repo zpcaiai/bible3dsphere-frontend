@@ -32,7 +32,7 @@ function Row({ label, value }: { label: string; value: string }) {
 export function DetailPanel({ selection }: Props) {
   if (!selection) {
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="text-sm text-gray-400">
           {t('点击地图上的支派 / 帝国疆域，或左侧事件、人物、预言与战役，查看详情。')}
         </div>
@@ -44,7 +44,7 @@ export function DetailPanel({ selection }: Props) {
     const t0 = selection.territory
     const desc = pick(t0 as unknown as Record<string, unknown>, 'description')
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_COLORS[t0.status] }} />
           <h3 className="text-lg font-bold text-white">{pickVal(t0.nameZh, t0.name)}</h3>
@@ -65,7 +65,7 @@ export function DetailPanel({ selection }: Props) {
     const desc = pick(p as unknown as Record<string, unknown>, 'description')
     const fulfill = pick(p as unknown as Record<string, unknown>, 'fulfillmentDescription')
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 className="mb-2 text-lg font-bold text-white">{p.book} {p.chapterStart}{p.chapterEnd ? `-${p.chapterEnd}` : ''} · {t('论')}{nation}</h3>
         <Row label={t('对象')} value={`${nation} (${p.targetNation})`} />
         <Row label={t('类型')} value={p.prophecyType} />
@@ -85,7 +85,7 @@ export function DetailPanel({ selection }: Props) {
     const c = selection.campaign
     const desc = pick(c as unknown as Record<string, unknown>, 'description')
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 className="mb-2 text-lg font-bold text-white">{pickVal(c.nameZh, c.name)}</h3>
         <Row label={t('名称')} value={c.name} />
         {c.commanderZh && <Row label={t('统帅')} value={pickVal(c.commanderZh, c.commander)} />}
@@ -101,7 +101,7 @@ export function DetailPanel({ selection }: Props) {
     const desc = pick(e as unknown as Record<string, unknown>, 'description')
     const meaning = pick(e as unknown as Record<string, unknown>, 'spiritualMeaning')
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 className="mb-2 text-lg font-bold text-white">{pickVal(e.titleZh, e.title)}</h3>
         <Row label={t('年代')} value={formatYear(e.startYear)} />
         {e.locationName && <Row label={t('地点')} value={e.locationName} />}
@@ -119,7 +119,7 @@ export function DetailPanel({ selection }: Props) {
   if (selection.kind === 'person' && selection.person) {
     const p = selection.person
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="bm-detail-panel rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="h-3 w-3 rounded-full" style={{ background: p.color }} />
           <h3 className="text-lg font-bold text-white">{pickVal(p.personZh, p.person)}</h3>

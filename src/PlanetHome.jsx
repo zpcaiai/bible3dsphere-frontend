@@ -73,7 +73,7 @@ export default function PlanetHome({ onClose, go }) {
   return (
     <main className="planet-home" aria-labelledby="planet-home-title">
       <header className="planet-home-topbar">
-        <BackButton onClick={onClose} />
+        <BackButton onClick={onClose} className="planet-back-btn" />
         <div className="planet-title-group">
           <h1 id="planet-home-title">{t('属灵星球')}</h1>
           <p>{t('你不是在课程里学习，而是在一颗星球上成长')}</p>

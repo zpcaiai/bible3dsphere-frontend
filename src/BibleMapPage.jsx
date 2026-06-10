@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { pickVoiceFor, speechLangFor } from './voice'
 import { createMapAdapter } from './map/createMapAdapter'
-import { curvedPath } from './map/arc'
+import { normalizeRoute, routeSliceToStation } from './map/routePlayback'
 import { loadBibleMap, BIBLE_MAPS, confidenceMeta, fetchTimeSlice, fetchRegions, fetchRelations, fetchLandmarks, landmarkNoteBySlug } from './data/bibleGeoSource'
 import { t, getRuntimeLang } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
@@ -70,6 +70,8 @@ export default function BibleMapPage() {
   const [mapError, setMapError] = useState('')
   const [ready, setReady] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [timelinePlaying, setTimelinePlaying] = useState(false)
+  const [timelineSpeed, setTimelineSpeed] = useState(1)
   const [regionRel, setRegionRel] = useState(null)
 
   // 加载数据集
@@ -122,8 +124,27 @@ export default function BibleMapPage() {
 
   const variant = dataset && !dataset.temporal ? (dataset.variants.find((v) => v.id === variantId) || dataset.variants[0]) : null
   const STN = orderedStations(dataset, variant)
+  const stationCoords = STN.map((f) => coordsFor(f, variant)).filter(Boolean)
+  const routePath = normalizeRoute(stationCoords, variant?.route)
   const selected = STN.find((s) => s.properties.id === selectedId) || STN[0] || null
   useEffect(() => { selectedRef.current = selected }, [selected])
+
+  useEffect(() => {
+    if (!dataset?.temporal || !timelinePlaying) return
+    const maxY = dataset.eras[dataset.eras.length - 1].end
+    const stepYears = 50 * timelineSpeed
+    const timer = setInterval(() => {
+      setYear((cur) => {
+        const next = cur + stepYears
+        if (next >= maxY - 1) {
+          setTimelinePlaying(false)
+          return maxY - 1
+        }
+        return next
+      })
+    }, 800)
+    return () => clearInterval(timer)
+  }, [dataset, timelinePlaying, timelineSpeed])
 
   const selectStation = useCallback((f, fromMarker = false) => {
     setSelectedId(f.properties.id)
@@ -144,8 +165,8 @@ export default function BibleMapPage() {
     ad.clear()
     markersRef.current = {}
     progressRef.current = null
-    // 地点连线用弧线（航线风格），不再用生硬直线
-    if (variant.route?.length) ad.addRoute(curvedPath(variant.route), { color: variant.color, weight: 3 })
+    // 主路线优先使用 variant.route 的真实路网/航线；无路网时才回退为站点弧线。
+    if (routePath.length >= 2) ad.addRoute(routePath, { color: variant.color, weight: 3 })
     STN.forEach((f, i) => {
       const cm = confidenceMeta[f.properties.confidence] || confidenceMeta.unknown
       const cc = coordsFor(f, variant)
@@ -158,9 +179,9 @@ export default function BibleMapPage() {
       })
       markersRef.current[f.properties.id] = m
     })
-    const coords = STN.map((f) => coordsFor(f, variant)).filter(Boolean)
-    if (coords.length) {
-      const lngs = coords.map((c) => c[0]); const lats = coords.map((c) => c[1])
+    const boundsCoords = routePath.length >= 2 ? routePath : stationCoords
+    if (boundsCoords.length) {
+      const lngs = boundsCoords.map((c) => c[0]); const lats = boundsCoords.map((c) => c[1])
       ad.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -235,13 +256,13 @@ export default function BibleMapPage() {
       const m = markersRef.current[f.properties.id]
       if (m && ad.setMarkerActive) ad.setMarkerActive(m, f.properties.id === selectedId)
     })
-    // 已走过的路程画成实线弧线（第一站之前无路程）
+    // 已走过的路程截断自主路线，避免进度实线与真实路网分叉。
     if (ad.removeRoute && progressRef.current) { ad.removeRoute(progressRef.current); progressRef.current = null }
     const curIdx = STN.findIndex((s) => s.properties.id === selectedId)
     if (curIdx > 0) {
-      const walked = STN.slice(0, curIdx + 1).map((f) => coordsFor(f, variant)).filter(Boolean)
+      const walked = routeSliceToStation(stationCoords, variant?.route, curIdx)
       if (walked.length >= 2 && ad.addRoute) {
-        progressRef.current = ad.addRoute(curvedPath(walked), { color: variant?.color || '#ffd700', weight: 4, opacity: 1, solid: true })
+        progressRef.current = ad.addRoute(walked, { color: variant?.color || '#ffd700', weight: 4, opacity: 1, solid: true })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -276,6 +297,7 @@ export default function BibleMapPage() {
   function switchDataset(id) {
     if (id === datasetId) return
     setPlaying(false)
+    setTimelinePlaying(false)
     if (playRef.current) { clearInterval(playRef.current); playRef.current = null }
     setSlice(null)
     setDatasetId(id)
@@ -329,9 +351,19 @@ export default function BibleMapPage() {
         {MapBox}
         <div className="biblemap-timeline">
           <div className="biblemap-year">{yLabel(year)}</div>
+          <div className="biblemap-timeline-controls">
+            <button className={timelinePlaying ? 'on' : ''} onClick={() => setTimelinePlaying(v => !v)}>
+              {timelinePlaying ? t("⏸ 暂停") : t("▶ 播放时间轴")}
+            </button>
+            {[1, 2, 4].map((s) => (
+              <button key={s} className={timelineSpeed === s ? 'on' : ''} onClick={() => setTimelineSpeed(s)}>
+                {s}x
+              </button>
+            ))}
+          </div>
           <input
             type="range" className="biblemap-slider"
-            min={minY} max={maxY - 1} step={10} value={year}
+            min={minY} max={maxY - 1} step={50} value={year}
             onChange={(e) => setYear(parseInt(e.target.value, 10))}
           />
           <div className="biblemap-era-chips">

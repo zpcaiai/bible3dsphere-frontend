@@ -135,6 +135,8 @@ export default function JerusalemSandbox({ onBack }) {
   const templeModeRef = useRef(false)
   const [templeVariant, setTempleVariant] = useState('herod')
   const templeVariantRef = useRef('herod')
+  const templeTourRef = useRef(false)
+  const [templeTourActive, setTempleTourActive] = useState(false)
   // —— 真实高程（hillshade）+ glTF 精模图层 ——
   const [showTerrain, setShowTerrain] = useState(true)
   const showTerrainRef = useRef(true)
@@ -444,7 +446,7 @@ export default function JerusalemSandbox({ onBack }) {
   function enterTemple() {
     const map = mapRef.current, gl = glRef.current
     if (!map || !safeLayer(map, 'temple-fill')) return
-    passionRunRef.current = false; setPassionActive(false)
+    passionRunRef.current = false; setPassionActive(false); templeTourRef.current = false; setTempleTourActive(false)
     const variant = variantForEra(era.id)
     templeVariantRef.current = variant; setTempleVariant(variant)
     templeModeRef.current = true; setTempleMode(true); setSelectedLoc(null)
@@ -464,6 +466,7 @@ export default function JerusalemSandbox({ onBack }) {
   function switchTempleVariant(v) {
     const map = mapRef.current, gl = glRef.current
     if (!map || !templeModeRef.current || !safeLayer(map, 'temple-fill')) return
+    templeTourRef.current = false; setTempleTourActive(false)
     templeVariantRef.current = v; setTempleVariant(v); setSelectedPart(null)
     try { map.getSource('temple').setData(dataFor(v)) } catch (_) {}
     try { map.setFilter('temple-fill', cutaway ? ['!=', ['get', 'cut'], 1] : null) } catch (_) {}
@@ -473,6 +476,7 @@ export default function JerusalemSandbox({ onBack }) {
   }
   function exitTemple() {
     const map = mapRef.current, gl = glRef.current
+    templeTourRef.current = false; setTempleTourActive(false)
     templeModeRef.current = false; setTempleMode(false); setSelectedPart(null)
     if (!map) return
     try {
@@ -491,10 +495,42 @@ export default function JerusalemSandbox({ onBack }) {
     try { map.setFilter('temple-fill', cutaway ? ['!=', ['get', 'cut'], 1] : null) } catch (_) {}
   }, [cutaway, templeMode])
 
+  async function playTempleTour() {
+    const map = mapRef.current
+    if (!map || templeTourRef.current) return
+    if (!templeModeRef.current) {
+      enterTemple()
+      await sleep(900)
+    }
+    const variant = templeVariantRef.current
+    const labels = labelsFor(variant)
+    if (!labels.length) return
+    templeTourRef.current = true
+    setTempleTourActive(true)
+    for (const label of labels) {
+      if (!templeTourRef.current) break
+      const part = partsFor(variant)[label.id]
+      setSelectedPart(part ? { id: label.id, ...part } : { id: label.id, name: label.name, ref: '', desc: '' })
+      try {
+        map.flyTo({ center: label.coord, zoom: Math.max(16.8, cameraFor(variant).zoom), pitch: 67, bearing: cameraFor(variant).bearing, duration: 1300, essential: true })
+      } catch (_) {}
+      await sleep(2100)
+    }
+    templeTourRef.current = false
+    setTempleTourActive(false)
+  }
+
+  function stopTempleTour() {
+    templeTourRef.current = false
+    setTempleTourActive(false)
+    try { mapRef.current && mapRef.current.stop() } catch (_) {}
+  }
+
   // —— 受难周 FPV 巡游 ——
   async function playPassion() {
     const map = mapRef.current, gl = glRef.current
     if (!map || passionRunRef.current) return
+    templeTourRef.current = false; setTempleTourActive(false)
     // 受难周属希律时期，先切过去
     const herodIdx = JERU_ERAS.findIndex(e => e.id === 'herod')
     if (eraIdxRef.current !== herodIdx) { setEraIdx(herodIdx); await sleep(900) }
@@ -624,10 +660,13 @@ export default function JerusalemSandbox({ onBack }) {
           {status === 'ready' && (!templeMode
             ? <button className="primary" onClick={enterTemple}>{t("🏛 圣殿3D结构")}</button>
             : <>
-                {TEMPLE_VARIANT_ORDER.filter(v => v !== templeVariant).map(v => (
-                  <button key={v} onClick={() => switchTempleVariant(v)}>{TEMPLE_VARIANTS[v].icon} <AutoText>{TEMPLE_VARIANTS[v].name}</AutoText></button>
-                ))}
-                <button className={cutaway ? 'on' : ''} onClick={() => setCutaway(c => !c)}>{t("✂ 剖视")}{cutaway ? t("·开") : t("·关")}</button>
+	                {TEMPLE_VARIANT_ORDER.filter(v => v !== templeVariant).map(v => (
+	                  <button key={v} onClick={() => switchTempleVariant(v)}>{TEMPLE_VARIANTS[v].icon} <AutoText>{TEMPLE_VARIANTS[v].name}</AutoText></button>
+	                ))}
+	                {!templeTourActive
+	                  ? <button className="primary" onClick={playTempleTour}>{t("▶ 由外而内导览")}</button>
+	                  : <button className="primary" onClick={stopTempleTour}>{t("⏹ 停止导览")}</button>}
+	                <button className={cutaway ? 'on' : ''} onClick={() => setCutaway(c => !c)}>{t("✂ 剖视")}{cutaway ? t("·开") : t("·关")}</button>
                 <button onClick={exitTemple}>{t("🚪 离开圣殿")}</button>
               </>)}
         </div>

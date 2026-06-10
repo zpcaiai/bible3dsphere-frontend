@@ -27,6 +27,28 @@ const API_BASE = ((import.meta.env.VITE_API_BASE as string | undefined) ?? '/api
 const CACHE_TTL_MS = 10 * 60 * 1000 // 10 分钟
 const apiCache = new Map<string, { data: unknown; ts: number }>()
 
+function mergeGraph(api: BibleGraph | null): BibleGraph {
+  if (!api) return localGraph
+  const nodes = [...api.nodes]
+  const seenNodes = new Set(nodes.map((n) => n.id))
+  for (const n of localGraph.nodes) {
+    if (!seenNodes.has(n.id)) {
+      seenNodes.add(n.id)
+      nodes.push(n)
+    }
+  }
+  const edges = [...api.edges]
+  const seenEdges = new Set(edges.map((e) => `${e.source}|${e.type}|${e.target}`))
+  for (const e of localGraph.edges) {
+    const key = `${e.source}|${e.type}|${e.target}`
+    if (!seenEdges.has(key)) {
+      seenEdges.add(key)
+      edges.push(e)
+    }
+  }
+  return { nodes, edges }
+}
+
 async function apiGet<T>(path: string): Promise<T | null> {
   const key = `${getRuntimeLang()}|${path}`
   const hit = apiCache.get(key)
@@ -86,7 +108,7 @@ export async function fetchPeople(): Promise<BiblePersonJourneyDTO[]> {
 
 export async function fetchGraph(): Promise<BibleGraph> {
   const api = await apiGet<BibleGraph>('/graph')
-  return api ?? localGraph
+  return mergeGraph(api)
 }
 
 export async function fetchGraphNeighbors(node: string): Promise<GraphNeighbors | null> {
