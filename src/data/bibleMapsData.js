@@ -8,8 +8,8 @@ import { exodusStations, exodusRoute } from './exodusStations'
 const abraham = {
   id: 'abraham',
   title: '亚伯拉罕迁徙地图',
-  subtitle: '从吾珥到应许之地 · 信心之父的旅程',
-  era: '约公元前 2100–1990',
+  subtitle: '从吾珥到麦比拉洞 · 信心之父一生的旅程',
+  era: '约公元前 2166–2029',
   badge: '★★★★★',
   bounds: { minLng: 30, maxLng: 47, minLat: 28, maxLat: 38 },
   mode: 'journey',
@@ -23,26 +23,53 @@ const abraham = {
       { id: 'haran', name_zh: '哈兰', name_en: 'Haran', lng: 39.03, lat: 36.86, order: 2, confidence: 'identified', year: -2091, age: 75, scriptureRef: '创11:31-12:4', note: '父亲他拉率家族至此居住，死于哈兰。', events: [
         { title: '七十五岁再蒙召', ref: '创12:1-4', summary: '"你要离开本地、本族、父家，往我所要指示你的地去。"亚伯兰七十五岁照耶和华的吩咐起行，带着罗得同去。' },
       ] },
-      { id: 'shechem', name_zh: '示剑', name_en: 'Shechem', lng: 35.28, lat: 32.21, order: 3, confidence: 'identified', year: -2091, age: 75, scriptureRef: '创12:6-7', altar: '摩利橡树旁，为向他显现的耶和华筑坛', promise: '"我要把这地赐给你的后裔。"', events: [
+      { id: 'shechem', name_zh: '示剑（摩利橡树）', name_en: 'Shechem', lng: 35.28, lat: 32.21, order: 3, confidence: 'identified', year: -2091, age: 75, scriptureRef: '创12:6-7', altar: '摩利橡树旁，为向他显现的耶和华筑坛', promise: '"我要把这地赐给你的后裔。"', events: [
         { title: '进入迦南的第一座坛', ref: '创12:6-7', summary: '亚伯兰到了示剑的摩利橡树，耶和华向他显现，应许把这地赐给他的后裔；他就在那里筑了一座坛。' },
       ] },
-      { id: 'bethel', name_zh: '伯特利', name_en: 'Bethel', lng: 35.22, lat: 31.93, order: 4, confidence: 'identified', year: -2090, age: 75, scriptureRef: '创12:8；13:3-4', altar: '在伯特利与艾城之间筑坛，求告耶和华的名', events: [
-        { title: '求告耶和华的名', ref: '创12:8', summary: '亚伯兰在此支搭帐棚，筑坛求告耶和华的名。日后从埃及上来仍回到这坛前敬拜。' },
-        { title: '与罗得分开', ref: '创13:8-12', summary: '为牧人相争，亚伯兰让罗得先选；罗得选了约旦河平原往所多玛去，亚伯兰留在迦南地。' },
+      { id: 'bethel-ai', name_zh: '伯特利与艾之间', name_en: 'Between Bethel & Ai', lng: 35.235, lat: 31.93, order: 4, confidence: 'identified', year: -2091, age: 75, scriptureRef: '创12:8', altar: '在伯特利与艾城之间筑坛，求告耶和华的名', events: [
+        { title: '支帐筑坛、求告主名', ref: '创12:8', summary: '亚伯兰从示剑迁到伯特利东边、艾城西边的山，支搭帐棚，又筑了一座坛，求告耶和华的名。' },
       ] },
-      { id: 'egypt', name_zh: '埃及', name_en: 'Egypt', lng: 31.20, lat: 30.10, order: 5, confidence: 'approximate', year: -2089, age: 76, scriptureRef: '创12:10-20', note: '地有饥荒，下到埃及暂居。', events: [
+      { id: 'negev1', name_zh: '南地', name_en: 'The Negev', lng: 34.85, lat: 31.05, order: 5, confidence: 'approximate', year: -2091, age: 75, scriptureRef: '创12:9', events: [
+        { title: '渐渐迁往南地', ref: '创12:9', summary: '亚伯兰一路前行，渐渐迁往南地（旷野干旱之地）。' },
+      ] },
+      { id: 'egypt', name_zh: '埃及', name_en: 'Egypt', lng: 31.20, lat: 30.10, order: 6, confidence: 'approximate', year: -2090, age: 76, scriptureRef: '创12:10-20', note: '地有饥荒，下到埃及暂居。', events: [
         { title: '因饥荒下埃及', ref: '创12:10-20', summary: '亚伯兰称撒莱为妹子，法老因此受灾；神保守撒莱，法老把他们送走，亚伯兰带着许多牲畜财物回迦南。' },
       ] },
-      { id: 'hebron', name_zh: '希伯仑（幔利）', name_en: 'Hebron', lng: 35.10, lat: 31.53, order: 6, confidence: 'identified', year: -2085, age: 80, scriptureRef: '创13:18；23章', altar: '在幔利的橡树那里为耶和华筑坛', promise: '"地上万国都要因你的后裔得福。"', events: [
-        { title: '立约与应许重申', ref: '创15;17', summary: '神与亚伯兰立约，应许后裔如天上的星；改名亚伯拉罕，立割礼为约的记号。' },
-        { title: '麦比拉洞', ref: '创23', summary: '撒拉死后，亚伯拉罕在希伯仑买下麦比拉洞作坟地——他在应许之地拥有的第一块产业。' },
+      { id: 'negev2', name_zh: '南地（回程）', name_en: 'The Negev', lng: 34.85, lat: 31.05, order: 7, confidence: 'approximate', year: -2089, age: 77, scriptureRef: '创13:1-3', events: [
+        { title: '带财物从埃及上来', ref: '创13:1-2', summary: '亚伯兰带着妻子与一切所有的，并罗得，从埃及上南地去；他的金、银、牲畜极多。' },
       ] },
-      { id: 'beersheba', name_zh: '别是巴', name_en: 'Beersheba', lng: 34.79, lat: 31.25, order: 7, confidence: 'identified', year: -2080, age: 86, scriptureRef: '创21:31-33', altar: '栽种垂丝柳树，求告永生神耶和华的名', events: [
-        { title: '与亚比米勒立约', ref: '创21:22-34', summary: '为水井之争，亚伯拉罕与基拉耳王亚比米勒起誓立约，故名"别是巴"（盟誓之井）。' },
-        { title: '以撒出生', ref: '创21:1-7', summary: '神照应许使撒拉生以撒，亚伯拉罕一百岁得应许之子。' },
+      { id: 'bethel-ai2', name_zh: '伯特利与艾之间（回程）', name_en: 'Between Bethel & Ai', lng: 35.235, lat: 31.93, order: 8, confidence: 'identified', year: -2089, age: 77, scriptureRef: '创13:3-12', events: [
+        { title: '回到旧坛、与罗得分开', ref: '创13:8-12', summary: '回到起先筑坛之处求告主名；因牧人相争，亚伯兰让罗得先选，罗得选了约旦河平原往所多玛去，亚伯兰留在迦南地。' },
       ] },
-      { id: 'moriah', name_zh: '摩利亚山（耶路撒冷）', name_en: 'Mount Moriah', lng: 35.235, lat: 31.778, order: 8, confidence: 'approximate', year: -2050, age: 115, scriptureRef: '创22:1-18', altar: '在山上筑坛，预备献以撒；耶和华以勒', promise: '"地上万国都必因你的后裔得福，因为你听从了我。"', events: [
-        { title: '献以撒', ref: '创22:1-14', summary: '神试验亚伯拉罕，吩咐献独生子以撒为燔祭；亚伯拉罕顺服举刀时，天使拦阻，神预备公羊代替。他称那地为"耶和华以勒"。' },
+      { id: 'hebron1', name_zh: '希伯仑（幔利橡树）', name_en: 'Hebron / Mamre', lng: 35.10, lat: 31.53, order: 9, confidence: 'identified', year: -2088, age: 78, scriptureRef: '创13:18', altar: '在幔利的橡树那里为耶和华筑坛', promise: '"你举目向东西南北观看，凡你所看见的一切地，我都要赐给你和你的后裔。"', events: [
+        { title: '迁到幔利筑坛', ref: '创13:18', summary: '亚伯兰搬到希伯仑幔利的橡树那里居住，在那里为耶和华筑了一座坛。' },
+      ] },
+      { id: 'dan-hobah', name_zh: '但附近 / 何把', name_en: 'Dan / Hobah', lng: 35.65, lat: 33.25, order: 10, confidence: 'approximate', year: -2086, age: 80, scriptureRef: '创14:14-16', note: '追敌直到大马士革左边的何把。', events: [
+        { title: '率壮丁救回罗得', ref: '创14:14-16', summary: '罗得被掳，亚伯兰率三百一十八名家生壮丁连夜追赶到但，又追到大马士革左边的何把，夺回罗得及一切财物人口。' },
+      ] },
+      { id: 'sodom-plain', name_zh: '所多玛平原相关地区', name_en: 'Plain of Sodom', lng: 35.40, lat: 31.05, order: 11, confidence: 'approximate', year: -2067, age: 99, scriptureRef: '创18:16-33；19:27-28', events: [
+        { title: '为所多玛代求', ref: '创18:23-32', summary: '亚伯拉罕为所多玛恳切代求："审判全地的主岂不行公义吗？"次日清晨他回到曾站在耶和华面前之处，望见平原烟气上腾如烧窑一般。' },
+      ] },
+      { id: 'hebron2', name_zh: '希伯仑（幔利）', name_en: 'Hebron / Mamre', lng: 35.10, lat: 31.53, order: 12, confidence: 'identified', year: -2067, age: 99, scriptureRef: '创17；18:1-15', altar: '幔利橡树前', promise: '"明年这时候，撒拉必给你生一个儿子。"', events: [
+        { title: '立约改名与三客显现', ref: '创17；18:10', summary: '神与亚伯兰立约，应许后裔如天上的星，改名亚伯拉罕，立割礼为约的记号；又在幔利橡树前以三位客旅显现，应许撒拉必生以撒。' },
+      ] },
+      { id: 'gerar', name_zh: '基拉耳', name_en: 'Gerar', lng: 34.58, lat: 31.40, order: 13, confidence: 'identified', year: -2067, age: 99, scriptureRef: '创20', events: [
+        { title: '寄居基拉耳', ref: '创20:2-7', summary: '亚伯拉罕寄居基拉耳，又称撒拉为妹子；神在梦中警告亚比米勒，使撒拉得保全，并为亚伯拉罕祷告医好其家。' },
+      ] },
+      { id: 'beersheba1', name_zh: '别是巴', name_en: 'Beersheba', lng: 34.79, lat: 31.25, order: 14, confidence: 'identified', year: -2066, age: 100, scriptureRef: '创21', altar: '栽种垂丝柳树，求告永生神耶和华的名', events: [
+        { title: '以撒出生、与亚比米勒立约', ref: '创21:1-7;22-34', summary: '神照应许使撒拉生以撒，亚伯拉罕一百岁得应许之子；又为水井之争与亚比米勒起誓立约，故名"别是巴"（盟誓之井）。' },
+      ] },
+      { id: 'moriah', name_zh: '摩利亚地', name_en: 'Land of Moriah', lng: 35.235, lat: 31.778, order: 15, confidence: 'approximate', year: -2051, age: 115, scriptureRef: '创22:1-18', altar: '在山上筑坛，预备献以撒；耶和华以勒', promise: '"地上万国都必因你的后裔得福，因为你听从了我。"', events: [
+        { title: '献以撒', ref: '创22:1-14', summary: '神试验亚伯拉罕，吩咐往摩利亚地献独生子以撒为燔祭；亚伯拉罕顺服举刀时天使拦阻，神预备公羊代替，他称那地为"耶和华以勒"。' },
+      ] },
+      { id: 'beersheba2', name_zh: '别是巴（回程）', name_en: 'Beersheba', lng: 34.79, lat: 31.25, order: 16, confidence: 'identified', year: -2051, age: 115, scriptureRef: '创22:19', events: [
+        { title: '回别是巴居住', ref: '创22:19', summary: '于是亚伯拉罕回到他的少年人那里，一同起身往别是巴去，亚伯拉罕就住在别是巴。' },
+      ] },
+      { id: 'hebron3', name_zh: '希伯仑（幔利）', name_en: 'Hebron / Mamre', lng: 35.10, lat: 31.53, order: 17, confidence: 'identified', year: -2029, age: 137, scriptureRef: '创23:1-2', events: [
+        { title: '撒拉离世', ref: '创23:1-2', summary: '撒拉享寿一百二十七岁，死在迦南地的基列亚巴，就是希伯仑；亚伯拉罕为她哀恸哭号。' },
+      ] },
+      { id: 'machpelah', name_zh: '麦比拉洞', name_en: 'Cave of Machpelah', lng: 35.105, lat: 31.524, order: 18, confidence: 'identified', year: -2029, age: 137, scriptureRef: '创23:3-20；25:9-10', events: [
+        { title: '买地立坟、应许之地的第一块产业', ref: '创23:17-20', summary: '亚伯拉罕向赫人以弗仑买下麦比拉田间的洞作坟地，葬了撒拉——这是他在应许之地拥有的第一块产业；日后他自己也葬在此处。' },
       ] },
     ],
   }],
@@ -81,39 +108,85 @@ const joshua = {
   subtitle: '渡约旦河 · 中部 / 南方 / 北方三大战役',
   era: '约公元前 1406–1400',
   badge: '★★★★★',
-  bounds: { minLng: 34.2, maxLng: 35.9, minLat: 31.2, maxLat: 33.2 },
+  bounds: { minLng: 34.2, maxLng: 35.95, minLat: 30.9, maxLat: 33.7 },
   mode: 'journey',
   layerSelect: 'multi',
   layers: [
-    { id: 'central', label: '渡河与中部战役', color: '#e8b04b', route: true, points: [
-      { id: 'gilgal', name_zh: '吉甲', name_en: 'Gilgal', lng: 35.50, lat: 31.85, order: 1, confidence: 'approximate', scriptureRef: '书4-5', altar: '立十二块石头为记念；行割礼、守逾越节', events: [
-        { title: '约旦河分开', ref: '书3:14-17', summary: '祭司抬约柜脚踏入水，约旦河水在亚当城停住立起成垒，全民走干地过河进入应许之地。' },
-      ] },
-      { id: 'jericho', name_zh: '耶利哥', name_en: 'Jericho', lng: 35.44, lat: 31.87, order: 2, confidence: 'identified', scriptureRef: '书6', events: [
-        { title: '城墙倒塌', ref: '书6:20', summary: '绕城七日，第七日绕七次、吹角呐喊，城墙塌陷；惟妓女喇合一家因信得救。' },
-      ] },
-      { id: 'ai', name_zh: '艾城', name_en: 'Ai', lng: 35.27, lat: 31.92, order: 3, confidence: 'approximate', scriptureRef: '书7-8', events: [
-        { title: '亚干的罪与得胜', ref: '书7-8', summary: '亚干私取当灭之物致初战败北；除罪后用伏兵之计攻取艾城。' },
-      ] },
-      { id: 'ebal', name_zh: '以巴路山', name_en: 'Mt Ebal', lng: 35.27, lat: 32.23, order: 4, confidence: 'identified', scriptureRef: '书8:30-35', altar: '在以巴路山为耶和华筑坛，宣读律法的祝福与咒诅', events: [] },
+    { id: 'central', label: '中部战役', color: '#e8b04b', route: true, note: '核心作用：从约旦河谷插入中央山地，切断迦南南北联系。', points: [
+      { id: 'jc-shittim', name_zh: '什亭', name_en: 'Shittim', lng: 35.62, lat: 31.84, order: 1, confidence: 'approximate', scriptureRef: '书3:1', events: [
+        { title: '从什亭起行', ref: '书3:1', summary: '约书亚清早起来，率全以色列人从什亭（摩押平原的营地）起行，来到约旦河边住宿，等候过河。' } ] },
+      { id: 'jc-jordan', name_zh: '约旦河', name_en: 'Jordan River', lng: 35.53, lat: 31.84, order: 2, confidence: 'identified', scriptureRef: '书3:14-17', events: [
+        { title: '约旦河分开', ref: '书3:14-17', summary: '祭司抬约柜脚踏入水，约旦河水在亚当城停住立起成垒，全民走干地过河进入应许之地。' } ] },
+      { id: 'jc-gilgal', name_zh: '吉甲', name_en: 'Gilgal', lng: 35.50, lat: 31.85, order: 3, confidence: 'approximate', scriptureRef: '书4-5', altar: '立十二块石头为记念；行割礼、守逾越节', events: [
+        { title: '立石为记、安营基地', ref: '书4:19-24', summary: '在吉甲立起从河中取来的十二块石头作记念，又行割礼、守逾越节，吉甲成为征战的大本营。' } ] },
+      { id: 'jc-jericho', name_zh: '耶利哥', name_en: 'Jericho', lng: 35.44, lat: 31.87, order: 4, confidence: 'identified', scriptureRef: '书6', events: [
+        { title: '城墙倒塌', ref: '书6:20', summary: '绕城七日，第七日绕七次、吹角呐喊，城墙塌陷；惟妓女喇合一家因信得救。' } ] },
+      { id: 'jc-ai', name_zh: '艾城', name_en: 'Ai', lng: 35.27, lat: 31.92, order: 5, confidence: 'approximate', scriptureRef: '书7-8', events: [
+        { title: '亚干的罪与得胜', ref: '书7-8', summary: '亚干私取当灭之物致初战败北；除罪后用伏兵之计攻取艾城。' } ] },
+      { id: 'jc-bethel', name_zh: '伯特利附近', name_en: 'Near Bethel', lng: 35.22, lat: 31.93, order: 6, confidence: 'approximate', scriptureRef: '书8:9,17', events: [
+        { title: '伏兵与联防之城', ref: '书8:17', summary: '伏兵埋伏在伯特利与艾城中间；伯特利、艾城无一人留下不出来追赶，城门大开，被以色列攻取。' } ] },
+      { id: 'jc-ebal', name_zh: '以巴路山', name_en: 'Mt Ebal', lng: 35.27, lat: 32.23, order: 7, confidence: 'identified', scriptureRef: '书8:30-31', altar: '在以巴路山为耶和华筑坛，献燔祭平安祭', events: [
+        { title: '筑坛立约', ref: '书8:30-31', summary: '约书亚照摩西所吩咐，在以巴路山为耶和华以色列的神筑了一座坛，是用没有动过铁器的整石头筑的。' } ] },
+      { id: 'jc-gerizim', name_zh: '基利心山', name_en: 'Mt Gerizim', lng: 35.27, lat: 32.20, order: 8, confidence: 'identified', scriptureRef: '书8:33', events: [
+        { title: '宣读祝福', ref: '书8:33', summary: '一半人站在基利心山前为百姓祝福，一半人站在以巴路山前宣告咒诅，正如摩西先前所吩咐的。' } ] },
+      { id: 'jc-shechem', name_zh: '示剑', name_en: 'Shechem', lng: 35.28, lat: 32.21, order: 9, confidence: 'identified', scriptureRef: '书8:34-35；24', events: [
+        { title: '宣读全部律法', ref: '书8:34-35', summary: '约书亚将律法上祝福、咒诅的话当着全会众宣读，一无所遗；中央山地的示剑由此被掌控，南北迦南被一分为二。' } ] },
     ] },
-    { id: 'south', label: '南方战役（五王联盟）', color: '#ff6b6b', route: true, points: [
-      { id: 'gibeon', name_zh: '基遍', name_en: 'Gibeon', lng: 35.18, lat: 31.85, order: 5, confidence: 'identified', scriptureRef: '书9-10', events: [
-        { title: '基遍人的诡计与日月停住', ref: '书10:12-14', summary: '基遍人骗得和约；五王联军围攻基遍，约书亚驰援，神降大冰雹，日头停在基遍约一日之久。' },
-      ] },
-      { id: 'makkedah', name_zh: '玛基大', name_en: 'Makkedah', lng: 34.95, lat: 31.62, order: 6, confidence: 'approximate', scriptureRef: '书10:16-27', events: [
-        { title: '五王藏洞被擒', ref: '书10:16-27', summary: '亚摩利五王逃入玛基大洞，被约书亚擒杀。' },
-      ] },
-      { id: 'lachish', name_zh: '拉吉', name_en: 'Lachish', lng: 34.85, lat: 31.56, order: 7, confidence: 'identified', scriptureRef: '书10:31-32', events: [] },
-      { id: 'hebron-s', name_zh: '希伯仑', name_en: 'Hebron', lng: 35.10, lat: 31.53, order: 8, confidence: 'identified', scriptureRef: '书10:36-37', events: [] },
+    { id: 'south', label: '南方战役（五王联盟）', color: '#ff6b6b', route: true, note: '核心作用：击败耶路撒冷、希伯仑、耶末、拉吉、伊矶伦五王联盟，控制迦南南部。', points: [
+      { id: 'js-gilgal', name_zh: '吉甲', name_en: 'Gilgal', lng: 35.50, lat: 31.85, order: 1, confidence: 'approximate', scriptureRef: '书10:7-9', events: [
+        { title: '连夜从吉甲出兵', ref: '书10:9', summary: '基遍求救，约书亚和一切兵丁从吉甲整夜上去，猛然临到敌军。' } ] },
+      { id: 'js-gibeon', name_zh: '基遍', name_en: 'Gibeon', lng: 35.18, lat: 31.85, order: 2, confidence: 'identified', scriptureRef: '书9-10', events: [
+        { title: '基遍人的诡计与日头停住', ref: '书10:12-14', summary: '基遍人骗得和约；五王联军围攻基遍，约书亚驰援，神降大冰雹，他祷告「日头停在基遍」约一日之久。' } ] },
+      { id: 'js-bethhoron-up', name_zh: '伯和仑上坡', name_en: 'Upper Beth-horon', lng: 35.10, lat: 31.88, order: 3, confidence: 'approximate', scriptureRef: '书10:10', events: [
+        { title: '上坡路追杀', ref: '书10:10', summary: '耶和华使敌军溃乱，以色列人在基遍大大击杀他们，又沿伯和仑的上坡路追赶。' } ] },
+      { id: 'js-bethhoron-down', name_zh: '伯和仑下坡', name_en: 'Lower Beth-horon', lng: 35.07, lat: 31.90, order: 4, confidence: 'approximate', scriptureRef: '书10:11', events: [
+        { title: '天降大冰雹', ref: '书10:11', summary: '敌人在伯和仑下坡逃跑时，耶和华从天上降大冰雹打死他们，被冰雹打死的比以色列人用刀杀死的还多。' } ] },
+      { id: 'js-azekah', name_zh: '亚西加', name_en: 'Azekah', lng: 34.94, lat: 31.70, order: 5, confidence: 'identified', scriptureRef: '书10:10-11', events: [
+        { title: '追击直到亚西加', ref: '书10:10', summary: '以色列人追杀敌军直到亚西加和玛基大。' } ] },
+      { id: 'js-makkedah', name_zh: '玛基大', name_en: 'Makkedah', lng: 34.95, lat: 31.62, order: 6, confidence: 'approximate', scriptureRef: '书10:16-28', events: [
+        { title: '五王藏洞被擒', ref: '书10:16-27', summary: '亚摩利五王逃入玛基大洞，被约书亚擒杀挂在五棵树上；当日又攻取玛基大。' } ] },
+      { id: 'js-libnah', name_zh: '立拿', name_en: 'Libnah', lng: 34.87, lat: 31.62, order: 7, confidence: 'approximate', scriptureRef: '书10:29-30', events: [
+        { title: '攻取立拿', ref: '书10:29-30', summary: '约书亚从玛基大往立拿去攻打，耶和华将立拿和其王交在以色列人手里。' } ] },
+      { id: 'js-lachish', name_zh: '拉吉', name_en: 'Lachish', lng: 34.85, lat: 31.56, order: 8, confidence: 'identified', scriptureRef: '书10:31-32', events: [
+        { title: '第二日攻取拉吉', ref: '书10:32', summary: '约书亚安营攻打拉吉，耶和华将拉吉交在以色列人手中，第二日就攻取了。' } ] },
+      { id: 'js-gezer', name_zh: '基色援军战场', name_en: 'Gezer (relief)', lng: 34.92, lat: 31.86, order: 9, confidence: 'identified', scriptureRef: '书10:33', events: [
+        { title: '基色王援军被歼', ref: '书10:33', summary: '基色王何兰上来帮助拉吉，约书亚将他和他的民都击杀了，没有留下一个。' } ] },
+      { id: 'js-eglon', name_zh: '伊矶伦', name_en: 'Eglon', lng: 34.78, lat: 31.60, order: 10, confidence: 'approximate', scriptureRef: '书10:34-35', events: [
+        { title: '当日攻取伊矶伦', ref: '书10:35', summary: '从拉吉往伊矶伦去，当日就攻取，用刀击杀城中的人，尽行杀灭。' } ] },
+      { id: 'js-hebron', name_zh: '希伯仑', name_en: 'Hebron', lng: 35.10, lat: 31.53, order: 11, confidence: 'identified', scriptureRef: '书10:36-37', events: [
+        { title: '攻取希伯仑', ref: '书10:36-37', summary: '约书亚上希伯仑去攻打，夺了城与属城的邑，尽行杀灭，一个不留。' } ] },
+      { id: 'js-debir', name_zh: '底璧', name_en: 'Debir', lng: 34.99, lat: 31.42, order: 12, confidence: 'approximate', scriptureRef: '书10:38-39', events: [
+        { title: '攻取底璧', ref: '书10:38-39', summary: '约书亚回去攻打底璧，夺了城和属城的邑，将其王与城中的人尽行杀灭。' } ] },
+      { id: 'js-negev', name_zh: '南地诸区域', name_en: 'The Negev & Lowland', lng: 34.85, lat: 31.05, order: 13, confidence: 'approximate', scriptureRef: '书10:40-41', events: [
+        { title: '击杀全南地', ref: '书10:40', summary: '约书亚击打全地——山地、南地、高原、山坡的诸王，将凡有气息的尽行杀灭，正如耶和华所吩咐的。' } ] },
+      { id: 'js-gilgal-r', name_zh: '吉甲（回程）', name_en: 'Gilgal', lng: 35.50, lat: 31.85, order: 14, confidence: 'approximate', scriptureRef: '书10:43', events: [
+        { title: '凯旋回营', ref: '书10:43', summary: '于是约书亚和以色列众人回到吉甲的营中。' } ] },
     ] },
-    { id: 'north', label: '北方战役（夏琐）', color: '#4ade80', route: true, points: [
-      { id: 'merom', name_zh: '米伦水边', name_en: 'Waters of Merom', lng: 35.45, lat: 32.93, order: 9, confidence: 'approximate', scriptureRef: '书11:5-9', events: [
-        { title: '北方联军覆没', ref: '书11:7-8', summary: '夏琐王耶宾联合北方诸王，多如海边的沙；约书亚在米伦水边突袭得胜，砍断马蹄筋、焚烧战车。' },
-      ] },
-      { id: 'hazor', name_zh: '夏琐', name_en: 'Hazor', lng: 35.57, lat: 33.02, order: 10, confidence: 'identified', scriptureRef: '书11:10-13', events: [
-        { title: '焚烧夏琐', ref: '书11:10-11', summary: '夏琐素来是这诸国的首；约书亚攻取并用火焚烧，使北方诸城归服。' },
-      ] },
+    { id: 'north', label: '北方战役（夏琐联盟）', color: '#4ade80', route: true, note: '核心作用：击败夏琐王耶宾领导的北方联盟，摧毁北方最大军事中心夏琐。', points: [
+      { id: 'jn-gilgal', name_zh: '吉甲 / 以色列营地', name_en: 'Gilgal Camp', lng: 35.50, lat: 31.85, order: 1, confidence: 'approximate', scriptureRef: '书11:1-6', events: [
+        { title: '不要惧怕他们', ref: '书11:6', summary: '夏琐王耶宾招聚北方诸王，军队多如海边的沙；耶和华对约书亚说「你不要因他们惧怕，明日这时我必将他们交付以色列人」。' } ] },
+      { id: 'jn-merom', name_zh: '米伦水边', name_en: 'Waters of Merom', lng: 35.45, lat: 32.93, order: 2, confidence: 'approximate', scriptureRef: '书11:5-9', events: [
+        { title: '突袭北方联军', ref: '书11:7-8', summary: '约书亚率众猝然临到米伦水边的联军，砍断马蹄筋、用火焚烧战车，将他们击败。' } ] },
+      { id: 'jn-sidon', name_zh: '西顿大城方向', name_en: 'Toward Great Sidon', lng: 35.37, lat: 33.56, order: 3, confidence: 'approximate', scriptureRef: '书11:8', events: [
+        { title: '追到大西顿', ref: '书11:8', summary: '以色列人追赶敌军，直到西顿大城。' } ] },
+      { id: 'jn-misrephoth', name_zh: '米斯利弗玛音', name_en: 'Misrephoth-maim', lng: 35.18, lat: 33.08, order: 4, confidence: 'approximate', scriptureRef: '书11:8', events: [
+        { title: '追到米斯利弗玛音', ref: '书11:8', summary: '又追赶敌军直到米斯利弗玛音（沿海一带）。' } ] },
+      { id: 'jn-mizpah', name_zh: '东边米斯巴谷', name_en: 'Valley of Mizpah (east)', lng: 35.58, lat: 33.20, order: 5, confidence: 'approximate', scriptureRef: '书11:8', events: [
+        { title: '追到米斯巴平原', ref: '书11:8', summary: '又往东追到米斯巴的平原（谷地），将他们击杀，没有留下一个。' } ] },
+      { id: 'jn-hazor', name_zh: '夏琐', name_en: 'Hazor', lng: 35.57, lat: 33.02, order: 6, confidence: 'identified', scriptureRef: '书11:10-13', events: [
+        { title: '焚烧夏琐', ref: '书11:10-11', summary: '夏琐素来是这诸国的首；约书亚回来夺取，用刀杀了夏琐王，将城中之人尽行杀灭，又用火焚烧夏琐。' } ] },
+      { id: 'jn-cities', name_zh: '北方诸城', name_en: 'Northern Royal Cities', lng: 35.50, lat: 32.80, order: 7, confidence: 'approximate', scriptureRef: '书11:12-14', events: [
+        { title: '夺取诸王城邑', ref: '书11:12-14', summary: '约书亚夺了北方诸王的城邑，掳掠各城的财物牲畜，但除夏琐外那些立在山冈上的城都未焚烧。' } ] },
+      { id: 'jn-hills', name_zh: '北方山地', name_en: 'Northern Hill Country', lng: 35.40, lat: 32.70, order: 8, confidence: 'approximate', scriptureRef: '书11:16', events: [
+        { title: '取了全境山地', ref: '书11:16', summary: '约书亚夺了那全地，就是山地、南地、歌珊全地、高原、山坡，全都收取。' } ] },
+      { id: 'jn-arabah', name_zh: '亚拉巴', name_en: 'The Arabah', lng: 35.55, lat: 32.40, order: 9, confidence: 'approximate', scriptureRef: '书11:16；12:3', events: [
+        { title: '亚拉巴谷地', ref: '书11:16', summary: '所取之地也包括亚拉巴（约旦河谷的裂谷低地）。' } ] },
+      { id: 'jn-chinneroth', name_zh: '基尼烈南边', name_en: 'South of Chinneroth', lng: 35.58, lat: 32.70, order: 10, confidence: 'approximate', scriptureRef: '书11:2；12:3', events: [
+        { title: '基尼烈南边的亚拉巴', ref: '书12:3', summary: '其疆界从基尼烈湖（加利利海）南边的亚拉巴一带，直到盐海。' } ] },
+      { id: 'jn-lowland', name_zh: '低地', name_en: 'The Lowland (Shephelah)', lng: 34.95, lat: 31.70, order: 11, confidence: 'approximate', scriptureRef: '书11:16', events: [
+        { title: '高原与低地', ref: '书11:16', summary: '约书亚也取了西边的低地（示非拉丘陵），全境尽归以色列。' } ] },
+      { id: 'jn-dor', name_zh: '多珥高地', name_en: 'Heights of Dor', lng: 34.92, lat: 32.62, order: 12, confidence: 'approximate', scriptureRef: '书11:2；12:23', events: [
+        { title: '多珥的高地', ref: '书11:2', summary: '北方山地与西边多珥的高地（拿弗多珥）一并被征服，北方联盟彻底瓦解。' } ] },
     ] },
   ],
 }
@@ -298,32 +371,97 @@ const dividedKingdom = {
 const jesus = {
   id: 'jesus',
   title: '耶稣生平地图',
-  subtitle: '出生 → 受洗 → 传道 → 受难 → 复活',
+  subtitle: '降生 → 受洗 → 传道 → 受难周 → 复活与升天 · 28站全程',
   era: '约公元前 5 – 公元 30/33',
   badge: '★★★★★',
-  bounds: { minLng: 34.4, maxLng: 36.2, minLat: 31.3, maxLat: 33.2 },
+  bounds: { minLng: 31.0, maxLng: 36.2, minLat: 29.8, maxLat: 33.2 },
   mode: 'journey',
   layerSelect: 'multi',
   layers: [{
     id: 'life', label: '生平足迹', color: '#e8b04b', route: true, points: [
-      { id: 'bethlehem-j', name_zh: '伯利恒', name_en: 'Bethlehem', lng: 35.20, lat: 31.70, order: 1, confidence: 'identified', scriptureRef: '路2:1-20', events: [
-        { title: '道成肉身', ref: '路2:7', summary: '耶稣在伯利恒的马槽降生，天使向牧羊人报大喜的信息；应验弥迦书"伯利恒…将来必有一位为我作以色列的君王"。' },
+      { id: 'bethlehem-j', name_zh: '伯利恒', name_en: 'Bethlehem', lng: 35.20, lat: 31.70, order: 1, confidence: 'identified', scriptureRef: '路2:1-20;太2:1-12', events: [
+        { title: '道成肉身降生', ref: '路2:7', summary: '耶稣在伯利恒的马槽降生，天使向牧羊人报大喜信息，东方博士前来朝拜，应验弥迦书「伯利恒…将来必有一位为我作以色列的君王」。' },
       ] },
-      { id: 'nazareth-j', name_zh: '拿撒勒', name_en: 'Nazareth', lng: 35.30, lat: 32.70, order: 2, confidence: 'identified', scriptureRef: '路2:39-52;4:16-30', events: [
-        { title: '成长与受拒', ref: '路4:18-21', summary: '耶稣在拿撒勒长大；在会堂读以赛亚书宣告应验在自己身上，乡人却不接纳他。' },
+      { id: 'egypt-j', name_zh: '埃及', name_en: 'Egypt', lng: 31.80, lat: 30.80, order: 2, confidence: 'approximate', scriptureRef: '太2:13-15', events: [
+        { title: '逃往埃及避难', ref: '太2:14-15', summary: '希律王要杀婴孩，约瑟夜间带马利亚与圣婴逃往埃及，应验「我从埃及召出我的儿子」，待希律死后才返回。' },
       ] },
-      { id: 'jordan-j', name_zh: '约旦河', name_en: 'Jordan River', lng: 35.55, lat: 31.84, order: 3, confidence: 'approximate', scriptureRef: '太3:13-17', events: [
-        { title: '受洗与圣灵降临', ref: '太3:16-17', summary: '约翰为耶稣施洗，天开了，圣灵仿佛鸽子降下，有声音说："这是我的爱子，我所喜悦的。"' },
+      { id: 'nazareth-j', name_zh: '拿撒勒', name_en: 'Nazareth', lng: 35.30, lat: 32.70, order: 3, confidence: 'identified', scriptureRef: '太2:19-23;路2:39-52', events: [
+        { title: '在拿撒勒成长', ref: '路2:51-52', summary: '一家回到加利利的拿撒勒定居，耶稣在此长大，「智慧和身量，并神和人喜爱他的心，都一齐增长」。' },
       ] },
-      { id: 'capernaum-j', name_zh: '迦百农', name_en: 'Capernaum', lng: 35.57, lat: 32.88, order: 4, confidence: 'identified', scriptureRef: '太4:13;可2', events: [
-        { title: '传道的中心', ref: '太4:13-17', summary: '耶稣以迦百农为加利利事工的基地，呼召门徒、医病赶鬼、宣讲天国近了。' },
+      { id: 'jordan-j', name_zh: '约旦河', name_en: 'Jordan River', lng: 35.531, lat: 31.838, order: 4, confidence: 'approximate', scriptureRef: '太3:13-17', events: [
+        { title: '约旦河受洗', ref: '太3:16-17', summary: '约翰为耶稣施洗，天开了，圣灵仿佛鸽子降下，有声音说：「这是我的爱子，我所喜悦的。」' },
       ] },
-      { id: 'galilee-j', name_zh: '加利利海', name_en: 'Sea of Galilee', lng: 35.59, lat: 32.82, order: 5, confidence: 'identified', scriptureRef: '可4;6;太14', events: [
-        { title: '平静风浪、五饼二鱼', ref: '可4:39;太14:19-21', summary: '在加利利海上斥责风浪、海面行走，又以五饼二鱼喂饱五千人，显明他是创造的主。' },
+      { id: 'wilderness-j', name_zh: '犹太旷野', name_en: 'Judean Wilderness', lng: 35.43, lat: 31.83, order: 5, confidence: 'approximate', scriptureRef: '太4:1-11;路4:1-13', events: [
+        { title: '旷野受试探', ref: '太4:1-4', summary: '耶稣被圣灵引到旷野禁食四十昼夜，三次胜过魔鬼的试探，皆以「经上记着说」回应，作我们的中保得胜者。' },
       ] },
-      { id: 'jerusalem-j2', name_zh: '耶路撒冷', name_en: 'Jerusalem', lng: 35.235, lat: 31.778, order: 6, confidence: 'identified', scriptureRef: '路19;太27-28', events: [
-        { title: '受难', ref: '路23:33;46', summary: '耶稣骑驴荣入圣城，最后晚餐后于客西马尼被卖，在各各他被钉十字架，为世人的罪受死。' },
-        { title: '复活', ref: '路24:6', summary: '第三日清晨坟墓空了——"他不在这里，已经复活了！"死亡被胜过，福音由此传向万邦。' },
+      { id: 'capernaum-j', name_zh: '迦百农', name_en: 'Capernaum', lng: 35.57, lat: 32.88, order: 6, confidence: 'identified', scriptureRef: '太4:13-25;可1-2', events: [
+        { title: '加利利传道（以迦百农为中心）', ref: '太4:13-17', summary: '耶稣以迦百农为加利利事工基地，呼召门徒、登山宝训、医病赶鬼、平静风浪、五饼二鱼，宣讲「天国近了」。' },
+      ] },
+      { id: 'sychar-j', name_zh: '撒马利亚·叙加', name_en: 'Sychar, Samaria', lng: 35.281, lat: 32.207, order: 7, confidence: 'identified', scriptureRef: '约4:1-42', events: [
+        { title: '叙加井边的对话', ref: '约4:13-14', summary: '耶稣在雅各井边向撒马利亚妇人启示自己是弥赛亚，应许「活水」永远不渴，全城因她的见证信主。' },
+      ] },
+      { id: 'jerusalem-temple-j', name_zh: '耶路撒冷·圣殿', name_en: 'Jerusalem Temple', lng: 35.2354, lat: 31.7780, order: 8, confidence: 'identified', scriptureRef: '约5;7;10', events: [
+        { title: '多次上耶路撒冷过节', ref: '约7:14', summary: '耶稣多次在节期上耶路撒冷圣殿教训人——医治病三十八年的人、自称「世界的光」「我与父原为一」，引发宗教领袖的敌意。' },
+      ] },
+      { id: 'bethany-lazarus-j', name_zh: '伯大尼·拉撒路之家', name_en: 'Bethany (Lazarus)', lng: 35.2566, lat: 31.7717, order: 9, confidence: 'identified', scriptureRef: '约11:1-44', events: [
+        { title: '叫拉撒路复活', ref: '约11:25', summary: '耶稣来到马大、马利亚、拉撒路之家，宣告「复活在我，生命也在我」，叫死了四天的拉撒路从坟墓里出来。' },
+      ] },
+      { id: 'jericho-j', name_zh: '耶利哥', name_en: 'Jericho', lng: 35.444, lat: 31.857, order: 10, confidence: 'identified', scriptureRef: '路19:1-10;可10:46-52', events: [
+        { title: '撒该与瞎子', ref: '路19:9-10', summary: '耶稣经过耶利哥，医治瞎子巴底买，又住进税吏长撒该家：「人子来，为要寻找拯救失丧的人。」' },
+      ] },
+      { id: 'bethany-anoint-j', name_zh: '伯大尼（受膏）', name_en: 'Bethany', lng: 35.2566, lat: 31.7710, order: 11, confidence: 'identified', scriptureRef: '约12:1-8;太26:6-13', events: [
+        { title: '马利亚香膏抹主', ref: '约12:7', summary: '逾越节前六日，耶稣在伯大尼，马利亚用极贵的真哪哒香膏抹主，为他的安葬预先膏身。' },
+      ] },
+      { id: 'bethphage-j', name_zh: '伯法其·橄榄山', name_en: 'Bethphage / Mt. Olives', lng: 35.2480, lat: 31.7790, order: 12, confidence: 'identified', scriptureRef: '太21:1-7;可11:1-7', events: [
+        { title: '橄榄山下备驴驹', ref: '太21:2-5', summary: '耶稣在伯法其、橄榄山打发门徒牵来驴驹，应验撒迦利亚书「你的王…骑着驴驹来到你这里」。' },
+      ] },
+      { id: 'triumphal-entry-j', name_zh: '荣入耶路撒冷', name_en: 'Triumphal Entry', lng: 35.2330, lat: 31.7770, order: 13, confidence: 'identified', scriptureRef: '太21:8-11;约12:12-19', events: [
+        { title: '棕枝主日荣入圣城', ref: '太21:9', summary: '众人把衣服与棕树枝铺在路上，高呼「和散那归于大卫的子孙」，耶稣谦和地骑驴荣入耶路撒冷。' },
+      ] },
+      { id: 'temple-cleanse-j', name_zh: '圣殿教训与洁净', name_en: 'Temple Cleansing', lng: 35.2354, lat: 31.7785, order: 14, confidence: 'identified', scriptureRef: '太21:12-17;可11:15-18', events: [
+        { title: '洁净圣殿', ref: '太21:13', summary: '耶稣赶出殿里做买卖的人：「我的殿必称为祷告的殿，你们倒使它成为贼窝。」连日在殿中教训人、回应诘难。' },
+      ] },
+      { id: 'upper-room-j', name_zh: '楼上·最后晚餐', name_en: 'Upper Room', lng: 35.2290, lat: 31.7715, order: 15, confidence: 'identified', scriptureRef: '路22:7-38;约13-17', events: [
+        { title: '设立圣餐与新命令', ref: '路22:19-20', summary: '耶稣在楼上为门徒洗脚、设立圣餐——「这是我的身体，为你们舍的」，赐下彼此相爱的新命令与临别赠言。' },
+      ] },
+      { id: 'kidron-j', name_zh: '汲沦溪', name_en: 'Kidron Valley', lng: 35.2370, lat: 31.7790, order: 16, confidence: 'identified', scriptureRef: '约18:1', events: [
+        { title: '过汲沦溪', ref: '约18:1', summary: '晚餐与祷告后，耶稣同门徒出城，过了汲沦溪，往橄榄山下的园子去。' },
+      ] },
+      { id: 'gethsemane-j', name_zh: '客西马尼', name_en: 'Gethsemane', lng: 35.2400, lat: 31.7794, order: 17, confidence: 'identified', scriptureRef: '太26:36-56;路22:39-53', events: [
+        { title: '客西马尼祷告与被卖', ref: '太26:39', summary: '耶稣极其忧伤，祷告「不要照我的意思，只要照你的意思」，随后被犹大以亲嘴为号出卖、被人捉拿。' },
+      ] },
+      { id: 'sanhedrin-j', name_zh: '亚那·该亚法·公会', name_en: 'Annas / Caiaphas / Sanhedrin', lng: 35.2285, lat: 31.7715, order: 18, confidence: 'identified', scriptureRef: '约18:12-27;太26:57-68', events: [
+        { title: '夜审与彼得不认主', ref: '太26:63-66', summary: '耶稣先被解到亚那、再到大祭司该亚法与公会前受审，因自认是基督被定为「该死」；同时彼得三次不认主。' },
+      ] },
+      { id: 'pilate1-j', name_zh: '彼拉多（初审）', name_en: 'Pilate (First Trial)', lng: 35.2330, lat: 31.7806, order: 19, confidence: 'identified', scriptureRef: '约18:28-38;路23:1-7', events: [
+        { title: '解到罗马巡抚', ref: '约18:38', summary: '天一亮众人把耶稣解到巡抚彼拉多的衙门；彼拉多查不出他有什么罪来，听见「加利利」便转送希律。' },
+      ] },
+      { id: 'herod-j', name_zh: '希律', name_en: 'Herod Antipas', lng: 35.2275, lat: 31.7755, order: 20, confidence: 'approximate', scriptureRef: '路23:8-12', events: [
+        { title: '希律前受戏弄', ref: '路23:11', summary: '希律本想看神迹，耶稣却一言不答；希律和兵丁戏弄他、给他穿上华丽衣服，又送回彼拉多。当日希律与彼拉多成了朋友。' },
+      ] },
+      { id: 'pilate2-j', name_zh: '彼拉多（定罪）', name_en: 'Pilate (Sentencing)', lng: 35.2330, lat: 31.7806, order: 21, confidence: 'identified', scriptureRef: '路23:13-25;约19:1-16', events: [
+        { title: '受鞭打与被判十架', ref: '约19:16', summary: '彼拉多虽宣称「我查不出他有罪」，却屈从众人「钉他十字架」的喊声，洗手推责，将耶稣鞭打后交去钉十字架。' },
+      ] },
+      { id: 'golgotha-j', name_zh: '各各他', name_en: 'Golgotha', lng: 35.2297, lat: 31.7784, order: 22, confidence: 'identified', scriptureRef: '路23:33-49;约19:17-37', events: [
+        { title: '各各他十字架', ref: '路23:34;约19:30', summary: '耶稣被钉于各各他，说出十架七言——「父啊，赦免他们」「成了！」遍地黑暗、殿幔裂开，为世人的罪舍命。' },
+      ] },
+      { id: 'tomb-j', name_zh: '附近园中坟墓', name_en: 'Garden Tomb', lng: 35.2296, lat: 31.7786, order: 23, confidence: 'identified', scriptureRef: '约19:38-42;太27:57-66', events: [
+        { title: '安葬于新坟墓', ref: '约19:41-42', summary: '钉十字架的地方有一个园子，园里有一座从未葬过人的新坟墓；亚利马太的约瑟与尼哥底母把耶稣的身体安放其中。' },
+      ] },
+      { id: 'resurrection-j', name_zh: '复活显现', name_en: 'Resurrection', lng: 35.2296, lat: 31.7787, order: 24, confidence: 'identified', scriptureRef: '路24:1-12;约20:1-18', events: [
+        { title: '空坟与显现', ref: '路24:6', summary: '七日的头一日清晨坟墓空了——「他不在这里，已经复活了！」耶稣先向抹大拉的马利亚显现，死亡被胜过。' },
+      ] },
+      { id: 'emmaus-j', name_zh: '以马忤斯路上', name_en: 'Road to Emmaus', lng: 35.02, lat: 31.84, order: 25, confidence: 'approximate', scriptureRef: '路24:13-35', events: [
+        { title: '路上讲解全部圣经', ref: '路24:27', summary: '复活的耶稣同两个门徒走往以马忤斯，从摩西和众先知讲解指着自己的话；擘饼时他们的眼睛开了，认出了主。' },
+      ] },
+      { id: 'jerusalem-appear-j', name_zh: '耶路撒冷楼房', name_en: 'Jerusalem Upper Room', lng: 35.2290, lat: 31.7716, order: 26, confidence: 'identified', scriptureRef: '路24:36-49;约20:19-29', events: [
+        { title: '向门徒显现', ref: '约20:27', summary: '耶稣进到关着门的楼房，站在门徒中间说「愿你们平安」，给他们看手和肋旁，又坚固多疑的多马的信心。' },
+      ] },
+      { id: 'galilee-appear-j', name_zh: '加利利显现', name_en: 'Galilee Appearance', lng: 35.59, lat: 32.82, order: 27, confidence: 'identified', scriptureRef: '约21:1-23;太28:16-20', events: [
+        { title: '海边复兴彼得·大使命', ref: '太28:19', summary: '耶稣在加利利海边再现，三问彼得「你爱我吗」托付牧养群羊，并在山上颁布大使命：「你们要去，使万民作我的门徒。」' },
+      ] },
+      { id: 'ascension-j', name_zh: '橄榄山·升天', name_en: 'Ascension (Mt. Olives)', lng: 35.2530, lat: 31.7800, order: 28, confidence: 'identified', scriptureRef: '路24:50-53;徒1:6-12', events: [
+        { title: '伯大尼附近升天', ref: '徒1:9-11', summary: '耶稣带门徒到伯大尼附近的橄榄山，举手祝福，被取上升，有云彩把他接去；天使应许他必照样再来。' },
       ] },
     ],
   }],
@@ -333,7 +471,7 @@ const jesus = {
 const paul = {
   id: 'paul',
   title: '保罗宣教地图',
-  subtitle: '三次宣教旅程 + 罗马之旅 · 沿途书信与教会',
+  subtitle: '三次宣教旅程 + 罗马之旅 · 逐站行程与沿途书信',
   era: '约公元 46–62',
   badge: '★★★★★',
   bounds: { minLng: 11, maxLng: 38, minLat: 30, maxLat: 42.5 },
@@ -341,62 +479,155 @@ const paul = {
   layerSelect: 'single',
   layers: [
     { id: 'first', label: '第一次宣教', color: '#e8b04b', route: true, points: [
-      { id: 'antioch1', name_zh: '安提阿（叙利亚）', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒13:1-3', events: [
-        { title: '差遣的母会', ref: '徒13:2-3', summary: '圣灵说："要为我分派巴拿巴和扫罗。"教会禁食祷告、按手差遣，宣教运动从此展开。' },
-      ] },
-      { id: 'cyprus', name_zh: '塞浦路斯（帕弗）', name_en: 'Paphos', lng: 32.42, lat: 34.76, order: 2, confidence: 'identified', scriptureRef: '徒13:4-12', events: [
-        { title: '方伯归信', ref: '徒13:12', summary: '在帕弗，扫罗（保罗）斥责行法术的以吕马，方伯士求保罗看见神迹就信了。' },
-      ] },
-      { id: 'pisidian', name_zh: '彼西底的安提阿', name_en: 'Pisidian Antioch', lng: 31.19, lat: 38.31, order: 3, confidence: 'identified', scriptureRef: '徒13:14-50', events: [
-        { title: '转向外邦', ref: '徒13:46', summary: '犹太人弃绝福音，保罗宣告："我们就转向外邦人去。"福音临到外邦。' },
-      ] },
-      { id: 'lystra1', name_zh: '路司得', name_en: 'Lystra', lng: 32.45, lat: 37.58, order: 4, confidence: 'identified', scriptureRef: '徒14:8-20', events: [
-        { title: '被误为神、又遭石击', ref: '徒14:19', summary: '医好瘸腿者后被当作神明；随后犹太人煽动用石头打保罗，以为他死了。提摩太的家乡。' },
-      ] },
+      { id: 'p1-antioch', name_zh: '安提阿（叙利亚）', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒13:1-3', events: [
+        { title: '差遣的母会', ref: '徒13:2-3', summary: '圣灵说：「要为我分派巴拿巴和扫罗。」教会禁食祷告、按手差遣，第一次宣教从此展开。' } ] },
+      { id: 'p1-seleucia', name_zh: '西流基', name_en: 'Seleucia', lng: 35.93, lat: 36.12, order: 2, confidence: 'identified', scriptureRef: '徒13:4', events: [
+        { title: '启航港口', ref: '徒13:4', summary: '二人被圣灵差遣，下到安提阿的港口西流基，从那里坐船往塞浦路斯去。' } ] },
+      { id: 'p1-salamis', name_zh: '撒拉米', name_en: 'Salamis', lng: 33.90, lat: 35.18, order: 3, confidence: 'identified', scriptureRef: '徒13:5', events: [
+        { title: '会堂传道', ref: '徒13:5', summary: '到了塞浦路斯东岸的撒拉米，在犹太人各会堂传讲神的道，有约翰马可作帮手。' } ] },
+      { id: 'p1-paphos', name_zh: '帕弗', name_en: 'Paphos', lng: 32.42, lat: 34.76, order: 4, confidence: 'identified', scriptureRef: '徒13:6-12', events: [
+        { title: '方伯归信', ref: '徒13:12', summary: '在帕弗，扫罗（保罗）斥责行法术的以吕马使其瞎眼，方伯士求保罗看见所行的就信了。' } ] },
+      { id: 'p1-perga', name_zh: '别加', name_en: 'Perga', lng: 30.85, lat: 36.96, order: 5, confidence: 'identified', scriptureRef: '徒13:13', events: [
+        { title: '马可中途离队', ref: '徒13:13', summary: '众人从帕弗开船到旁非利亚的别加；约翰马可在此离开他们，回耶路撒冷去了。' } ] },
+      { id: 'p1-pisidian', name_zh: '彼西底安提阿', name_en: 'Pisidian Antioch', lng: 31.19, lat: 38.31, order: 6, confidence: 'identified', scriptureRef: '徒13:14-50', events: [
+        { title: '转向外邦', ref: '徒13:46', summary: '保罗在会堂讲救恩的历史；犹太人弃绝福音，他宣告「我们就转向外邦人去」，福音临到外邦。' } ] },
+      { id: 'p1-iconium', name_zh: '以哥念', name_en: 'Iconium', lng: 32.49, lat: 37.87, order: 7, confidence: 'identified', scriptureRef: '徒14:1-6', events: [
+        { title: '城里分党', ref: '徒14:3-4', summary: '主借他们的手行神迹奇事，许多人信主；满城分党，有人要凌辱用石头打他们，二人就逃往路司得。' } ] },
+      { id: 'p1-lystra', name_zh: '路司得', name_en: 'Lystra', lng: 32.45, lat: 37.58, order: 8, confidence: 'identified', scriptureRef: '徒14:8-20', events: [
+        { title: '被误为神、又遭石击', ref: '徒14:19', summary: '医好生来瘸腿者后被当作神明献祭；随后犹太人煽动用石头打保罗拖出城外，以为他死了。提摩太的家乡。' } ] },
+      { id: 'p1-derbe', name_zh: '特庇', name_en: 'Derbe', lng: 33.27, lat: 37.35, order: 9, confidence: 'identified', scriptureRef: '徒14:20-21', events: [
+        { title: '使多人作门徒', ref: '徒14:21', summary: '保罗在特庇传福音，使好些人作门徒，这是去程的最东点，随后原路折返坚固教会。' } ] },
+      { id: 'p1-lystra-r', name_zh: '路司得（回程）', name_en: 'Lystra', lng: 32.45, lat: 37.58, order: 10, confidence: 'identified', scriptureRef: '徒14:21-22', events: [
+        { title: '坚固门徒', ref: '徒14:22', summary: '回到路司得，坚固门徒的心，劝勉「我们进入神的国，必须经历许多艰难」。' } ] },
+      { id: 'p1-iconium-r', name_zh: '以哥念（回程）', name_en: 'Iconium', lng: 32.49, lat: 37.87, order: 11, confidence: 'identified', scriptureRef: '徒14:21-22', events: [
+        { title: '坚固教会', ref: '徒14:22', summary: '再经以哥念，继续坚固门徒，劝他们恒守所信的道。' } ] },
+      { id: 'p1-pisidian-r', name_zh: '彼西底安提阿（回程）', name_en: 'Pisidian Antioch', lng: 31.19, lat: 38.31, order: 12, confidence: 'identified', scriptureRef: '徒14:21-23', events: [
+        { title: '选立长老', ref: '徒14:23', summary: '在各教会中选立长老，又禁食祷告，把他们交托所信的主。' } ] },
+      { id: 'p1-perga-r', name_zh: '别加（回程）', name_en: 'Perga', lng: 30.85, lat: 36.96, order: 13, confidence: 'identified', scriptureRef: '徒14:25', events: [
+        { title: '在别加讲道', ref: '徒14:25', summary: '经过彼西底，在别加讲了道，然后下到亚大利。' } ] },
+      { id: 'p1-attalia', name_zh: '亚大利', name_en: 'Attalia', lng: 30.70, lat: 36.88, order: 14, confidence: 'identified', scriptureRef: '徒14:25-26', events: [
+        { title: '启程返航', ref: '徒14:26', summary: '从亚大利的港口坐船，返回起初蒙差遣的安提阿。' } ] },
+      { id: 'p1-antioch-r', name_zh: '安提阿（回程）', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 15, confidence: 'identified', scriptureRef: '徒14:26-28', events: [
+        { title: '述说神开了信道的门', ref: '徒14:27', summary: '回到母会聚集会众，述说神借他们所行的一切，并为外邦人开了信道的门。' } ] },
     ] },
     { id: 'second', label: '第二次宣教', color: '#5ec2e8', route: true, points: [
-      { id: 'antioch2', name_zh: '安提阿', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒15:36', events: [] },
-      { id: 'troas', name_zh: '特罗亚', name_en: 'Troas', lng: 26.24, lat: 39.76, order: 2, confidence: 'identified', scriptureRef: '徒16:8-10', events: [
-        { title: '马其顿的异象', ref: '徒16:9', summary: '夜间异象中有马其顿人求："请过来帮助我们。"福音由此首次进入欧洲。' },
-      ] },
-      { id: 'philippi', name_zh: '腓立比', name_en: 'Philippi', lng: 24.29, lat: 41.01, order: 3, confidence: 'identified', scriptureRef: '徒16:11-40', note: '日后写《腓立比书》给此教会。', events: [
-        { title: '吕底亚信主、狱中歌唱', ref: '徒16:25-34', summary: '卖紫布的吕底亚归主；保罗西拉被下监，半夜祷告唱诗，地大震动，禁卒全家信主。欧洲第一间教会。' },
-      ] },
-      { id: 'thessalonica', name_zh: '帖撒罗尼迦', name_en: 'Thessalonica', lng: 22.94, lat: 40.64, order: 4, confidence: 'identified', scriptureRef: '徒17:1-9', note: '日后写《帖撒罗尼迦前后书》。', events: [] },
-      { id: 'athens', name_zh: '雅典', name_en: 'Athens', lng: 23.73, lat: 37.98, order: 5, confidence: 'identified', scriptureRef: '徒17:16-34', events: [
-        { title: '亚略巴古的讲论', ref: '徒17:23', summary: '保罗借"未识之神"的坛向哲士传讲创造、复活与审判的真神。' },
-      ] },
-      { id: 'corinth2', name_zh: '哥林多', name_en: 'Corinth', lng: 22.93, lat: 37.94, order: 6, confidence: 'identified', scriptureRef: '徒18:1-18', note: '停留一年半；在此写《帖撒罗尼迦前后书》。', events: [
-        { title: '与亚居拉、百基拉同工', ref: '徒18:1-11', summary: '保罗以织帐棚为业，与亚居拉夫妇同工；主在异象中说"有许多的百姓"，他便住下教导一年半。' },
-      ] },
+      { id: 'p2-antioch', name_zh: '安提阿', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒15:36-40', events: [
+        { title: '与西拉再次出发', ref: '徒15:40', summary: '因马可一事保罗与巴拿巴分手，他拣选西拉，蒙弟兄把他们交于主的恩中出发。' } ] },
+      { id: 'p2-syriacilicia', name_zh: '叙利亚、基利家', name_en: 'Syria & Cilicia', lng: 34.90, lat: 36.92, order: 2, confidence: 'approximate', scriptureRef: '徒15:41', events: [
+        { title: '坚固众教会', ref: '徒15:41', summary: '保罗走遍叙利亚、基利家，坚固众教会。' } ] },
+      { id: 'p2-derbe', name_zh: '特庇', name_en: 'Derbe', lng: 33.27, lat: 37.35, order: 3, confidence: 'identified', scriptureRef: '徒16:1', events: [] },
+      { id: 'p2-lystra', name_zh: '路司得', name_en: 'Lystra', lng: 32.45, lat: 37.58, order: 4, confidence: 'identified', scriptureRef: '徒16:1-3', events: [
+        { title: '带提摩太同行', ref: '徒16:3', summary: '保罗见提摩太为众弟兄所称赞，要带他同去，便给他行了割礼免犹太人的疑。' } ] },
+      { id: 'p2-iconium', name_zh: '以哥念', name_en: 'Iconium', lng: 32.49, lat: 37.87, order: 5, confidence: 'identified', scriptureRef: '徒16:2-5', events: [
+        { title: '教会信心坚固', ref: '徒16:5', summary: '他们把耶路撒冷会议的决议交给各教会遵守，众教会信心越发坚固，人数天天加增。' } ] },
+      { id: 'p2-phrygiagalatia', name_zh: '弗吕家、加拉太', name_en: 'Phrygia & Galatia', lng: 32.00, lat: 39.00, order: 6, confidence: 'approximate', scriptureRef: '徒16:6', events: [
+        { title: '圣灵禁止往亚细亚', ref: '徒16:6', summary: '圣灵既然禁止他们在亚细亚讲道，他们就经过弗吕家、加拉太一带地方。' } ] },
+      { id: 'p2-mysia', name_zh: '每西亚', name_en: 'Mysia', lng: 28.00, lat: 39.60, order: 7, confidence: 'approximate', scriptureRef: '徒16:7-8', events: [
+        { title: '耶稣的灵不许', ref: '徒16:7', summary: '到了每西亚边界想往庇推尼去，耶稣的灵却不许，于是越过每西亚下到特罗亚。' } ] },
+      { id: 'p2-troas', name_zh: '特罗亚', name_en: 'Troas', lng: 26.24, lat: 39.76, order: 8, confidence: 'identified', scriptureRef: '徒16:8-10', events: [
+        { title: '马其顿的异象', ref: '徒16:9', summary: '夜间异象中有马其顿人求「请过来帮助我们」，他们断定是神召他们传福音，福音由此首次进入欧洲。' } ] },
+      { id: 'p2-samothrace', name_zh: '撒摩特喇', name_en: 'Samothrace', lng: 25.53, lat: 40.48, order: 9, confidence: 'identified', scriptureRef: '徒16:11', events: [] },
+      { id: 'p2-neapolis', name_zh: '尼亚波利', name_en: 'Neapolis', lng: 24.40, lat: 40.93, order: 10, confidence: 'identified', scriptureRef: '徒16:11', events: [
+        { title: '踏上欧洲', ref: '徒16:11', summary: '从特罗亚一直行到撒摩特喇，次日到尼亚波利登岸，进入欧洲大陆。' } ] },
+      { id: 'p2-philippi', name_zh: '腓立比', name_en: 'Philippi', lng: 24.29, lat: 41.01, order: 11, confidence: 'identified', scriptureRef: '徒16:12-40', note: '日后写《腓立比书》给此教会。', events: [
+        { title: '吕底亚信主、狱中歌唱', ref: '徒16:25-34', summary: '卖紫布的吕底亚归主；保罗西拉被下监，半夜祷告唱诗，地大震动，禁卒全家信主。欧洲第一间教会。' } ] },
+      { id: 'p2-amphipolis', name_zh: '暗妃波里', name_en: 'Amphipolis', lng: 23.84, lat: 40.82, order: 12, confidence: 'identified', scriptureRef: '徒17:1', events: [] },
+      { id: 'p2-apollonia', name_zh: '亚波罗尼亚', name_en: 'Apollonia', lng: 23.44, lat: 40.70, order: 13, confidence: 'identified', scriptureRef: '徒17:1', events: [] },
+      { id: 'p2-thessalonica', name_zh: '帖撒罗尼迦', name_en: 'Thessalonica', lng: 22.94, lat: 40.64, order: 14, confidence: 'identified', scriptureRef: '徒17:1-9', note: '日后写《帖撒罗尼迦前后书》。', events: [
+        { title: '会堂辩道与逼迫', ref: '徒17:2-5', summary: '保罗一连三个安息日讲解基督受害复活，有人信从；嫉妒的犹太人聚众生乱，攻击接待他们的耶孙。' } ] },
+      { id: 'p2-berea', name_zh: '庇哩亚', name_en: 'Berea', lng: 22.20, lat: 40.52, order: 15, confidence: 'identified', scriptureRef: '徒17:10-14', events: [
+        { title: '天天考查圣经', ref: '徒17:11', summary: '庇哩亚人比帖撒罗尼迦人开明，甘心领受真道，天天考查圣经要晓得是与不是。' } ] },
+      { id: 'p2-athens', name_zh: '雅典', name_en: 'Athens', lng: 23.73, lat: 37.98, order: 16, confidence: 'identified', scriptureRef: '徒17:16-34', events: [
+        { title: '亚略巴古的讲论', ref: '徒17:23', summary: '保罗借「未识之神」的坛向哲士传讲创造、复活与审判的真神，有几个人信从。' } ] },
+      { id: 'p2-corinth', name_zh: '哥林多', name_en: 'Corinth', lng: 22.93, lat: 37.94, order: 17, confidence: 'identified', scriptureRef: '徒18:1-18', note: '停留一年半；在此写《帖撒罗尼迦前后书》。', events: [
+        { title: '与亚居拉、百基拉同工', ref: '徒18:9-11', summary: '保罗以织帐棚为业与亚居拉夫妇同工；主在异象中说「有许多的百姓」，他便住下教导一年半。' } ] },
+      { id: 'p2-cenchreae', name_zh: '坚革哩', name_en: 'Cenchreae', lng: 22.99, lat: 37.88, order: 18, confidence: 'identified', scriptureRef: '徒18:18', events: [
+        { title: '剪发还愿', ref: '徒18:18', summary: '保罗在哥林多的港口坚革哩剪了头发，因为他许过愿，随后坐船往叙利亚去。' } ] },
+      { id: 'p2-ephesus', name_zh: '以弗所', name_en: 'Ephesus', lng: 27.34, lat: 37.94, order: 19, confidence: 'identified', scriptureRef: '徒18:19-21', events: [
+        { title: '短暂停留、应许再来', ref: '徒18:21', summary: '保罗把亚居拉夫妇留在以弗所，自己进会堂辩论，辞别时说「神若许我，我还要回到你们这里」。' } ] },
+      { id: 'p2-caesarea', name_zh: '该撒利亚', name_en: 'Caesarea', lng: 34.89, lat: 32.50, order: 20, confidence: 'identified', scriptureRef: '徒18:22', events: [] },
+      { id: 'p2-jerusalem', name_zh: '耶路撒冷', name_en: 'Jerusalem', lng: 35.235, lat: 31.778, order: 21, confidence: 'identified', scriptureRef: '徒18:22', events: [
+        { title: '问教会安', ref: '徒18:22', summary: '在该撒利亚上岸，上耶路撒冷问教会安。' } ] },
+      { id: 'p2-antioch-r', name_zh: '安提阿', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 22, confidence: 'identified', scriptureRef: '徒18:22', events: [
+        { title: '回到母会', ref: '徒18:22', summary: '然后下安提阿，结束第二次宣教旅程。' } ] },
     ] },
     { id: 'third', label: '第三次宣教', color: '#4ade80', route: true, points: [
-      { id: 'antioch3', name_zh: '安提阿', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒18:23', events: [] },
-      { id: 'ephesus3', name_zh: '以弗所', name_en: 'Ephesus', lng: 27.34, lat: 37.94, order: 2, confidence: 'identified', scriptureRef: '徒19', note: '停留约三年；在此写《哥林多前书》。', events: [
-        { title: '三年事工与银匠骚动', ref: '徒19:10;23-41', summary: '主的道大大兴旺，焚烧邪术书籍；银匠底米丢因亚底米庙生意受损煽动全城骚乱。' },
-      ] },
-      { id: 'corinth3', name_zh: '哥林多', name_en: 'Corinth', lng: 22.93, lat: 37.94, order: 3, confidence: 'identified', scriptureRef: '徒20:2-3', note: '在此写《罗马书》。', events: [
-        { title: '写《罗马书》', ref: '罗15:23-25', summary: '保罗在哥林多过冬，写信给罗马教会，阐明因信称义的福音，预备前往耶路撒冷与罗马。' },
-      ] },
-      { id: 'miletus', name_zh: '米利都', name_en: 'Miletus', lng: 27.28, lat: 37.53, order: 4, confidence: 'identified', scriptureRef: '徒20:17-38', events: [
-        { title: '与以弗所长老泣别', ref: '徒20:36-38', summary: '保罗预言此去必遭捆锁，与众长老跪下祷告、抱颈痛哭告别。' },
-      ] },
-      { id: 'jerusalem-p', name_zh: '耶路撒冷', name_en: 'Jerusalem', lng: 35.235, lat: 31.778, order: 5, confidence: 'identified', scriptureRef: '徒21:17-33', events: [
-        { title: '被捕', ref: '徒21:33', summary: '保罗在圣殿被诬告引发骚乱，被罗马千夫长拿住，自此进入长期受审与监禁。' },
-      ] },
+      { id: 'p3-antioch', name_zh: '安提阿', name_en: 'Antioch', lng: 36.16, lat: 36.20, order: 1, confidence: 'identified', scriptureRef: '徒18:23', events: [
+        { title: '再次启程', ref: '徒18:23', summary: '保罗在安提阿住了些日子又出去，开始第三次宣教旅程。' } ] },
+      { id: 'p3-galatiaphrygia', name_zh: '加拉太、弗吕家', name_en: 'Galatia & Phrygia', lng: 32.00, lat: 39.00, order: 2, confidence: 'approximate', scriptureRef: '徒18:23', events: [
+        { title: '坚固众门徒', ref: '徒18:23', summary: '挨次经过加拉太、弗吕家一带地方，坚固众门徒。' } ] },
+      { id: 'p3-ephesus', name_zh: '以弗所', name_en: 'Ephesus', lng: 27.34, lat: 37.94, order: 3, confidence: 'identified', scriptureRef: '徒19', note: '停留约三年；在此写《哥林多前书》。', events: [
+        { title: '三年事工与银匠骚动', ref: '徒19:10;23-41', summary: '主的道大大兴旺，焚烧邪术书籍；银匠底米丢因亚底米庙生意受损煽动全城骚乱。' } ] },
+      { id: 'p3-macedonia', name_zh: '马其顿', name_en: 'Macedonia', lng: 22.50, lat: 41.00, order: 4, confidence: 'approximate', scriptureRef: '徒20:1-2', events: [
+        { title: '勉励门徒', ref: '徒20:2', summary: '骚乱止息后保罗往马其顿去，走遍那一带地方用许多话勉励门徒。' } ] },
+      { id: 'p3-greece', name_zh: '希腊（哥林多）', name_en: 'Greece / Corinth', lng: 22.93, lat: 37.94, order: 5, confidence: 'identified', scriptureRef: '徒20:2-3', note: '住三月，在此写《罗马书》。', events: [
+        { title: '写《罗马书》', ref: '罗15:23-25', summary: '保罗在希腊住了三个月，于哥林多写信给罗马教会，阐明因信称义的福音。' } ] },
+      { id: 'p3-macedonia-r', name_zh: '马其顿（回程）', name_en: 'Macedonia', lng: 22.50, lat: 41.00, order: 6, confidence: 'approximate', scriptureRef: '徒20:3', events: [
+        { title: '改走陆路', ref: '徒20:3', summary: '将要坐船往叙利亚去时，犹太人设计要害他，他就定意从马其顿回去。' } ] },
+      { id: 'p3-philippi', name_zh: '腓立比', name_en: 'Philippi', lng: 24.29, lat: 41.01, order: 7, confidence: 'identified', scriptureRef: '徒20:6', events: [
+        { title: '过除酵节后开船', ref: '徒20:6', summary: '过了除酵节，他们从腓立比开船，五天到了特罗亚与同伴相会。' } ] },
+      { id: 'p3-troas', name_zh: '特罗亚', name_en: 'Troas', lng: 26.24, lat: 39.76, order: 8, confidence: 'identified', scriptureRef: '徒20:6-12', events: [
+        { title: '擘饼讲道、犹推古复活', ref: '徒20:9-12', summary: '七日的头一日聚会擘饼，保罗讲到半夜；少年犹推古困倦坠楼而死，保罗下去抱住他便活了。' } ] },
+      { id: 'p3-assos', name_zh: '亚朔', name_en: 'Assos', lng: 26.34, lat: 39.49, order: 9, confidence: 'identified', scriptureRef: '徒20:13-14', events: [
+        { title: '保罗步行赴会', ref: '徒20:13', summary: '众人先上船往亚朔，保罗却定意步行前往，在亚朔与他们会合上船。' } ] },
+      { id: 'p3-mitylene', name_zh: '米推利尼', name_en: 'Mitylene', lng: 26.55, lat: 39.11, order: 10, confidence: 'identified', scriptureRef: '徒20:14', events: [] },
+      { id: 'p3-chios', name_zh: '基阿', name_en: 'Chios', lng: 26.14, lat: 38.37, order: 11, confidence: 'identified', scriptureRef: '徒20:15', events: [] },
+      { id: 'p3-samos', name_zh: '撒摩', name_en: 'Samos', lng: 26.84, lat: 37.75, order: 12, confidence: 'identified', scriptureRef: '徒20:15', events: [] },
+      { id: 'p3-miletus', name_zh: '米利都', name_en: 'Miletus', lng: 27.28, lat: 37.53, order: 13, confidence: 'identified', scriptureRef: '徒20:17-38', events: [
+        { title: '与以弗所长老泣别', ref: '徒20:36-38', summary: '保罗请来以弗所长老，预言此去必遭捆锁，嘱咐他们牧养神的教会；众人跪下祷告、抱颈痛哭告别。' } ] },
+      { id: 'p3-cos', name_zh: '哥士', name_en: 'Cos', lng: 27.29, lat: 36.89, order: 14, confidence: 'identified', scriptureRef: '徒21:1', events: [] },
+      { id: 'p3-rhodes', name_zh: '罗底', name_en: 'Rhodes', lng: 28.22, lat: 36.43, order: 15, confidence: 'identified', scriptureRef: '徒21:1', events: [] },
+      { id: 'p3-patara', name_zh: '帕大喇', name_en: 'Patara', lng: 29.32, lat: 36.26, order: 16, confidence: 'identified', scriptureRef: '徒21:1-2', events: [
+        { title: '换船往腓尼基', ref: '徒21:2', summary: '在帕大喇遇见一只往腓尼基去的船，就上船开行。' } ] },
+      { id: 'p3-tyre', name_zh: '推罗', name_en: 'Tyre', lng: 35.20, lat: 33.27, order: 17, confidence: 'identified', scriptureRef: '徒21:3-6', events: [
+        { title: '门徒劝阻、海边跪祷', ref: '徒21:5', summary: '在推罗住了七日，门徒被圣灵感动劝保罗不要上耶路撒冷；临别众人带妻子儿女送行，在海边跪下祷告。' } ] },
+      { id: 'p3-ptolemais', name_zh: '多利买', name_en: 'Ptolemais', lng: 35.07, lat: 32.92, order: 18, confidence: 'identified', scriptureRef: '徒21:7', events: [
+        { title: '问安住一天', ref: '徒21:7', summary: '从推罗行尽水程到了多利买，问众弟兄安，与他们同住了一天。' } ] },
+      { id: 'p3-caesarea', name_zh: '该撒利亚', name_en: 'Caesarea', lng: 34.89, lat: 32.50, order: 19, confidence: 'identified', scriptureRef: '徒21:8-14', events: [
+        { title: '亚迦布预言捆锁', ref: '徒21:11-13', summary: '住在传福音的腓利家中；先知亚迦布用保罗的腰带捆自己手脚，预言他必在耶路撒冷被捆绑，保罗却定意为主舍命。' } ] },
+      { id: 'p3-jerusalem', name_zh: '耶路撒冷', name_en: 'Jerusalem', lng: 35.235, lat: 31.778, order: 20, confidence: 'identified', scriptureRef: '徒21:15-33', events: [
+        { title: '被捕', ref: '徒21:33', summary: '保罗在圣殿被诬告引发骚乱，被罗马千夫长拿住，自此进入长期受审与监禁。' } ] },
     ] },
     { id: 'rome', label: '罗马之旅', color: '#c084fc', route: true, points: [
-      { id: 'caesarea', name_zh: '该撒利亚', name_en: 'Caesarea', lng: 34.89, lat: 32.50, order: 1, confidence: 'identified', scriptureRef: '徒25:11-12', events: [
-        { title: '上诉该撒', ref: '徒25:11', summary: '保罗在该撒利亚受审两年，向非斯都说："我要上告于该撒。"于是被解往罗马。' },
-      ] },
-      { id: 'fairhavens', name_zh: '佳澳（克里特）', name_en: 'Fair Havens', lng: 24.91, lat: 34.90, order: 2, confidence: 'approximate', scriptureRef: '徒27:8-13', events: [] },
-      { id: 'malta', name_zh: '米利大（马耳他）', name_en: 'Malta', lng: 14.51, lat: 35.90, order: 3, confidence: 'identified', scriptureRef: '徒27:39-28:10', events: [
-        { title: '海难与毒蛇', ref: '徒28:3-6', summary: '船遇友拉革罗大风破损，众人游泳上岸；保罗被毒蛇咬却毫无损伤，又医好岛上病人。' },
-      ] },
-      { id: 'puteoli', name_zh: '部丢利', name_en: 'Puteoli', lng: 14.12, lat: 40.82, order: 4, confidence: 'identified', scriptureRef: '徒28:13-14', events: [] },
-      { id: 'rome', name_zh: '罗马', name_en: 'Rome', lng: 12.50, lat: 41.90, order: 5, confidence: 'identified', scriptureRef: '徒28:16-31', note: '软禁中写《以弗所书》《腓立比书》《歌罗西书》《腓利门书》等监狱书信。', events: [
-        { title: '在罗马放胆传道', ref: '徒28:30-31', summary: '保罗在自己所租的房子住了两年，放胆传讲神国的道，将主耶稣基督的事教导人，并没有人禁止。' },
-      ] },
+      { id: 'r-jerusalem', name_zh: '耶路撒冷', name_en: 'Jerusalem', lng: 35.235, lat: 31.778, order: 1, confidence: 'identified', scriptureRef: '徒23:11', events: [
+        { title: '主夜间显现壮胆', ref: '徒23:11', summary: '保罗在公会与营楼受审，主夜间站在旁边说「你怎样在耶路撒冷为我作见证，也必怎样在罗马为我作见证」。' } ] },
+      { id: 'r-antipatris', name_zh: '安提帕底', name_en: 'Antipatris', lng: 34.93, lat: 32.10, order: 2, confidence: 'identified', scriptureRef: '徒23:31', events: [
+        { title: '夜间护送', ref: '徒23:31', summary: '因犹太人四十余人起誓要杀保罗，千夫长连夜派兵护送他到安提帕底。' } ] },
+      { id: 'r-caesarea', name_zh: '该撒利亚', name_en: 'Caesarea', lng: 34.89, lat: 32.50, order: 3, confidence: 'identified', scriptureRef: '徒23:33-26:32', events: [
+        { title: '受审与上告该撒', ref: '徒25:11', summary: '保罗在腓力斯、非斯都、亚基帕王前受审两年，向非斯都说「我要上告于该撒」，于是被解往罗马。' } ] },
+      { id: 'r-sidon', name_zh: '西顿', name_en: 'Sidon', lng: 35.37, lat: 33.56, order: 4, confidence: 'identified', scriptureRef: '徒27:3', events: [
+        { title: '犹流宽待', ref: '徒27:3', summary: '次日到了西顿，百夫长犹流宽待保罗，准他往朋友那里去受他们的照应。' } ] },
+      { id: 'r-cyprus-lee', name_zh: '塞浦路斯背风岸', name_en: 'Lee of Cyprus', lng: 34.00, lat: 35.60, order: 5, confidence: 'approximate', scriptureRef: '徒27:4', events: [
+        { title: '因风不顺', ref: '徒27:4', summary: '因风不顺，船便贴着塞浦路斯的背风岸行驶。' } ] },
+      { id: 'r-cilicia-sea', name_zh: '基利家、旁非利亚海面', name_en: 'Off Cilicia & Pamphylia', lng: 32.50, lat: 36.30, order: 6, confidence: 'approximate', scriptureRef: '徒27:5', events: [
+        { title: '过沿岸海面', ref: '徒27:5', summary: '过了基利家、旁非利亚前面的海，便到了吕家的每拉。' } ] },
+      { id: 'r-myra', name_zh: '每拉', name_en: 'Myra', lng: 29.98, lat: 36.26, order: 7, confidence: 'identified', scriptureRef: '徒27:5-6', events: [
+        { title: '换船往意大利', ref: '徒27:6', summary: '在每拉，百夫长找着一只亚历山大往意大利去的船，叫他们都上去。' } ] },
+      { id: 'r-cnidus', name_zh: '革尼土', name_en: 'Cnidus', lng: 27.37, lat: 36.69, order: 8, confidence: 'identified', scriptureRef: '徒27:7', events: [
+        { title: '风不容许', ref: '徒27:7', summary: '一连多日船行甚慢，仅仅来到革尼土对面，因被风拦阻便贴着克里特背风岸行。' } ] },
+      { id: 'r-crete', name_zh: '克里特岛（撒摩尼）', name_en: 'Crete (Salmone)', lng: 26.30, lat: 35.30, order: 9, confidence: 'identified', scriptureRef: '徒27:7-8', events: [
+        { title: '贴背风岸而行', ref: '徒27:7', summary: '从撒摩尼对面经过，贴着克里特岛背风岸艰难行驶。' } ] },
+      { id: 'r-fairhavens', name_zh: '佳澳', name_en: 'Fair Havens', lng: 24.91, lat: 34.90, order: 10, confidence: 'identified', scriptureRef: '徒27:8-13', events: [
+        { title: '保罗劝阻开船', ref: '徒27:10', summary: '保罗警告「这次行船必有亏损」，但百夫长信从船主与掌船的，定意开船离开佳澳。' } ] },
+      { id: 'r-storm', name_zh: '海上风暴', name_en: 'Euraquilo Storm', lng: 23.50, lat: 35.00, order: 11, confidence: 'approximate', scriptureRef: '徒27:14-20', events: [
+        { title: '友拉革罗狂风', ref: '徒27:14-15', summary: '不多几时，狂风从岛上扑下来，船被风抓住敌不住风，只得任风刮去。' } ] },
+      { id: 'r-cauda', name_zh: '高大岛附近', name_en: 'Cauda', lng: 24.10, lat: 34.84, order: 12, confidence: 'identified', scriptureRef: '徒27:16-17', events: [
+        { title: '拢住小船束船', ref: '徒27:16-17', summary: '贴着高大的背风岸奔行，仅仅收住小船，又用缆索捆绑船底，恐怕搁浅。' } ] },
+      { id: 'r-adria', name_zh: '亚底亚海', name_en: 'Adriatic Sea', lng: 18.50, lat: 35.80, order: 13, confidence: 'approximate', scriptureRef: '徒27:27-44', events: [
+        { title: '漂流十四天得保全', ref: '徒27:27-44', summary: '在亚底亚海漂来漂去十四天；天使向保罗显现应许同船无人丧命，众人吃饱后将船搁浅，全都得救上岸。' } ] },
+      { id: 'r-malta', name_zh: '马耳他', name_en: 'Malta', lng: 14.51, lat: 35.90, order: 14, confidence: 'identified', scriptureRef: '徒28:1-10', events: [
+        { title: '海难脱险与毒蛇', ref: '徒28:3-6', summary: '众人游泳上岸到了米利大岛；保罗被毒蛇咬却毫无损伤，又医好岛长的父亲及岛上病人。' } ] },
+      { id: 'r-syracuse', name_zh: '叙拉古', name_en: 'Syracuse', lng: 15.29, lat: 37.07, order: 15, confidence: 'identified', scriptureRef: '徒28:12', events: [
+        { title: '停留三日', ref: '徒28:12', summary: '换乘在马耳他过冬的亚历山大船，到了西西里的叙拉古停留三日。' } ] },
+      { id: 'r-rhegium', name_zh: '利基翁', name_en: 'Rhegium', lng: 15.65, lat: 38.11, order: 16, confidence: 'identified', scriptureRef: '徒28:13', events: [] },
+      { id: 'r-puteoli', name_zh: '部丢利', name_en: 'Puteoli', lng: 14.12, lat: 40.82, order: 17, confidence: 'identified', scriptureRef: '徒28:13-14', events: [
+        { title: '遇弟兄住七日', ref: '徒28:14', summary: '到了部丢利遇见弟兄，他们请保罗与同伴同住了七天，然后往罗马去。' } ] },
+      { id: 'r-appii', name_zh: '亚比乌市', name_en: 'Forum of Appius', lng: 12.97, lat: 41.49, order: 18, confidence: 'identified', scriptureRef: '徒28:15', events: [
+        { title: '弟兄远迎', ref: '徒28:15', summary: '罗马的弟兄听见消息，就出来到亚比乌市迎接保罗。' } ] },
+      { id: 'r-threetaverns', name_zh: '三馆', name_en: 'Three Taverns', lng: 12.83, lat: 41.60, order: 19, confidence: 'identified', scriptureRef: '徒28:15', events: [
+        { title: '放心壮胆', ref: '徒28:15', summary: '弟兄又到三馆相迎，保罗见了他们就感谢神，放心壮胆。' } ] },
+      { id: 'r-rome', name_zh: '罗马', name_en: 'Rome', lng: 12.50, lat: 41.90, order: 20, confidence: 'identified', scriptureRef: '徒28:16-31', note: '软禁中写《以弗所书》《腓立比书》《歌罗西书》《腓利门书》等监狱书信。', events: [
+        { title: '在罗马放胆传道', ref: '徒28:30-31', summary: '保罗在自己所租的房子住了两年，放胆传讲神国的道，将主耶稣基督的事教导人，并没有人禁止。' } ] },
     ] },
   ],
 }
