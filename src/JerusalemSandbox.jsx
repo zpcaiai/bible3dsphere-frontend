@@ -97,6 +97,13 @@ const TEMPLE_VARIANTS = {
   herod: { data: TEMPLE_GEOJSON_HEROD, parts: TEMPLE_PARTS_HEROD, labels: TEMPLE_LABELS_HEROD, camera: TEMPLE_CAMERA_HEROD, name: '希律圣殿', icon: '🏛' },
 }
 const TEMPLE_VARIANT_ORDER = ['tabernacle', 'solomon', 'zerubbabel', 'herod']
+// 由外而内导览动线（亲近神的路）：每站取该时期 TEMPLE_LABELS 的部件坐标 + TEMPLE_PARTS 的经文解说
+const TEMPLE_TOURS = {
+  tabernacle: ['gate', 'altar', 'laver', 'screen', 'holy', 'mostholy'],
+  solomon: ['altar', 'sea', 'porch', 'holy', 'mostholy'],
+  zerubbabel: ['ruins', 'altar', 'laver', 'porch', 'lampstand', 'foundationstone'],
+  herod: ['gentiles', 'soreg', 'women', 'nicanor', 'altar', 'porch', 'holy', 'mostholy'],
+}
 const dataFor = (v) => (TEMPLE_VARIANTS[v] || TEMPLE_VARIANTS.herod).data
 const partsFor = (v) => (TEMPLE_VARIANTS[v] || TEMPLE_VARIANTS.herod).parts
 const labelsFor = (v) => (TEMPLE_VARIANTS[v] || TEMPLE_VARIANTS.herod).labels
@@ -135,6 +142,7 @@ export default function JerusalemSandbox({ onBack }) {
   const templeModeRef = useRef(false)
   const [templeVariant, setTempleVariant] = useState('herod')
   const templeVariantRef = useRef('herod')
+  // —— 圣殿由外而内自动导览 ——
   const templeTourRef = useRef(false)
   const [templeTourActive, setTempleTourActive] = useState(false)
   // —— 真实高程（hillshade）+ glTF 精模图层 ——
@@ -505,19 +513,30 @@ export default function JerusalemSandbox({ onBack }) {
     const variant = templeVariantRef.current
     const labels = labelsFor(variant)
     if (!labels.length) return
+    // 按"由外而内"动线走（院门→祭坛→洗濯→圣所→至圣所），无动线配置时退回标注顺序
+    const tourIds = TEMPLE_TOURS[variant] || []
+    const seq = tourIds.length
+      ? tourIds.map((id) => labels.find((l) => l.id === id)).filter(Boolean)
+      : labels
     templeTourRef.current = true
     setTempleTourActive(true)
-    for (const label of labels) {
+    for (const label of seq) {
       if (!templeTourRef.current) break
       const part = partsFor(variant)[label.id]
       setSelectedPart(part ? { id: label.id, ...part } : { id: label.id, name: label.name, ref: '', desc: '' })
       try {
-        map.flyTo({ center: label.coord, zoom: Math.max(16.8, cameraFor(variant).zoom), pitch: 67, bearing: cameraFor(variant).bearing, duration: 1300, essential: true })
+        map.flyTo({ center: label.coord, zoom: Math.max(16.8, cameraFor(variant).zoom), pitch: 70, bearing: cameraFor(variant).bearing, duration: 1600, essential: true })
       } catch (_) {}
-      await sleep(2100)
+      await sleep(3400)
     }
+    const finished = templeTourRef.current
     templeTourRef.current = false
     setTempleTourActive(false)
+    // 走完全程后拉回全景，俯瞰这条"亲近神的路"
+    if (finished && templeModeRef.current) {
+      const cam = cameraFor(templeVariantRef.current)
+      try { map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: cam.pitch, bearing: cam.bearing, duration: 1800 }) } catch (_) {}
+    }
   }
 
   function stopTempleTour() {

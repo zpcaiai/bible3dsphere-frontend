@@ -270,13 +270,14 @@ export default function BibleMap({ config, onBack }) {
   function routePath(layer) {
     const pts = visiblePoints(layer).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     if (pts.length < 2) return ''
-    const geom = routedGeom[layer.id] || null
-    if (geom && geom.length >= 2) {
-      let g = geom
+    const entry = routedGeom[layer.id] || null
+    if (entry && entry.coords && entry.coords.length >= 2) {
+      let g = entry.coords
       if ((playing || progress > 0) && layer.id === animLayer?.id && !isTimeline) {
-        const total = (layer.points || []).length || 1
-        const frac = Math.min(1, revealCount / total)
-        g = geom.slice(0, Math.max(2, Math.ceil(frac * geom.length)))
+        // 按站点索引精确揭示：显示到"已到达的最后一站"，与光点/高亮完全同步
+        const lastStation = Math.min(revealCount, entry.stationIdx.length) - 1
+        const cut = entry.stationIdx[Math.max(0, lastStation)] ?? entry.coords.length - 1
+        g = entry.coords.slice(0, Math.max(2, cut + 1))
       }
       return g.map(([lng, lat], i) => {
         const [x, y] = project(lng, lat)
