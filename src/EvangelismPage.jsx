@@ -5,7 +5,7 @@ import html2canvas from 'html2canvas'
 import { amenEvangelismPrayer, deleteEvangelismPrayer, fetchEvangelismPrayers, restoreEvangelismPrayer, submitEvangelismPrayer, updateEvangelismPrayer, runQuery, fetchSeekersClassCourses } from './api'
 import usePullToRefresh from './hooks/usePullToRefresh'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
-import BibleMapPage from './BibleMapPage'
+import BibleMapsPage from './BibleMapsPage'
 import { t } from './i18n/runtime'
 import { translateForExport, translateElementText } from './exportI18n'
 import { AutoText } from './autoTranslate.jsx'
@@ -412,7 +412,7 @@ export function SeekersClassView() {
   )
 }
 
-export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
+export default function EvangelismPage({ user, token, onBack, onPrayerWall, onOpenPanel }) {
   const [items, setItems] = useState([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -1345,8 +1345,13 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
       </div>
       )}
 
-      {/* 圣经地图：出埃及/保罗/耶路撒冷/支派与王国 */}
-      {subTab === 'map' && <BibleMapPage />}
+      {/* 圣经地图：首页与宣教 tab 共用统一地图目录 */}
+      {subTab === 'map' && (
+        <BibleMapsPage
+          embedded
+          onOpenAtlas={onOpenPanel ? () => onOpenPanel('bible-atlas') : undefined}
+        />
+      )}
 
       {/* 慕道班课程列表 */}
       {subTab === 'seekers' && <SeekersClassView />}

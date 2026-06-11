@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import BackButton from './BackButton'
 import { pickVoiceFor, speechLangFor } from './voice'
 import { createMapAdapter } from './map/createMapAdapter'
 import { normalizeRoute, routeSliceToStation } from './map/routePlayback'
@@ -66,7 +67,7 @@ function eraOf(eras, year) {
 }
 const REL_LABEL = { within: t("隶属于"), contains: t("包含"), adjacent: t("相邻"), capital_of: t("首都："), borders: t("接壤") }
 
-export default function BibleMapPage() {
+export default function BibleMapPage({ initialDatasetId = 'exodus', onBack, single = false }) {
   const mapNodeRef = useRef(null)   // 当前已初始化地图的 DOM 节点
   const adapterRef = useRef(null)
   const markersRef = useRef({})
@@ -74,7 +75,7 @@ export default function BibleMapPage() {
   const selectedRef = useRef(null)
   const progressRef = useRef(null)   // 已走过路程的实线（弧线）
 
-  const [datasetId, setDatasetId] = useState('exodus')
+  const [datasetId, setDatasetId] = useState(initialDatasetId)
   const [dataset, setDataset] = useState(null)
   const [variantId, setVariantId] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
@@ -86,6 +87,10 @@ export default function BibleMapPage() {
   const [timelinePlaying, setTimelinePlaying] = useState(false)
   const [timelineSpeed, setTimelineSpeed] = useState(1)
   const [regionRel, setRegionRel] = useState(null)
+
+  useEffect(() => {
+    setDatasetId(initialDatasetId)
+  }, [initialDatasetId])
 
   // 加载数据集
   useEffect(() => {
@@ -333,12 +338,31 @@ export default function BibleMapPage() {
   if (!dataset) {
     return (
       <div className="biblemap-page">
+        {onBack && (
+          <div className="biblemap-live-head">
+            <BackButton onClick={onBack} />
+            <div>
+              <h2>{t("圣经地图")}</h2>
+              <p>{t("交互路线、时间轴与经文事件")}</p>
+            </div>
+          </div>
+        )}
         <div className="biblemap-loading">{t("地图数据加载中…")}</div>
       </div>
     )
   }
 
-  const DatasetSelector = (
+  const LiveHeader = onBack ? (
+    <div className="biblemap-live-head">
+      <BackButton onClick={onBack} />
+      <div>
+        <h2><AutoText>{dataset.title}</AutoText></h2>
+        <p><AutoText>{dataset.subtitle}</AutoText></p>
+      </div>
+    </div>
+  ) : null
+
+  const DatasetSelector = single ? null : (
     <div className="biblemap-dataset">
       {BIBLE_MAPS.map((m) => (
         <button key={m.id} className={`biblemap-dataset-btn ${m.id === datasetId ? 'active' : ''}`} onClick={() => switchDataset(m.id)}>
@@ -371,6 +395,7 @@ export default function BibleMapPage() {
     const colorBySlug = dataset.colorBySlug || {}
     return (
       <div className="biblemap-page">
+        {LiveHeader}
         {DatasetSelector}
         <div className="biblemap-hypo-desc"><AutoText>{dataset.subtitle}</AutoText>
           <span className="biblemap-src">{slice?.source === 'api' ? t("· 数据源：后端") : t("· 数据源：本地")}</span>
@@ -463,6 +488,7 @@ export default function BibleMapPage() {
   if (!selected) {
     return (
       <div className="biblemap-page">
+        {LiveHeader}
         {DatasetSelector}
         <div className="biblemap-loading">{t("加载中…")}</div>
       </div>
@@ -479,6 +505,7 @@ export default function BibleMapPage() {
 
   return (
     <div className="biblemap-page">
+      {LiveHeader}
       {DatasetSelector}
       <div className="biblemap-hypo">
         {dataset.variants.map((h) => (

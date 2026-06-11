@@ -2391,6 +2391,7 @@ function AppContent() {
                 token={getToken()}
                 onBack={() => setActivePanel('sphere')}
                 onPrayerWall={() => handlePanelSwitch('prayer')}
+                onOpenPanel={(panel) => handlePanelSwitch(panel)}
               />
             ) : showLogin ? renderInlineLogin() : null}
           </div>
