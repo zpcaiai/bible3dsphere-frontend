@@ -32,6 +32,7 @@ export default function RealtimeRoot({ user }) {
           title={activeCall.title}
           selfName={realtimeStore.selfName()}
           outgoing={activeCall.outgoing}
+          video={!!activeCall.video}
           onLeave={() => realtimeStore.endCall()}
         />
       )}
@@ -39,7 +40,11 @@ export default function RealtimeRoot({ user }) {
       {incomingCall && !activeCall && (
         <div className="communion-invite-overlay">
           <div className="communion-invite glass">
-            <div className="communion-invite-title">📞 {incomingCall.name} {t("邀请你语音通话")}</div>
+            <div className="communion-invite-title">
+              {incomingCall.video
+                ? <>📹 {incomingCall.name} {t("邀请你视频通话")}</>
+                : <>📞 {incomingCall.name} {t("邀请你语音通话")}</>}
+            </div>
             <div className="communion-invite-actions">
               <button className="communion-accept" onClick={() => realtimeStore.acceptIncoming()}>{t("接听")}</button>
               <button className="communion-decline" onClick={() => realtimeStore.declineIncoming()}>{t("拒绝")}</button>

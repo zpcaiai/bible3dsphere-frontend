@@ -5222,3 +5222,86 @@ canvas {
   .communion-chat.open { display: flex; }
   .communion-back-mobile { display: inline-block; }
 }
+
+/* ═══ 实时通话（语音 + 视频）覆盖层 ════════════════════════════════════
+   LiveKitCall（1对1 全局通话）+ RealtimeRoot 来电弹窗。
+   视频瓦片：有视频轨时瓦片切换为 16:12 画面，姓名压在画面左下角。 */
+.communion-call-overlay {
+  position: fixed; inset: 0; z-index: 1200;
+  background: rgba(8, 10, 18, 0.92); backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; box-sizing: border-box;
+}
+.communion-call-screen {
+  width: min(720px, 100%); max-height: 100%;
+  display: flex; flex-direction: column; gap: 14px;
+  background: rgba(20, 24, 40, 0.85); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 18px; box-sizing: border-box;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.communion-call-top { text-align: center; }
+.communion-call-peer { font-size: 18px; font-weight: 700; color: #fff; }
+.communion-call-state { font-size: 13px; margin-top: 4px; }
+.communion-call-tiles {
+  flex: 1; min-height: 180px; overflow-y: auto;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px; align-content: center;
+}
+.communion-call-tiles.has-video { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.communion-call-tile {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 16px 8px; border-radius: 16px;
+  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12);
+  transition: box-shadow .12s, border-color .12s;
+}
+.communion-call-tile.speaking { border-color: #34c759; box-shadow: 0 0 0 2px #34c759, 0 0 18px rgba(52,199,89,0.5); }
+.communion-call-tile.video { padding: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+.communion-call-bubble {
+  width: 56px; height: 56px; border-radius: 50%; font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08);
+}
+.communion-call-tname {
+  font-size: 12px; color: rgba(255,255,255,0.85); max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.communion-call-vname {
+  position: absolute; left: 8px; bottom: 8px; max-width: calc(100% - 16px);
+  font-size: 11.5px; color: #fff; padding: 3px 8px; border-radius: 8px;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.communion-call-actions { display: flex; justify-content: center; gap: 16px; }
+.communion-call-ctrl {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: none; border-radius: 16px; padding: 12px 16px; min-width: 84px;
+  color: #fff; cursor: pointer; font-family: inherit;
+}
+.communion-call-ctrl:disabled { opacity: .45; cursor: default; }
+.communion-call-ctrl-label { font-size: 11px; }
+
+/* 来电弹窗 */
+.communion-invite-overlay {
+  position: fixed; inset: 0; z-index: 1300;
+  background: rgba(8, 10, 18, 0.75); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
+}
+.communion-invite {
+  width: min(360px, 100%); text-align: center;
+  background: rgba(24, 28, 46, 0.95); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px; padding: 22px 18px;
+  box-shadow: 0 18px 52px rgba(0,0,0,0.55);
+}
+.communion-invite-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.5; }
+.communion-invite-actions { display: flex; gap: 12px; justify-content: center; }
+.communion-accept, .communion-decline {
+  border: none; border-radius: 12px; padding: 11px 26px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+.communion-accept { background: #34c759; color: #06210f; }
+.communion-decline { background: #ff3b30; color: #fff; }
+@media (max-width: 480px) {
+  .communion-call-overlay { padding: 0; }
+  .communion-call-screen { width: 100%; height: 100%; max-height: none; border-radius: 0; padding: 14px 12px calc(14px + env(safe-area-inset-bottom)); }
+  .communion-call-tiles.has-video { grid-template-columns: 1fr; }
+}

@@ -26,7 +26,7 @@ const namespacedZh = {
   'home.zoom.mid': '中景',
   'home.zoom.near': '近景',
 
-  'home.quick.voice': '语音通话',
+  'home.quick.voice': '音视频通话',
   'home.quick.communion': '群聊',
   'home.quick.bibleMaps': '圣经地图',
 
@@ -78,7 +78,7 @@ const namespacedEn = {
   'home.zoom.mid': 'Mid',
   'home.zoom.near': 'Near',
 
-  'home.quick.voice': 'Voice Call',
+  'home.quick.voice': 'Voice & Video',
   'home.quick.communion': 'Group Chat',
   'home.quick.bibleMaps': 'Bible Maps',
 

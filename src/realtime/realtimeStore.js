@@ -92,7 +92,7 @@ class RealtimeStore {
       case 'call_invite': {
         if (this.activeCall) { this.send({ type: 'call_decline', to: msg.from, room: msg.room }); break }
         const name = shortName(msg.from, this._friendNickname?.(msg.from))
-        this._setState({ incomingCall: { from: msg.from, room: msg.room, name } })
+        this._setState({ incomingCall: { from: msg.from, room: msg.room, name, video: !!msg.video } })
         break
       }
       case 'call_decline':
@@ -118,19 +118,21 @@ class RealtimeStore {
   }
 
   // ---- call controls ----
-  async startDirectCall(friend) {
+  // opts.video=true 发起视频通话（双方进房即开摄像头；随时可关，关掉就回到纯语音）
+  async startDirectCall(friend, opts = {}) {
     if (!friend) return
     if (this.activeCall) { toast('通话进行中'); return }
+    const video = !!opts.video
     const enabled = await fetchVoiceEnabled()
     if (!enabled) { toast('语音通话尚未配置（需管理员设置 LiveKit）'); return }
     if (friend.online === false) { toast('对方当前不在线'); return }
     try {
       const creds = await fetchDirectVoiceToken(friend.email)
       this.send({
-        type: 'call_invite', to: friend.email, room: creds.room,
-        title: `${shortName(this.user?.email, this.user?.nickname)} 邀请你语音通话`,
+        type: 'call_invite', to: friend.email, room: creds.room, video,
+        title: `${shortName(this.user?.email, this.user?.nickname)} 邀请你${video ? '视频' : '语音'}通话`,
       })
-      this._setState({ activeCall: { creds, title: shortName(friend.email, friend.nickname), outgoing: true, peer: friend.email } })
+      this._setState({ activeCall: { creds, title: shortName(friend.email, friend.nickname), outgoing: true, peer: friend.email, video } })
     } catch (e) { toast(e.message || '发起通话失败') }
   }
 
@@ -140,7 +142,7 @@ class RealtimeStore {
     this._setState({ incomingCall: null })
     try {
       const creds = await fetchDirectVoiceToken(ic.from, ic.room)
-      this._setState({ activeCall: { creds, title: ic.name, outgoing: false, peer: ic.from } })
+      this._setState({ activeCall: { creds, title: ic.name, outgoing: false, peer: ic.from, video: !!ic.video } })
     } catch (e) { toast(e.message || '接听失败') }
   }
 

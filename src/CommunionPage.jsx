@@ -201,8 +201,8 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
     setDraft(v)
     if (activePeer) realtimeStore.send({ type: 'typing', to: activePeer.email })
   }
-  function dial(friend) {
-    realtimeStore.startDirectCall({ ...friend, online: isOnline(friend.email) })
+  function dial(friend, video = false) {
+    realtimeStore.startDirectCall({ ...friend, online: isOnline(friend.email) }, { video })
   }
 
   async function recallMsg(m) {
@@ -304,6 +304,8 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                   {f.unread > 0 && <span className="communion-badge">{f.unread}</span>}
                   <button className="communion-call-btn" title={t("语音通话")}
                     onClick={(e) => { e.stopPropagation(); dial(f) }}>📞</button>
+                  <button className="communion-call-btn" title={t("视频通话")}
+                    onClick={(e) => { e.stopPropagation(); dial(f, true) }}>📹</button>
                 </div>
               )
             })}
@@ -396,6 +398,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                   <span className={`communion-dot ${isOnline(activePeer.email) ? 'online' : ''}`} />
                 </div>
                 <button className="communion-head-call" onClick={() => dial(activePeer)}>{t("📞 语音通话")}</button>
+                <button className="communion-head-call" onClick={() => dial(activePeer, true)}>{t("📹 视频通话")}</button>
               </div>
 
               <div className="communion-messages">

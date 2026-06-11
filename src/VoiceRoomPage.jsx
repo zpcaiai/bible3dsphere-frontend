@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import BackButton from './BackButton'
+import VideoTile from './realtime/VideoTile'
 import { t } from './i18n/runtime'
 import {
   fetchVoiceConfig, fetchVoiceGroups, createVoiceGroup,
@@ -49,7 +50,7 @@ export default function VoiceRoomPage({ user, token, onBack }) {
     <div style={S.page}>
       <header style={S.header}>
         <BackButton onClick={onBack} />
-        <span style={S.title}>{t("🎙 语音通话")}</span>
+        <span style={S.title}>{t("🎙 语音 · 视频通话")}</span>
         <span style={{ width: 56 }} />
       </header>
 
@@ -173,8 +174,9 @@ function GroupList({ enabled, groups, loading, token, onRefresh, onEnter }) {
 function CallScreen({ group, user, token, onLeave }) {
   const [status, setStatus] = useState('connecting')   // connecting | live | error
   const [errMsg, setErrMsg] = useState('')
-  const [participants, setParticipants] = useState([]) // {sid, identity, name, isLocal, speaking, muted}
+  const [participants, setParticipants] = useState([]) // {sid, identity, name, isLocal, speaking, muted, videoTrack}
   const [micOn, setMicOn] = useState(true)
+  const [camOn, setCamOn] = useState(false)
   const [denoise, setDenoise] = useState(false)
   const [encrypted, setEncrypted] = useState(false)   // E2EE 是否已生效
   const [keyPanel, setKeyPanel] = useState(false)
@@ -185,6 +187,15 @@ function CallScreen({ group, user, token, onLeave }) {
   const audioBin = useRef(null)
   const krispRef = useRef(null)
   const e2eeWorkerRef = useRef(null)
+
+  // 取参与者当前可渲染的摄像头轨道（未静音的第一条视频轨）
+  const camTrackOf = (p) => {
+    for (const pub of p.videoTrackPublications.values()) {
+      const track = pub.track || pub.videoTrack
+      if (track && !pub.isMuted) return track
+    }
+    return null
+  }
 
   // 把房间参与者状态同步到 React
   const sync = useCallback(() => {
@@ -197,6 +208,7 @@ function CallScreen({ group, user, token, onLeave }) {
       name: (lp.name || user?.nickname || t("我")) + t("（我）"),
       isLocal: true, speaking: speakers.has(lp.sid),
       muted: !lp.isMicrophoneEnabled,
+      videoTrack: lp.isCameraEnabled ? camTrackOf(lp) : null,
     }]
     room.remoteParticipants.forEach(p => {
       list.push({
@@ -206,6 +218,7 @@ function CallScreen({ group, user, token, onLeave }) {
         muted: !p.audioTrackPublications.size
           ? false
           : ![...p.audioTrackPublications.values()].some(pub => !pub.isMuted),
+        videoTrack: camTrackOf(p),
       })
     })
     setParticipants(list)
@@ -244,7 +257,7 @@ function CallScreen({ group, user, token, onLeave }) {
       }
 
       room = new Room({
-        adaptiveStream: false,
+        adaptiveStream: true, // 视频按瓦片实际尺寸自适应码率（群里人多时省带宽）
         dynacast: true,
         // Zoom 级采集：浏览器原生回声消除 / 降噪 / 自动增益
         audioCaptureDefaults: {
@@ -252,6 +265,8 @@ function CallScreen({ group, user, token, onLeave }) {
           noiseSuppression: true,
           autoGainControl: true,
         },
+        // 群视频：540p/24fps 起步，dynacast+simulcast 按订阅端自动升降
+        videoCaptureDefaults: { resolution: { width: 960, height: 540, frameRate: 24 } },
         // Opus + RED(冗余抗丢包) + DTX(静音不发包)，语音码率上调
         publishDefaults: {
           dtx: true,
@@ -284,6 +299,7 @@ function CallScreen({ group, user, token, onLeave }) {
         .on(RoomEvent.TrackMuted, onChange)
         .on(RoomEvent.TrackUnmuted, onChange)
         .on(RoomEvent.LocalTrackPublished, onChange)
+        .on(RoomEvent.LocalTrackUnpublished, onChange)
         .on(RoomEvent.Disconnected, () => { if (!cancelled) { setStatus('error'); setErrMsg(t("通话已断开")) } })
         .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
           if (track.kind === Track.Kind.Audio && audioBin.current) {
@@ -294,8 +310,9 @@ function CallScreen({ group, user, token, onLeave }) {
           }
           onChange()
         })
-        .on(RoomEvent.TrackUnsubscribed, (track) => {
-          track.detach().forEach(el => el.remove())
+        .on(RoomEvent.TrackUnsubscribed, (track, pub) => {
+          // 视频轨由 VideoTile 自行 detach；这里只清理隐藏的音频元素
+          if (pub?.kind !== 'video') track.detach().forEach(el => el.remove())
           onChange()
         })
 
@@ -329,6 +346,18 @@ function CallScreen({ group, user, token, onLeave }) {
     const next = !micOn
     await room.localParticipant.setMicrophoneEnabled(next)
     setMicOn(next); sync()
+  }
+
+  const toggleCam = async () => {
+    const room = roomRef.current
+    if (!room) return
+    const next = !camOn
+    try {
+      await room.localParticipant.setCameraEnabled(next)
+      setCamOn(next); sync()
+    } catch (e) {
+      toast(/permission|NotAllowed/i.test(String(e)) ? t("摄像头权限被拒绝，请在浏览器允许摄像头") : (e.message || t("摄像头开启失败")), 'error')
+    }
   }
 
   // 可选：Krisp AI 降噪（需 LiveKit Cloud；失败则静默回退到原生降噪）
@@ -413,18 +442,34 @@ function CallScreen({ group, user, token, onLeave }) {
         </div>
       )}
 
-      <div style={S.tiles}>
+      <div style={{
+        ...S.tiles,
+        // 任何人开了摄像头 → 切到大瓦片网格，画面优先
+        ...(participants.some(p => p.videoTrack)
+          ? { gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))' }
+          : {}),
+      }}>
         {participants.map(p => (
           <div key={p.sid} style={{
             ...S.tile,
+            ...(p.videoTrack ? S.tileVideo : {}),
             boxShadow: p.speaking ? `0 0 0 3px ${ACCENT}, 0 0 22px rgba(52,199,89,0.55)` : 'none',
             borderColor: p.speaking ? ACCENT : 'rgba(255,255,255,0.12)',
           }}>
-            <div style={{ ...S.avatar, background: p.isLocal ? 'rgba(52,199,89,0.18)' : 'rgba(255,255,255,0.08)' }}>
-              {p.muted ? '🔇' : (p.speaking ? '🔊' : '🎙')}
-            </div>
-            <div style={S.tileName}>{p.name}</div>
-            {p.muted && <div style={S.mutedTag}>{t("已静音")}</div>}
+            {p.videoTrack ? (
+              <>
+                <VideoTile track={p.videoTrack} mirror={p.isLocal} />
+                <div style={S.videoName}>{p.muted ? '🔇 ' : ''}{p.name}</div>
+              </>
+            ) : (
+              <>
+                <div style={{ ...S.avatar, background: p.isLocal ? 'rgba(52,199,89,0.18)' : 'rgba(255,255,255,0.08)' }}>
+                  {p.muted ? '🔇' : (p.speaking ? '🔊' : '🎙')}
+                </div>
+                <div style={S.tileName}>{p.name}</div>
+                {p.muted && <div style={S.mutedTag}>{t("已静音")}</div>}
+              </>
+            )}
           </div>
         ))}
         {status === 'live' && participants.length === 1 && (
@@ -437,6 +482,11 @@ function CallScreen({ group, user, token, onLeave }) {
           disabled={status !== 'live'}>
           <div style={{ fontSize: 22 }}>{micOn ? '🎙' : '🔇'}</div>
           <div style={S.ctrlLabel}>{micOn ? t("静音") : t("取消静音")}</div>
+        </button>
+        <button onClick={toggleCam} style={{ ...S.ctrlBtn, background: camOn ? 'rgba(52,199,89,0.25)' : 'rgba(255,255,255,0.1)' }}
+          disabled={status !== 'live'}>
+          <div style={{ fontSize: 22 }}>{camOn ? '📹' : '📷'}</div>
+          <div style={S.ctrlLabel}>{camOn ? t("关闭摄像头") : t("开启摄像头")}</div>
         </button>
         <button onClick={toggleDenoise} style={{ ...S.ctrlBtn, background: denoise ? 'rgba(52,199,89,0.25)' : 'rgba(255,255,255,0.1)' }}
           disabled={status !== 'live'}>
@@ -490,6 +540,8 @@ const S = {
   keyBtns: { display: 'flex', gap: 10, justifyContent: 'flex-end' },
   tiles: { flex: 1, overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 12, padding: 16, alignContent: 'start' },
   tile: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, padding: '16px 8px', transition: 'box-shadow 0.12s, border-color 0.12s' },
+  tileVideo: { position: 'relative', padding: 0, aspectRatio: '4 / 3', overflow: 'hidden', justifyContent: 'stretch' },
+  videoName: { position: 'absolute', left: 8, bottom: 8, maxWidth: 'calc(100% - 16px)', fontSize: 11.5, color: '#fff', padding: '3px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.55)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   avatar: { width: 56, height: 56, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 },
   tileName: { fontSize: 12, color: 'rgba(255,255,255,0.85)', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' },
   mutedTag: { fontSize: 10, color: 'rgba(255,255,255,0.4)' },

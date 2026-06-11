@@ -1,14 +1,25 @@
-// 通用 LiveKit 通话组件 — 用于「圣徒相通」1对1 秒拨。
+// 通用 LiveKit 通话组件 — 用于「圣徒相通」1对1 秒拨，支持语音 + 视频。
 // 与 VoiceRoomPage 的 CallScreen 同样的高质量采集 (Opus+RED+DTX+原生回声消除)，
-// 但解耦于"群"概念：直接吃 { url, token } 进房。
+// 但解耦于"群"概念：直接吃 { url, token } 进房。video=true 时进房即开摄像头。
 import { useCallback, useEffect, useRef, useState } from 'react'
+import VideoTile from './VideoTile'
 import { t } from '../i18n/runtime'
 
-export default function LiveKitCall({ url, token, title, selfName, outgoing, onLeave, e2eeKey = '' }) {
+// 取参与者当前可渲染的摄像头轨道（未静音的第一条视频轨）
+function camTrackOf(p) {
+  for (const pub of p.videoTrackPublications.values()) {
+    const track = pub.track || pub.videoTrack
+    if (track && !pub.isMuted) return track
+  }
+  return null
+}
+
+export default function LiveKitCall({ url, token, title, selfName, outgoing, onLeave, e2eeKey = '', video = false }) {
   const [status, setStatus] = useState('connecting') // connecting | live | error
   const [errMsg, setErrMsg] = useState('')
   const [participants, setParticipants] = useState([])
   const [micOn, setMicOn] = useState(true)
+  const [camOn, setCamOn] = useState(false)
   const roomRef = useRef(null)
   const audioBin = useRef(null)
 
@@ -20,6 +31,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
     const list = [{
       sid: lp.sid, name: (lp.name || selfName || t("我")) + t("（我）"),
       isLocal: true, speaking: speakers.has(lp.sid), muted: !lp.isMicrophoneEnabled,
+      videoTrack: lp.isCameraEnabled ? camTrackOf(lp) : null,
     }]
     room.remoteParticipants.forEach((p) => {
       list.push({
@@ -29,6 +41,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
         muted: p.audioTrackPublications.size
           ? ![...p.audioTrackPublications.values()].some((pub) => !pub.isMuted)
           : false,
+        videoTrack: camTrackOf(p),
       })
     })
     setParticipants(list)
@@ -52,9 +65,10 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
         } catch (err) { keyProvider = null; e2eeWorker = null }
       }
       room = new Room({
-        adaptiveStream: false,
+        adaptiveStream: true, // 视频按瓦片实际尺寸自适应码率
         dynacast: true,
         audioCaptureDefaults: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        videoCaptureDefaults: { resolution: { width: 960, height: 540, frameRate: 24 } },
         publishDefaults: { dtx: true, red: true, audioPreset: { maxBitrate: 32000 } },
         ...(keyProvider && e2eeWorker ? { e2ee: { keyProvider, worker: e2eeWorker } } : {}),
       })
@@ -71,6 +85,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
         .on(RoomEvent.TrackMuted, onChange)
         .on(RoomEvent.TrackUnmuted, onChange)
         .on(RoomEvent.LocalTrackPublished, onChange)
+        .on(RoomEvent.LocalTrackUnpublished, onChange)
         .on(RoomEvent.Disconnected, () => { if (!cancelled) { setStatus('error'); setErrMsg(t("通话已断开")) } })
         .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
           if (track.kind === Track.Kind.Audio && audioBin.current) {
@@ -79,10 +94,18 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           }
           onChange()
         })
-        .on(RoomEvent.TrackUnsubscribed, (track) => { track.detach().forEach((el) => el.remove()); onChange() })
+        .on(RoomEvent.TrackUnsubscribed, (track, pub) => {
+          if (pub?.kind !== 'video') track.detach().forEach((el) => el.remove())
+          onChange()
+        })
       try {
         await room.connect(url, token)
         await room.localParticipant.setMicrophoneEnabled(true)
+        if (video) {
+          // 视频通话：进房即开摄像头；权限被拒不阻断通话，降级为语音
+          try { await room.localParticipant.setCameraEnabled(true); if (!cancelled) setCamOn(true) }
+          catch { if (!cancelled) setCamOn(false) }
+        }
         if (!cancelled) { setStatus('live'); setMicOn(true); sync() }
       } catch (e) {
         if (!cancelled) {
@@ -99,7 +122,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
       roomRef.current = null
       if (audioBin.current) audioBin.current.innerHTML = ''
     }
-  }, [url, token, sync])
+  }, [url, token, sync, video])
 
   const toggleMic = async () => {
     const room = roomRef.current
@@ -108,16 +131,28 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
     await room.localParticipant.setMicrophoneEnabled(next)
     setMicOn(next); sync()
   }
+  const toggleCam = async () => {
+    const room = roomRef.current
+    if (!room) return
+    const next = !camOn
+    try {
+      await room.localParticipant.setCameraEnabled(next)
+      setCamOn(next); sync()
+    } catch (e) {
+      window.showToast?.(/permission|NotAllowed/i.test(String(e)) ? t("摄像头权限被拒绝，请在浏览器允许摄像头") : (e.message || t("摄像头开启失败")), 'error')
+    }
+  }
   const hangUp = async () => { try { await roomRef.current?.disconnect() } catch { /* noop */ } onLeave?.() }
 
   const remoteCount = participants.filter((p) => !p.isLocal).length
+  const anyVideo = participants.some((p) => p.videoTrack)
 
   return (
     <div className="communion-call-overlay">
       <div className="communion-call-screen">
         <div ref={audioBin} style={{ display: 'none' }} />
         <div className="communion-call-top">
-          <div className="communion-call-peer">{title || t("语音通话")}</div>
+          <div className="communion-call-peer">{title || (video ? t("视频通话") : t("语音通话"))}</div>
           <div className="communion-call-state">
             {status === 'connecting' && <span style={{ color: '#f0ad4e' }}>● {outgoing ? t("正在呼叫…") : t("接入中…")}</span>}
             {status === 'live' && remoteCount === 0 && <span style={{ color: '#f0ad4e' }}>{t("● 等待对方接听…")}</span>}
@@ -126,11 +161,20 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           </div>
         </div>
 
-        <div className="communion-call-tiles">
+        <div className={`communion-call-tiles ${anyVideo ? 'has-video' : ''}`}>
           {participants.map((p) => (
-            <div key={p.sid} className={`communion-call-tile ${p.speaking ? 'speaking' : ''}`}>
-              <div className="communion-call-bubble">{p.muted ? '🔇' : (p.speaking ? '🔊' : '🎙')}</div>
-              <div className="communion-call-tname">{p.name}</div>
+            <div key={p.sid} className={`communion-call-tile ${p.speaking ? 'speaking' : ''} ${p.videoTrack ? 'video' : ''}`}>
+              {p.videoTrack ? (
+                <>
+                  <VideoTile track={p.videoTrack} mirror={p.isLocal} />
+                  <div className="communion-call-vname">{p.muted ? '🔇 ' : ''}{p.name}</div>
+                </>
+              ) : (
+                <>
+                  <div className="communion-call-bubble">{p.muted ? '🔇' : (p.speaking ? '🔊' : '🎙')}</div>
+                  <div className="communion-call-tname">{p.name}</div>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -140,6 +184,11 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
             style={{ background: micOn ? 'rgba(255,255,255,.12)' : '#ff6b6b' }}>
             <div style={{ fontSize: 22 }}>{micOn ? '🎙' : '🔇'}</div>
             <div className="communion-call-ctrl-label">{micOn ? t("静音") : t("取消静音")}</div>
+          </button>
+          <button className="communion-call-ctrl" onClick={toggleCam} disabled={status !== 'live'}
+            style={{ background: camOn ? 'rgba(52,199,89,.25)' : 'rgba(255,255,255,.12)' }}>
+            <div style={{ fontSize: 22 }}>{camOn ? '📹' : '📷'}</div>
+            <div className="communion-call-ctrl-label">{camOn ? t("关闭摄像头") : t("开启摄像头")}</div>
           </button>
           <button className="communion-call-ctrl" onClick={hangUp} style={{ background: '#ff3b30' }}>
             <div style={{ fontSize: 22 }}>📴</div>
