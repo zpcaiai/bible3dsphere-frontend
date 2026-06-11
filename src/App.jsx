@@ -58,6 +58,7 @@ const VoiceRoomPage = lazyWithRetry(() => import('./VoiceRoomPage'))
 const CommunionPage = lazyWithRetry(() => import('./CommunionPage'))
 const SharedPrayerPage = lazyWithRetry(() => import('./SharedPrayerPage'))
 const PersonalSearchPage = lazyWithRetry(() => import('./PersonalSearchPage'))
+const SpiritualFormationPage = lazyWithRetry(() => import('./features/spiritual-formation/app/SpiritualFormationPage'))
 
 // React Query client for HabitsPage
 const queryClient = new QueryClient({
@@ -1388,6 +1389,7 @@ function AppContent() {
                   {/* 快捷入口按钮行 */}
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {[
+                      { icon: '🌿', label: t('新造操练'), panel: 'spiritual-formation' },
                       { icon: '🔍', label: t('home.snapshot.soulQuestion'), panel: 'soul-question' },
                       { icon: '⏱', label: t('home.snapshot.quickDevotion'), action: () => setShowQuickDevotion(true) },
                       { icon: '📊', label: t('home.snapshot.growthMap'), panel: 'growth-map' },
@@ -2588,6 +2590,15 @@ function AppContent() {
           <div className="page-overlay">
             <Suspense fallback={null}>
               <ExportDataPage onBack={() => setActivePanel('sphere')} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* Sin Pattern to New Creation Transformation Engine */}
+        {activePanel === 'spiritual-formation' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <SpiritualFormationPage user={user} onBack={() => setActivePanel('sphere')} />
             </Suspense>
           </div>
         )}

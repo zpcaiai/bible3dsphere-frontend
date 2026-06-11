@@ -1,0 +1,423 @@
+.sf-page {
+  min-height: 100%;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 96px);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(52, 199, 89, 0.16), transparent 32rem),
+    radial-gradient(circle at 100% 8%, rgba(90, 200, 250, 0.12), transparent 30rem),
+    #05070b;
+  color: #fff;
+}
+
+.sf-header {
+  max-width: 1100px;
+  margin: 0 auto 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.sf-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 4vw, 34px);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.sf-header p,
+.sf-section-heading p,
+.sf-card p,
+.sf-muted {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  line-height: 1.65;
+}
+
+.sf-tabs {
+  max-width: 1100px;
+  margin: 0 auto 18px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+}
+
+.sf-tabs button,
+.sf-plan-actions button,
+.sf-card button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  padding: 9px 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sf-tabs button.active,
+.sf-chip-btn.active,
+.sf-primary {
+  background: linear-gradient(135deg, #34c759, #5ac8fa);
+  color: #041008;
+  border-color: transparent;
+  font-weight: 800;
+}
+
+.sf-section,
+.sf-home {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sf-section-heading,
+.sf-intro {
+  margin-bottom: 14px;
+}
+
+.sf-section-heading h2,
+.sf-intro h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+.sf-card,
+.sf-intro,
+.sf-recommendation,
+.sf-detail-panel {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.sf-action-grid,
+.sf-home-grid,
+.sf-pattern-grid,
+.sf-fruit-grid,
+.sf-review-grid,
+.sf-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.sf-action {
+  text-align: left;
+  min-height: 104px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.sf-action strong,
+.sf-action span,
+.sf-card-button span {
+  display: block;
+}
+
+.sf-action span,
+.sf-card-button small {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.55;
+}
+
+.sf-home-grid {
+  margin-top: 12px;
+}
+
+.sf-card h3,
+.sf-card h4 {
+  margin: 0 0 10px;
+  letter-spacing: 0;
+}
+
+.sf-card ul,
+.sf-detail-panel ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+}
+
+.sf-card-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+
+.sf-card-short,
+.sf-status {
+  align-self: start;
+  border-radius: 999px;
+  background: rgba(52, 199, 89, 0.16);
+  color: #8effae;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.sf-two-copy {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sf-two-copy b {
+  display: block;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.sf-chip-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.sf-chip,
+.sf-chip-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.78);
+  padding: 5px 9px;
+  font-size: 12px;
+}
+
+.sf-chip-btn {
+  cursor: pointer;
+}
+
+.sf-detail-panel {
+  margin-top: 12px;
+}
+
+.sf-detail-grid,
+.sf-practice-columns,
+.sf-create-plan,
+.sf-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.sf-scripture-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.sf-scripture-list span {
+  color: #5ac8fa;
+  font-size: 12px;
+}
+
+.sf-prayer,
+.sf-warning,
+.sf-success,
+.sf-empty {
+  border-radius: 8px;
+  padding: 12px;
+  line-height: 1.65;
+}
+
+.sf-prayer {
+  background: rgba(90, 200, 250, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.sf-warning {
+  background: rgba(255, 149, 0, 0.12);
+  color: #ffd699;
+  border: 1px solid rgba(255, 149, 0, 0.24);
+}
+
+.sf-success {
+  background: rgba(52, 199, 89, 0.12);
+  color: #b7f7c8;
+  border: 1px solid rgba(52, 199, 89, 0.22);
+}
+
+.sf-empty {
+  color: rgba(255, 255, 255, 0.54);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sf-form-grid label,
+.sf-create-plan label,
+.sf-step-list label {
+  display: grid;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sf-form-grid input,
+.sf-form-grid select,
+.sf-form-grid textarea,
+.sf-create-plan input,
+.sf-create-plan select,
+.sf-step-list input,
+.sf-step-list select,
+.sf-step-list textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  padding: 11px 12px;
+  outline: none;
+}
+
+.sf-form-grid textarea,
+.sf-step-list textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.sf-choice-block {
+  margin: 14px 0;
+}
+
+.sf-choice-block > span {
+  display: block;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.sf-recommendation {
+  margin: 14px 0;
+}
+
+.sf-recommendation h3 {
+  margin: 0 0 8px;
+}
+
+.sf-primary {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  cursor: pointer;
+}
+
+.sf-check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.74);
+  margin-top: 12px;
+}
+
+.sf-step-list {
+  display: grid;
+  gap: 12px;
+}
+
+.sf-step-list span {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.sf-card-head,
+.sf-fruit-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.sf-status.paused {
+  background: rgba(255, 149, 0, 0.16);
+  color: #ffd699;
+}
+
+.sf-status.completed {
+  background: rgba(90, 200, 250, 0.16);
+  color: #aee8ff;
+}
+
+.sf-practice-check {
+  display: flex;
+  gap: 9px;
+  margin: 8px 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.sf-practice-check small {
+  display: block;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.sf-plan-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sf-plan-history {
+  margin-top: 18px;
+}
+
+.sf-fruit-title h3 {
+  text-transform: capitalize;
+}
+
+.sf-fruit-title span {
+  color: #8effae;
+  font-size: 12px;
+}
+
+.sf-progress {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.sf-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #34c759, #5ac8fa);
+}
+
+@media (max-width: 640px) {
+  .sf-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .sf-header {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-action-grid,
+  .sf-home-grid,
+  .sf-pattern-grid,
+  .sf-fruit-grid,
+  .sf-review-grid,
+  .sf-map-grid,
+  .sf-detail-grid,
+  .sf-practice-columns,
+  .sf-create-plan,
+  .sf-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
