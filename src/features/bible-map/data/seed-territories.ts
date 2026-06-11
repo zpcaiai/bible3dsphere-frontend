@@ -127,10 +127,34 @@ const tribeDefs: TerritoryDef[] = [
 
 const kingdomAndNationDefs: TerritoryDef[] = [
   {
-    id: 'united-monarchy', name: 'United Monarchy', nameZh: '统一王国', ownerType: 'kingdom', ownerId: 'united-monarchy', period: 'united_monarchy',
-    startYear: -1050, endYear: -930, controlScore: 82, status: 'stable', color: '#f59e0b',
+    id: 'united-monarchy', name: 'United Monarchy (Saul)', nameZh: '统一王国（扫罗时期）', ownerType: 'kingdom', ownerId: 'united-monarchy', period: 'united_monarchy',
+    startYear: -1050, endYear: -1011, controlScore: 72, status: 'disputed', color: '#f59e0b',
     points: [[34.5, 30.45], [34.95, 33.28], [35.55, 33.45], [36.38, 32.95], [36.16, 31.0], [35.62, 30.45], [34.9, 30.18]],
-    description: '扫罗、大卫、所罗门时期的以色列统一王国，范围随军事控制与附庸关系变化，此处为核心控制区示意。',
+    description: '扫罗时期的以色列统一王国雏形，西面持续受非利士压制，范围随军事控制变化，此处为核心控制区示意。',
+  },
+  {
+    id: 'david-sphere', name: "David's Sphere of Influence", nameZh: '大卫王国势力范围', ownerType: 'kingdom', ownerId: 'david-kingdom', period: 'united_monarchy',
+    startYear: -1010, endYear: -971, controlScore: 52, status: 'disputed', color: '#fca5a5',
+    points: [[34.2, 31.0], [34.3, 31.95], [34.85, 32.85], [35.1, 33.3], [35.45, 33.6], [36.0, 34.05], [36.45, 34.4], [37.6, 35.0], [38.6, 35.4], [38.5, 34.6], [37.0, 33.6], [36.85, 32.6], [36.75, 31.8], [36.35, 30.9], [36.15, 29.95], [35.15, 29.4], [34.8, 29.7], [34.4, 30.4]],
+    description: '大卫鼎盛时期的军事与藩属势力范围：北达亚兰、大马士革、琐巴、哈马口乃至幼发拉底河方向；南控以东与亚拉巴谷直到红海亚喀巴湾北端；东服摩押、亚扪；西压非利士五城。推罗、西顿一带为友好腓尼基城邦，并非直接统治区（示意）。',
+  },
+  {
+    id: 'david-core', name: "Kingdom of David (Core)", nameZh: '大卫王国核心疆域', ownerType: 'kingdom', ownerId: 'david-kingdom', period: 'united_monarchy',
+    startYear: -1010, endYear: -971, controlScore: 88, status: 'stable', color: '#ef4444',
+    points: [[34.55, 30.75], [34.3, 31.25], [34.45, 31.9], [34.9, 32.75], [35.05, 33.1], [35.55, 33.35], [35.85, 33.28], [36.1, 32.75], [36.3, 32.35], [36.05, 31.55], [35.75, 30.95], [35.3, 30.6], [34.9, 30.5]],
+    description: '大卫王国核心疆域以耶路撒冷为中心：西抵地中海沿岸及非利士平原，东跨约旦河至基列、巴珊与流便、迦得、玛拿西半支派地，北至但、加利利北部和黑门山南麓，南至别是巴和南地。',
+  },
+  {
+    id: 'solomon-sphere', name: "Solomon's Sphere & Trade Network", nameZh: '所罗门王国势力与贸易网络', ownerType: 'kingdom', ownerId: 'solomon-kingdom', period: 'united_monarchy',
+    startYear: -970, endYear: -931, controlScore: 56, status: 'disputed', color: '#fde047',
+    points: [[33.95, 30.95], [34.3, 31.95], [34.85, 32.85], [35.1, 33.3], [35.5, 33.65], [36.0, 34.1], [36.5, 34.5], [37.7, 35.1], [38.65, 35.65], [38.7, 34.95], [38.35, 34.5], [37.1, 33.5], [36.9, 32.5], [36.8, 31.75], [36.35, 30.85], [36.1, 29.9], [35.15, 29.35], [34.75, 29.65], [34.25, 30.3]],
+    description: '所罗门的势力影响与贸易网络：北向哈马口、亚兰、大马士革与幼发拉底河方向（达莫、提弗萨），南经以东、亚拉巴谷至红海北端的以旬迦别，东控摩押、亚扪边缘与东方商路，西南至埃及边界；与推罗、西顿等腓尼基城邦结盟。整体由核心领土、藩属地区、贸易通道和盟友网络构成区域性帝国（示意）。',
+  },
+  {
+    id: 'solomon-core', name: "Kingdom of Solomon (Core)", nameZh: '所罗门王国核心疆域', ownerType: 'kingdom', ownerId: 'solomon-kingdom', period: 'united_monarchy',
+    startYear: -970, endYear: -931, controlScore: 90, status: 'stable', color: '#eab308',
+    points: [[34.55, 30.75], [34.3, 31.25], [34.45, 31.9], [34.9, 32.75], [35.05, 33.12], [35.55, 33.38], [35.88, 33.3], [36.12, 32.75], [36.3, 32.3], [36.05, 31.55], [35.75, 30.95], [35.3, 30.6], [34.9, 30.5]],
+    description: '所罗门王国以耶路撒冷为政治与宗教中心，核心疆域覆盖迦南地、约旦河西岸和约旦河东的基列、巴珊等地区：北界以但、加利利北部、黑门山南麓为核心，南界从别是巴、南地延伸，西抵地中海沿岸及非利士平原。',
   },
   {
     id: 'israel-north', name: 'Kingdom of Israel', nameZh: '北国以色列', ownerType: 'kingdom', ownerId: 'israel-north', period: 'divided_monarchy',
