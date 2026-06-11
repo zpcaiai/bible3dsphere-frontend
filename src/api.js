@@ -1362,7 +1362,7 @@ export async function fetchSundaySchoolVideos() {
   console.log('[api] fetchSundaySchoolVideos')
   const response = await fetch(`${API_BASE}/sunday-school/videos`)
   if (!response.ok) throw new Error(`Failed to load videos: ${response.status}`)
-  return response.json()  // { ok, videos: [{id, title, teacher, scripture, description, video_url, thumbnail_url, duration_sec}...] }
+  return response.json()  // { ok, videos: [{id, alias, title, filename, teacher, scripture, description, video_url, thumbnail_url, duration_sec, modified_ts}...] }
 }
 
 // ── Seekers Class Courses (慕道班课程：文字/PPT/视频) ──────────────────────────
