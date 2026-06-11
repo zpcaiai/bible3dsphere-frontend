@@ -9,8 +9,12 @@ function precacheManifestPlugin() {
     name: 'precache-manifest',
     apply: 'build',
     generateBundle(_, bundle) {
+      // 排除巨型按需场景包（语音降噪 wasm/livekit/PDF/地图）——只在进入对应功能时下载，
+      // 避免 SW 安装阶段预取 4MB+ 拖慢首装与流量
+      const PRECACHE_EXCLUDE = /(krisp|livekit|maplibre|mapbox|deck|^assets\/pdf-)/
       const files = Object.keys(bundle)
         .filter((f) => /\.(js|css|woff2?)$/.test(f))
+        .filter((f) => !PRECACHE_EXCLUDE.test(f))
         .map((f) => '/' + f)
       this.emitFile({
         type: 'asset',
@@ -32,6 +36,7 @@ export default defineConfig({
         manualChunks: {
           'three': ['three', '@react-three/fiber', '@react-three/drei'],
           'pdf': ['jspdf', 'html2canvas'],
+          'krisp': ['@livekit/krisp-noise-filter'],
         },
       },
     },

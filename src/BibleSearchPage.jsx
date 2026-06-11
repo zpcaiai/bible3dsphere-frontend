@@ -7,6 +7,7 @@ import { t, getRuntimeLang } from './i18n/runtime'
 import ShareCardModal from './components/ShareCardModal'
 import { addMemoryCard } from './lib/memoryDeck'
 import { mapsForBook, openMapEntry } from './data/bibleMapLinks'
+import VirtualList from './components/VirtualList'
 
 const toast = (m, ty = 'info') => window.showToast?.(m, ty)
 
@@ -106,7 +107,7 @@ export default function BibleSearchPage({ onBack, onOpenMap }) {
           <div style={S.empty}>{t('没有找到匹配的经文，换个说法试试。')}</div>
         )}
 
-        {results && results.map((v) => {
+        {results && <VirtualList items={results} keyOf={(v) => v.pkId} estimatedHeight={185} renderItem={(v) => {
           const maps = mapsForBook(v.bookCode)
           return (
             <div key={v.pkId} style={S.verseCard}>
@@ -138,7 +139,7 @@ export default function BibleSearchPage({ onBack, onOpenMap }) {
               </div>
             </div>
           )
-        })}
+        }} />}
       </div>
 
       {shareVerse && (

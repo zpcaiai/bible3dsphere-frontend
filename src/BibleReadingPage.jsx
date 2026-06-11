@@ -6,8 +6,9 @@
  */
 import { useEffect, useRef, useState, useCallback } from 'react'
 import BackButton from './BackButton'
+import VirtualList from './components/VirtualList'
 import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture, langHeaders } from './api'
-import { TTSFullBar, TTSButton } from './useGlobalAudio.jsx'
+import { TTSFullBar, TTSButton, useGlobalAudio } from './useGlobalAudio.jsx'
 import { t, getRuntimeLang } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
 import { mapsForBook, openMapEntry } from './data/bibleMapLinks'
@@ -233,6 +234,10 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
   const [studyLoading, setStudyLoading] = useState(false)
   const [studyErr, setStudyErr] = useState('')
   const [openSections, setOpenSections] = useState({})
+
+  // ── 听经模式：整章连播 + 锁屏控制（Media Session）+ 章末自动续播下一章 ──
+  const { ttsState, speakSequence, stop: stopAudio } = useGlobalAudio()
+  const [listening, setListening] = useState(false)
   const studyRef = useRef(null)
   const topRef = useRef(null)
 
@@ -283,6 +288,57 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
     setOpenSections({})
   }, [load])
   useEffect(() => { topRef.current?.scrollIntoView({ behavior: 'instant' }) }, [book.name, chapter])
+
+  function buildListenChunks() {
+    // 按 ~480 字分块：边播边预取下一块，整章听感连续
+    const chunks = []
+    let cur = `${book.name}，第${chapter}章。`
+    for (const v of verses || []) {
+      const txt = (v.text || '').trim()
+      if (!txt) continue
+      if (cur && (cur.length + txt.length) > 480) { chunks.push(cur); cur = '' }
+      cur += txt
+    }
+    if (cur.trim()) chunks.push(cur)
+    return chunks
+  }
+
+  function navContinueListening(go) {
+    try { sessionStorage.setItem('listen-continue', '1') } catch (_) { /* ignore */ }
+    go()
+  }
+
+  function startListening() {
+    if (!verses?.length) return
+    setListening(true)
+    speakSequence(buildListenChunks(), {
+      title: `${t(book.name)} · ${chapter}`,
+      onPrev: hasPrev ? () => navContinueListening(prev) : null,
+      onNext: hasNext ? () => navContinueListening(next) : null,
+      onEnd: () => {
+        // 章末自动续播下一章（直到全书听完）
+        if (hasNext) navContinueListening(next)
+        else setListening(false)
+      },
+    })
+  }
+
+  function stopListening() {
+    setListening(false)
+    stopAudio()
+  }
+
+  // 换章后经文加载完，若带「续播」标记则自动开始听下一章
+  useEffect(() => {
+    if (!verses?.length) return
+    let cont = false
+    try {
+      cont = sessionStorage.getItem('listen-continue') === '1'
+      sessionStorage.removeItem('listen-continue')
+    } catch (_) { /* ignore */ }
+    if (cont) startListening()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [verses])
 
   async function handleMark() {
     if (!user || marking || isDone || marked) return
@@ -417,6 +473,35 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
               />
             </div>
 
+            {/* 🎧 听经模式 */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14,
+              padding: '9px 13px', borderRadius: 10,
+              background: 'rgba(52,199,89,0.07)', border: '1px solid rgba(52,199,89,0.18)',
+            }}>
+              <button
+                onClick={listening && ttsState !== 'idle' ? stopListening : startListening}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  background: 'rgba(52,199,89,0.13)', border: '1px solid rgba(52,199,89,0.35)',
+                  borderRadius: 8, padding: '6px 14px', color: '#34c759',
+                  fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                {listening && ttsState === 'loading' ? '⏳' : listening && ttsState !== 'idle' ? '⏹' : '🎧'}
+                <span>
+                  {listening && ttsState === 'loading' ? t("准备中…")
+                    : listening && ttsState !== 'idle' ? t("停止听经")
+                    : t("听本章")}
+                </span>
+              </button>
+              <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>
+                {listening && ttsState !== 'idle'
+                  ? t("锁屏也能听 · 章末自动续播下一章")
+                  : t("连续朗读整章，支持锁屏/耳机控制")}
+              </span>
+            </div>
+
             {/* Verses */}
             {verses.map(v => (
               <div key={v.verse} style={S.verseRow}>
@@ -531,7 +616,8 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
                               {isVbv ? (
                                 /* ── 逐节详解 ── */
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                                  {vbv.map((item, i) => {
+                                  {/* 逐节详解：长章(诗119等176节)虚拟滚动 */}
+                                  <VirtualList items={vbv} batch={20} estimatedHeight={150} renderItem={(item, i) => {
                                     const verseNum = item.verse ?? item.range
                                     const comment  = item.comment || ''
                                     const wordNote = item.word || ''
@@ -568,7 +654,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
                                         )}
                                       </div>
                                     )
-                                  })}
+                                  }} />
                                 </div>
                               ) : key === 'prayer' ? (
                                 /* ── 祷告引导 ── */

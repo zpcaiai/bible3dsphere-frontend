@@ -2105,3 +2105,37 @@ export async function fetchGratitudeReview(days = 7, token) {
   if (!res.ok) throw new Error('加载恩典回顾失败')
   return res.json()  // {ok, days, total, active_days, by_day:[{day, entries:[{id,content,created_at}]}], verse}
 }
+
+// ── 代祷分享链接 ─────────────────────────────────────────────────────────────
+export async function sharePrayer(prayerId, token) {
+  const headers = {}
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  const response = await fetch(`${API_BASE}/prayers/${prayerId}/share`, { method: 'POST', headers })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || data.error || 'Share failed')
+  return data
+}
+
+export async function fetchSharedPrayer(shareToken) {
+  const response = await fetch(`${API_BASE}/prayer-share/${encodeURIComponent(shareToken)}`)
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || data.error || 'Not found')
+  return data
+}
+
+export async function amenSharedPrayer(shareToken) {
+  const response = await fetch(`${API_BASE}/prayer-share/${encodeURIComponent(shareToken)}/amen`, { method: 'POST' })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || data.error || 'Amen failed')
+  return data
+}
+
+// ── 个人数据全局搜索 ─────────────────────────────────────────────────────────
+export async function searchPersonal(q, token) {
+  const headers = {}
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  const response = await fetch(`${API_BASE}/personal-search?q=${encodeURIComponent(q)}`, { headers })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || data.error || 'Search failed')
+  return data
+}

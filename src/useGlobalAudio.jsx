@@ -100,6 +100,7 @@ const _singleton = {
   audioEl: null,         // current HTMLAudioElement (Google/Edge TTS)
   audioUrl: null,        // current object URL (to revoke on cleanup)
   stopListeners: new Set(), // registered () => void callbacks
+  ownerSetState: null,   // 当前播放发起者的 setTtsState（锁屏控制回写 UI 状态）
   speakGen: 0,           // monotonically increasing — each speak() call gets its own gen;
                          // stale in-flight fetches that don't match the current gen are discarded
 }
@@ -121,6 +122,44 @@ function _globalStop() {
   }
   // Notify every hook instance to reset its local state
   _singleton.stopListeners.forEach(fn => fn())
+  _clearMediaSession()
+}
+
+// ── Media Session（锁屏/耳机控制）────────────────────────────────────────────
+// 听经模式核心：播放时在系统层注册元数据与控制器，
+// 锁屏可见「书卷 章」并可播放/暂停/上一章/下一章。
+function _setMediaSession(title, { onPrev, onNext } = {}) {
+  if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+  const ms = navigator.mediaSession
+  try {
+    ms.metadata = new MediaMetadata({
+      title: title || t("属灵星球"),
+      artist: t("属灵星球"),
+      album: t("听经模式"),
+    })
+  } catch (_) { /* ignore */ }
+  const safeSet = (action, fn) => { try { ms.setActionHandler(action, fn) } catch (_) { /* unsupported action */ } }
+  safeSet('play', () => {
+    if (_singleton.audioEl) { _singleton.audioEl.play(); _singleton.ownerSetState?.('playing') }
+    try { ms.playbackState = 'playing' } catch (_) {}
+  })
+  safeSet('pause', () => {
+    if (_singleton.audioEl) { _singleton.audioEl.pause(); _singleton.ownerSetState?.('paused') }
+    try { ms.playbackState = 'paused' } catch (_) {}
+  })
+  safeSet('stop', () => _globalStop())
+  safeSet('previoustrack', onPrev || null)
+  safeSet('nexttrack', onNext || null)
+  try { ms.playbackState = 'playing' } catch (_) {}
+}
+
+function _clearMediaSession() {
+  if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+  const ms = navigator.mediaSession
+  for (const a of ['play', 'pause', 'stop', 'previoustrack', 'nexttrack']) {
+    try { ms.setActionHandler(a, null) } catch (_) { /* ignore */ }
+  }
+  try { ms.playbackState = 'none'; ms.metadata = null } catch (_) { /* ignore */ }
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -151,9 +190,11 @@ export function useGlobalAudio() {
       if (_singleton.audioEl.paused) {
         _singleton.audioEl.play()
         setTtsState('playing')
+        try { navigator.mediaSession.playbackState = 'playing' } catch (_) { /* ignore */ }
       } else {
         _singleton.audioEl.pause()
         setTtsState('paused')
+        try { navigator.mediaSession.playbackState = 'paused' } catch (_) { /* ignore */ }
       }
     } else if (window.speechSynthesis) {
       if (window.speechSynthesis.paused) {
@@ -217,6 +258,8 @@ export function useGlobalAudio() {
       }
 
       await audio.play()
+      _singleton.ownerSetState = (st) => { if (isMountedRef.current) setTtsState(st) }
+      _setMediaSession(text.slice(0, 36))
       if (isMountedRef.current) setTtsState('playing')
       return
     } catch (_backendErr) {
@@ -253,7 +296,58 @@ export function useGlobalAudio() {
     if (isMountedRef.current) setTtsState('playing')
   }, [])
 
-  return { ttsState, speak, stop, togglePause }
+  // ── speakSequence：听经模式连播 ───────────────────────────────────────────
+  // 把长内容切成若干段（如整章经文按 ~480 字分块），逐段 TTS 连续播放；
+  // 播放当前段时预取下一段，段间无停顿感。支持 Media Session 上/下一章与连播回调。
+  const speakSequence = useCallback(async (chunks, opts = {}) => {
+    const { title, onPrev, onNext, onEnd } = opts
+    const list = (chunks || []).map((c) => String(c || '').trim()).filter(Boolean)
+    if (!list.length) return
+    _globalStop()
+    const myGen = ++_singleton.speakGen
+    if (!isMountedRef.current) return
+    setTtsState('loading')
+    _singleton.ownerSetState = (st) => { if (isMountedRef.current) setTtsState(st) }
+
+    const enMode = getRuntimeLang() === 'en'
+    const lang = enMode ? 'en-US' : 'zh-CN'
+    const voiceName = enMode ? 'en-US-AriaNeural' : 'zh-CN-XiaoxiaoNeural'
+    const fetchChunkUrl = (i) => fetchTTS(_expandBibleRefs(list[i]), lang, voiceName).then((b) => URL.createObjectURL(b))
+
+    const playUrl = (url) => new Promise((resolve) => {
+      const audio = new Audio(url)
+      _singleton.audioEl = audio
+      _singleton.audioUrl = url
+      const cleanup = () => {
+        if (_singleton.audioEl === audio) { _singleton.audioEl = null; _singleton.audioUrl = null }
+        try { URL.revokeObjectURL(url) } catch (_) { /* ignore */ }
+      }
+      audio.onended = () => { cleanup(); resolve(true) }
+      audio.onerror = () => { cleanup(); resolve(false) }
+      audio.play().then(() => {
+        if (_singleton.speakGen === myGen && isMountedRef.current) setTtsState('playing')
+      }).catch(() => { cleanup(); resolve(false) })
+    })
+
+    _setMediaSession(title, { onPrev, onNext })
+
+    let nextPromise = fetchChunkUrl(0)
+    for (let i = 0; i < list.length; i++) {
+      let url = null
+      try { url = await nextPromise } catch (_) { break }
+      if (_singleton.speakGen !== myGen) { if (url) { try { URL.revokeObjectURL(url) } catch (_) {} } return }
+      if (i + 1 < list.length) nextPromise = fetchChunkUrl(i + 1)
+      const ended = await playUrl(url)
+      if (_singleton.speakGen !== myGen) return
+      if (!ended) break
+    }
+    if (_singleton.speakGen !== myGen) return
+    if (isMountedRef.current) setTtsState('idle')
+    _clearMediaSession()
+    onEnd?.()
+  }, [])
+
+  return { ttsState, speak, stop, togglePause, speakSequence }
 }
 
 // ── Shared TTS UI components ─────────────────────────────────────────────────

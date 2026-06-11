@@ -1,8 +1,9 @@
 import { pickMimeType, contentTypeFor, AUDIO_CONSTRAINTS } from './hooks/recorderUtils'
+import VirtualList from './components/VirtualList'
 import { useEffect, useRef, useState } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import { amenPrayer, deletePrayer, fetchPrayers, restorePrayer, submitPrayer, updatePrayer, updatePrayerStatus, runQuery } from './api'
+import { amenPrayer, deletePrayer, fetchPrayers, restorePrayer, submitPrayer, updatePrayer, updatePrayerStatus, runQuery, sharePrayer } from './api'
 import { requestFriend } from './realtime/realtimeApi'
 import usePullToRefresh from './hooks/usePullToRefresh'
 import useDraft from './useDraft'
@@ -281,6 +282,22 @@ export default function PrayerWallPage({ user, token, onBack, onOpenPanel }) {
       window.showToast?.(t("好友请求已发送"), 'success')
     } catch (e) {
       window.showToast?.(e.message || t("发送失败"), 'error')
+    }
+  }
+
+  async function handleShare(prayerId) {
+    // 生成稳定分享链接并复制——朋友无需登录即可查看并同心代祷
+    try {
+      const { share_token } = await sharePrayer(prayerId, token)
+      const url = `${window.location.origin}/p/${share_token}`
+      let copied = false
+      try { await navigator.clipboard.writeText(url); copied = true } catch { /* http 或权限拒绝 */ }
+      if (!copied && navigator.share) {
+        try { await navigator.share({ title: t("同心代祷"), url }); copied = true } catch { /* 用户取消 */ }
+      }
+      window.showToast?.(copied ? t("分享链接已复制，发给朋友一起代祷 🙏") : url, 'success')
+    } catch (e) {
+      window.showToast?.(t("生成分享链接失败：") + String(e.message || e), 'error')
     }
   }
 
@@ -872,12 +889,10 @@ export default function PrayerWallPage({ user, token, onBack, onOpenPanel }) {
           </div>
         ) : (
           <>
-            {(() => {
-              let lastWeekKey = null
-              return items.map((prayer, index) => {
+            {/* 虚拟滚动：渐进窗口化 + content-visibility（周分隔改为与前一条纯比较，去闭包状态） */}
+            <VirtualList items={items} keyOf={(p) => p.id} estimatedHeight={230} renderItem={(prayer, index) => {
                 const currentWeekKey = getWeekKey(prayer.created_at)
-                const showDivider = lastWeekKey !== null && lastWeekKey !== currentWeekKey
-                lastWeekKey = currentWeekKey
+                const showDivider = index > 0 && getWeekKey(items[index - 1].created_at) !== currentWeekKey
                 
                 return (
                   <>
@@ -917,6 +932,27 @@ export default function PrayerWallPage({ user, token, onBack, onOpenPanel }) {
                           <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
                             {!prayer.deleted_at ? (
                               <>
+                                <button
+                                  onClick={() => handleShare(prayer.id)}
+                                  title={t("分享代祷链接")}
+                                  aria-label={t("复制这条祷告的分享链接")}
+                                  style={{
+                                    padding: '6px',
+                                    background: 'rgba(125,211,252,0.12)',
+                                    border: '1px solid rgba(125,211,252,0.3)',
+                                    borderRadius: '6px',
+                                    color: '#7dd3fc',
+                                    fontSize: '14px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    minWidth: '32px',
+                                    minHeight: '32px'
+                                  }}
+                                >
+                                  🔗
+                                </button>
                                 <button
                                   onClick={() => startEdit(prayer)}
                                   title={t("编辑")}
@@ -1204,8 +1240,7 @@ export default function PrayerWallPage({ user, token, onBack, onOpenPanel }) {
                     </div>
                   </>
                 )
-              })
-            })()}
+              }} />
 
             {items.length < total && (
               <button
