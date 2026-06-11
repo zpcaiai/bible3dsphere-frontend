@@ -74,7 +74,7 @@ function toText(data) {
   }
   if (data.sermons) {
     L.push('───────────────────────────────────', '')
-    L.push(`【讲道笔记】共 ${data.sermons.length} 篇`, '')
+    L.push(`【主日 · 讲道笔记】共 ${data.sermons.length} 篇`, '')
     for (const s of data.sermons) {
       L.push(`◆ ${fmtDate(s.created_at)}${s.title ? ` · ${s.title}` : ''}${s.preacher ? ` | 讲道者：${s.preacher}` : ''}`)
       if (s.scripture_ref) L.push(`  📖 ${s.scripture_ref}`)
@@ -85,7 +85,7 @@ function toText(data) {
   }
   if (data.gospel) {
     L.push('───────────────────────────────────', '')
-    L.push(`【福音代祷】共 ${data.gospel.length} 条`, '')
+    L.push(`【传FY · 福音代祷】共 ${data.gospel.length} 条`, '')
     for (const p of data.gospel) {
       L.push(`✝ ${fmtDate(p.created_at)}${p.nickname ? ` · ${p.nickname}` : ''}`)
       L.push(`  ${String(p.content || '').replace(/\n/g, '\n  ')}`, '')
@@ -167,8 +167,8 @@ export default function ExportDataPage({ onBack }) {
         <Item k="journal" icon="📔" label={t('灵修日志')} desc={t('每日灵修记录与默想')} />
         <Item k="prayer" icon="🙏" label={t('祷告记录')} desc={t('代祷墙的祷告与应允见证')} />
         <Item k="reading" icon="📖" label={t('读经进度')} desc={t('已读书卷与章数统计')} />
-        <Item k="sermon" icon="📝" label={t('讲道笔记')} desc={t('主日讲道笔记与应用')} />
-        <Item k="gospel" icon="✝" label={t('福音代祷')} desc={t('传福音页的代祷记录')} />
+        <Item k="sermon" icon="📝" label={t('主日')} desc={t('主日讲道笔记与应用')} />
+        <Item k="gospel" icon="✝" label={t('传FY')} desc={t('传FY祷告墙的代祷记录')} />
         <Item k="testimony" icon="🌟" label={t('见证墙')} desc={t('分享墙上的见证')} />
         <div style={S.btns}>
           <button style={S.ghost} disabled={busy || nothing} onClick={exportTxt}>{busy ? t('整理中…') : t('⬇ 导出 TXT')}</button>
