@@ -1,6 +1,7 @@
 import './bible-map.css'
 import { t, getRuntimeLang } from '../../i18n/runtime'
 import { useState } from 'react'
+import BackButton from '../../BackButton'
 import { BibleMapClient } from './components/BibleMapClient'
 import { TempleSandbox } from './components/TempleSandbox'
 import { GraphPanel } from './components/GraphPanel'
@@ -33,11 +34,7 @@ export default function BibleAtlasPage({ onBack }: Props) {
     <div className="flex h-full w-full flex-col overflow-y-auto bg-[#0b1220] text-gray-200">
       <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
         <div className="flex items-center gap-3">
-          {onBack && (
-            <button onClick={onBack} className="rounded-lg border border-white/15 bg-white/5 px-2.5 py-1.5 text-sm text-gray-200 hover:bg-white/10">
-              ‹
-            </button>
-          )}
+          {onBack && <BackButton onClick={onBack} />}
           <div>
             <h1 className="text-lg font-bold text-white">{getRuntimeLang() === 'en' ? 'Bible Atlas' : '圣经地图集 · Bible Atlas'}</h1>
             <p className="text-xs text-gray-400">{t('十二支派 · 士师 · 列国兴衰 · 先知预言 · 帝国扩张 · 基甸战役')}</p>

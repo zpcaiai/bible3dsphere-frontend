@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useRef } from 'react'
+import BackButton from './BackButton'
 import { useGlobalAudio, TTSButton as _TTSBtn, TTSFullBar as _TTSFullBar } from './useGlobalAudio.jsx'
 import { MIRROR_CHARACTERS, MIRROR_THEMES } from './mirrorData'
 import { emotionZhKey, getRuntimeLang, t } from './i18n/runtime'
@@ -457,10 +458,7 @@ function CharacterDetail({ char, onBack, user, token }) {
   }
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} style={{
-        background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-        color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>{t("← 返回列表")}</button>
+      <BackButton onClick={onBack} style={{ marginBottom: 24 }} />
 
       {/* TTS */}
       <_TTSFullBar buildText={() => buildCharSpeechText(char)} label={t("整体朗读")} />
@@ -722,10 +720,7 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
   const themeChars = characters.filter(c => theme.characterIds.includes(c.id))
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} style={{
-        background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-        color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>{t("← 返回主题")}</button>
+      <BackButton onClick={onBack} style={{ marginBottom: 24 }} />
 
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>{theme.emoji}</div>
@@ -891,10 +886,7 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
     return (
       <div style={{ padding: '20px 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <button onClick={() => setView('list')} style={{
-            background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-            color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14
-          }}>{t("← 人物列表")}</button>
+          <BackButton onClick={() => setView('list')} />
           <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}>{t("主题合集")}</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 14 }}>

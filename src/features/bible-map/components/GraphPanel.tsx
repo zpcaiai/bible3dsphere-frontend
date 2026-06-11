@@ -2,6 +2,7 @@
 // 零依赖：内置轻量力导向布局 + SVG 渲染；数据走 /api/bible-map/graph，离线回退本地图谱。
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, WheelEvent as ReactWheelEvent } from 'react'
+import BackButton from '../../../BackButton'
 import { fetchGraph, fetchGraphNeighbors } from '../lib/dataSource'
 import { t } from '../../../i18n/runtime'
 import { AutoText } from '../../../autoTranslate.jsx'
@@ -292,13 +293,7 @@ export function GraphPanel({ onBack }: Props) {
           </div>
         </div>
         {onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            className="absolute right-3 top-3 rounded-lg border border-white/15 bg-black/60 px-2.5 py-1 text-sm text-gray-200 backdrop-blur hover:bg-white/10"
-          >
-            {t('‹ 返回地图')}
-          </button>
+          <BackButton onClick={onBack} className="absolute right-3 top-3 z-10" />
         )}
         <button
           type="button"

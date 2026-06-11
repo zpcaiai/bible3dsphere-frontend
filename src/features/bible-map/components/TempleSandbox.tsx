@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import BackButton from '../../../BackButton'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { featureCollection, feature } from '../lib/geojson'
@@ -117,9 +118,7 @@ export function TempleSandbox({ onBack }: Props) {
           <h1 className="text-lg font-bold text-white">{t('🏛️ 圣殿山数字孪生沙盘')}</h1>
           <p className="text-xs text-gray-400">{t('拖动时间轴，看耶路撒冷圣殿山从禾场到希律圣殿的「平地起高楼」')}</p>
         </div>
-        <button onClick={onBack} className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-200 hover:bg-white/10">
-          {t('‹ 返回地图')}
-        </button>
+        <BackButton onClick={onBack} />
       </header>
 
       <div className="relative flex-1">

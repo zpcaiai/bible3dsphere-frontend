@@ -393,7 +393,7 @@ function NoteDetailOverlay({ note, onClose, onUnshare, onAmen, token }) {
     }}>
       {/* Detail header */}
       <div style={{ position: 'sticky', top: 0, zIndex: 1, background: 'rgba(22,33,62,0.95)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8, color: '#fff', padding: '6px 12px', cursor: 'pointer', fontSize: 13 }}>{t("← 返回")}</button>
+        <BackButton onClick={onClose} size={36} />
         <div style={{ flex: 1 }} />
         {/* Amen button in header */}
         <button
@@ -665,7 +665,7 @@ export default function ShareWallPage({ user, onBack }) {
         <div style={{ fontSize: 48, marginBottom: 16 }}>🌟</div>
         <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', marginBottom: 8 }}>{t("分享墙")}</div>
         <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 24 }}>{t("登录后查看分享墙内容")}</div>
-        <button onClick={onBack} style={{ padding: '10px 24px', background: 'rgba(0,122,255,0.3)', border: '1px solid rgba(0,122,255,0.5)', borderRadius: 8, color: '#5ac8fa', fontSize: 14, cursor: 'pointer' }}>{t("← 返回")}</button>
+        <BackButton onClick={onBack} />
       </div>
     )
   }
