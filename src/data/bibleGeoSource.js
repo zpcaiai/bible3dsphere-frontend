@@ -133,7 +133,8 @@ async function buildPaulDataset() {
     id: j.id, label: j.label, short: j.short, color: j.color, description: j.description,
     startYear: j.startYear, endYear: j.endYear,
     stationIds: j.stationIds,
-    route: j.stationIds.map((id) => { const c = byId.get(id); return [c.lng, c.lat] }),
+    // route 不再用站点直连（直线）；BibleMapPage 经 /api/route 解析真实航线/路网，弧线兜底
+    sea: true,
   }))
   return {
     id: 'paul',
@@ -249,7 +250,8 @@ function buildJourneyDataset(d) {
   const variants = d.variants.map((v) => ({
     id: v.id, label: v.label, short: v.short, color: v.color, description: v.description,
     startYear: v.startYear, endYear: v.endYear, stationIds: v.stationIds,
-    route: v.stationIds.map((id) => { const c = byId.get(id); return [c.lng, c.lat] }),
+    // route 留空：BibleMapPage 经 /api/route 解析真实步行/迁徙路线，弧线兜底
+    sea: v.sea || d.sea || false,
   }))
   return {
     id: d.id, title: d.title, subtitle: d.subtitle, variantLabel: d.variantLabel || '路线',

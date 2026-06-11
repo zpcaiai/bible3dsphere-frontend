@@ -31,3 +31,25 @@ export function curvedPath(coordinates, curvature = 0.18, steps = 28) {
   }
   return out
 }
+
+/** Catmull-Rom 平滑曲线：严格穿过每个站点，整体自然圆滑（旷野迁徙风格）。
+ *  与 curvedPath（航线弧）不同：站点密集且行进方向多变时（如出埃及 40 站）更贴近真实步行轨迹。 */
+export function catmullRomPath(coordinates, steps = 10) {
+  const pts = (coordinates || []).filter((c) => Array.isArray(c) && Number.isFinite(+c[0]) && Number.isFinite(+c[1]))
+  if (pts.length < 3) return curvedPath(pts)
+  const out = [pts[0]]
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i]
+    const p1 = pts[i]
+    const p2 = pts[i + 1]
+    const p3 = pts[i + 2] || pts[i + 1]
+    for (let j = 1; j <= steps; j++) {
+      const t = j / steps, t2 = t * t, t3 = t2 * t
+      out.push([
+        0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+        0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3),
+      ])
+    }
+  }
+  return out
+}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { pickVoiceFor, speechLangFor } from './voice'
 import { createMapAdapter } from './map/createMapAdapter'
 import { normalizeRoute, routeSliceToStation } from './map/routePlayback'
+import { resolveJourneyRoute } from './map/journeyRouting'
 import { loadBibleMap, BIBLE_MAPS, confidenceMeta, fetchTimeSlice, fetchRegions, fetchRelations, fetchLandmarks, landmarkNoteBySlug } from './data/bibleGeoSource'
 import { t, getRuntimeLang } from './i18n/runtime'
 import { AutoText } from './autoTranslate.jsx'
@@ -137,7 +138,21 @@ export default function BibleMapPage() {
   const variant = dataset && !dataset.temporal ? (dataset.variants.find((v) => v.id === variantId) || dataset.variants[0]) : null
   const STN = orderedStations(dataset, variant)
   const stationCoords = STN.map((f) => coordsFor(f, variant)).filter(Boolean)
-  const routePath = normalizeRoute(stationCoords, variant?.route)
+  // 真实步行/航行路线（/api/route 逐段解析）。未解析完成前 normalizeRoute
+  // 回退为贝塞尔弧线占位；解析成功后整条主路线与进度实线都贴真实路网。
+  const routeKey = `${dataset?.id || ''}|${variant?.id || ''}`
+  const [realRoute, setRealRoute] = useState(null) // {key, coords}
+  useEffect(() => {
+    if (!dataset || dataset.temporal || !variant || variant.route || stationCoords.length < 2) return
+    let cancelled = false
+    resolveJourneyRoute(stationCoords, { sea: !!variant.sea }).then((coords) => {
+      if (!cancelled && coords && coords.length >= 2) setRealRoute({ key: routeKey, coords })
+    })
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset, variantId])
+  const effectiveRoute = variant?.route || (realRoute && realRoute.key === routeKey ? realRoute.coords : null)
+  const routePath = normalizeRoute(stationCoords, effectiveRoute)
   const selected = STN.find((s) => s.properties.id === selectedId) || STN[0] || null
   useEffect(() => { selectedRef.current = selected }, [selected])
 
@@ -197,7 +212,7 @@ export default function BibleMapPage() {
       ad.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, dataset, variantId])
+  }, [ready, dataset, variantId, realRoute])
 
   // 渲染图层（时间轴/疆域模式）
   useEffect(() => {
@@ -272,13 +287,13 @@ export default function BibleMapPage() {
     if (ad.removeRoute && progressRef.current) { ad.removeRoute(progressRef.current); progressRef.current = null }
     const curIdx = STN.findIndex((s) => s.properties.id === selectedId)
     if (curIdx > 0) {
-      const walked = routeSliceToStation(stationCoords, variant?.route, curIdx)
+      const walked = routeSliceToStation(stationCoords, effectiveRoute, curIdx)
       if (walked.length >= 2 && ad.addRoute) {
         progressRef.current = ad.addRoute(walked, { color: variant?.color || '#ffd700', weight: 4, opacity: 1, solid: true })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedId, ready, dataset, variantId])
+  }, [selectedId, ready, dataset, variantId, realRoute])
 
   function step(dir) {
     if (!selected) return
