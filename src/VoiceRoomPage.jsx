@@ -177,6 +177,7 @@ function CallScreen({ group, user, token, onLeave }) {
   const [participants, setParticipants] = useState([]) // {sid, identity, name, isLocal, speaking, muted, videoTrack}
   const [micOn, setMicOn] = useState(true)
   const [camOn, setCamOn] = useState(false)
+  const [shareOn, setShareOn] = useState(false)
   const [denoise, setDenoise] = useState(false)
   const [encrypted, setEncrypted] = useState(false)   // E2EE 是否已生效
   const [keyPanel, setKeyPanel] = useState(false)
@@ -188,9 +189,10 @@ function CallScreen({ group, user, token, onLeave }) {
   const krispRef = useRef(null)
   const e2eeWorkerRef = useRef(null)
 
-  // 取参与者当前可渲染的摄像头轨道（未静音的第一条视频轨）
-  const camTrackOf = (p) => {
+  // 按来源取参与者当前可渲染的视频轨（'camera' 摄像头 / 'screen_share' 屏幕共享）
+  const videoTrackOf = (p, source) => {
     for (const pub of p.videoTrackPublications.values()) {
+      if (pub.source !== source) continue
       const track = pub.track || pub.videoTrack
       if (track && !pub.isMuted) return track
     }
@@ -208,7 +210,8 @@ function CallScreen({ group, user, token, onLeave }) {
       name: (lp.name || user?.nickname || t("我")) + t("（我）"),
       isLocal: true, speaking: speakers.has(lp.sid),
       muted: !lp.isMicrophoneEnabled,
-      videoTrack: lp.isCameraEnabled ? camTrackOf(lp) : null,
+      videoTrack: lp.isCameraEnabled ? videoTrackOf(lp, 'camera') : null,
+      screenTrack: videoTrackOf(lp, 'screen_share'),
     }]
     room.remoteParticipants.forEach(p => {
       list.push({
@@ -218,10 +221,13 @@ function CallScreen({ group, user, token, onLeave }) {
         muted: !p.audioTrackPublications.size
           ? false
           : ![...p.audioTrackPublications.values()].some(pub => !pub.isMuted),
-        videoTrack: camTrackOf(p),
+        videoTrack: videoTrackOf(p, 'camera'),
+        screenTrack: videoTrackOf(p, 'screen_share'),
       })
     })
     setParticipants(list)
+    // 浏览器自带"停止共享"按钮会直接停轨：以房间实际状态回写按钮态
+    setShareOn(!!lp.isScreenShareEnabled)
   }, [user])
 
   useEffect(() => {
@@ -360,6 +366,23 @@ function CallScreen({ group, user, token, onLeave }) {
     }
   }
 
+  const toggleShare = async () => {
+    const room = roomRef.current
+    if (!room) return
+    if (!shareOn && !navigator.mediaDevices?.getDisplayMedia) {
+      toast(t("此设备/浏览器不支持屏幕共享"), 'info'); return
+    }
+    try {
+      await room.localParticipant.setScreenShareEnabled(!shareOn)
+      sync()
+    } catch (e) {
+      // 用户在系统选择器里点了取消 → NotAllowed，静默忽略
+      if (!/NotAllowed|Permission|cancel|Abort/i.test(String(e))) {
+        toast(e.message || t("屏幕共享开启失败"), 'error')
+      }
+    }
+  }
+
   // 可选：Krisp AI 降噪（需 LiveKit Cloud；失败则静默回退到原生降噪）
   const toggleDenoise = async () => {
     const room = roomRef.current
@@ -442,12 +465,24 @@ function CallScreen({ group, user, token, onLeave }) {
         </div>
       )}
 
+      {/* 屏幕共享大舞台：有人在共享时置顶展示，内容不裁切 */}
+      {(() => {
+        const sharer = participants.find(p => p.screenTrack)
+        return sharer ? (
+          <div style={S.stage}>
+            <VideoTile track={sharer.screenTrack} style={{ objectFit: 'contain' }} />
+            <div style={S.videoName}>🖥 {sharer.name} {t("正在共享屏幕")}</div>
+          </div>
+        ) : null
+      })()}
+
       <div style={{
         ...S.tiles,
-        // 任何人开了摄像头 → 切到大瓦片网格，画面优先
+        // 任何人开了摄像头 → 切到大瓦片网格，画面优先；有共享舞台时瓦片区压缩
         ...(participants.some(p => p.videoTrack)
           ? { gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))' }
           : {}),
+        ...(participants.some(p => p.screenTrack) ? { flex: '0 0 auto', maxHeight: 180, alignContent: 'start' } : {}),
       }}>
         {participants.map(p => (
           <div key={p.sid} style={{
@@ -487,6 +522,11 @@ function CallScreen({ group, user, token, onLeave }) {
           disabled={status !== 'live'}>
           <div style={{ fontSize: 22 }}>{camOn ? '📹' : '📷'}</div>
           <div style={S.ctrlLabel}>{camOn ? t("关闭摄像头") : t("开启摄像头")}</div>
+        </button>
+        <button onClick={toggleShare} style={{ ...S.ctrlBtn, background: shareOn ? 'rgba(56,189,248,0.28)' : 'rgba(255,255,255,0.1)' }}
+          disabled={status !== 'live'}>
+          <div style={{ fontSize: 22 }}>🖥</div>
+          <div style={S.ctrlLabel}>{shareOn ? t("停止共享") : t("共享屏幕")}</div>
         </button>
         <button onClick={toggleDenoise} style={{ ...S.ctrlBtn, background: denoise ? 'rgba(52,199,89,0.25)' : 'rgba(255,255,255,0.1)' }}
           disabled={status !== 'live'}>
@@ -541,6 +581,7 @@ const S = {
   tiles: { flex: 1, overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 12, padding: 16, alignContent: 'start' },
   tile: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, padding: '16px 8px', transition: 'box-shadow 0.12s, border-color 0.12s' },
   tileVideo: { position: 'relative', padding: 0, aspectRatio: '4 / 3', overflow: 'hidden', justifyContent: 'stretch' },
+  stage: { position: 'relative', flex: 1, minHeight: 200, margin: '12px 16px 0', borderRadius: 14, overflow: 'hidden', background: '#000', border: '1px solid rgba(255,255,255,0.14)' },
   videoName: { position: 'absolute', left: 8, bottom: 8, maxWidth: 'calc(100% - 16px)', fontSize: 11.5, color: '#fff', padding: '3px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.55)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   avatar: { width: 56, height: 56, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 },
   tileName: { fontSize: 12, color: 'rgba(255,255,255,0.85)', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' },

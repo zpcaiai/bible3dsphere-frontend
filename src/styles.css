@@ -5305,3 +5305,15 @@ canvas {
   .communion-call-screen { width: 100%; height: 100%; max-height: none; border-radius: 0; padding: 14px 12px calc(14px + env(safe-area-inset-bottom)); }
   .communion-call-tiles.has-video { grid-template-columns: 1fr; }
 }
+
+/* 通话屏幕共享大舞台（1对1 LiveKitCall） */
+.communion-call-stage {
+  position: relative; width: 100%; flex: 1; min-height: 200px;
+  background: #000; border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px; overflow: hidden;
+}
+.communion-call-tiles.with-stage {
+  flex: 0 0 auto; max-height: 150px; align-content: start;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+}
+.communion-call-tiles.with-stage .communion-call-tile.video { aspect-ratio: 16 / 10; }

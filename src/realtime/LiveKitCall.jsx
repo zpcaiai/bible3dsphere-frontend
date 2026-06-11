@@ -5,9 +5,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import VideoTile from './VideoTile'
 import { t } from '../i18n/runtime'
 
-// 取参与者当前可渲染的摄像头轨道（未静音的第一条视频轨）
-function camTrackOf(p) {
+// 按来源取参与者当前可渲染的视频轨（'camera' 摄像头 / 'screen_share' 屏幕共享）
+function videoTrackOf(p, source) {
   for (const pub of p.videoTrackPublications.values()) {
+    if (pub.source !== source) continue
     const track = pub.track || pub.videoTrack
     if (track && !pub.isMuted) return track
   }
@@ -20,6 +21,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
   const [participants, setParticipants] = useState([])
   const [micOn, setMicOn] = useState(true)
   const [camOn, setCamOn] = useState(false)
+  const [shareOn, setShareOn] = useState(false)
   const roomRef = useRef(null)
   const audioBin = useRef(null)
 
@@ -31,7 +33,8 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
     const list = [{
       sid: lp.sid, name: (lp.name || selfName || t("我")) + t("（我）"),
       isLocal: true, speaking: speakers.has(lp.sid), muted: !lp.isMicrophoneEnabled,
-      videoTrack: lp.isCameraEnabled ? camTrackOf(lp) : null,
+      videoTrack: lp.isCameraEnabled ? videoTrackOf(lp, 'camera') : null,
+      screenTrack: videoTrackOf(lp, 'screen_share'),
     }]
     room.remoteParticipants.forEach((p) => {
       list.push({
@@ -41,10 +44,13 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
         muted: p.audioTrackPublications.size
           ? ![...p.audioTrackPublications.values()].some((pub) => !pub.isMuted)
           : false,
-        videoTrack: camTrackOf(p),
+        videoTrack: videoTrackOf(p, 'camera'),
+        screenTrack: videoTrackOf(p, 'screen_share'),
       })
     })
     setParticipants(list)
+    // 浏览器自带"停止共享"按钮会直接停轨：以房间实际状态回写按钮态
+    setShareOn(!!lp.isScreenShareEnabled)
   }, [selfName])
 
   useEffect(() => {
@@ -142,10 +148,27 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
       window.showToast?.(/permission|NotAllowed/i.test(String(e)) ? t("摄像头权限被拒绝，请在浏览器允许摄像头") : (e.message || t("摄像头开启失败")), 'error')
     }
   }
+  const toggleShare = async () => {
+    const room = roomRef.current
+    if (!room) return
+    if (!shareOn && !navigator.mediaDevices?.getDisplayMedia) {
+      window.showToast?.(t("此设备/浏览器不支持屏幕共享"), 'info'); return
+    }
+    try {
+      await room.localParticipant.setScreenShareEnabled(!shareOn)
+      sync()
+    } catch (e) {
+      // 用户在系统选择器里点了取消 → NotAllowed，静默忽略
+      if (!/NotAllowed|Permission|cancel|Abort/i.test(String(e))) {
+        window.showToast?.(e.message || t("屏幕共享开启失败"), 'error')
+      }
+    }
+  }
   const hangUp = async () => { try { await roomRef.current?.disconnect() } catch { /* noop */ } onLeave?.() }
 
   const remoteCount = participants.filter((p) => !p.isLocal).length
   const anyVideo = participants.some((p) => p.videoTrack)
+  const sharer = participants.find((p) => p.screenTrack) || null
 
   return (
     <div className="communion-call-overlay">
@@ -161,7 +184,15 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           </div>
         </div>
 
-        <div className={`communion-call-tiles ${anyVideo ? 'has-video' : ''}`}>
+        {/* 屏幕共享大舞台：有人在共享时置顶展示，内容不裁切 */}
+        {sharer && (
+          <div className="communion-call-stage">
+            <VideoTile track={sharer.screenTrack} style={{ objectFit: 'contain' }} />
+            <div className="communion-call-vname">🖥 {sharer.name} {t("正在共享屏幕")}</div>
+          </div>
+        )}
+
+        <div className={`communion-call-tiles ${anyVideo ? 'has-video' : ''} ${sharer ? 'with-stage' : ''}`}>
           {participants.map((p) => (
             <div key={p.sid} className={`communion-call-tile ${p.speaking ? 'speaking' : ''} ${p.videoTrack ? 'video' : ''}`}>
               {p.videoTrack ? (
@@ -189,6 +220,11 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
             style={{ background: camOn ? 'rgba(52,199,89,.25)' : 'rgba(255,255,255,.12)' }}>
             <div style={{ fontSize: 22 }}>{camOn ? '📹' : '📷'}</div>
             <div className="communion-call-ctrl-label">{camOn ? t("关闭摄像头") : t("开启摄像头")}</div>
+          </button>
+          <button className="communion-call-ctrl" onClick={toggleShare} disabled={status !== 'live'}
+            style={{ background: shareOn ? 'rgba(56,189,248,.28)' : 'rgba(255,255,255,.12)' }}>
+            <div style={{ fontSize: 22 }}>🖥</div>
+            <div className="communion-call-ctrl-label">{shareOn ? t("停止共享") : t("共享屏幕")}</div>
           </button>
           <button className="communion-call-ctrl" onClick={hangUp} style={{ background: '#ff3b30' }}>
             <div style={{ fontSize: 22 }}>📴</div>
