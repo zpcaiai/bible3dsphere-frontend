@@ -124,6 +124,12 @@ export default function BibleSearchPage({ onBack, onOpenMap }) {
                 <button style={S.actBtn} onClick={() => copyVerse(v)}>{t('📋 复制')}</button>
                 <button style={S.actBtn} onClick={() => setShareVerse(v)}>{t('🖼 分享卡')}</button>
                 <button style={S.actBtn} onClick={() => saveCard(v)}>{t('🃏 背经卡')}</button>
+                {onOpenMap && (
+                  <button style={{ ...S.actBtn, color: '#7ee2a0' }} onClick={() => {
+                    try { sessionStorage.setItem('bible-reading-open', JSON.stringify({ book: v.bookZh, chapter: v.chapter })) } catch (e) { /* ignore */ }
+                    onOpenMap('bible-reading')
+                  }}>{t('📖 读本章')}</button>
+                )}
                 {maps.length > 0 && onOpenMap && (
                   <button style={{ ...S.actBtn, color: '#7dd3fc' }} onClick={() => onOpenMap(openMapEntry(maps[0]))}>
                     🗺 {maps[0].label}

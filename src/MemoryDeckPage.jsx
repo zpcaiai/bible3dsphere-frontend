@@ -1,8 +1,8 @@
 // MemoryDeckPage — 背经卡复习（间隔重复 SM-2，纯本地离线可用）。
 // 流程：看出处 → 心里背 → 翻面对照 → 自评（忘了/吃力/熟练），算法安排下次复习。
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BackButton from './BackButton'
-import { getDeck, getDueCards, reviewCard, removeMemoryCard, deckStats } from './lib/memoryDeck'
+import { getDeck, getDueCards, reviewCard, removeMemoryCard, deckStats, syncDeckFromCloud } from './lib/memoryDeck'
 import ShareCardModal from './components/ShareCardModal'
 import { t, getRuntimeLang } from './i18n/runtime'
 
@@ -13,6 +13,9 @@ export default function MemoryDeckPage({ onBack }) {
   const [flipped, setFlipped] = useState(false)
   const [mode, setMode] = useState('review')     // review | all
   const [shareVerse, setShareVerse] = useState(null)
+
+  // 云同步：登录用户换设备也能拿回卡组
+  useEffect(() => { syncDeckFromCloud().then((changed) => { if (changed) setTick((x) => x + 1) }) }, [])
 
   const stats = useMemo(() => deckStats(), [tick])
   const due = useMemo(() => getDueCards(), [tick])

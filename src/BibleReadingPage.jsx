@@ -645,9 +645,18 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, onO
 export default function BibleReadingPage({ user, token, onBack, onOpenPanel }) {
   const [progress, setProgress] = useState({ items: [], by_book: {} })
   const [loadingProgress, setLoadingProgress] = useState(true)
-  const [view, setView] = useState('books')      // 'books' | 'chapters' | 'reading'
-  const [selectedBook, setSelectedBook] = useState(null)
-  const [selectedChapter, setSelectedChapter] = useState(null)
+  // 深链：经文搜索/麦琴计划写 sessionStorage 后跳入，直接打开对应章
+  const _deep = (() => {
+    try {
+      const raw = sessionStorage.getItem('bible-reading-open')
+      if (raw) { sessionStorage.removeItem('bible-reading-open'); return JSON.parse(raw) }
+    } catch (e) { /* ignore */ }
+    return null
+  })()
+  const _deepBook = _deep ? BOOKS.find(b => b.name === _deep.book) : null
+  const [view, setView] = useState(_deepBook ? 'reading' : 'books')      // 'books' | 'chapters' | 'reading'
+  const [selectedBook, setSelectedBook] = useState(_deepBook || null)
+  const [selectedChapter, setSelectedChapter] = useState(_deepBook ? Math.min(Math.max(1, _deep.chapter || 1), _deepBook.chapters) : null)
   const [testament, setTestament] = useState('NT')
   const [completedBook, setCompletedBook] = useState(null)
 

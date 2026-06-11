@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
 import AppErrorBoundary from './AppErrorBoundary'
 import { LanguageProvider } from './i18n/LanguageContext'
+import { getRuntimeLang } from './i18n/runtime'
+import { mergeAutoEn } from './i18n/translations'
 import './autoTranslate.jsx' // 注册 EN 缺词实时翻译 + 注水缓存（须在页面模块前）
 import { registerServiceWorker } from './pwa'
 import './styles.css'
@@ -32,12 +33,24 @@ window.addEventListener('vite:preloadError', (e) => {
 // 成功完成一次加载后清除标记
 window.addEventListener('load', () => { try { sessionStorage.removeItem('preload-error-reload') } catch { /* ignore */ } })
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <LanguageProvider>
-      <AppErrorBoundary>
-        <App />
-      </AppErrorBoundary>
-    </LanguageProvider>
-  </React.StrictMode>,
-)
+// 异步引导：EN 模式先加载 auto-en 词典（≈220KB 仅 EN 用户付费），
+// 再动态加载 App——使 App 及其依赖里的「模块级 t() 常量」在词典就绪后求值。
+// 中文用户两者都跳过词典，首包直降 200KB+。
+;(async () => {
+  try {
+    if (getRuntimeLang() === 'en') {
+      const m = await import('./i18n/auto-en.js')
+      mergeAutoEn(m.default)
+    }
+  } catch { /* 词典加载失败 → EN 显示中文兜底 + 实时机翻，不阻塞 */ }
+  const { default: App } = await import('./App')
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+      <LanguageProvider>
+        <AppErrorBoundary>
+          <App />
+        </AppErrorBoundary>
+      </LanguageProvider>
+    </React.StrictMode>,
+  )
+})()

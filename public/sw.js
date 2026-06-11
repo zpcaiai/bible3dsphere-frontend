@@ -5,7 +5,19 @@ const ASSET_EXTS = ['.js', '.css', '.woff2', '.woff', '.ttf', '.png', '.svg', '.
 
 // ─── Install: claim clients immediately ───────────────────────────────────────
 self.addEventListener('install', event => {
-  self.skipWaiting()
+  // 预缓存：构建时产出的 hashed 资源清单，二次访问全静态秒开
+  event.waitUntil((async () => {
+    try {
+      const res = await fetch('/precache-manifest.json', { cache: 'no-store' })
+      if (res.ok) {
+        const { files } = await res.json()
+        const cache = await caches.open(CACHE_VERSION)
+        // 逐个 add，单文件失败不影响整体安装
+        await Promise.allSettled((files || []).map(f => cache.add(f)))
+      }
+    } catch (e) { /* 离线/清单缺失：跳过预缓存 */ }
+    await self.skipWaiting()
+  })())
 })
 
 // ─── Activate: delete every cache that isn't the current version ──────────────

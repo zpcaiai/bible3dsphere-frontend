@@ -24,11 +24,13 @@ export function addMemoryCard({ ref, textCuv = '', textEsv = '', pkId = '' }) {
     due: Date.now(),            // 新卡立即到期（今天就背）
   })
   save(deck)
+  pushDeckToCloud()
   return true
 }
 
 export function removeMemoryCard(id) {
   save(load().filter((c) => c.id !== id))
+  pushDeckToCloud()
 }
 
 export function getDeck() { return load() }
@@ -57,6 +59,7 @@ export function reviewCard(id, quality, now = Date.now()) {
   }
   c.lastReview = now
   save(deck)
+  pushDeckToCloud()
   return c
 }
 
@@ -67,4 +70,42 @@ export function deckStats(now = Date.now()) {
     due: deck.filter((c) => c.due <= now).length,
     mature: deck.filter((c) => c.interval >= 21).length, // 间隔≥21天视为已掌握
   }
+}
+
+// ── 云同步（登录后可换设备恢复；last-write-wins，失败静默） ──────────────
+import { API_BASE } from '../api'
+import { getToken } from '../auth'
+
+let _pushTimer = null
+function _auth() { const t = getToken(); return t ? { Authorization: `Bearer ${t}`, 'Content-Type': 'application/json' } : null }
+
+/** 防抖上传整个卡组（添加/复习/删除后调用） */
+export function pushDeckToCloud() {
+  const h = _auth(); if (!h) return
+  clearTimeout(_pushTimer)
+  _pushTimer = setTimeout(() => {
+    fetch(`${API_BASE}/memory-cards`, { method: 'PUT', headers: h, body: JSON.stringify({ cards: load() }) }).catch(() => {})
+  }, 1500)
+}
+
+/** 启动时拉取云端并按 ref 合并（云端较新优先：以 lastReview/added 比较） */
+export async function syncDeckFromCloud() {
+  const h = _auth(); if (!h) return false
+  try {
+    const r = await fetch(`${API_BASE}/memory-cards`, { headers: h })
+    const j = await r.json()
+    if (!j.success) return false
+    const remote = j.data?.cards || []
+    if (!remote.length) { if (load().length) pushDeckToCloud(); return false }
+    const local = load()
+    const byRef = new Map(local.map((c) => [c.ref, c]))
+    let changed = false
+    for (const rc of remote) {
+      const lc = byRef.get(rc.ref)
+      const rT = rc.lastReview || rc.added || 0, lT = lc ? (lc.lastReview || lc.added || 0) : -1
+      if (!lc || rT > lT) { byRef.set(rc.ref, rc); changed = true }
+    }
+    if (changed) save([...byRef.values()])
+    return changed
+  } catch { return false }
 }

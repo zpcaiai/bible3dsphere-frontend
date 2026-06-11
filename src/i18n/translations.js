@@ -6,8 +6,8 @@
 //      中文模式下这些键会回退显示中文原文，因此英文缺失时不会空白。
 //
 // 合并规则：en = { ...autoEN, ...namespacedEn }，命名空间键优先。
-
-import autoEN from './auto-en.js'
+// 性能：auto-en（220KB+）不再静态打进首包——EN 模式启动时由 main.jsx
+// 动态 import 后调用 mergeAutoEn() 合并；中文用户完全不加载。
 
 const namespacedZh = {
   'lang.zh': '中文',
@@ -29,6 +29,7 @@ const namespacedZh = {
   'home.quick.bibleSearch': '经文搜索',
   'home.quick.groupHub': '小组中心',
   'home.snapshot.memoryDeck': '背经卡',
+  'home.snapshot.mccheyne': '麦琴计划',
   'home.snapshot.exportData': '数据导出',
   'home.quick.voice': '音视频通话',
   'home.quick.communion': '群聊',
@@ -85,6 +86,7 @@ const namespacedEn = {
   'home.quick.bibleSearch': 'Verse Search',
   'home.quick.groupHub': 'Groups',
   'home.snapshot.memoryDeck': 'Memory Cards',
+  'home.snapshot.mccheyne': "M'Cheyne Plan",
   'home.snapshot.exportData': 'Export',
   'home.quick.voice': 'Voice & Video',
   'home.quick.communion': 'Group Chat',
@@ -123,8 +125,16 @@ const namespacedEn = {
 
 export const translations = {
   zh: namespacedZh,
-  en: { ...autoEN, ...namespacedEn },
+  en: { ...namespacedEn },
 }
 
 export const SUPPORTED_LANGS = ['zh', 'en']
 export const DEFAULT_LANG = 'zh'
+
+// EN 模式启动时合并 auto-en 词典（命名空间键优先，不被覆盖）
+export function mergeAutoEn(map) {
+  if (!map) return
+  for (const k in map) {
+    if (!(k in translations.en)) translations.en[k] = map[k]
+  }
+}

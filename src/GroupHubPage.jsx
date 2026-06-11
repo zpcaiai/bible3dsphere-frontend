@@ -25,12 +25,16 @@ export default function GroupHubPage({ user, token, onBack, onOpenPanel }) {
   const [groups, setGroups] = useState(null)
   const [upcoming, setUpcoming] = useState([])
   const [scheduleFor, setScheduleFor] = useState(null)
+  const [minutes, setMinutes] = useState([])
+  const [openMinId, setOpenMinId] = useState(null)
 
   useEffect(() => {
     let alive = true
     fetchVoiceGroups(token).then((d) => { if (alive) setGroups(d.groups || []) }).catch(() => { if (alive) setGroups([]) })
     fetch(`${API_BASE}/meetings/upcoming`, { headers: authHeaders(token) })
       .then((r) => r.json()).then((j) => { if (alive && j.success) setUpcoming(j.data || []) }).catch(() => {})
+    fetch(`${API_BASE}/minutes?limit=20`, { headers: authHeaders(token) })
+      .then((r) => r.json()).then((j) => { if (alive && j.success) setMinutes(j.data || []) }).catch(() => {})
     return () => { alive = false }
   }, [token])
 
@@ -81,6 +85,31 @@ export default function GroupHubPage({ user, token, onBack, onOpenPanel }) {
           )
         })}
       </div>
+
+      {/* 历史纪要：通话 AI 纪要自动归档于此 */}
+      {minutes.length > 0 && (
+        <div style={{ ...S.body, paddingTop: 0, flex: 'none' }}>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '6px 2px 8px' }}>📝 {t('历史纪要')}</div>
+          {minutes.map((m) => (
+            <div key={m.id} style={{ ...S.card, cursor: 'pointer' }} onClick={() => setOpenMinId(openMinId === m.id ? null : m.id)}>
+              <div style={S.cardHead}>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>{m.title || t('聚会纪要')}</span>
+                <span style={S.gmeta}>{(m.createdAt || '').slice(0, 16).replace('T', ' ')} {openMinId === m.id ? '▾' : '▸'}</span>
+              </div>
+              {openMinId === m.id && (
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ whiteSpace: 'pre-wrap', fontSize: 12.5, lineHeight: 1.8, color: 'rgba(255,255,255,0.8)' }}>{m.summary}</div>
+                  {(m.prayerItems || []).length > 0 && (
+                    <div style={{ marginTop: 8, fontSize: 12.5, color: '#7dd3fc', lineHeight: 1.8 }}>
+                      🙏 {m.prayerItems.map((x, i) => <div key={i}>· {x}</div>)}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {scheduleFor && (
         <MeetingScheduleModal group={scheduleFor} token={token} onClose={() => setScheduleFor(null)} />

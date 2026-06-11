@@ -51,6 +51,7 @@ const BibleAtlasPage = lazyWithRetry(() => import('./features/bible-map/BibleAtl
 const BibleSearchPage = lazyWithRetry(() => import('./BibleSearchPage'))
 const MemoryDeckPage = lazyWithRetry(() => import('./MemoryDeckPage'))
 const ExportDataPage = lazyWithRetry(() => import('./ExportDataPage'))
+const MccheynePage = lazyWithRetry(() => import('./MccheynePage'))
 const GroupHubPage = lazyWithRetry(() => import('./GroupHubPage'))
 const CommunityPage = lazyWithRetry(() => import('./CommunityPage'))
 const VoiceRoomPage = lazyWithRetry(() => import('./VoiceRoomPage'))
@@ -1762,6 +1763,7 @@ function AppContent() {
                       </span>
                     )}
                   </div>
+                  <NextMeetingLine />
                   {/* 快捷入口按钮行 */}
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {[
@@ -1771,6 +1773,7 @@ function AppContent() {
                       { icon: '📈', label: t('home.snapshot.growth'), panel: 'engineering' },
                       { icon: '🤝', label: t('home.snapshot.partner'), panel: 'partner' },
                       { icon: '📖', label: t('home.snapshot.bibleReading'), panel: 'bible-reading' },
+                      { icon: '📅', label: t('home.snapshot.mccheyne'), panel: 'mccheyne' },
                       { icon: '🃏', label: t('home.snapshot.memoryDeck'), panel: 'memory-deck' },
                       { icon: '📦', label: t('home.snapshot.exportData'), panel: 'export-data' },
                     ].map((item, i) => (
@@ -2939,6 +2942,15 @@ function AppContent() {
           </div>
         )}
 
+        {/* 麦琴读经计划 */}
+        {activePanel === 'mccheyne' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <MccheynePage onBack={() => setActivePanel('sphere')} onOpenPanel={(p) => setActivePanel(p)} />
+            </Suspense>
+          </div>
+        )}
+
         {/* 个人数据导出 */}
         {activePanel === 'export-data' && (
           <div className="page-overlay">
@@ -3298,10 +3310,14 @@ function AiStatusBanner() {
   const [dismissed, setDismissed] = useState(false)
   useEffect(() => {
     let alive = true
-    const check = () => fetch(`${API_BASE}/ai-status`)
-      .then(r => (r.ok ? r.json() : null))
-      .then(d => { if (alive && d) setSt(d) })
-      .catch(() => {})
+    const check = () => {
+      // 后台标签不轮询：省后端配额也省电
+      if (typeof document !== 'undefined' && document.hidden) return
+      fetch(`${API_BASE}/ai-status`)
+        .then(r => (r.ok ? r.json() : null))
+        .then(d => { if (alive && d) setSt(d) })
+        .catch(() => {})
+    }
     check()
     const t = setInterval(check, 120000)
     return () => { alive = false; clearInterval(t) }
@@ -3336,6 +3352,27 @@ function SeekersStandalonePage() {
       }>
         <SeekersClassView />
       </Suspense>
+    </div>
+  )
+}
+
+
+// 下次聚会倒计时（自包含：自取数据，未登录/无排期不渲染）
+function NextMeetingLine() {
+  const [m, setM] = useState(null)
+  useEffect(() => {
+    const tok = getToken(); if (!tok) return
+    fetch(`${API_BASE}/meetings/upcoming`, { headers: { Authorization: `Bearer ${tok}` } })
+      .then(r => r.json()).then(j => { if (j.success && j.data?.[0]) setM(j.data[0]) }).catch(() => {})
+  }, [])
+  if (!m) return null
+  const ms = new Date(m.nextAt) - Date.now()
+  const dd = Math.floor(ms / 86400000), hh = Math.floor(ms / 3600000) % 24, mm = Math.floor(ms / 60000) % 60
+  const cd = ms <= 0 ? t('正在进行') : dd > 0 ? `${dd}${t('天')}${hh}${t('小时后')}` : hh > 0 ? `${hh}${t('小时')}${mm}${t('分后')}` : `${mm}${t('分钟后')}`
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'rgba(255,255,255,0.75)', margin: '2px 0 8px', flexWrap: 'wrap' }}>
+      📅 {t('下次聚会')}：<b>{m.title}</b> · {m.groupName} · {m.whenLabel}
+      <span style={{ color: '#7dd3fc', fontWeight: 600 }}>{cd}</span>
     </div>
   )
 }

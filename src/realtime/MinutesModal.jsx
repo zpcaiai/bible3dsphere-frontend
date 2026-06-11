@@ -21,7 +21,18 @@ export default function MinutesModal({ title, onClose }) {
         body: JSON.stringify({ transcript, title }),
       })
       const json = await res.json()
-      if (json.success) setResult(json.data)
+      if (json.success) {
+        setResult(json.data)
+        // 持久化到「历史纪要」（小组中心可回看；未登录/失败静默）
+        const tok = getToken()
+        if (tok) {
+          fetch(`${API_BASE}/minutes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` },
+            body: JSON.stringify({ title, summary: json.data.summary, prayer_items: json.data.prayerItems || [] }),
+          }).catch(() => {})
+        }
+      }
       else toast(json.error || t('生成失败'), 'error')
     } catch { toast(t('网络错误，请稍后再试'), 'error') }
     finally { setLoading(false) }
