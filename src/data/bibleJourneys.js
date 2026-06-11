@@ -88,10 +88,10 @@ export const JOURNEY_DATASETS = [
     ],
   },
 
-  // ── 4. 大卫王国（生平 38 站清单版） ─────────────────────────
+  // ── 4. 大卫王国（生平轨迹清单版） ─────────────────────────
   {
-    id: 'david', title: '大卫王国', subtitle: '从牧童到一国之君 · 生平 38 站清单版 · 统一与扩张',
-    icon: '🛡️', variantLabel: '阶段',
+    id: 'david', title: '大卫王国', subtitle: '从牧童到一国之君 · 大卫生平轨迹清单版 · 统一与扩张',
+    icon: '🛡️', variantLabel: '路线',
     cities: [
       { id: 'bethlehem', name_zh: '伯利恒', name_en: 'Bethlehem', lng: 35.202, lat: 31.705, events: [
         { title: '撒母耳膏立', ref: '撒上16:13', summary: '撒母耳照神指示在伯利恒膏耶西的小儿子大卫，耶和华的灵大大感动他。' } ] },
@@ -169,6 +169,8 @@ export const JOURNEY_DATASETS = [
         { title: '与列祖同睡', ref: '王上2:10', summary: '大卫与列祖同睡，葬在大卫城。' } ] },
     ],
     variants: [
+      { id: 'life', label: '大卫路线清单版', color: '#ef4444', description: '伯利恒 → 基比亚/扫罗王宫 → 以拉谷 → 拉玛/拿约 → 挪伯 → 迦特 → 亚杜兰洞 → 摩押的米斯巴 → 哈列树林 → 基伊拉 → 西弗旷野 → 何列沙 → 玛云旷野 → 隐基底 → 巴兰旷野 → 迦密 → 西弗旷野/哈基拉山 → 迦特 → 洗革拉 → 希伯仑 → 基遍池旁 → 希伯仑 → 耶路撒冷/锡安 → 巴力毗拉心 → 利乏音谷 → 基列耶琳 → 拿艮禾场 → 俄别以东家 → 耶路撒冷 → 拉巴 → 橄榄山 → 巴户琳 → 约旦河渡口 → 玛哈念 → 以法莲树林 → 吉甲 → 耶路撒冷 → 基训泉 → 大卫城。',
+        stationIds: ['bethlehem', 'gibeah', 'elah', 'ramah', 'nob', 'gath', 'adullam', 'mizpeh-moab', 'hereth', 'keilah', 'ziph', 'horesh', 'maon', 'engedi', 'paran', 'carmel', 'hachilah', 'gath', 'ziklag', 'hebron', 'gibeon-pool', 'hebron', 'jerusalem', 'baal-perazim', 'rephaim', 'kiriath-jearim', 'nacon', 'obed-edom', 'jerusalem', 'rabbah', 'olives', 'bahurim', 'jordan-ford', 'mahanaim', 'ephraim-forest', 'gilgal', 'jerusalem', 'gihon', 'city-of-david'], startYear: -1040, endYear: -970 },
       { id: 'flee', label: '蒙召与逃亡', color: '#fbbf24', description: '从伯利恒受膏、击杀歌利亚，到旷野逃亡的岁月（撒上16–30）。',
         stationIds: ['bethlehem', 'gibeah', 'elah', 'ramah', 'nob', 'gath', 'adullam', 'mizpeh-moab', 'hereth', 'keilah', 'ziph', 'horesh', 'maon', 'engedi', 'paran', 'carmel', 'hachilah', 'gath', 'ziklag'], startYear: -1040, endYear: -1010 },
       { id: 'unite', label: '登基与定都', color: '#f59e0b', description: '希伯仑作犹大王、统一全以色列、攻取锡安定都、迎约柜入城（撒下2–6）。',
@@ -183,7 +185,7 @@ export const JOURNEY_DATASETS = [
   // ── 5. 所罗门王国（生平极简路线 + 贸易网络） ────────────────
   {
     id: 'solomon', title: '所罗门王国', subtitle: '黄金时代 · 生平极简路线 · 圣殿与古代贸易网络',
-    icon: '🏛️', variantLabel: '阶段',
+    icon: '🏛️', variantLabel: '路线',
     cities: [
       { id: 'city-of-david', name_zh: '耶路撒冷/大卫城', name_en: 'City of David', lng: 35.2354, lat: 31.7735, events: [
         { title: '生于大卫家', ref: '撒下12:24', summary: '生于耶路撒冷，耶和华喜爱他，赐名耶底底亚。' },
@@ -219,8 +221,16 @@ export const JOURNEY_DATASETS = [
         { title: '屯车马的要塞', ref: '王上9:15', summary: '修筑米吉多为屯车马的国防要塞。' } ] },
       { id: 'gezer', name_zh: '基色', name_en: 'Gezer', lng: 34.92, lat: 31.86, events: [
         { title: '重新建造基色', ref: '王上9:16-17', summary: '法老攻取基色赐给女儿作妆奁，所罗门重新建造。' } ] },
+      { id: 'fortified-cities', name_zh: '米吉多、夏琐、基色等防御城', name_en: 'Megiddo, Hazor, Gezer and fortified cities', lng: 35.23, lat: 32.49, events: [
+        { title: '防御城网络', ref: '王上9:15-19', summary: '所罗门修筑夏琐、米吉多、基色、积货城、屯车城与马兵城，形成王国防御与行政网络。' } ] },
+      { id: 'jerusalem-late', name_zh: '耶路撒冷晚年', name_en: 'Jerusalem in Solomon’s later years', lng: 35.214, lat: 31.768, events: [
+        { title: '晚年偏离', ref: '王上11:1-8', summary: '晚年随从外邦妃嫔敬拜别神，心偏离耶和华。' } ] },
+      { id: 'city-of-david-burial', name_zh: '大卫城安葬', name_en: 'Burial in the City of David', lng: 35.2354, lat: 31.7735, events: [
+        { title: '葬在大卫城', ref: '王上11:43', summary: '所罗门与列祖同睡，葬在父亲大卫的城里。' } ] },
     ],
     variants: [
+      { id: 'life', label: '所罗门生平极简路线', color: '#ef4444', description: '耶路撒冷 / 大卫城 → 基训泉 → 耶路撒冷王宫 → 基遍 → 耶路撒冷 → 黎巴嫩 / 推罗贸易线 → 耶路撒冷圣殿 → 王宫建筑群 → 以旬迦别 / 以禄 → 俄斐贸易线 → 哈马口 / 达莫 → 米吉多、夏琐、基色等防御城 → 耶路撒冷晚年 → 大卫城安葬。',
+        stationIds: ['city-of-david', 'gihon', 'palace', 'gibeon', 'jerusalem', 'tyre', 'temple', 'palace-complex', 'ezion-geber', 'ophir', 'tadmor', 'fortified-cities', 'jerusalem-late', 'city-of-david-burial'], startYear: -991, endYear: -931 },
       { id: 'rise', label: '登基与求智慧', color: '#fde047', description: '生于大卫城、基训受膏、基遍求智慧、京中断案（撒下12; 王上1–3）。',
         stationIds: ['city-of-david', 'gihon', 'palace', 'gibeon', 'jerusalem'], startYear: -991, endYear: -969 },
       { id: 'temple', label: '圣殿与王宫', color: '#ffd700', description: '与推罗结盟取香柏木，七年建殿、十三年建宫（王上5–8）。',

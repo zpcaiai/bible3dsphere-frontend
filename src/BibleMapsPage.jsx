@@ -20,8 +20,22 @@ const TOPICS = [
   { id: 'joshua', icon: '⚔️', svgId: 'joshua', leafletId: 'joshua' },
   // 王国时代
   { id: 'tribes', icon: '🧩', svgId: 'tribes', leafletId: 'territories' },
-  { id: 'david', icon: '👑', svgId: 'david', leafletId: 'david' },
-  { id: 'solomon', icon: '🏛', svgId: 'solomon', leafletId: 'solomon' },
+  {
+    id: 'david',
+    icon: '👑',
+    svgId: 'david',
+    leafletId: 'david',
+    defaultView: 'geo',
+    viewLabels: { art: '👑 王国地图', geo: '🧭 大卫生平轨迹' },
+  },
+  {
+    id: 'solomon',
+    icon: '🏛',
+    svgId: 'solomon',
+    leafletId: 'solomon',
+    defaultView: 'geo',
+    viewLabels: { art: '👑 王国地图', geo: '🧭 所罗门生平轨迹' },
+  },
   { id: 'divided', icon: '⚖️', svgId: 'divided', leafletId: 'kings' },
   // 救主与新约
   { id: 'jesus', icon: '✝️', svgId: 'jesus', leafletId: 'jesus' },

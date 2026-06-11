@@ -571,7 +571,7 @@ export default function BibleMapPage({ initialDatasetId = 'exodus', onBack, sing
       </div>
       <div className="biblemap-strip">
         {STN.map((f, i) => (
-          <button key={f.properties.id} className={`biblemap-chip ${i === idx ? 'active' : ''}`}
+          <button key={`${f.properties.id}-${i}`} className={`biblemap-chip ${i === idx ? 'active' : ''}`}
             style={{ '--c': (confidenceMeta[f.properties.confidence] || confidenceMeta.unknown).color }}
             onClick={() => selectStation(f)}>
             <span className="biblemap-chip-no">{i + 1}</span>

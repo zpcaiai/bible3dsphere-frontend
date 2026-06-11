@@ -11,26 +11,29 @@ const VIEW_PREF_KEY = 'biblemap-view-pref'
 export default function BibleMapViewer({ topic, onBack }) {
   const hasArt = !!topic.svgId
   const hasGeo = !!topic.leafletId
+  const viewPrefKey = `${VIEW_PREF_KEY}:${topic.id}`
   const [pref, setPref] = useState(() => {
-    try { return sessionStorage.getItem(VIEW_PREF_KEY) || 'art' } catch (e) { return 'art' }
+    try { return sessionStorage.getItem(viewPrefKey) || topic.defaultView || 'art' } catch (e) { return topic.defaultView || 'art' }
   })
   // 视图回退：偏好的视图该主题没有时退到另一种
   const view = pref === 'geo' ? (hasGeo ? 'geo' : 'art') : (hasArt ? 'art' : 'geo')
   const switchView = (v) => {
     setPref(v)
-    try { sessionStorage.setItem(VIEW_PREF_KEY, v) } catch (e) { /* ignore */ }
+    try { sessionStorage.setItem(viewPrefKey, v) } catch (e) { /* ignore */ }
   }
   const svgConfig = hasArt ? SVG_MAPS.find((m) => m.id === topic.svgId) : null
+  const artLabel = topic.viewLabels?.art || '🎨 手绘讲解版'
+  const geoLabel = topic.viewLabels?.geo || '🌍 真实地理版'
 
   return (
     <div className="biblemap-viewer">
       {hasArt && hasGeo && (
         <div className="biblemap-view-toggle" role="tablist">
           <button className={view === 'art' ? 'on' : ''} onClick={() => switchView('art')}>
-            {t("🎨 手绘讲解版")}
+            {t(artLabel)}
           </button>
           <button className={view === 'geo' ? 'on' : ''} onClick={() => switchView('geo')}>
-            {t("🌍 真实地理版")}
+            {t(geoLabel)}
           </button>
         </div>
       )}
