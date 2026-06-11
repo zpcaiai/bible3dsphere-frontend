@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import AppErrorBoundary from './AppErrorBoundary'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './autoTranslate.jsx' // 注册 EN 缺词实时翻译 + 注水缓存（须在页面模块前）
 import { registerServiceWorker } from './pwa'
@@ -9,16 +10,34 @@ import './styles.css'
 registerServiceWorker()
 
 // 部署后旧 index 引用的旧 chunk 已被新构建替换 → 动态 import 404/MIME 错误。
-// Vite 会派发 vite:preloadError，捕获后整页刷新拿新版本，避免点页签白屏。
+// Vite 会派发 vite:preloadError：先清掉 SW 缓存的旧 index/旧资源再刷新，
+// 否则可能刷回同一份过期 HTML 造成「偶尔页面残缺」死循环（EN 切换整页刷新时最易触发）。
 window.addEventListener('vite:preloadError', (e) => {
   e.preventDefault()
-  window.location.reload()
+  const KEY = 'preload-error-reload'
+  let reloaded = false
+  try { reloaded = sessionStorage.getItem(KEY) === '1'; sessionStorage.setItem(KEY, '1') } catch { /* ignore */ }
+  const go = () => window.location.reload()
+  if (reloaded) { go(); return } // 第二次仍失败：直接刷新，避免清缓存代码自身出错卡死
+  Promise.resolve()
+    .then(async () => {
+      if ('caches' in window) {
+        const keys = await caches.keys()
+        await Promise.all(keys.filter((k) => k !== 'offline-pack-v1').map((k) => caches.delete(k)))
+      }
+    })
+    .catch(() => {})
+    .finally(go)
 })
+// 成功完成一次加载后清除标记
+window.addEventListener('load', () => { try { sessionStorage.removeItem('preload-error-reload') } catch { /* ignore */ } })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <LanguageProvider>
-      <App />
+      <AppErrorBoundary>
+        <App />
+      </AppErrorBoundary>
     </LanguageProvider>
   </React.StrictMode>,
 )

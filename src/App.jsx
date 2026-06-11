@@ -139,7 +139,9 @@ function AppContent() {
       if (sessionStorage.getItem('lang-switch') === '1') {
         sessionStorage.removeItem('lang-switch')
         const p = sessionStorage.getItem('active-panel')
-        if (p) return p
+        // 白名单校验：旧版本存的 panel id 可能已不存在，恢复到未知 id 会导致
+        // 首页被空覆盖层遮挡/内容残缺——不合法时回首页
+        if (p && /^[a-z][a-z0-9-]{1,32}$/.test(p)) return p
       }
     } catch { /* ignore */ }
     return 'sphere'
