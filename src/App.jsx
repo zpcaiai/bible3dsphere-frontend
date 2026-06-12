@@ -43,6 +43,10 @@ const BibleAtlasPage = lazy(() => import('./features/bible-map/BibleAtlasPage'))
 const CommunityPage = lazy(() => import('./CommunityPage'))
 const VoiceRoomPage = lazy(() => import('./VoiceRoomPage'))
 const CommunionPage = lazy(() => import('./CommunionPage'))
+const MccheynePage = lazy(() => import('./MccheynePage'))
+const MemoryDeckPage = lazy(() => import('./MemoryDeckPage'))
+const PersonalSearchPage = lazy(() => import('./PersonalSearchPage'))
+const ExportDataPage = lazy(() => import('./ExportDataPage'))
 
 // React Query client for HabitsPage
 const queryClient = new QueryClient({
@@ -1654,7 +1658,6 @@ function AppContent() {
                   {/* 快捷入口按钮行 */}
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {[
-                      { icon: '🌿', label: '新造操练', panel: 'spiritual-formation' },
                       { icon: '🔍', label: '每日一问', panel: 'soul-question' },
                       { icon: '⏱', label: '2分钟灵修', action: () => setShowQuickDevotion(true) },
                       { icon: '📊', label: '灵命图谱', panel: 'growth-map' },
@@ -2884,6 +2887,42 @@ function AppContent() {
           <div className="page-overlay">
             <Suspense fallback={null}>
               <CommunionPage user={user} onBack={() => setActivePanel('sphere')} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* 麦琴读经计划 */}
+        {activePanel === 'mccheyne' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <MccheynePage onBack={() => setActivePanel('sphere')} onOpenPanel={(p) => { setActivePanel(p); if (p === 'bible-reading') { try { sessionStorage.setItem('bible-reading-open', JSON.stringify({ book: 'Genesis', chapter: 1 })) } catch {} } }} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* 记忆卡 */}
+        {activePanel === 'memory-deck' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <MemoryDeckPage onBack={() => setActivePanel('sphere')} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* 个人检索 */}
+        {activePanel === 'personal-search' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <PersonalSearchPage token={getToken()} onBack={() => setActivePanel('sphere')} onOpenPanel={(p) => setActivePanel(p)} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* 导出数据 */}
+        {activePanel === 'export-data' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <ExportDataPage onBack={() => setActivePanel('sphere')} />
             </Suspense>
           </div>
         )}
