@@ -382,6 +382,12 @@ export async function fetchTranslateBatch(texts, targetLang = 'en') {
   })
 }
 
+// 按需机翻：texts[] → translations[]（与输入等长，失败项回退原文）。
+// autoTranslate.jsx 的统一入口，复用 fetchTranslateBatch 的内容寻址缓存与批量逻辑。
+export async function translateTexts(texts, targetLang = 'en') {
+  return fetchTranslateBatch(texts, targetLang)
+}
+
 export async function fetchFaithQA(question) {
   console.log(`[api] fetchFaithQA question=${question?.slice(0, 60)}`)
   const response = await fetch(`${API_BASE}/faith-qa`, {
