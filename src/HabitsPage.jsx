@@ -9,8 +9,6 @@
  */
 
 import { useState, useEffect } from 'react'
-import SinPatternLibrary from './features/spiritual-formation/components/SinPatternLibrary'
-import './features/spiritual-formation/app/spiritual-formation.css'
 import { API_BASE } from './api'
 import { getToken } from './auth'
 
@@ -45,14 +43,13 @@ async function apiPost(path, body, token) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function HabitsPage({ user, token: propToken, embedded = false, onNeedLogin }) {
+export default function HabitsPage({ user, token: propToken, embedded = false, onNeedLogin, onNavigateToLibrary }) {
   const [habits, setHabits]         = useState([])
   const [todayLogs, setTodayLogs]   = useState({})       // habitId → { done, note }
   const [streak, setStreak]         = useState(0)
   const [todayCount, setTodayCount] = useState(0)
   const [loading, setLoading]       = useState(true)
   const [activeView, setActiveView] = useState('today')  // 'today' | 'add'
-  const [showLibrary, setShowLibrary] = useState(false)
   const [notes, setNotes]           = useState({})       // habitId → draft note
   const [saving, setSaving]         = useState({})       // habitId → bool
   const [addingPreset, setAddingPreset] = useState(null)
@@ -468,12 +465,12 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
 
           <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'flex-end' }}>
             <button
-              onClick={() => setShowLibrary(v => !v)}
+              onClick={() => onNavigateToLibrary?.()}
               style={{
-                background: showLibrary ? 'rgba(255,149,0,0.18)' : 'rgba(255,255,255,0.05)',
-                border: showLibrary ? '1px solid rgba(255,149,0,0.35)' : '1px solid rgba(255,255,255,0.1)',
-                color: showLibrary ? '#ffd699' : 'rgba(255, 255, 255, 0.85)',
-                padding: '6px 14px',
+                background: 'rgba(255,149,0,0.18)',
+                border: '1px solid rgba(255,149,0,0.35)',
+                color: '#ffd699',
+                padding: '7px 16px',
                 borderRadius: '8px',
                 fontSize: '12px',
                 fontWeight: 600,
@@ -485,19 +482,9 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
                 outline: 'none',
               }}
             >
-              <span>{showLibrary ? '收起模式库 ▲' : '展开模式库 ▼'}</span>
+              <span>查看罪的模式库 →</span>
             </button>
           </div>
-
-          {showLibrary && (
-            <div style={{ 
-              marginTop: '16px', 
-              paddingTop: '16px', 
-              borderTop: '1px solid rgba(255,255,255,0.08)'
-            }}>
-              <SinPatternLibrary />
-            </div>
-          )}
         </div>
       </div>
     </div>

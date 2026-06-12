@@ -4,7 +4,7 @@
 import { pickVal } from "../../../i18n/pickLang";
 import { getRuntimeLang } from "../../../i18n/runtime";
 import { sinPatternMap } from "../data/sinPatterns";
-import { PATTERN_ZH, PRACTICE_NAME_ZH, PHRASE_ZH } from "./localizeData";
+import { PATTERN_ZH, PRACTICE_NAME_ZH, PHRASE_ZH, SCRIPTURE_ZH } from "./localizeData";
 
 export { pickVal, getRuntimeLang };
 
@@ -112,12 +112,19 @@ const PATTERN_LIST_FIELDS = ["commonSymptoms", "deepIdols", "putOffActions", "pu
 export function localizePattern(pattern) {
   if (!pattern) return pattern;
   const zh = PATTERN_ZH[pattern.id];
-  if (!zh) return pattern;
   const out = { ...pattern };
-  for (const f of PATTERN_TEXT_FIELDS) out[f] = pickVal(zh[f], pattern[f]);
-  for (const f of PATTERN_LIST_FIELDS) {
-    const list = pattern[f] || [];
-    out[f] = list.map((item, i) => pickVal(zh[f]?.[i], item));
+  if (zh) {
+    for (const f of PATTERN_TEXT_FIELDS) out[f] = pickVal(zh[f], pattern[f]);
+    for (const f of PATTERN_LIST_FIELDS) {
+      const list = pattern[f] || [];
+      out[f] = list.map((item, i) => pickVal(zh[f]?.[i], item));
+    }
+  }
+  if (pattern.scriptures) {
+    out.scriptures = pattern.scriptures.map((s) => ({
+      reference: referenceName(s.reference),
+      text: pickVal(SCRIPTURE_ZH[s.reference], s.text),
+    }));
   }
   return out;
 }
