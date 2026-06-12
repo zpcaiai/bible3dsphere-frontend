@@ -1590,6 +1590,27 @@ function AppContent() {
           <section className="mobile-pane" style={{display: 'block'}}>
             <div className="mobile-card-stack">
 
+              {/* 圣经地图 / 语音通话 快捷入口（置于今日灵命快照上方）*/}
+              <div style={{ display: 'flex', gap: '8px', margin: '0 0 4px' }}>
+                {[
+                  { icon: '🎙', label: '语音通话', panel: 'voice' },
+                  { icon: '💬', label: '圣徒相通', panel: 'communion' },
+                  { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
+                ].map((item) => (
+                  <button key={item.panel}
+                    onClick={() => handlePanelSwitch(item.panel)}
+                    style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                      fontSize: '13px', padding: '10px 12px',
+                      background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                      borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>{item.icon}</span>{item.label}
+                  </button>
+                ))}
+              </div>
+
               {/* 今日灵命快照卡 */}
               {user && dailySnapshot && (
                 <section className="mobile-card glass" style={{
@@ -1633,15 +1654,17 @@ function AppContent() {
                   {/* 快捷入口按钮行 */}
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {[
-                      { icon: '🔍', label: '今日一问', panel: 'soul-question' },
+                      { icon: '🌿', label: '新造操练', panel: 'spiritual-formation' },
+                      { icon: '🔍', label: '每日一问', panel: 'soul-question' },
                       { icon: '⏱', label: '2分钟灵修', action: () => setShowQuickDevotion(true) },
                       { icon: '📊', label: '灵命图谱', panel: 'growth-map' },
                       { icon: '📈', label: '灵命成长', panel: 'engineering' },
                       { icon: '🤝', label: '属灵伙伴', panel: 'partner' },
                       { icon: '📖', label: '读经&查经', panel: 'bible-reading' },
-                      { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
-                      { icon: '🌐', label: '社区', panel: 'community' },
-                      { icon: '🎙', label: '语音通话', panel: 'voice' },
+                      { icon: '📅', label: '麦琴读经', panel: 'mccheyne' },
+                      { icon: '🃏', label: '记忆卡', panel: 'memory-deck' },
+                      { icon: '🗃', label: '个人检索', panel: 'personal-search' },
+                      { icon: '📦', label: '导出数据', panel: 'export-data' },
                     ].map((item, i) => (
                       <button key={i}
                         onClick={() => item.action ? item.action() : handlePanelSwitch(item.panel)}
