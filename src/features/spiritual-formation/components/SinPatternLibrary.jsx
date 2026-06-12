@@ -57,7 +57,13 @@ export default function SinPatternLibrary() {
   }
 
   return (
-    <section className="sf-section" style={{ padding: '20px 0 60px 0' }}>
+    <section 
+      className="sf-section" 
+      style={{ 
+        padding: '20px 16px 60px 16px',
+        boxSizing: 'border-box'
+      }}
+    >
       
       {/* ── 头部卡片与牧养提示 ── */}
       <div style={{

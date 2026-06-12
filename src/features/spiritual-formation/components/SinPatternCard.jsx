@@ -100,12 +100,12 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
       </button>
 
       {/* ── 核心谎言与福音真理分栏横幅 ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-        gap: '12px',
-        marginTop: '16px',
-      }}>
+      <div 
+        className="sf-detail-grid"
+        style={{
+          marginTop: '16px',
+        }}
+      >
         {/* 核心谎言 */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(255, 69, 58, 0.06) 0%, rgba(255, 69, 58, 0.01) 100%)',
@@ -193,12 +193,12 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
           </div>
 
           {/* 2x2 详细行动与症状网格 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '12px',
-            marginTop: '14px'
-          }}>
+          <div 
+            className="sf-detail-grid"
+            style={{
+              marginTop: '14px'
+            }}
+          >
             {/* 常见症状 */}
             <div style={{ 
               background: 'rgba(255, 255, 255, 0.015)', 
