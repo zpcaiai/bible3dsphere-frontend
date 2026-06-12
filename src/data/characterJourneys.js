@@ -859,48 +859,6 @@ export const CHARACTER_JOURNEYS = {
   '喇合': { stops: [
     { place:'耶利哥', ref:'书2;6;来11;太1:5', event:'主要活动地——妓女以信心藏探子、系朱红线全家得救，入以色列、进弥赛亚家谱' },
   ]},
-}
-
-// 由轨迹生成 BibleMap 所需 config
-const SCENE_BY_ROLE = {
-  '君王': 'crown', '先知': 'scroll', '祭司': 'temple', '使徒': 'boat',
-  '主&救主': 'cross', '女性': 'star', '族长': 'altar',
-}
-
-export function buildCharacterMapConfig(char, journey) {
-  if (!journey || !journey.stops || !journey.stops.length) return null
-  const name = char.name, en = char.en, era = char.era
-  const pts = []
-  journey.stops.forEach((s, i) => {
-    const g = GAZETTEER[s.place]
-    if (!g) return
-    pts.push({
-      id: `s${i}`, name_zh: s.place, name_en: g.en, lng: g.lng, lat: g.lat,
-      order: i + 1, confidence: 'approximate', scriptureRef: s.ref,
-      events: s.event ? [{ title: s.event, ref: s.ref, summary: s.event }] : [],
-    })
-  })
-  if (!pts.length) return null
-  const lngs = pts.map(p => p.lng), lats = pts.map(p => p.lat)
-  let minLng = Math.min(...lngs), maxLng = Math.max(...lngs)
-  let minLat = Math.min(...lats), maxLat = Math.max(...lats)
-  const padLng = Math.max((maxLng - minLng) * 0.3, 1.4)
-  const padLat = Math.max((maxLat - minLat) * 0.3, 1.1)
-  const single = pts.length === 1
-  return {
-    id: `char-${name}`,
-    title: `${name}的生平轨迹`,
-    subtitle: single ? `${en || ''} · 主要事奉地` : `${en || ''} · 活动轨迹（${pts.length}站）`,
-    era: era || '',
-    bounds: { minLng: minLng - padLng, maxLng: maxLng + padLng, minLat: minLat - padLat, maxLat: maxLat + padLat },
-    mode: 'journey', layerSelect: 'single', profile: true,
-    layers: [{
-      id: 'route', label: name, color: '#e8b04b', route: !single, points: pts,
-      bio: char.summary || char.lesson || '', era: era || '',
-      scene: SCENE_BY_ROLE[char.role] || 'journey',
-    }],
-  }
-,
   '亚他利雅': { stops: [
     { place: '耶路撒冷', ref: '王下11;代下22-23', event: '犹大女王，篡位六年，杀害王室后裔，终被耶何耶大推翻' }
   ]},
@@ -1102,8 +1060,8 @@ export function buildCharacterMapConfig(char, journey) {
   'Mormonism 摩门教（后期圣徒教会）': { stops: [
     { place: '罗马', ref: '1830年起·创始人：约瑟·斯密', event: '主要事奉地/活动地——Mormonism 摩门教（后期圣徒教会）的事迹见1830年起·创始人：约瑟·斯密' }
   ]},
-  'Jehovah's Witnesses 耶和华见证人（守望台）': { stops: [
-    { place: '罗马', ref: '1879年起·创始人：查尔斯·泰兹·罗素', event: '主要事奉地/活动地——Jehovah's Witnesses 耶和华见证人（守望台）的事迹见1879年起·创始人：查尔斯·泰兹·罗素' }
+  "Jehovah's Witnesses 耶和华见证人（守望台）": { stops: [
+    { place: '罗马', ref: '1879年起·创始人：查尔斯·泰兹·罗素', event: "主要事奉地/活动地——Jehovah's Witnesses 耶和华见证人（守望台）的事迹见1879年起·创始人：查尔斯·泰兹·罗素" }
   ]},
   'Christian Science 基督教科学派': { stops: [
     { place: '罗马', ref: '1879年·创始人：玛丽·贝克·艾迪', event: '主要事奉地/活动地——Christian Science 基督教科学派的事迹见1879年·创始人：玛丽·贝克·艾迪' }
@@ -1362,6 +1320,48 @@ export function buildCharacterMapConfig(char, journey) {
   ]},
   '拿伯': { stops: [
     { place: '耶斯列', ref: '王上21', event: '耶斯列葡萄园主，因拒绝卖给亚哈而被耶洗别谋害' }
-  ]}}
+  ]}
+}
+
+// 由轨迹生成 BibleMap 所需 config
+const SCENE_BY_ROLE = {
+  '君王': 'crown', '先知': 'scroll', '祭司': 'temple', '使徒': 'boat',
+  '主&救主': 'cross', '女性': 'star', '族长': 'altar',
+}
+
+export function buildCharacterMapConfig(char, journey) {
+  if (!journey || !journey.stops || !journey.stops.length) return null
+  const name = char.name, en = char.en, era = char.era
+  const pts = []
+  journey.stops.forEach((s, i) => {
+    const g = GAZETTEER[s.place]
+    if (!g) return
+    pts.push({
+      id: `s${i}`, name_zh: s.place, name_en: g.en, lng: g.lng, lat: g.lat,
+      order: i + 1, confidence: 'approximate', scriptureRef: s.ref,
+      events: s.event ? [{ title: s.event, ref: s.ref, summary: s.event }] : [],
+    })
+  })
+  if (!pts.length) return null
+  const lngs = pts.map(p => p.lng), lats = pts.map(p => p.lat)
+  let minLng = Math.min(...lngs), maxLng = Math.max(...lngs)
+  let minLat = Math.min(...lats), maxLat = Math.max(...lats)
+  const padLng = Math.max((maxLng - minLng) * 0.3, 1.4)
+  const padLat = Math.max((maxLat - minLat) * 0.3, 1.1)
+  const single = pts.length === 1
+  return {
+    id: `char-${name}`,
+    title: `${name}的生平轨迹`,
+    subtitle: single ? `${en || ''} · 主要事奉地` : `${en || ''} · 活动轨迹（${pts.length}站）`,
+    era: era || '',
+    bounds: { minLng: minLng - padLng, maxLng: maxLng + padLng, minLat: minLat - padLat, maxLat: maxLat + padLat },
+    mode: 'journey', layerSelect: 'single', profile: true,
+    layers: [{
+      id: 'route', label: name, color: '#e8b04b', route: !single, points: pts,
+      bio: char.summary || char.lesson || '', era: era || '',
+      scene: SCENE_BY_ROLE[char.role] || 'journey',
+    }],
+  }
+}
 
 export default CHARACTER_JOURNEYS
