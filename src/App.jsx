@@ -15,6 +15,7 @@ import { EmotionSphereScene } from './EmotionSphereScene'
 import LoginScreen from './LoginScreen'
 import TranslatableParagraph from './TranslatableParagraph'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
+import LanguageToggle from './i18n/LanguageToggle'
 
 const CheckInPage = lazy(() => import('./CheckInPage'))
 const ShareWallPage = lazy(() => import('./ShareWallPage'))
@@ -1484,6 +1485,7 @@ function AppContent() {
             <h1 className="mobile-app-title">属灵星球</h1>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+            <LanguageToggle />
             {layoutItems.length > 0 && (
               <span className="topbar-pill">{layoutItems.length} 情绪</span>
             )}
@@ -1559,6 +1561,18 @@ function AppContent() {
             )}
           </div>
         </header>
+
+        {/* 语言切换固定入口：非首页(各 page-overlay 覆盖顶栏)时浮在右上角，z 高于所有 overlay；首页已在顶栏内显示 */}
+        {activePanel !== 'sphere' && (
+          <div style={{
+            position: 'fixed',
+            top: 'calc(env(safe-area-inset-top, 0px) + 8px)',
+            right: 'calc(env(safe-area-inset-right, 0px) + 10px)',
+            zIndex: 1500,
+          }}>
+            <LanguageToggle />
+          </div>
+        )}
 
         <section className="mobile-hero-card glass" style={{padding: '8px 14px', minHeight: 'unset'}}>
           <div className="mobile-hero-meta" style={{gap: '6px', flexWrap: 'wrap'}}>
