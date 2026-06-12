@@ -105,7 +105,7 @@
 .sf-review-grid,
 .sf-map-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 12px;
 }
 
@@ -215,7 +215,7 @@
 .sf-create-plan,
 .sf-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
   gap: 12px;
 }
 

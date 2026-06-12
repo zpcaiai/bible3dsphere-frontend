@@ -16,7 +16,7 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
           ? '1px solid rgba(255, 149, 0, 0.25)' 
           : '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
-        padding: '20px',
+        padding: '16px',
         boxShadow: open 
           ? '0 8px 32px rgba(0, 0, 0, 0.25), 0 0 15px rgba(255, 149, 0, 0.05)' 
           : '0 4px 20px rgba(0, 0, 0, 0.15)',
@@ -37,40 +37,44 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: '12px',
+          flexWrap: 'wrap',
           background: 'none',
           border: 'none',
           padding: 0,
           cursor: 'pointer',
           textAlign: 'left',
           color: '#fff',
-          outline: 'none'
+          outline: 'none',
+          whiteSpace: 'normal'
         }}
       >
-        <div style={{ flex: 1, paddingRight: '12px' }}>
+        <div style={{ flex: '1 1 200px', paddingRight: '4px' }}>
           <h3 style={{ 
             margin: 0, 
             fontSize: '17px', 
             fontWeight: 800, 
             color: open ? '#ffd699' : '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            transition: 'color 0.2s'
+            transition: 'color 0.2s',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word'
           }}>
-            <span>🔍</span>
+            <span style={{ marginRight: '6px' }}>🔍</span>
             {pattern.name}
           </h3>
           <p style={{ 
-            margin: '4px 0 0 0', 
+            margin: '6px 0 0 0', 
             fontSize: '12.5px', 
             color: 'rgba(255, 255, 255, 0.55)',
-            lineHeight: '1.5'
+            lineHeight: '1.5',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word'
           }}>
             {pattern.description}
           </p>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', shrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, flexWrap: 'wrap' }}>
           <span 
             className="sf-card-short" 
             style={{ 
@@ -82,7 +86,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               padding: '3px 8px',
               fontSize: '11px',
               fontWeight: 800,
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              display: 'inline-block',
+              whiteSpace: 'nowrap'
             }}
           >
             {pattern.shortName}
@@ -120,7 +126,7 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               {T('核心谎言', 'CORE LIE')}
             </span>
           </div>
-          <p style={{ margin: 0, fontSize: '12.5px', color: '#ffb3b0', lineHeight: '1.5', fontWeight: 500 }}>
+          <p style={{ margin: 0, fontSize: '12.5px', color: '#ffb3b0', lineHeight: '1.5', fontWeight: 500, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
             {pattern.coreLie}
           </p>
         </div>
@@ -139,7 +145,7 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               {T('福音真理', 'GOSPEL TRUTH')}
             </span>
           </div>
-          <p style={{ margin: 0, fontSize: '12.5px', color: '#a3e2ab', lineHeight: '1.5', fontWeight: 500 }}>
+          <p style={{ margin: 0, fontSize: '12.5px', color: '#a3e2ab', lineHeight: '1.5', fontWeight: 500, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
             {pattern.gospelTruth}
           </p>
         </div>
@@ -184,7 +190,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
             padding: '12px 14px',
             fontSize: '12.5px',
             color: 'rgba(255, 255, 255, 0.8)',
-            lineHeight: '1.65'
+            lineHeight: '1.65',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word'
           }}>
             <b style={{ color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
               <span>📖</span> {T('圣经诊断', 'Biblical Diagnosis')}：
@@ -204,7 +212,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               background: 'rgba(255, 255, 255, 0.015)', 
               border: '1px solid rgba(255, 255, 255, 0.05)', 
               borderRadius: '12px', 
-              padding: '14px' 
+              padding: '14px',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: 800, color: '#ffb3b0', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>🩺</span> {T('常见症状', 'Common Symptoms')}
@@ -219,7 +229,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               background: 'rgba(255, 255, 255, 0.015)', 
               border: '1px solid rgba(255, 255, 255, 0.05)', 
               borderRadius: '12px', 
-              padding: '14px' 
+              padding: '14px',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: 800, color: '#d3b0ff', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>👑</span> {T('深层偶像', 'Deep Idols')}
@@ -234,7 +246,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               background: 'rgba(255, 255, 255, 0.015)', 
               border: '1px solid rgba(255, 255, 255, 0.05)', 
               borderRadius: '12px', 
-              padding: '14px' 
+              padding: '14px',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: 800, color: '#ffd699', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>🧥</span> {T('脱去旧人', 'Put Off Actions')}
@@ -249,7 +263,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
               background: 'rgba(255, 255, 255, 0.015)', 
               border: '1px solid rgba(255, 255, 255, 0.05)', 
               borderRadius: '12px', 
-              padding: '14px' 
+              padding: '14px',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word'
             }}>
               <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: 800, color: '#aee8ff', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>🛡️</span> {T('穿上新人', 'Put On Actions')}
@@ -275,7 +291,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
                     border: '1px solid rgba(90, 200, 250, 0.12)',
                     borderRadius: '8px',
                     padding: '10px 12px',
-                    fontSize: '12.5px'
+                    fontSize: '12.5px',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
                   }}
                 >
                   <strong style={{ color: '#5ac8fa', display: 'block', marginBottom: '4px', fontSize: '12px' }}>
@@ -297,7 +315,9 @@ export default function SinPatternCard({ pattern: rawPattern, onSelect }) {
             borderRadius: '8px',
             padding: '14px',
             marginTop: '16px',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word'
           }}>
             <h4 style={{ 
               margin: '0 0 6px 0', 
