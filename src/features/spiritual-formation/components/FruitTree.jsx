@@ -3,7 +3,7 @@ import { calculateFruitProgress } from '../lib/fruitProgressEngine'
 const labelCopy = {
   newly_practiced: 'newly practiced',
   growing: 'growing',
-  needs_attention: 'ask for grace',
+  needs_attention: 'needs attention',
   ask_for_grace: 'ask for grace',
 }
 
@@ -16,7 +16,7 @@ export default function FruitTree({ dailyExamens, thoughtEntries, graceRecoveryE
       <div className="sf-fruit-grid">
         {progress.map((item) => (
           <article className="sf-card sf-fruit-card" key={item.fruit}>
-            <div className="sf-fruit-title"><h3>{item.fruit.replace('_', ' ')}</h3><span>{labelCopy[item.label]}</span></div>
+            <div className="sf-fruit-title"><h3>{item.fruit.replaceAll('_', ' ')}</h3><span>{labelCopy[item.label] ?? item.label}</span></div>
             <div className="sf-progress"><i style={{ width: `${Math.max(8, (item.count / max) * 100)}%` }} /></div>
             <p>{item.encouragement}</p>
             {item.relatedObedienceActions.length > 0 && <ul>{item.relatedObedienceActions.map((action) => <li key={action}>{action}</li>)}</ul>}

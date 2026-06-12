@@ -31,7 +31,7 @@ export default function DailySpiritualScanForm({ userId, onSave }) {
     behaviorText: form.behaviorDescription,
     selectedSinPattern: form.selectedPrimarySinPattern || undefined,
   }), [form])
-  const primary = form.selectedPrimarySinPattern || recommendation.likelySinPatterns[0]
+  const primary = form.selectedPrimarySinPattern || recommendation.likelySinPatterns[0] || 'self_centeredness'
 
   function update(field, value) {
     setSaved(false)
@@ -47,7 +47,7 @@ export default function DailySpiritualScanForm({ userId, onSave }) {
 
   function save() {
     const now = new Date().toISOString()
-    const pattern = sinPatternMap[primary]
+    const pattern = sinPatternMap[primary] || sinPatterns[0]
     const entry = {
       id: uid(),
       userId,
@@ -60,11 +60,11 @@ export default function DailySpiritualScanForm({ userId, onSave }) {
       coreLie: form.coreLie || recommendation.possibleCoreLies[0] || pattern.coreLie,
       gospelTruth: form.gospelTruth || recommendation.suggestedGospelTruths[0] || pattern.gospelTruth,
       confession: form.confession || 'Lord, I bring this honestly into Your light.',
-      repentanceAction: form.repentanceAction || pattern.putOffActions[0],
-      obedienceAction: form.obedienceAction || pattern.putOnActions[0],
+      repentanceAction: form.repentanceAction || (pattern.putOffActions?.[0] ?? ''),
+      obedienceAction: form.obedienceAction || (pattern.putOnActions?.[0] ?? ''),
       fruitPracticed: form.fruitPracticed,
-      virtuesPracticed: pattern.oppositeVirtues.slice(0, 3),
-      prayer: pattern.repentancePrayer,
+      virtuesPracticed: pattern.oppositeVirtues?.slice(0, 3) ?? [],
+      prayer: pattern.repentancePrayer ?? '',
       graceRecoveryNeeded: form.graceRecoveryNeeded,
       createdAt: now,
       updatedAt: now,

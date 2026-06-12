@@ -124,6 +124,8 @@ export const TransformationPlanSchema = makeSchema<TransformationPlan>((value) =
     "startDate",
     "endDate",
     "status",
+    "progressSummary",
+    "recommendedNextStep",
     "createdAt",
     "updatedAt",
   ]);

@@ -11,7 +11,7 @@ export default function TransformationPlanCard({ plan, onUpdate }) {
       <div className="sf-card-head">
         <div>
           <h3>{plan.title}</h3>
-          <p>{sinPatternMap[plan.primarySinPattern].name} · {plan.duration.replace('_', ' ')} · {plan.intensity}</p>
+          <p>{sinPatternMap[plan.primarySinPattern].name} · {plan.duration.replaceAll('_', ' ')} · {plan.intensity}</p>
         </div>
         <span className={`sf-status ${plan.status}`}>{plan.status}</span>
       </div>
