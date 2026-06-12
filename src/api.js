@@ -1,4 +1,5 @@
 import { getCached, setCached, getManyCached, setManyCached } from './translationCache'
+import { getRuntimeLang } from './i18n/runtime'
 const configuredApiBase = import.meta.env.VITE_API_BASE?.trim()
 
 function resolveDefaultApiBase() {
@@ -202,7 +203,7 @@ export async function fetchMeditationQuestions(reference, text) {
   console.log(`[api] fetchMeditationQuestions ref=${reference}`)
   const response = await fetch(`${API_BASE}/meditation-questions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'X-Lang': getRuntimeLang() },
     body: JSON.stringify({ reference, text }),
   })
   const contentType = response.headers.get('content-type') || ''
@@ -409,7 +410,7 @@ export async function fetchVersePrayer(reference, text) {
   console.log(`[api] fetchVersePrayer ref=${reference}`)
   const response = await fetch(`${API_BASE}/verse-prayer`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'X-Lang': getRuntimeLang() },
     body: JSON.stringify({ reference, text }),
   })
   const contentType = response.headers.get('content-type') || ''

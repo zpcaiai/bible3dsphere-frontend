@@ -5,6 +5,22 @@ export function registerServiceWorker() {
     return
   }
 
+  if (import.meta.env.DEV) {
+    window.addEventListener('load', async () => {
+      try {
+        const regs = await navigator.serviceWorker.getRegistrations()
+        await Promise.all(regs.map((reg) => reg.unregister()))
+        if ('caches' in window) {
+          const keys = await caches.keys()
+          await Promise.all(keys.filter((key) => key !== 'offline-pack-v1').map((key) => caches.delete(key)))
+        }
+      } catch {
+        // Development cleanup should never block app rendering.
+      }
+    })
+    return
+  }
+
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })

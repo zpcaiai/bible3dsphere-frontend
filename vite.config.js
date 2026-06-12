@@ -28,7 +28,10 @@ function precacheManifestPlugin() {
 export default defineConfig({
   envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
   plugins: [react(), precacheManifestPlugin()],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+  },
   publicDir: 'public',
   build: {
     rollupOptions: {

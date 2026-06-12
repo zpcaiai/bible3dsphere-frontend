@@ -19,54 +19,51 @@ describe('PlanetHome', () => {
   })
 
   it('renders the full growth-map entry list', () => {
-    const { container } = renderPlanetHome()
+    renderPlanetHome()
 
-    expect(container.querySelector('#planet-home-title')).not.toBeNull()
-    expect(container.querySelectorAll('.planet-card')).toHaveLength(6)
-    expect(container.querySelectorAll('.planet-card-main')).toHaveLength(6)
-    expect(container.querySelectorAll('.planet-chip')).toHaveLength(13)
+    expect(document.body.textContent).toContain('属灵星球')
+    expect(document.body.textContent).toContain('认识自己')
+    expect(document.body.textContent).toContain('回到福音')
+    expect(document.body.textContent).toContain('与神同行')
+    expect(document.body.textContent).toContain('等候上帝')
+    expect(document.body.textContent).toContain('天路客')
+    expect(document.body.textContent).toContain('人格塑造')
   })
 
-  it('routes primary continent cards through go()', () => {
-    const { container, go, onClose } = renderPlanetHome()
-    const cards = container.querySelectorAll('.planet-card-main')
+  it('routes primary action chips through go()', () => {
+    const { getByText, go, onClose } = renderPlanetHome()
 
-    fireEvent.click(cards[0])
-    fireEvent.click(cards[1])
-    fireEvent.click(cards[2])
-    fireEvent.click(cards[3])
-    fireEvent.click(cards[4])
-    fireEvent.click(cards[5])
+    fireEvent.click(getByText('偶像监测 ›'))
+    fireEvent.click(getByText('福音诊断室 ›'))
+    fireEvent.click(getByText('灵修操练 ›'))
+    fireEvent.click(getByText('等候之路 ›'))
+    fireEvent.click(getByText('进入天路历程 ›'))
+    fireEvent.click(getByText('罪模式转化引擎 ›'))
 
     expect(go).toHaveBeenNthCalledWith(1, 'idolatry')
     expect(go).toHaveBeenNthCalledWith(2, 'gospel')
     expect(go).toHaveBeenNthCalledWith(3, 'hub')
     expect(go).toHaveBeenNthCalledWith(4, 'waiting')
     expect(go).toHaveBeenNthCalledWith(5, 'pilgrim')
-    expect(go).toHaveBeenNthCalledWith(6, 'fhl')
+    expect(go).toHaveBeenNthCalledWith(6, 'spiritual-formation')
     expect(onClose).not.toHaveBeenCalled()
   })
 
   it('closes for close chips and the back button', () => {
-    const { container, onClose, go } = renderPlanetHome()
-    const formationCard = container.querySelectorAll('.planet-card').item(5)
-    const closeChip = formationCard.querySelectorAll('.planet-chip').item(1)
-    const backButton = container.querySelector('.planet-back-btn')
+    const { getByText, onClose, go } = renderPlanetHome()
 
-    fireEvent.click(closeChip)
-    fireEvent.click(backButton)
+    fireEvent.click(getByText('本周牧养小结 ›'))
+    fireEvent.click(getByText('‹'))
 
     expect(onClose).toHaveBeenCalledTimes(2)
     expect(go).not.toHaveBeenCalled()
   })
 
   it('routes secondary chips to their feature overlays', () => {
-    const { container, go } = renderPlanetHome()
-    const selfDiscoveryCard = container.querySelectorAll('.planet-card').item(0)
-    const [, checkupChip, examenChip] = selfDiscoveryCard.querySelectorAll('.planet-chip')
+    const { getByText, go } = renderPlanetHome()
 
-    fireEvent.click(checkupChip)
-    fireEvent.click(examenChip)
+    fireEvent.click(getByText('低潮体检 ›'))
+    fireEvent.click(getByText('今日省察 ›'))
 
     expect(go).toHaveBeenNthCalledWith(1, 'checkup')
     expect(go).toHaveBeenNthCalledWith(2, 'examen')
