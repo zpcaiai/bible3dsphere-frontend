@@ -6,6 +6,18 @@ import VideoTile from './VideoTile'
 import NotesButton from './NotesButton'
 import { stopNotes, setLineSink, addRemoteLine } from './callNotes'
 import { t } from '../i18n/runtime'
+import {
+  VOICE_AUDIO_CAPTURE_DEFAULTS,
+  VOICE_VIDEO_CAPTURE_DEFAULTS,
+  VOICE_SCREEN_SHARE_CAPTURE_DEFAULTS,
+  VOICE_PUBLISH_DEFAULTS,
+  connectionQualityLabel,
+  isWeakConnectionQuality,
+  liveKitVoiceRoomOptions,
+  normalizeConnectionQuality,
+  protectVoiceOnWeakNetwork,
+  tuneRemoteSubscriptionsForVoice,
+} from './callQuality'
 
 // 按来源取参与者当前可渲染的视频轨（'camera' 摄像头 / 'screen_share' 屏幕共享）
 function videoTrackOf(p, source) {
@@ -25,9 +37,13 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
   const [camOn, setCamOn] = useState(false)
   const [shareOn, setShareOn] = useState(false)
   const [denoise, setDenoise] = useState(false)
+  const [netQuality, setNetQuality] = useState('unknown')
+  const [reconnecting, setReconnecting] = useState(false)
   const roomRef = useRef(null)
   const audioBin = useRef(null)
   const krispRef = useRef(null)
+  const autoDegradeRef = useRef(false)
+  const netQualityRef = useRef('unknown')
 
   const sync = useCallback(() => {
     const room = roomRef.current
@@ -74,28 +90,55 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           e2eeWorker = new Worker(new URL('livekit-client/e2ee-worker', import.meta.url))
         } catch (err) { keyProvider = null; e2eeWorker = null }
       }
-      room = new Room({
-        adaptiveStream: true, // 视频按瓦片实际尺寸自适应码率
-        dynacast: true,
-        audioCaptureDefaults: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        videoCaptureDefaults: { resolution: { width: 960, height: 540, frameRate: 24 } },
-        publishDefaults: { dtx: true, red: true, audioPreset: { maxBitrate: 32000 } },
+      room = new Room(liveKitVoiceRoomOptions({
         ...(keyProvider && e2eeWorker ? { e2ee: { keyProvider, worker: e2eeWorker } } : {}),
-      })
+      }))
       roomRef.current = room
       if (keyProvider && e2eeKey) {
         try { await keyProvider.setKey(e2eeKey); await room.setE2EEEnabled(true) }
         catch (err) { console.error('E2EE 启用失败', err) }
       }
-      const onChange = () => { if (!cancelled) sync() }
+      const onChange = () => {
+        if (!cancelled) {
+          tuneRemoteSubscriptionsForVoice(room, LK, netQualityRef.current)
+          sync()
+        }
+      }
+      const onQualityChange = (quality, participant) => {
+        if (cancelled || (participant && !participant.isLocal)) return
+        const nextQuality = normalizeConnectionQuality(quality)
+        netQualityRef.current = nextQuality
+        setNetQuality(nextQuality)
+        protectVoiceOnWeakNetwork({
+          room,
+          LK,
+          quality: nextQuality,
+          autoDegradeRef,
+          setCamOn,
+          setShareOn,
+          notify: window.showToast,
+          message: t("网络较弱，已自动暂停视频/屏幕共享，优先保证语音"),
+          recoveredMessage: t("网络已恢复，可手动重新开启视频或屏幕共享"),
+        }).catch(() => {})
+      }
       room
         .on(RoomEvent.ParticipantConnected, onChange)
         .on(RoomEvent.ParticipantDisconnected, onChange)
+        .on(RoomEvent.TrackPublished, onChange)
         .on(RoomEvent.ActiveSpeakersChanged, onChange)
         .on(RoomEvent.TrackMuted, onChange)
         .on(RoomEvent.TrackUnmuted, onChange)
         .on(RoomEvent.LocalTrackPublished, onChange)
         .on(RoomEvent.LocalTrackUnpublished, onChange)
+        .on(RoomEvent.ConnectionQualityChanged, onQualityChange)
+        .on(RoomEvent.SignalReconnecting, () => { if (!cancelled) setReconnecting(true) })
+        .on(RoomEvent.Reconnecting, () => { if (!cancelled) setReconnecting(true) })
+        .on(RoomEvent.Reconnected, () => {
+          if (!cancelled) {
+            setReconnecting(false)
+            onQualityChange(room.localParticipant.connectionQuality, room.localParticipant)
+          }
+        })
         .on(RoomEvent.Disconnected, () => { if (!cancelled) { setStatus('error'); setErrMsg(t("通话已断开")) } })
         .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
           if (track.kind === Track.Kind.Audio && audioBin.current) {
@@ -115,8 +158,9 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           } catch { /* 忽略 */ }
         })
       try {
-        await room.connect(url, token)
-        await room.localParticipant.setMicrophoneEnabled(true)
+        await room.connect(url, token, { maxRetries: 3, peerConnectionTimeout: 20000, websocketTimeout: 20000 })
+        await room.localParticipant.setMicrophoneEnabled(true, VOICE_AUDIO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
+        onQualityChange(room.localParticipant.connectionQuality, room.localParticipant)
         const enc = new TextEncoder()
         setLineSink((line) => {
           try {
@@ -128,7 +172,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
         })
         if (video) {
           // 视频通话：进房即开摄像头；权限被拒不阻断通话，降级为语音
-          try { await room.localParticipant.setCameraEnabled(true); if (!cancelled) setCamOn(true) }
+          try { await room.localParticipant.setCameraEnabled(true, VOICE_VIDEO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS); if (!cancelled) setCamOn(true) }
           catch { if (!cancelled) setCamOn(false) }
         }
         if (!cancelled) { setStatus('live'); setMicOn(true); sync() }
@@ -146,6 +190,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
       try { room?.disconnect() } catch { /* noop */ }
       try { e2eeWorker?.terminate() } catch { /* noop */ }
       roomRef.current = null
+      autoDegradeRef.current = false
       if (audioBin.current) audioBin.current.innerHTML = ''
     }
   }, [url, token, sync, video])
@@ -154,7 +199,7 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
     const room = roomRef.current
     if (!room) return
     const next = !micOn
-    await room.localParticipant.setMicrophoneEnabled(next)
+    await room.localParticipant.setMicrophoneEnabled(next, VOICE_AUDIO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
     setMicOn(next); sync()
   }
   const toggleCam = async () => {
@@ -162,7 +207,11 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
     if (!room) return
     const next = !camOn
     try {
-      await room.localParticipant.setCameraEnabled(next)
+      if (next && isWeakConnectionQuality(netQuality)) {
+        window.showToast?.(t("当前网络较弱，先保持语音优先，网络恢复后再开启视频"), 'info')
+        return
+      }
+      await room.localParticipant.setCameraEnabled(next, VOICE_VIDEO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
       setCamOn(next); sync()
     } catch (e) {
       window.showToast?.(/permission|NotAllowed/i.test(String(e)) ? t("摄像头权限被拒绝，请在浏览器允许摄像头") : (e.message || t("摄像头开启失败")), 'error')
@@ -175,7 +224,11 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
       window.showToast?.(t("此设备/浏览器不支持屏幕共享"), 'info'); return
     }
     try {
-      await room.localParticipant.setScreenShareEnabled(!shareOn)
+      if (!shareOn && isWeakConnectionQuality(netQuality)) {
+        window.showToast?.(t("当前网络较弱，先保持语音优先，网络恢复后再共享屏幕"), 'info')
+        return
+      }
+      await room.localParticipant.setScreenShareEnabled(!shareOn, VOICE_SCREEN_SHARE_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
       sync()
     } catch (e) {
       // 用户在系统选择器里点了取消 → NotAllowed，静默忽略
@@ -228,10 +281,17 @@ export default function LiveKitCall({ url, token, title, selfName, outgoing, onL
           <div className="communion-call-peer">{title || (video ? t("视频通话") : t("语音通话"))}</div>
           <div className="communion-call-state">
             {status === 'connecting' && <span style={{ color: '#f0ad4e' }}>● {outgoing ? t("正在呼叫…") : t("接入中…")}</span>}
-            {status === 'live' && remoteCount === 0 && <span style={{ color: '#f0ad4e' }}>{t("● 等待对方接听…")}</span>}
-            {status === 'live' && remoteCount > 0 && <span style={{ color: '#34c759' }}>{t("● 通话中")}</span>}
+            {status === 'live' && reconnecting && <span style={{ color: '#f0ad4e' }}>{t("● 网络波动，正在重连…")}</span>}
+            {status === 'live' && remoteCount === 0 && !reconnecting && <span style={{ color: '#f0ad4e' }}>{t("● 等待对方接听…")}</span>}
+            {status === 'live' && remoteCount > 0 && !reconnecting && <span style={{ color: '#34c759' }}>{t("● 通话中")}</span>}
             {status === 'error' && <span style={{ color: '#ff6b6b' }}>● {errMsg || t("连接失败")}</span>}
           </div>
+          {status === 'live' && (
+            <div className={`communion-call-network ${isWeakConnectionQuality(netQuality) ? 'weak' : ''}`}>
+              {t(connectionQualityLabel(netQuality))}
+              {isWeakConnectionQuality(netQuality) ? ` · ${t("语音优先保护中")}` : ''}
+            </div>
+          )}
         </div>
 
         {/* 屏幕共享大舞台：有人在共享时置顶展示，内容不裁切 */}

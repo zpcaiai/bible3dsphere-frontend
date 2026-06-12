@@ -2,6 +2,18 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import BackButton from './BackButton'
 import NotesButton from './realtime/NotesButton'
 import {
+  VOICE_AUDIO_CAPTURE_DEFAULTS,
+  VOICE_VIDEO_CAPTURE_DEFAULTS,
+  VOICE_SCREEN_SHARE_CAPTURE_DEFAULTS,
+  VOICE_PUBLISH_DEFAULTS,
+  connectionQualityLabel,
+  isWeakConnectionQuality,
+  liveKitVoiceRoomOptions,
+  normalizeConnectionQuality,
+  protectVoiceOnWeakNetwork,
+  tuneRemoteSubscriptionsForVoice,
+} from './realtime/callQuality'
+import {
   fetchVoiceConfig, fetchVoiceGroups, createVoiceGroup,
   joinVoiceGroup, fetchVoiceToken, leaveVoiceGroup,
 } from './api'
@@ -182,11 +194,15 @@ function CallScreen({ group, user, token, onLeave }) {
   const [keyPanel, setKeyPanel] = useState(false)
   const [keyDraft, setKeyDraft] = useState('')
   const [reconnectN, setReconnectN] = useState(0)
+  const [netQuality, setNetQuality] = useState('unknown')
+  const [reconnecting, setReconnecting] = useState(false)
 
   const roomRef = useRef(null)
   const audioBin = useRef(null)
   const krispRef = useRef(null)
   const e2eeWorkerRef = useRef(null)
+  const autoDegradeRef = useRef(false)
+  const netQualityRef = useRef('unknown')
 
   // 把房间参与者状态同步到 React
   const sync = useCallback(() => {
@@ -211,6 +227,8 @@ function CallScreen({ group, user, token, onLeave }) {
       })
     })
     setParticipants(list)
+    setCamOn(!!lp.isCameraEnabled)
+    setShareOn(!!lp.isScreenShareEnabled)
   }, [user])
 
   useEffect(() => {
@@ -245,23 +263,9 @@ function CallScreen({ group, user, token, onLeave }) {
         } catch (err) { keyProvider = null; e2eeWorkerRef.current = null }
       }
 
-      room = new Room({
-        adaptiveStream: false,
-        dynacast: true,
-        // Zoom 级采集：浏览器原生回声消除 / 降噪 / 自动增益
-        audioCaptureDefaults: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-        // Opus + RED(冗余抗丢包) + DTX(静音不发包)，语音码率上调
-        publishDefaults: {
-          dtx: true,
-          red: true,
-          audioPreset: { maxBitrate: 32000 },
-        },
+      room = new Room(liveKitVoiceRoomOptions({
         ...(keyProvider && e2eeWorkerRef.current ? { e2ee: { keyProvider, worker: e2eeWorkerRef.current } } : {}),
-      })
+      }))
       roomRef.current = room
 
       // 启用 E2EE（口令派生密钥；浏览器不支持时优雅降级为仅传输加密）
@@ -278,14 +282,45 @@ function CallScreen({ group, user, token, onLeave }) {
         setEncrypted(false)
       }
 
-      const onChange = () => { if (!cancelled) sync() }
+      const onChange = () => {
+        if (!cancelled) {
+          tuneRemoteSubscriptionsForVoice(room, LK, netQualityRef.current)
+          sync()
+        }
+      }
+      const onQualityChange = (quality, participant) => {
+        if (cancelled || (participant && !participant.isLocal)) return
+        const nextQuality = normalizeConnectionQuality(quality)
+        netQualityRef.current = nextQuality
+        setNetQuality(nextQuality)
+        protectVoiceOnWeakNetwork({
+          room,
+          LK,
+          quality: nextQuality,
+          autoDegradeRef,
+          setCamOn,
+          setShareOn,
+          notify: toast,
+        }).catch(() => {})
+      }
       room
         .on(RoomEvent.ParticipantConnected, onChange)
         .on(RoomEvent.ParticipantDisconnected, onChange)
+        .on(RoomEvent.TrackPublished, onChange)
         .on(RoomEvent.ActiveSpeakersChanged, onChange)
         .on(RoomEvent.TrackMuted, onChange)
         .on(RoomEvent.TrackUnmuted, onChange)
         .on(RoomEvent.LocalTrackPublished, onChange)
+        .on(RoomEvent.LocalTrackUnpublished, onChange)
+        .on(RoomEvent.ConnectionQualityChanged, onQualityChange)
+        .on(RoomEvent.SignalReconnecting, () => { if (!cancelled) setReconnecting(true) })
+        .on(RoomEvent.Reconnecting, () => { if (!cancelled) setReconnecting(true) })
+        .on(RoomEvent.Reconnected, () => {
+          if (!cancelled) {
+            setReconnecting(false)
+            onQualityChange(room.localParticipant.connectionQuality, room.localParticipant)
+          }
+        })
         .on(RoomEvent.Disconnected, () => { if (!cancelled) { setStatus('error'); setErrMsg('通话已断开') } })
         .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
           if (track.kind === Track.Kind.Audio && audioBin.current) {
@@ -302,8 +337,9 @@ function CallScreen({ group, user, token, onLeave }) {
         })
 
       try {
-        await room.connect(creds.url, creds.token)
-        await room.localParticipant.setMicrophoneEnabled(true)
+        await room.connect(creds.url, creds.token, { maxRetries: 3, peerConnectionTimeout: 20000, websocketTimeout: 20000 })
+        await room.localParticipant.setMicrophoneEnabled(true, VOICE_AUDIO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
+        onQualityChange(room.localParticipant.connectionQuality, room.localParticipant)
         if (!cancelled) { setStatus('live'); setMicOn(true); sync() }
       } catch (e) {
         if (!cancelled) {
@@ -321,6 +357,8 @@ function CallScreen({ group, user, token, onLeave }) {
       e2eeWorkerRef.current = null
       try { room?.disconnect() } catch {}
       roomRef.current = null
+      autoDegradeRef.current = false
+      netQualityRef.current = 'unknown'
       if (audioBin.current) audioBin.current.innerHTML = ''
     }
   }, [group.id, token, sync, reconnectN])
@@ -329,7 +367,7 @@ function CallScreen({ group, user, token, onLeave }) {
     const room = roomRef.current
     if (!room) return
     const next = !micOn
-    await room.localParticipant.setMicrophoneEnabled(next)
+    await room.localParticipant.setMicrophoneEnabled(next, VOICE_AUDIO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
     setMicOn(next); sync()
   }
 
@@ -338,7 +376,11 @@ function CallScreen({ group, user, token, onLeave }) {
     if (!room) return
     const next = !camOn
     try {
-      await room.localParticipant.setCameraEnabled(next)
+      if (next && isWeakConnectionQuality(netQuality)) {
+        toast('当前网络较弱，先保持语音优先，网络恢复后再开启视频', 'info')
+        return
+      }
+      await room.localParticipant.setCameraEnabled(next, VOICE_VIDEO_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
       setCamOn(next); sync()
     } catch (e) {
       toast(/permission|NotAllowed/i.test(String(e)) ? '摄像头权限被拒绝，请在浏览器允许摄像头' : (e.message || '摄像头开启失败'), 'error')
@@ -352,7 +394,11 @@ function CallScreen({ group, user, token, onLeave }) {
       toast('此设备/浏览器不支持屏幕共享', 'info'); return
     }
     try {
-      await room.localParticipant.setScreenShareEnabled(!shareOn)
+      if (!shareOn && isWeakConnectionQuality(netQuality)) {
+        toast('当前网络较弱，先保持语音优先，网络恢复后再共享屏幕', 'info')
+        return
+      }
+      await room.localParticipant.setScreenShareEnabled(!shareOn, VOICE_SCREEN_SHARE_CAPTURE_DEFAULTS, VOICE_PUBLISH_DEFAULTS)
       sync()
     } catch (e) {
       if (!/NotAllowed|Permission|cancel|Abort/i.test(String(e))) {
@@ -407,9 +453,19 @@ function CallScreen({ group, user, token, onLeave }) {
         <div style={S.callName}>{group.name}</div>
         <div style={S.callStatus}>
           {status === 'connecting' && <span style={{ color: '#f0ad4e' }}>● 连接中…</span>}
-          {status === 'live' && <span style={{ color: ACCENT }}>● 通话中 · {participants.length} 人在线</span>}
+          {status === 'live' && reconnecting && <span style={{ color: '#f0ad4e' }}>● 网络波动，正在重连…</span>}
+          {status === 'live' && !reconnecting && <span style={{ color: ACCENT }}>● 通话中 · {participants.length} 人在线</span>}
           {status === 'error' && <span style={{ color: '#ff6b6b' }}>● {errMsg || '连接失败'}</span>}
         </div>
+        {status === 'live' && (
+          <div style={{
+            ...S.networkBar,
+            color: isWeakConnectionQuality(netQuality) ? '#f0ad4e' : 'rgba(255,255,255,0.55)',
+          }}>
+            {connectionQualityLabel(netQuality)}
+            {isWeakConnectionQuality(netQuality) ? ' · 语音优先保护中' : ''}
+          </div>
+        )}
         <div style={S.e2eeBar}>
           {encrypted ? (
             <span style={{ color: ACCENT }}>🔒 端到端加密已开 · 服务器也听不到
@@ -524,6 +580,7 @@ const S = {
   callHead: { textAlign: 'center', padding: '18px 14px 6px' },
   callName: { fontSize: 18, fontWeight: 700 },
   callStatus: { fontSize: 13, marginTop: 6 },
+  networkBar: { fontSize: 12, marginTop: 6, lineHeight: 1.45 },
   e2eeBar: { fontSize: 12, marginTop: 8, lineHeight: 1.5 },
   e2eeAction: { marginLeft: 6, cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 },
   keyOverlay: { position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 20, boxSizing: 'border-box' },

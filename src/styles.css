@@ -4761,3 +4761,12 @@ canvas {
   font-size: calc(1vw + 0.9vh); line-height: 1.05;
   max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.communion-call-network {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.55);
+}
+.communion-call-network.weak {
+  color: #f0ad4e;
+}
