@@ -39,7 +39,7 @@ const CONTINENTS = [
     icon: '✦', name: '人格塑造', en: 'Formation', color: '#a78bfa',
     q: '我今天，更像耶稣了吗？',
     by: '信 · 望 · 爱 · 谦卑 · 顺服',
-    chips: [['信望爱星系', 'fhl'], ['本周牧养小结', '_close'], ['八维概览', '_close']],
+    chips: [['罪模式转化引擎', 'spiritual-formation'], ['信望爱星系', 'fhl'], ['本周牧养小结', '_close']],
   },
 ]
 

@@ -25,6 +25,7 @@ import FuelLibraryPage from '../FuelLibraryPage'
 import AgentChatPage from '../AgentChatPage'
 import GospelDiagnosticPage from '../GospelDiagnosticPage'
 import SpiritualCheckupPage from '../SpiritualCheckupPage'
+import SpiritualFormationPage from '../features/spiritual-formation/app/SpiritualFormationPage'
 
 const MVFE_BASE = API_BASE + '/mvfe'
 
@@ -443,6 +444,7 @@ export default function SoulDashboard({ user }) {
           {overlay === 'fuel' && <FuelLibraryPage onClose={() => setOverlay(null)} />}
           {overlay === 'agent' && <AgentChatPage onBack={() => setOverlay(null)} />}
           {overlay === 'checkup' && <SpiritualCheckupPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'spiritual-formation' && <SpiritualFormationPage user={user} token={getToken()} onBack={() => setOverlay(null)} />}
         </div>
       )}
     </div>

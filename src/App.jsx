@@ -47,6 +47,7 @@ const MccheynePage = lazy(() => import('./MccheynePage'))
 const MemoryDeckPage = lazy(() => import('./MemoryDeckPage'))
 const PersonalSearchPage = lazy(() => import('./PersonalSearchPage'))
 const ExportDataPage = lazy(() => import('./ExportDataPage'))
+const SpiritualFormationPage = lazy(() => import('./features/spiritual-formation/app/SpiritualFormationPage'))
 
 // React Query client for HabitsPage
 const queryClient = new QueryClient({
@@ -2923,6 +2924,19 @@ function AppContent() {
           <div className="page-overlay">
             <Suspense fallback={null}>
               <ExportDataPage onBack={() => setActivePanel('sphere')} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* 属灵塑造 — Sin Pattern to New Creation Transformation Engine */}
+        {activePanel === 'spiritual-formation' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <SpiritualFormationPage
+                user={user}
+                token={getToken()}
+                onBack={() => setActivePanel('sphere')}
+              />
             </Suspense>
           </div>
         )}

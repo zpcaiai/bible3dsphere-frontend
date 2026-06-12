@@ -27,6 +27,7 @@ import DailySpiritualScanForm from '../components/DailySpiritualScanForm'
 import FruitTree from '../components/FruitTree'
 import GraceRecoveryFlow from '../components/GraceRecoveryFlow'
 import NewCreationMap from '../components/NewCreationMap'
+import SinPatternLibrary from '../components/SinPatternLibrary'
 import ThoughtCaptiveFlow from '../components/ThoughtCaptiveFlow'
 import TransformationPlanDashboard from '../components/TransformationPlanDashboard'
 import WeeklyReviewPanel from '../components/WeeklyReviewPanel'
@@ -34,6 +35,7 @@ import './spiritual-formation.css'
 
 const TABS = [
   ['home', '首页'],
+  ['library', '罪模式库'],
   ['daily', '每日扫描'],
   ['thought', '思想俘虏'],
   ['recovery', '恩典恢复'],
@@ -180,6 +182,7 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
         </section>
       )}
 
+      {tab === 'library' && <SinPatternLibrary />}
       {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, createDailyExamenRemote, entry)} />}
       {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, createThoughtCaptiveRemote, entry)} />}
       {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}
