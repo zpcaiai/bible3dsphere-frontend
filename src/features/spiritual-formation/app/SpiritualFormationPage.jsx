@@ -1,7 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BackButton from '../../../BackButton'
 import { sinPatternMap } from '../data/sinPatterns'
 import { MODULE_DISCLAIMER } from '../lib/pastoralSafety'
+import {
+  createDailyExamenRemote,
+  createGraceRecoveryRemote,
+  createThoughtCaptiveRemote,
+  createTransformationPlanRemote,
+  loadSpiritualFormationData,
+  updateTransformationPlanRemote,
+} from '../lib/apiStorage'
 import {
   DEFAULT_USER_ID,
   getActiveTransformationPlan,
@@ -39,25 +47,71 @@ function resolveUserId(user) {
   return String(user?.id || user?.userId || user?.email || DEFAULT_USER_ID)
 }
 
-export default function SpiritualFormationPage({ user, onBack }) {
+export default function SpiritualFormationPage({ user, token, onBack }) {
   const userId = resolveUserId(user)
   const [tab, setTab] = useState('home')
   const [refreshKey, setRefreshKey] = useState(0)
-  const data = useMemo(() => ({
+  const [remoteData, setRemoteData] = useState(null)
+  const [syncState, setSyncState] = useState(token ? 'syncing' : 'local')
+  const [syncError, setSyncError] = useState('')
+  const localData = useMemo(() => ({
     dailyExamens: listDailyExamens(userId),
     thoughtEntries: listThoughtCaptiveEntries(userId),
     graceRecoveryEntries: listGraceRecoveryEntries(userId),
     plans: listTransformationPlans(userId),
     activePlan: getActiveTransformationPlan(userId),
   }), [userId, refreshKey])
+  const data = remoteData || localData
+
+  useEffect(() => {
+    let cancelled = false
+    if (!token) {
+      setRemoteData(null)
+      setSyncState('local')
+      setSyncError('')
+      return
+    }
+    setSyncState('syncing')
+    loadSpiritualFormationData(token)
+      .then((loaded) => {
+        if (cancelled) return
+        setRemoteData(loaded)
+        setSyncState('synced')
+        setSyncError('')
+      })
+      .catch((error) => {
+        if (cancelled) return
+        setRemoteData(null)
+        setSyncState('local')
+        setSyncError(error?.message || '后端暂不可用，已使用本地记录')
+      })
+    return () => { cancelled = true }
+  }, [token, refreshKey])
 
   function refresh() {
     setRefreshKey((value) => value + 1)
   }
 
-  function saveAndRefresh(fn, value) {
-    fn(value)
+  async function reloadRemote() {
+    if (!token) return
+    const loaded = await loadSpiritualFormationData(token)
+    setRemoteData(loaded)
+    setSyncState('synced')
+    setSyncError('')
+  }
+
+  async function saveAndRefresh(localFn, remoteFn, value) {
+    localFn(value)
     refresh()
+    if (!token || !remoteFn) return
+    try {
+      setSyncState('syncing')
+      await remoteFn(value, token)
+      await reloadRemote()
+    } catch (error) {
+      setSyncState('local')
+      setSyncError(error?.message || '后端保存失败，已保留本地记录')
+    }
   }
 
   return (
@@ -67,6 +121,10 @@ export default function SpiritualFormationPage({ user, onBack }) {
         <div>
           <h1>Sin Pattern to New Creation Transformation Engine</h1>
           <p>Bring the old patterns into the light. Return to Christ. Walk by the Spirit. Practice the new life.</p>
+          <p className="sf-sync-state">
+            {syncState === 'synced' ? '已同步到后端数据库' : syncState === 'syncing' ? '正在同步后端数据库…' : '本地记录模式'}
+            {syncError ? ` · ${syncError}` : ''}
+          </p>
         </div>
       </header>
 
@@ -122,10 +180,10 @@ export default function SpiritualFormationPage({ user, onBack }) {
         </section>
       )}
 
-      {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, entry)} />}
-      {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, entry)} />}
-      {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, entry)} />}
-      {tab === 'plans' && <TransformationPlanDashboard userId={userId} plans={data.plans} onSave={(plan) => saveAndRefresh(saveTransformationPlan, plan)} onUpdate={(plan) => saveAndRefresh(updateTransformationPlan, plan)} />}
+      {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, createDailyExamenRemote, entry)} />}
+      {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, createThoughtCaptiveRemote, entry)} />}
+      {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}
+      {tab === 'plans' && <TransformationPlanDashboard userId={userId} plans={data.plans} onSave={(plan) => saveAndRefresh(saveTransformationPlan, createTransformationPlanRemote, plan)} onUpdate={(plan) => saveAndRefresh(updateTransformationPlan, updateTransformationPlanRemote, plan)} />}
       {tab === 'fruit' && <FruitTree dailyExamens={data.dailyExamens} thoughtEntries={data.thoughtEntries} graceRecoveryEntries={data.graceRecoveryEntries} />}
       {tab === 'weekly' && <WeeklyReviewPanel userId={userId} dailyExamens={data.dailyExamens} thoughtEntries={data.thoughtEntries} graceRecoveryEntries={data.graceRecoveryEntries} />}
       {tab === 'map' && <NewCreationMap dailyExamens={data.dailyExamens} thoughtEntries={data.thoughtEntries} graceRecoveryEntries={data.graceRecoveryEntries} />}

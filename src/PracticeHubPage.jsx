@@ -10,9 +10,11 @@ import {
   recordConfession, exportMyData,
 } from './api'
 import { getToken } from './auth'
+import SpiritualFormationPage from './features/spiritual-formation/app/SpiritualFormationPage'
 
 const card = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 16, marginBottom: 12 }
 const TILES = [
+  { id: 'formation', icon: '🌿', name: '罪到新造转化', desc: '识别罪的模式 · 反推新生命操练 · 走向合神心意', color: '#5ac8fa' },
   { id: 'gratitude', icon: '🙏', name: '感恩日记', desc: '数算今天的恩典', color: '#34c759' },
   { id: 'confession', icon: '🕊', name: '认罪与赦免', desc: '看见 · 认罪 · 领受赦免', color: '#a78bfa' },
   { id: 'calendar', icon: '📜', name: '教会历', desc: '与普世教会同走节期', color: '#ffd43b' },
@@ -28,7 +30,7 @@ export default function PracticeHubPage({ user, onBack, onNeedLogin }) {
       <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(28,28,30,0.92)', position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(10px)' }}>
         <button onClick={view === 'menu' ? onBack : back} style={backBtn}>‹</button>
         <div><div style={{ fontSize: 17, fontWeight: 600 }}>灵修操练</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>感恩 · 认罪 · 节期 · 问责 · 数据</div></div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>罪到新造 · 感恩 · 认罪 · 节期 · 问责 · 数据</div></div>
       </div>
       <div style={{ padding: '14px 16px 100px', maxWidth: 640, margin: '0 auto' }}>
         {view === 'menu' && TILES.map(t => (
@@ -41,6 +43,7 @@ export default function PracticeHubPage({ user, onBack, onNeedLogin }) {
             <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.35)' }}>›</span>
           </button>
         ))}
+        {view === 'formation' && <SpiritualFormationPage user={user} token={getToken()} onBack={back} />}
         {view === 'gratitude' && <Gratitude onNeedLogin={onNeedLogin} />}
         {view === 'confession' && <Confession onNeedLogin={onNeedLogin} />}
         {view === 'calendar' && <Calendar />}
