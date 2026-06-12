@@ -888,6 +888,28 @@ export async function deletePersonalNote(noteId, token) {
   return data
 }
 
+export async function searchPersonal(kw, token) {
+  console.log(`[api] searchPersonal kw=${kw}`)
+  const params = new URLSearchParams({ kw: kw.trim() })
+  const response = await fetch(`${API_BASE}/personal/search?${params}`, {
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+  })
+  const contentType = response.headers.get('content-type') || ''
+  if (!contentType.includes('application/json')) {
+    // fallback: 本地搜索 personal notes / journal entries
+    const notes = JSON.parse(localStorage.getItem('personal_notes') || '[]')
+    const entries = JSON.parse(localStorage.getItem('journal_entries') || '[]')
+    const all = [...notes, ...entries].filter(item => {
+      const text = JSON.stringify(item).toLowerCase()
+      return text.includes(kw.trim().toLowerCase())
+    })
+    return { query: kw.trim(), results: all, total: all.length }
+  }
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || data.error || 'Search failed')
+  return data
+}
+
 // ── User Profile API ─────────────────────────────────────────
 
 export async function updateUserProfile(payload, token) {
