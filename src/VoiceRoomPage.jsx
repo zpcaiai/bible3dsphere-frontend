@@ -497,9 +497,9 @@ function CallScreen({ group, user, token, onLeave }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-const CALL_CTRL_SIZE = 'calc(2vw + 1.8vh)'
-const CALL_CTRL_GAP = 'calc(0.5vw + 0.5vh)'
-const CALL_CTRL_SHIFT = 'calc((2vw + 1.8vh) * -3.5)'
+const CALL_CTRL_SIZE = 'calc(4vw + 3.6vh)'
+const CALL_CTRL_GAP = 'calc(1vw + 1vh)'
+const CALL_CTRL_SHIFT = 'calc((4vw + 3.6vh) * -3.5)'
 
 const S = {
   page: { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', background: '#0d1117', color: '#fff', fontFamily: 'inherit' },
