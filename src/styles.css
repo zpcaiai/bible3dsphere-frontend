@@ -4745,13 +4745,13 @@ canvas {
   --call-ctrl-gap: calc(0.5vw + 0.5vh);
   display: flex; justify-content: center; flex-wrap: nowrap;
   gap: var(--call-ctrl-gap);
-  transform: translateY(calc(var(--call-ctrl-size) * -1.5));
-  margin-bottom: calc(var(--call-ctrl-size) * -1.5);
+  transform: translateY(calc(var(--call-ctrl-size) * -3.5));
+  margin-bottom: calc(var(--call-ctrl-size) * -3.5);
 }
 .communion-call-ctrl {
   width: var(--call-ctrl-size); min-width: var(--call-ctrl-size); min-height: var(--call-ctrl-size);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  border: none; border-radius: calc(1.2vw + 1vh); padding: calc(0.3vw + 0.3vh) calc(0.45vw + 0.4vh);
+  border: none; border-radius: calc(0.6vw + 0.5vh); padding: calc(0.15vw + 0.15vh) calc(0.22vw + 0.2vh);
   color: #fff; cursor: pointer; font-family: inherit;
   box-sizing: border-box;
 }

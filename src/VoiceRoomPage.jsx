@@ -454,7 +454,7 @@ function CallScreen({ group, user, token, onLeave }) {
 // ─────────────────────────────────────────────────────────────────────────────
 const CALL_CTRL_SIZE = 'calc(2vw + 1.8vh)'
 const CALL_CTRL_GAP = 'calc(0.5vw + 0.5vh)'
-const CALL_CTRL_SHIFT = 'calc((2vw + 1.8vh) * -1.5)'
+const CALL_CTRL_SHIFT = 'calc((2vw + 1.8vh) * -3.5)'
 
 const S = {
   page: { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', background: '#0d1117', color: '#fff', fontFamily: 'inherit' },
@@ -498,6 +498,6 @@ const S = {
   mutedTag: { fontSize: 10, color: 'rgba(255,255,255,0.4)' },
   waitHint: { gridColumn: '1 / -1', textAlign: 'center', color: 'rgba(255,255,255,0.45)', fontSize: 13, lineHeight: 1.7, padding: 12 },
   controls: { display: 'flex', justifyContent: 'center', gap: CALL_CTRL_GAP, padding: 'calc(0.3vw + 0.3vh) calc(0.45vw + 0.4vh)', borderTop: '1px solid rgba(255,255,255,0.08)', flexShrink: 0, transform: `translateY(${CALL_CTRL_SHIFT})`, marginBottom: CALL_CTRL_SHIFT },
-  ctrlBtn: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, border: 'none', borderRadius: 14, padding: 'calc(0.3vw + 0.3vh) calc(0.45vw + 0.4vh)', color: '#fff', cursor: 'pointer', width: CALL_CTRL_SIZE, minWidth: CALL_CTRL_SIZE, minHeight: CALL_CTRL_SIZE },
+  ctrlBtn: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, border: 'none', borderRadius: 'calc(0.6vw + 0.5vh)', padding: 'calc(0.15vw + 0.15vh) calc(0.22vw + 0.2vh)', color: '#fff', cursor: 'pointer', width: CALL_CTRL_SIZE, minWidth: CALL_CTRL_SIZE, minHeight: CALL_CTRL_SIZE },
   ctrlLabel: { fontSize: 'calc(1vw + 0.9vh)' },
 }
