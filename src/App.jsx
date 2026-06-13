@@ -15,6 +15,7 @@ import { EmotionSphereScene } from './EmotionSphereScene'
 import LoginScreen from './LoginScreen'
 import TranslatableParagraph from './TranslatableParagraph'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
+import { ttsServerParamsFor, pickVoiceFor, speechLangFor } from './voice'
 import LanguageToggle from './i18n/LanguageToggle'
 
 const CheckInPage = lazy(() => import('./CheckInPage'))
@@ -458,13 +459,6 @@ function AppContent() {
     return voices[0] || null
   }
 
-  // 检测文本主要语言
-  function detectLanguage(text) {
-    const chineseChars = text.match(/[\u4e00-\u9fa5]/g)?.length || 0
-    const totalChars = text.replace(/\s/g, '').length
-    if (totalChars === 0) return 'cmn-CN'
-    return (chineseChars / totalChars) > 0.3 ? 'cmn-CN' : 'en-US'
-  }
 
   // 使用浏览器原生 TTS（作为 fallback）
   function speakWithNativeTTS(text) {
@@ -475,12 +469,12 @@ function AppContent() {
     
     window.speechSynthesis.cancel()
     const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'zh-CN'
+    // 按文本实际语言挑嗓音：英文内容用英文嗓音，中文用中文女声
+    utter.lang = speechLangFor(text)
     utter.rate = 0.85
     utter.pitch = 1.05
-    
-    let voices = window.speechSynthesis.getVoices()
-    const bestVoice = selectBestVoice(voices)
+
+    const bestVoice = pickVoiceFor(text) || selectBestVoice(window.speechSynthesis.getVoices())
     if (bestVoice) {
       utter.voice = bestVoice
       console.log('[TTS Native] 使用语音:', bestVoice.name)
@@ -524,11 +518,9 @@ function AppContent() {
     setTtsState('playing')
     
     try {
-      // 优先尝试 Google Cloud TTS
-      const lang = detectLanguage(text)
-      const voiceName = lang === 'cmn-CN' ? 'cmn-CN-Wavenet-A' : 'en-US-Neural2-F'
-      
-      console.log('[TTS] 尝试 Google Cloud TTS...')
+      // 优先后端高质量 TTS（ElevenLabs/Edge Neural）；按文本语言统一选嗓音
+      const [lang, voiceName] = ttsServerParamsFor(text)
+      console.log('[TTS] 尝试后端 TTS...', lang, voiceName)
       const audioBlob = await fetchTTS(text, lang, voiceName)
       
       // 创建音频元素播放

@@ -3,7 +3,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { fetchSermonJournals, saveSermonJournal, deleteSermonJournal, toggleShareSermonJournal } from './api'
 import usePullToRefresh from './hooks/usePullToRefresh'
-import { TTSFullBar } from './useGlobalAudio.jsx'
+import { TTSFullBar, useGlobalAudio } from './useGlobalAudio.jsx'
 import { escapeHtml, escapeHtmlWithBr } from './sanitize'
 
 
@@ -111,7 +111,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
   const [error, setError] = useState('')
   const [total, setTotal] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [ttsState, setTtsState] = useState('idle') // 'idle' | 'playing' | 'paused'
+  const { stop: stopGlobalAudio } = useGlobalAudio()
   const listRef = useRef(null)
 
   function buildSpeechText(j) {
@@ -134,37 +134,10 @@ export default function SermonJournalPage({ user, token, onBack }) {
     return t
   }
 
-  function handleSpeak() {
-    if (!window.speechSynthesis) { alert('浏览器不支持语音播放'); return }
-    if (ttsState === 'playing') {
-      window.speechSynthesis.pause()
-      setTtsState('paused')
-      return
-    }
-    if (ttsState === 'paused') {
-      window.speechSynthesis.resume()
-      setTtsState('playing')
-      return
-    }
-    const text = buildSpeechText(current)
-    if (!text) { alert('没有可播放的内容'); return }
-    window.speechSynthesis.cancel()
-    const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'zh-CN'
-    utter.rate = 0.9
-    utter.pitch = 1.05
-    const voices = window.speechSynthesis.getVoices()
-    const zhVoice = voices.find(v => v.lang?.startsWith('zh'))
-    if (zhVoice) utter.voice = zhVoice
-    utter.onend = () => setTtsState('idle')
-    utter.onerror = () => setTtsState('idle')
-    window.speechSynthesis.speak(utter)
-    setTtsState('playing')
-  }
-
+  // 朗读统一走 TTSFullBar（后端高质量 TTS，浏览器原生兜底）。
+  // 这里只保留停止入口，切换信息/视图时调用，停掉全局正在播放的音频。
   function stopSpeak() {
-    if (window.speechSynthesis) window.speechSynthesis.cancel()
-    setTtsState('idle')
+    stopGlobalAudio()
   }
 
   async function handleShare(journal) {

@@ -13,6 +13,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchTTS } from './api'
+import { ttsServerParamsFor, pickVoiceFor, speechLangFor } from './voice'
 
 // ── Bible reference expansion ────────────────────────────────────────────────
 // Expands abbreviated references like "太 六 10" → "马太福音6章10节" before TTS.
@@ -179,7 +180,8 @@ export function useGlobalAudio() {
 
     // ── Try backend TTS (edge-tts / Google) ──────────────────────────
     try {
-      const blob = await fetchTTS(text, 'zh-CN', 'zh-CN-XiaoxiaoNeural')
+      const [langCode, voiceName] = ttsServerParamsFor(text)
+      const blob = await fetchTTS(text, langCode, voiceName)
       // If speak() was called again while we were fetching, bail out immediately
       // so we never create a second audio element.
       if (_singleton.speakGen !== myGen || !isMountedRef.current) return
@@ -221,17 +223,13 @@ export function useGlobalAudio() {
 
     window.speechSynthesis.cancel()
     const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'zh-CN'
+    // 按文本实际语言挑嗓音：EN 模式英文内容用英文嗓音，中文用中文女声
+    utter.lang = speechLangFor(text)
     utter.rate = 0.9
     utter.pitch = 1.05
 
-    // Prefer Xiaoxiao or any zh-CN neural voice
-    const voices = window.speechSynthesis.getVoices()
-    const zhVoice =
-      voices.find(v => /xiaoxiao/i.test(v.name)) ||
-      voices.find(v => v.lang === 'zh-CN') ||
-      voices.find(v => v.lang.startsWith('zh'))
-    if (zhVoice) utter.voice = zhVoice
+    const bestVoice = pickVoiceFor(text)
+    if (bestVoice) utter.voice = bestVoice
 
     utter.onend = () => { if (isMountedRef.current) setTtsState('idle') }
     utter.onerror = () => { if (isMountedRef.current) setTtsState('idle') }

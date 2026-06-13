@@ -1,8 +1,9 @@
-// 守护者语音能力：STT（复用全站 useSpeechInput/Deepgram）+ TTS（浏览器原生中文女声）
+// 守护者语音能力：STT（复用全站 useSpeechInput/Deepgram）+ TTS（后端高质量 Neural 优先，浏览器原生兜底）
 // 支持「对话模式」：守护者说完后自动开麦，形成连续语音对话循环。
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSpeechInput } from '../../hooks/useSpeechInput'
-import { pickVoiceFor, speechLangFor } from '../../voice'
+import { pickVoiceFor, speechLangFor, ttsServerParamsFor } from '../../voice'
+import { fetchTTS } from '../../api'
 
 const DEEPGRAM_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY || 'a87cbb2d1ec9b07a456fb55319a104731924b12f'
 
@@ -38,6 +39,8 @@ export function cleanForSpeech(text) {
 export function useGuardianVoice({ onTranscript } = {}) {
   const [speaking, setSpeaking] = useState(false)
   const onSpeechEndRef = useRef(null)
+  const audioRef = useRef(null)   // 后端 TTS 的 <audio> 元素
+  const genRef = useRef(0)        // 每次 speak() 自增，作废上一段在途请求
 
   const speech = useSpeechInput({
     deepgramApiKey: DEEPGRAM_KEY,
@@ -50,33 +53,71 @@ export function useGuardianVoice({ onTranscript } = {}) {
   }, [])
 
   const stopSpeaking = useCallback(() => {
+    genRef.current += 1                 // 作废在途的后端请求
+    try {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; audioRef.current = null }
+    } catch { /* noop */ }
     try { window.speechSynthesis?.cancel() } catch { /* noop */ }
     setSpeaking(false)
     onSpeechEndRef.current = null
   }, [])
 
   const speak = useCallback((text, { onEnd } = {}) => {
-    const synth = window.speechSynthesis
     const cleaned = cleanForSpeech(text)
-    if (!synth || !cleaned) { onEnd?.(); return }
-    synth.cancel()
-    const utter = new SpeechSynthesisUtterance(cleaned)
-    // EN 模式用英文嗓音(守护者文本在 EN 模式下已是英文)，ZH 用中文女声
-    const voice = pickVoiceFor(cleaned) || pickVoice()
-    if (voice) utter.voice = voice
-    utter.lang = speechLangFor(cleaned) || voice?.lang || 'zh-CN'
-    utter.rate = 0.95   // 慢一点，温柔陪伴的节奏
-    utter.pitch = 1.05
+    if (!cleaned) { onEnd?.(); return }
+
+    // 先停掉当前正在播放的（原生 + 后端音频）
+    try { window.speechSynthesis?.cancel() } catch { /* noop */ }
+    if (audioRef.current) { try { audioRef.current.pause() } catch { /* noop */ } audioRef.current = null }
+
     onSpeechEndRef.current = onEnd || null
-    utter.onend = () => {
+    const myGen = ++genRef.current
+    setSpeaking(true)
+
+    const finish = () => {
+      if (genRef.current !== myGen) return   // 已被新的 speak()/stop 取代
       setSpeaking(false)
       const cb = onSpeechEndRef.current
       onSpeechEndRef.current = null
-      cb?.()
+      cb?.()                                 // 对话模式：说完自动开麦
     }
-    utter.onerror = utter.onend
-    setSpeaking(true)
-    synth.speak(utter)
+
+    // 浏览器原生兜底（后端不可用时）
+    const nativeSpeak = () => {
+      const synth = window.speechSynthesis
+      if (!synth) { finish(); return }
+      synth.cancel()
+      const utter = new SpeechSynthesisUtterance(cleaned)
+      const voice = pickVoiceFor(cleaned) || pickVoice()
+      if (voice) utter.voice = voice
+      utter.lang = speechLangFor(cleaned) || voice?.lang || 'zh-CN'
+      utter.rate = 0.95   // 慢一点，温柔陪伴的节奏
+      utter.pitch = 1.05
+      utter.onend = finish
+      utter.onerror = finish
+      synth.speak(utter)
+    }
+
+    // 优先后端高质量 TTS（ElevenLabs/Edge Neural），失败回退浏览器原生
+    const [langCode, voiceName] = ttsServerParamsFor(cleaned)
+    fetchTTS(cleaned, langCode, voiceName)
+      .then((blob) => {
+        if (genRef.current !== myGen) return  // 已被取代/停止
+        const url = URL.createObjectURL(blob)
+        const audio = new Audio(url)
+        audioRef.current = audio
+        audio.onended = () => {
+          if (audioRef.current === audio) audioRef.current = null
+          try { URL.revokeObjectURL(url) } catch { /* noop */ }
+          finish()
+        }
+        audio.onerror = () => {
+          if (audioRef.current === audio) audioRef.current = null
+          finish()
+        }
+        audio.play().catch(() => { audioRef.current = null; nativeSpeak() })
+      })
+      .catch(() => { if (genRef.current === myGen) nativeSpeak() })
   }, [])
 
   useEffect(() => stopSpeaking, [stopSpeaking])  // 卸载时停止朗读

@@ -40,9 +40,9 @@ html, body, #root {
   color: var(--ios-text);
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 body {
