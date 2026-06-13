@@ -700,11 +700,15 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
         (def.negative && c.typology && c.typology.strength === 'negative_contrast'))
     }
     if (filterRole === '君王' && filterKingdom !== '全部') list = list.filter(c => c.kingdom === filterKingdom)
-    const eraOrder = ['族长时代','出埃及时代','士师时代','进入迦南时代','王国时代','被掳归回时代','新约时代']
+    const eraOrder = ['永恒', '族长时代', '出埃及时代', '士师时代', '进入迦南时代', '王国时代', '被掳归回时代', '新约时代', '教会时代']
     const getWeight = (c) => {
       if (c.name === '三位一体真神') return 1
       if (c.name === '耶稣基督') return 2
       return 3
+    }
+    const getEraIndex = (era) => {
+      const idx = eraOrder.indexOf(era)
+      return idx === -1 ? 999 : idx
     }
     if (filterRole === '君王') {
       list.sort((a, b) => {
@@ -718,7 +722,7 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
       list.sort((a, b) => {
         const wa = getWeight(a), wb = getWeight(b)
         if (wa !== wb) return wa - wb
-        const eraDiff = eraOrder.indexOf(a.era) - eraOrder.indexOf(b.era)
+        const eraDiff = getEraIndex(a.era) - getEraIndex(b.era)
         if (eraDiff !== 0) return eraDiff
         return a.name.localeCompare(b.name, 'zh')
       })
@@ -726,7 +730,7 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
       list.sort((a, b) => {
         const wa = getWeight(a), wb = getWeight(b)
         if (wa !== wb) return wa - wb
-        const eraDiff = eraOrder.indexOf(a.era) - eraOrder.indexOf(b.era)
+        const eraDiff = getEraIndex(a.era) - getEraIndex(b.era)
         if (eraDiff !== 0) return eraDiff
         return a.id - b.id
       })
