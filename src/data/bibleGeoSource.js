@@ -134,7 +134,7 @@ async function buildPaulDataset() {
     id: j.id, label: j.label, short: j.short, color: j.color, description: j.description,
     startYear: j.startYear, endYear: j.endYear,
     stationIds: j.stationIds,
-    // route 留空：BibleMapPage 前端二次贝塞尔弧线（curvedPath）渲染整条航线/路线
+    // route 留空：海路经后端 /api/route（sea profile）解析真实航线，前端贝塞尔弧线兜底
     sea: true,
   }))
   return completeDatasetFromSvg({
@@ -320,7 +320,7 @@ function buildJourneyDataset(d) {
   const variants = d.variants.map((v) => ({
     id: v.id, label: v.label, short: v.short, color: v.color, description: v.description,
     startYear: v.startYear, endYear: v.endYear, stationIds: v.stationIds,
-    // route 留空：BibleMapPage 前端二次贝塞尔弧线（curvedPath）渲染整条步行/迁徙路线
+    // route 留空：陆路前端贝塞尔弧线（curvedPath）；海路（sea 变体）经后端真实航线、弧线兜底
     sea: v.sea || d.sea || false,
   }))
   return completeDatasetFromSvg({

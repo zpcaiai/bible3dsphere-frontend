@@ -3,7 +3,7 @@
 // 扩展：地点插图（MapScenes）、AI 讲解（fetchFaithQA）、人物卡片闭环（config.profile）。
 import { useEffect, useMemo, useRef, useState } from 'react'
 import MapScene, { resolveScene } from './MapScenes'
-import { fetchFaithQA } from './api'
+import { fetchFaithQA, API_BASE } from './api'
 import { curvedSegment } from './map/arc'
 
 const VB_W = 1000
@@ -51,6 +51,46 @@ function graticule(bounds, project) {
     lines.push({ x1, y1, x2, y2, label: `${lat}°N`, lx: x1 + 4, ly: y1 - 4, horiz: true })
   }
   return lines
+}
+
+// —— 海路真实航线查询：逐段经后端 /api/route（sea profile）代理 OpenRouteService ——
+// 仅海路（保罗等）使用；陆路与出埃及统一用前端贝塞尔弧线。结果按段缓存，会话复用。
+const _routeCache = new Map() // sig -> [[lng,lat],...] | null(确认不可路由)
+const _routeSig = (a, b, prof) =>
+  `${prof}|${a[0].toFixed(4)},${a[1].toFixed(4)};${b[0].toFixed(4)},${b[1].toFixed(4)}`
+
+async function _routeSegment(a, b, profile) {
+  const sig = _routeSig(a, b, profile)
+  if (_routeCache.has(sig)) return _routeCache.get(sig)
+  try {
+    const res = await fetch(`${API_BASE}/route`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile, coordinates: [[a[0], a[1]], [b[0], b[1]]] }),
+    })
+    if (!res.ok) { _routeCache.set(sig, null); return null }
+    const data = await res.json()
+    if (!data || data.ok !== true || !Array.isArray(data.geometry) || data.geometry.length < 2) {
+      _routeCache.set(sig, null); return null
+    }
+    const geom = data.geometry.map(pt => [Number(pt[0]), Number(pt[1])]) // [lng,lat]
+    _routeCache.set(sig, geom)
+    return geom
+  } catch {
+    _routeCache.set(sig, null)
+    return null
+  }
+}
+
+// 解析有序 [lng,lat] 路点 → 每段一条折线（海路真实航线；不可路由时前端贝塞尔弧线兜底）。
+async function fetchSeaLegs(waypoints) {
+  return Promise.all(
+    waypoints.slice(0, -1).map(async (a, i) => {
+      const b = waypoints[i + 1]
+      const r = await _routeSegment(a, b, 'sea')
+      return (r && r.length >= 2) ? r : curvedSegment(a, b)
+    })
+  )
 }
 
 // —— AI 讲解（复用 /faith-qa，无需登录）——
@@ -115,6 +155,25 @@ export default function BibleMap({ config, onBack }) {
 
   const [year, setYear] = useState(config.years ? config.years.default : 0)
 
+  // 海路（保罗等）才走后端真实航线；陆路与出埃及统一用前端贝塞尔弧线。
+  const [routedLegs, setRoutedLegs] = useState({})
+  useEffect(() => {
+    if (isTimeline) return
+    let cancelled = false
+    for (const layer of activeLayers) {
+      if (layer.route === false) continue
+      const isSea = layer.scene === 'boat' || layer.scene === 'sea' || config.id === 'paul'
+      if (!isSea) continue
+      const pts = [...layer.points].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      if (pts.length < 2) continue
+      fetchSeaLegs(pts.map(p => [p.lng, p.lat])).then(legs => {
+        if (!cancelled) setRoutedLegs(prev => ({ ...prev, [layer.id]: legs }))
+      })
+    }
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeLayerIds.join(','), config.id, isTimeline])
+
   const animLayer = activeLayers[0] || config.layers[0]
   const orderedPoints = useMemo(() => {
     return [...(animLayer?.points || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
@@ -156,7 +215,7 @@ export default function BibleMap({ config, onBack }) {
     const [x, y] = project(lng, lat)
     return { x, y }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, progress, animLayer, orderedPoints.length, project])
+  }, [playing, progress, animLayer, routedLegs, orderedPoints.length, project])
 
   const [selected, setSelected] = useState(null)
 
@@ -205,9 +264,11 @@ export default function BibleMap({ config, onBack }) {
     return out
   }
 
-  // 某层分段几何：每段一条前端二次贝塞尔弧线（航线风格），离线生成。
+  // 某层分段几何：海路用后端真实航线（routedLegs），其余（陆路/海路未解析）前端贝塞尔弧线。
   function legsFor(layer) {
     const pts = [...layer.points].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    const routed = routedLegs[layer.id]
+    if (routed && routed.length === pts.length - 1) return routed
     const legs = []
     for (let i = 0; i < pts.length - 1; i++) {
       legs.push(curvedSegment([pts[i].lng, pts[i].lat], [pts[i + 1].lng, pts[i + 1].lat]))
