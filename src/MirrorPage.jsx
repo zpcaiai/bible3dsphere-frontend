@@ -5,6 +5,7 @@ import { saveJournal } from './api'
 import BibleMap from './BibleMap'
 import { CHARACTER_JOURNEYS, buildCharacterMapConfig } from './data/characterJourneys'
 import { getRuntimeLang } from './i18n/runtime'
+import { useAutoTranslate } from './autoTranslate'
 
 const ERAS = ['全部', '族长时代', '出埃及时代', '士师时代', '进入迦南时代', '王国时代', '被掳归回时代', '新约时代', '教会时代']
 const ROLES = ['全部', '主&救主', '族长', '君王', '先知', '祭司', '女性', '使徒', '其他']
@@ -145,8 +146,28 @@ function localizeMirrorCard(c) {
   return en
 }
 
+// 取本地化卡片：人工 *_en 优先；EN 模式下其余中文正文经 AutoText 机器翻译兜底（译文到达自动重渲染）。
+function useLocalizedCard(rawChar) {
+  const base = localizeMirrorCard(rawChar)
+  const en = getRuntimeLang() === 'en'
+  const strings = []
+  if (en && base) {
+    for (const k of ['lesson', 'summary', 'witness', 'prayer']) if (typeof base[k] === 'string') strings.push(base[k])
+    for (const k of ['follow', 'caution', 'applications']) if (Array.isArray(base[k])) for (const it of base[k]) strings.push(it)
+    if (base.typology && base.typology.summary) strings.push(base.typology.summary)
+  }
+  const tr = useAutoTranslate(strings)
+  if (!en || !base) return base
+  const out = { ...base }
+  for (const k of ['lesson', 'summary', 'witness', 'prayer']) if (typeof out[k] === 'string') out[k] = tr(out[k])
+  for (const k of ['follow', 'caution', 'applications']) if (Array.isArray(out[k])) out[k] = out[k].map(x => tr(x))
+  if (out.typology) out.typology = { ...out.typology, summary: tr(out.typology.summary) }
+  return out
+}
+
+
 function CharacterCard({ char: _rawChar, onClick }) {
-  const char = localizeMirrorCard(_rawChar)
+  const char = useLocalizedCard(_rawChar)
   const typeTag = char.tags.find(t => ['正面榜样','警戒为主','混合型'].includes(t)) || char.type
   return (
     <div onClick={() => onClick(char)} style={{
@@ -326,7 +347,7 @@ const TTSBar = _TTSFullBar
 const SectionTTSButton = _TTSBtn
 
 function CharacterDetail({ char: _rawChar, onBack, user, token }) {
-  const char = localizeMirrorCard(_rawChar)
+  const char = useLocalizedCard(_rawChar)
   const [commitment, setCommitment] = useState('')
   const [savingCommitment, setSavingCommitment] = useState(false)
   const [commitmentSaved, setCommitmentSaved] = useState(false)
@@ -359,10 +380,15 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
   }
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} style={{
+      <button onClick={onBack} aria-label="返回" title="返回" style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-        color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>← 返回列表</button>
+        color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
+        justifyContent: 'center', cursor: 'pointer', marginBottom: 24
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
 
       {/* TTS */}
       <_TTSFullBar buildText={() => buildCharSpeechText(char)} label="整体朗读" />
@@ -623,10 +649,15 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
   const themeChars = characters.filter(c => theme.characterIds.includes(c.id))
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} style={{
+      <button onClick={onBack} aria-label="返回" title="返回" style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-        color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14, marginBottom: 24
-      }}>← 返回主题</button>
+        color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
+        justifyContent: 'center', cursor: 'pointer', marginBottom: 24
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
 
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>{theme.emoji}</div>
@@ -803,10 +834,15 @@ export default function MirrorPage({ user, token, guidance, onBack }) {
     return (
       <div style={{ padding: '20px 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <button onClick={() => setView('list')} style={{
+          <button onClick={() => setView('list')} aria-label="返回" title="返回" style={{
             background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
-            color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 14
-          }}>← 人物列表</button>
+            color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
+            justifyContent: 'center', cursor: 'pointer'
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
           <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}>主题合集</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 14 }}>
