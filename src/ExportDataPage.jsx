@@ -20,7 +20,7 @@ async function collect(parts) {
     try { out.journals = (await fetchJournals(token, 500, 0)).items || [] } catch { out.journals = [] }
   }
   if (parts.prayer) {
-    try { out.prayers = (await fetchPrayers(500, 0, token)).prayers || [] } catch { out.prayers = [] }
+    try { out.prayers = (await fetchPrayers(500, 0, token)).items || [] } catch { out.prayers = [] }
   }
   if (parts.reading) {
     try { out.reading = await fetchReadingProgress(token) } catch { out.reading = null }
@@ -48,9 +48,13 @@ function toText(data) {
   if (data.journals) {
     L.push(`【灵修日志】共 ${data.journals.length} 篇`, '')
     for (const j of data.journals) {
-      L.push(`◆ ${fmtDate(j.created_at)}${j.title ? ` · ${j.title}` : ''}`)
-      if (j.scripture_ref) L.push(`  📖 ${j.scripture_ref}`)
-      L.push(`  ${(j.content || '').replace(/\n/g, '\n  ')}`, '')
+      L.push(`◆ ${fmtDate(j.date || j.created_at)}${j.title ? ` · ${j.title}` : ''}`)
+      if (j.scripture || j.scripture_ref) L.push(`  📖 ${j.scripture || j.scripture_ref}`)
+      const body = j.reflection || j.content || ''
+      if (body) L.push(`  默想：${String(body).replace(/\n/g, '\n  ')}`)
+      if (j.prayer) L.push(`  祷告：${String(j.prayer).replace(/\n/g, '\n  ')}`)
+      if (j.gratitude) L.push(`  感恩：${String(j.gratitude).replace(/\n/g, '\n  ')}`)
+      L.push('')
     }
   }
   if (data.prayers) {
@@ -76,9 +80,13 @@ function toText(data) {
     L.push('───────────────────────────────────', '')
     L.push(`【主日 · 讲道笔记】共 ${data.sermons.length} 篇`, '')
     for (const s of data.sermons) {
-      L.push(`◆ ${fmtDate(s.created_at)}${s.title ? ` · ${s.title}` : ''}${s.preacher ? ` | 讲道者：${s.preacher}` : ''}`)
-      if (s.scripture_ref) L.push(`  📖 ${s.scripture_ref}`)
-      if (s.content) L.push(`  ${String(s.content).replace(/\n/g, '\n  ')}`)
+      L.push(`◆ ${fmtDate(s.date || s.created_at)}${s.title ? ` · ${s.title}` : ''}${s.preacher ? ` | 讲道者：${s.preacher}` : ''}`)
+      if (s.scripture || s.scripture_ref) L.push(`  📖 ${s.scripture || s.scripture_ref}`)
+      const summary = s.summary || s.content || ''
+      if (summary) L.push(`  摘要：${String(summary).replace(/\n/g, '\n  ')}`)
+      if (s.reflection) L.push(`  省思：${String(s.reflection).replace(/\n/g, '\n  ')}`)
+      if (s.lesson) L.push(`  功课：${String(s.lesson).replace(/\n/g, '\n  ')}`)
+      if (s.encouragement) L.push(`  勉励：${String(s.encouragement).replace(/\n/g, '\n  ')}`)
       if (s.application) L.push(`  ✦ 应用：${String(s.application).replace(/\n/g, '\n  ')}`)
       L.push('')
     }
@@ -95,8 +103,8 @@ function toText(data) {
     L.push('───────────────────────────────────', '')
     L.push(`【见证墙】共 ${data.testimonies.length} 条`, '')
     for (const n of data.testimonies) {
-      L.push(`🌟 ${fmtDate(n.created_at || n.shared_at)}${n.nickname ? ` · ${n.nickname}` : ''}${n.title ? ` · ${n.title}` : ''}`)
-      L.push(`  ${String(n.content || n.body || '').replace(/\n/g, '\n  ')}`, '')
+      L.push(`🌟 ${fmtDate(n.date || n.created_at || n.shared_at)}${(n.author || n.nickname) ? ` · ${n.author || n.nickname}` : ''}${n.title ? ` · ${n.title}` : ''}`)
+      L.push(`  ${String(n.body || n.content || '').replace(/\n/g, '\n  ')}`, '')
     }
   }
   L.push('───────────────────────────────────')

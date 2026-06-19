@@ -3,7 +3,8 @@
 // 结果分组展示、命中词高亮，可跳转对应板块。
 import { useEffect, useRef, useState } from 'react'
 import BackButton from './BackButton'
-import { searchPersonal } from './api'
+import { API_BASE, fetchJournals, fetchSermonJournals, fetchPrayers } from './api'
+import { getDeck } from './lib/memoryDeck'
 import { t } from './i18n/runtime'
 
 const GROUP_META = {
@@ -27,6 +28,62 @@ function Highlight({ text, q }) {
       {text.slice(idx + q.length)}
     </>
   )
+}
+
+const _norm = (x) => String(x == null ? '' : x).toLowerCase()
+function _snippet(text, kw, pad = 30) {
+  const s = String(text || '')
+  const i = s.toLowerCase().indexOf(String(kw).toLowerCase())
+  if (i < 0) return s.slice(0, 90)
+  const start = Math.max(0, i - pad)
+  const end = Math.min(s.length, i + kw.length + pad)
+  return (start > 0 ? '…' : '') + s.slice(start, end) + (end < s.length ? '…' : '')
+}
+
+// 客户端聚合搜索：横跨灵修日记 / 主日笔记 / 我的祷告 / 聚会纪要 / 背经卡。
+// （后端无 /personal/search 端点；改为直接搜各数据源，保证可用。）
+async function searchAll(kw, token) {
+  const k = kw.trim().toLowerCase()
+  if (!k) return { q: kw.trim(), groups: [] }
+
+  const tasks = [
+    (async () => {
+      const items = (await fetchJournals(token, 500, 0)).items || []
+      const hits = items.filter((j) => [j.title, j.scripture, j.reflection, j.prayer, j.gratitude, j.content].map(_norm).join(' ').includes(k))
+        .map((j) => ({ id: j.id ?? j.date, title: j.title || j.scripture || '灵修日记', date: (j.date || j.created_at || '').slice(0, 10), snippet: _snippet(j.reflection || j.prayer || j.content || j.scripture, kw) }))
+      return hits.length ? { type: 'devotion', label: '灵修日记', items: hits } : null
+    })(),
+    (async () => {
+      const items = (await fetchSermonJournals(token, 500, 0)).items || []
+      const hits = items.filter((sx) => [sx.title, sx.preacher, sx.scripture, sx.summary, sx.reflection, sx.lesson, sx.encouragement, sx.conclusion].map(_norm).join(' ').includes(k))
+        .map((sx) => ({ id: sx.id ?? sx.date, title: sx.title || sx.scripture || '主日笔记', date: (sx.date || sx.created_at || '').slice(0, 10), snippet: _snippet(sx.summary || sx.reflection || sx.scripture, kw) }))
+      return hits.length ? { type: 'sermon', label: '主日笔记', items: hits } : null
+    })(),
+    (async () => {
+      const items = (await fetchPrayers(500, 0, token)).items || []
+      const hits = items.filter((pr) => _norm(pr.content).includes(k))
+        .map((pr) => ({ id: pr.id, title: String(pr.content || '祷告').slice(0, 20), date: (pr.created_at || '').slice(0, 10), snippet: _snippet(pr.content, kw) }))
+      return hits.length ? { type: 'prayer', label: '我的祷告', items: hits } : null
+    })(),
+    (async () => {
+      const r = await fetch(`${API_BASE}/minutes?limit=100`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+      const j = await r.json().catch(() => ({}))
+      const items = j.data || j.minutes || []
+      const hits = items.filter((m) => [m.title, m.summary, ...(m.prayerItems || [])].map(_norm).join(' ').includes(k))
+        .map((m) => ({ id: m.id, title: m.title || '聚会纪要', date: (m.createdAt || m.created_at || '').slice(0, 10), snippet: _snippet(m.summary || (m.prayerItems || []).join(' '), kw) }))
+      return hits.length ? { type: 'minutes', label: '聚会纪要', items: hits } : null
+    })(),
+    (async () => {
+      const deck = getDeck() || []
+      const hits = deck.filter((c) => [c.ref, c.textCuv, c.textEsv].map(_norm).join(' ').includes(k))
+        .map((c) => ({ id: c.id || c.ref, title: c.ref || '背经卡', date: '', snippet: _snippet(c.textCuv || c.textEsv, kw) }))
+      return hits.length ? { type: 'memory', label: '背经卡', items: hits } : null
+    })(),
+  ]
+
+  const settled = await Promise.allSettled(tasks)
+  const groups = settled.filter((x) => x.status === 'fulfilled' && x.value).map((x) => x.value)
+  return { q: kw.trim(), groups }
 }
 
 export default function PersonalSearchPage({ token, onBack, onOpenPanel }) {
@@ -53,7 +110,7 @@ export default function PersonalSearchPage({ token, onBack, onOpenPanel }) {
     setLoading(true)
     setErr('')
     try {
-      const data = await searchPersonal(kw, token)
+      const data = await searchAll(kw, token)
       setResult(data)
     } catch (e) {
       setErr(String(e.message || e))
