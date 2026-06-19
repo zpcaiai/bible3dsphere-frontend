@@ -5,6 +5,7 @@ import { pickVal } from "../../../i18n/pickLang";
 import { getRuntimeLang } from "../../../i18n/runtime";
 import { sinPatternMap } from "../data/sinPatterns";
 import { PATTERN_ZH, PRACTICE_NAME_ZH, PHRASE_ZH, SCRIPTURE_ZH } from "./localizeData";
+import { DOCTRINE_NAMES, strongholdScriptureText, strongholdArchetypeMap } from "../data/strongholds";
 
 export { pickVal, getRuntimeLang };
 
@@ -97,6 +98,7 @@ const BOOK_ZH = {
   James: "雅各书", Hebrews: "希伯来书", Revelation: "启示录",
   "1 John": "约翰一书", "1 Timothy": "提摩太前书", "1 Corinthians": "哥林多前书",
   "1 Thessalonians": "帖撒罗尼迦前书",
+  "2 Corinthians": "哥林多后书", Ecclesiastes: "传道书", Daniel: "但以理书", Judges: "士师记",
 };
 export function referenceName(reference) {
   if (getRuntimeLang() !== "zh") return reference;
@@ -158,4 +160,59 @@ export function localizeProgressSummary(plan) {
     ? "这条道路不该独自争战。若这模式反复出现或具破坏性，请邀请一位成熟信徒、牧者、辅导员或可信的问责同行者进入这个过程。"
     : "";
   return `${label}遵循这样的进程：指认、带到光中、认罪、悔改、脱去、穿上、操练、结出果子、并回顾。${accountability}`;
+}
+
+
+// ── 自高之事本体库本地化 / Stronghold ontology localization ──
+// 数据为内联双语 { zh, en }；这里统一用 pickVal 挑选当前语言。
+const biText = (v) => (v ? pickVal(v.zh, v.en) : "");
+const biList = (v) => (v ? (pickVal(v.zh, v.en) || []) : []);
+
+export const doctrineName = (code) => biText(DOCTRINE_NAMES[code]) || titleCase(code);
+
+export function localizeArchetype(a) {
+  if (!a) return a;
+  return {
+    code: a.code,
+    name: biText(a.name),
+    shortName: biText(a.shortName),
+    description: biText(a.description),
+    theologicalRoot: biText(a.theologicalRoot),
+  };
+}
+
+export const archetypeName = (code) =>
+  biText(strongholdArchetypeMap[code]?.name) || titleCase(code);
+
+// 返回与 Stronghold 同形、但显示字段已按语言挑选的对象。
+export function localizeStronghold(s) {
+  if (!s) return s;
+  const arch = strongholdArchetypeMap[s.archetypeCode];
+  return {
+    id: s.id,
+    code: s.code,
+    archetypeCode: s.archetypeCode,
+    archetype: arch ? localizeArchetype(arch) : null,
+    name: biText(s.name),
+    shortName: biText(s.shortName),
+    summary: biText(s.summary),
+    coreLie: biText(s.coreLie),
+    falseGospel: biText(s.falseGospel),
+    falseIdentity: biText(s.falseIdentity),
+    rootDesires: biList(s.rootDesires),
+    rootFears: biList(s.rootFears),
+    cognitiveSignals: biList(s.cognitiveSignals),
+    emotionalSignals: biList(s.emotionalSignals),
+    behavioralSignals: biList(s.behavioralSignals),
+    culturalReinforcers: biList(s.culturalReinforcers),
+    blockedDoctrines: (s.blockedDoctrines || []).map((code) => ({ code, name: doctrineName(code) })),
+    biblicalCounterTruth: biText(s.biblicalCounterTruth),
+    gospelReframe: biText(s.gospelReframe),
+    scriptures: (s.scriptures || []).map((reference) => ({
+      reference: referenceName(reference),
+      text: biText(strongholdScriptureText[reference]) || reference,
+    })),
+    exampleUserPhrases: biList(s.exampleUserPhrases),
+    severityDefault: s.severityDefault,
+  };
 }

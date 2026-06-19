@@ -28,6 +28,7 @@ import FruitTree from '../components/FruitTree'
 import GraceRecoveryFlow from '../components/GraceRecoveryFlow'
 import NewCreationMap from '../components/NewCreationMap'
 import SinPatternLibrary from '../components/SinPatternLibrary'
+import StrongholdPage from '../components/StrongholdPage'
 import ThoughtCaptiveFlow from '../components/ThoughtCaptiveFlow'
 import TransformationPlanDashboard from '../components/TransformationPlanDashboard'
 import WeeklyReviewPanel from '../components/WeeklyReviewPanel'
@@ -36,6 +37,7 @@ import './spiritual-formation.css'
 const TABS = [
   ['home', '首页'],
   ['library', '罪模式库'],
+  ['stronghold', '自高之事'],
   ['daily', '每日扫描'],
   ['thought', '思想俘虏'],
   ['recovery', '恩典恢复'],
@@ -149,6 +151,7 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
               ['recovery', 'I Fell and Need Grace Recovery', 'Come into the light without hiding or despair.'],
               ['plans', 'Create Transformation Plan', 'Choose a 7-day, 30-day, 90-day, or 1-year plan.'],
               ['fruit', 'View Fruit Tree', 'See where you are asking the Spirit to form fruit.'],
+              ['stronghold', 'Examine a Stronghold (自高之事)', 'Browse the ontology or run a self-scan toward a gospel reframe.'],
               ['weekly', 'View Weekly Review', 'Summarize patterns, triggers, lies, fruits, and next practices.'],
             ].map(([id, title, copy]) => (
               <button className="sf-action" key={id} type="button" onClick={() => setTab(id)}>
@@ -183,6 +186,7 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
       )}
 
       {tab === 'library' && <SinPatternLibrary />}
+      {tab === 'stronghold' && <StrongholdPage userId={userId} token={token} />}
       {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, createDailyExamenRemote, entry)} />}
       {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, createThoughtCaptiveRemote, entry)} />}
       {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}

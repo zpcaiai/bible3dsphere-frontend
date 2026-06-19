@@ -29,6 +29,7 @@ const SeekersClassView = lazyWithRetry(() => import('./EvangelismPage').then(m =
 const DevotionJournalPage = lazyWithRetry(() => import('./DevotionJournalPage'))
 const RecycleBinPage = lazyWithRetry(() => import('./RecycleBinPage'))
 const DecisionSupportPage = lazyWithRetry(() => import('./DecisionSupportPage'))
+const CaregiverConsolePage = lazyWithRetry(() => import('./features/crisis-care/app/CaregiverConsolePage'))
 const MirrorPage = lazyWithRetry(() => import('./MirrorPage'))
 const DailySoulQuestionPage = lazyWithRetry(() => import('./DailySoulQuestionPage'))
 const GrowthMapPage = lazyWithRetry(() => import('./GrowthMapPage'))
@@ -3276,6 +3277,15 @@ function SeekersStandalonePage() {
 }
 
 export default function App() {
+  if (/^\/caregiver\/?$/.test(window.location.pathname)) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d1117', color: 'rgba(255,255,255,0.4)' }}>加载中…</div>}>
+          <CaregiverConsolePage />
+        </Suspense>
+      </QueryClientProvider>
+    )
+  }
   if (/^\/seekers\/?$/.test(window.location.pathname)) {
     return (
       <QueryClientProvider client={queryClient}>

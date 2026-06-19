@@ -7,6 +7,8 @@ import PersonalityPage from './PersonalityPage'
 import SoulTabs from './components/SoulTabs'
 import SoulDashboard from './components/SoulDashboard'
 import SinPatternLibrary from './features/spiritual-formation/components/SinPatternLibrary'
+import CrisisCarePage from './features/crisis-care/app/CrisisCarePage'
+import CrisisHelpButton from './features/crisis-care/components/CrisisHelpButton'
 
 const sfdsUrl = (path) => `${API_BASE}/sfds${path}`
 const MVFE_BASE = API_BASE + '/mvfe'
@@ -1731,7 +1733,8 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {activeTab === 'personality' && <PersonalityPage user={user} embedded={true} onSyncToHabits={() => setActiveTab('habits')} />}
         {activeTab === 'habits' && <HabitsPage user={user} token={getToken()} embedded={true} onNeedLogin={onNeedLogin} onNavigateToLibrary={() => setActiveTab('library')} />}
         {activeTab === 'library' && <SinPatternLibrary />}
-        {activeTab !== 'dashboard' && activeTab !== 'personality' && activeTab !== 'habits' && activeTab !== 'library' && (
+        {activeTab === 'crisis' && <CrisisCarePage user={user} token={getToken()} onOpenLibrary={() => setActiveTab('library')} />}
+        {activeTab !== 'dashboard' && activeTab !== 'personality' && activeTab !== 'habits' && activeTab !== 'library' && activeTab !== 'crisis' && (
           analysisResult ? renderAnalysisResult() : (
             <>
               {activeTab === 'new' && renderNewDecisionForm()}
@@ -1739,6 +1742,9 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           )
         )}
       </div>
+      {activeTab !== 'crisis' && (
+        <CrisisHelpButton onClick={() => { setActiveTab('crisis'); setAnalysisResult(null) }} />
+      )}
     </>
   )
 
