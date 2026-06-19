@@ -4,6 +4,7 @@ import { MIRROR_CHARACTERS, MIRROR_THEMES } from './mirrorData'
 import { saveJournal } from './api'
 import BibleMap from './BibleMap'
 import { CHARACTER_JOURNEYS, buildCharacterMapConfig } from './data/characterJourneys'
+import { getRuntimeLang } from './i18n/runtime'
 
 const ERAS = ['全部', '族长时代', '出埃及时代', '士师时代', '进入迦南时代', '王国时代', '被掳归回时代', '新约时代', '教会时代']
 const ROLES = ['全部', '主&救主', '族长', '君王', '先知', '祭司', '女性', '使徒', '其他']
@@ -128,7 +129,24 @@ function CharacterAvatar({ name, en, size = 56 }) {
   )
 }
 
-function CharacterCard({ char, onClick }) {
+
+// EN 模式下用人工英文字段(*_en)替换正文内容；缺失则回退中文。
+function localizeMirrorCard(c) {
+  if (!c || getRuntimeLang() !== 'en') return c
+  const en = { ...c }
+  if (c.lesson_en) en.lesson = c.lesson_en
+  if (c.summary_en) en.summary = c.summary_en
+  if (c.witness_en) en.witness = c.witness_en
+  if (c.prayer_en) en.prayer = c.prayer_en
+  if (Array.isArray(c.follow_en)) en.follow = c.follow_en
+  if (Array.isArray(c.caution_en)) en.caution = c.caution_en
+  if (Array.isArray(c.applications_en)) en.applications = c.applications_en
+  if (c.typology && c.typology_en) en.typology = { ...c.typology, summary: c.typology_en.summary || c.typology.summary }
+  return en
+}
+
+function CharacterCard({ char: _rawChar, onClick }) {
+  const char = localizeMirrorCard(_rawChar)
   const typeTag = char.tags.find(t => ['正面榜样','警戒为主','混合型'].includes(t)) || char.type
   return (
     <div onClick={() => onClick(char)} style={{
@@ -307,7 +325,8 @@ function buildCharSpeechText(char) {
 const TTSBar = _TTSFullBar
 const SectionTTSButton = _TTSBtn
 
-function CharacterDetail({ char, onBack, user, token }) {
+function CharacterDetail({ char: _rawChar, onBack, user, token }) {
+  const char = localizeMirrorCard(_rawChar)
   const [commitment, setCommitment] = useState('')
   const [savingCommitment, setSavingCommitment] = useState(false)
   const [commitmentSaved, setCommitmentSaved] = useState(false)
