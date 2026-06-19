@@ -1,3 +1,4 @@
+import BackButton from './BackButton'
 /**
  * PlanetHome — 属灵星球 · 成长地图（IA v1，增量、不删现有功能）
  * 把愿景的五大陆作为「人格塑造路径」的导航，路由到已有功能。
@@ -48,7 +49,7 @@ export default function PlanetHome({ onClose, go }) {
   return (
     <div style={{ width: '100%', height: '100%', background: 'radial-gradient(circle at 50% 12%, rgba(139,92,246,0.18), #05060c 60%)', color: '#fff', overflowY: 'auto', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, position: 'sticky', top: 0, zIndex: 100, background: 'rgba(5,6,12,0.7)', backdropFilter: 'blur(10px)' }}>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: 36, height: 36, color: '#fff', fontSize: 20, cursor: 'pointer' }}>‹</button>
+        <BackButton onClick={onClose} />
         <div><div style={{ fontSize: 17, fontWeight: 600 }}>属灵星球</div>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>你不是在课程里学习，而是在一颗星球上成长</div></div>
       </div>

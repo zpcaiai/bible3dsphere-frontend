@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import BackButton from './BackButton'
 import { fetchRecycleBin, restoreRecycleItem } from './api'
 import { getToken } from './auth'
 
@@ -69,16 +70,7 @@ export default function RecycleBinPage({ onBack }) {
         display: 'flex', alignItems: 'center', gap: '12px',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}>
-        <button
-          onClick={onBack}
-          style={{
-            background: 'none', border: 'none',
-            color: 'rgba(255,255,255,0.7)', fontSize: '20px',
-            cursor: 'pointer', padding: '4px',
-          }}
-        >
-          ←
-        </button>
+        <BackButton onClick={onBack} />
         <span style={{ fontSize: '17px', fontWeight: 600 }}>🗑️ 回收站</span>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: 'auto' }}>
           删除后30天自动清除

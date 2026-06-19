@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import BackButton from './BackButton'
 import jsPDF from 'jspdf'
 import { TTSButton } from './useGlobalAudio.jsx'
 import html2canvas from 'html2canvas'
@@ -387,7 +388,7 @@ function NoteDetailOverlay({ note, onClose, onUnshare, onAmen, token }) {
     }}>
       {/* Detail header */}
       <div style={{ position: 'sticky', top: 0, zIndex: 1, background: 'rgba(22,33,62,0.95)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8, color: '#fff', padding: '6px 12px', cursor: 'pointer', fontSize: 13 }}>← 返回</button>
+        <BackButton onClick={onClose} />
         <div style={{ flex: 1 }} />
         {/* Amen button in header */}
         <button
@@ -693,9 +694,7 @@ export default function ShareWallPage({ user, onBack }) {
       {/* Header */}
       <header style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(13,13,26,0.85)', backdropFilter: 'blur(10px)' }}>
         <div style={{ padding: '12px 18px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: 8 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
+          <BackButton onClick={onBack} />
           <div style={{ flex: 1, textAlign: 'center' }}>
             <div style={{ fontSize: 17, fontWeight: 600, color: 'rgba(255,255,255,0.95)' }}>🌟 分享墙</div>
             {faithTab === 'share' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{total > 0 ? `${total} 篇分享` : ''}</div>}

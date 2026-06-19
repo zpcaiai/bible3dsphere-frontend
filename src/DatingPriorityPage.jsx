@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import BackButton from './BackButton'
 import { API_BASE } from './api'
 import { getOrCreateVisitorId } from './utils'
 
@@ -191,9 +192,7 @@ export default function DatingPriorityPage({ onBack }) {
     return (
       <div style={pageStyle}>
         <header style={headerStyle}>
-          <button onClick={onBack} style={{
-            background: 'none', border: 'none', color: '#a0aec0', fontSize: '22px', padding: '4px 12px 4px 0', cursor: 'pointer'
-          }}>←</button>
+          <BackButton onClick={onBack} />
           <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>交友原则排序</h1>
         </header>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', gap: '24px' }}>
@@ -217,9 +216,7 @@ export default function DatingPriorityPage({ onBack }) {
   return (
     <div style={pageStyle}>
       <header style={headerStyle}>
-        <button onClick={onBack} style={{
-          background: 'none', border: 'none', color: '#a0aec0', fontSize: '22px', padding: '4px 12px 4px 0', cursor: 'pointer'
-        }}>←</button>
+        <BackButton onClick={onBack} />
         <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0, flex: 1 }}>交友原则排序</h1>
         <button onClick={resetAll} style={{
           background: 'rgba(255,59,48,0.15)', border: 'none', color: '#ff6b6b',

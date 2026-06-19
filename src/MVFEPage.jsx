@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import BackButton from './BackButton'
 import { API_BASE } from './api'
 
 const MVFE_BASE = API_BASE + '/mvfe'
@@ -78,7 +79,7 @@ export default function MVFEPage({ user, onBack }) {
   return (
     <div style={s.page}>
       <div style={s.header}>
-        <button onClick={onBack} style={s.back}>&larr;</button>
+        <BackButton onClick={onBack} />
         <div style={{flex:1}}>
           <div style={s.title}>灵镜观心</div>
           <div style={s.subtitle}>

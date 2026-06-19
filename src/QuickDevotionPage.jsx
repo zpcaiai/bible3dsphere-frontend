@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import BackButton from './BackButton'
 import { saveJournal } from './api'
 
 const QUICK_DEVOTIONS = [
@@ -111,7 +112,7 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
         <div style={{ width: '100%', maxWidth: 420 }}>
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-            <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 13, cursor: 'pointer', padding: 0 }}>✕ 退出</button>
+            <BackButton onClick={onBack} />
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>⏱ 约2分钟</div>
           </div>
 

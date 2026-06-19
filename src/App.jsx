@@ -1,4 +1,6 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import BackButton from './BackButton'
+import lazyWithRetry from './lazyWithRetry'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { API_BASE, fetchBiblicalExample, fetchBibleVideo, fetchCommunityHeatmap, fetchDailySnapshot, fetchEmotionTrajectory, fetchFaithQA, fetchFeatureDetail, fetchGuidance, fetchHistory, fetchLayout, fetchMeditationQuestions, fetchSermon, fetchStats, fetchTTS, fetchVersePrayer, runQuery, saveJournal, trackStats, updateUserProfile, fetchMyChurch, regenerateChurchCode, leaveChurch } from './api'
 import ChurchOnboardingModal from './ChurchOnboardingModal'
@@ -18,39 +20,39 @@ import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 import { ttsServerParamsFor, pickVoiceFor, speechLangFor } from './voice'
 import LanguageToggle from './i18n/LanguageToggle'
 
-const CheckInPage = lazy(() => import('./CheckInPage'))
-const ShareWallPage = lazy(() => import('./ShareWallPage'))
-const SermonJournalPage = lazy(() => import('./SermonJournalPage'))
-const PrayerWallPage = lazy(() => import('./PrayerWallPage'))
-const EvangelismPage = lazy(() => import('./EvangelismPage'))
-const SeekersClassView = lazy(() => import('./EvangelismPage').then(m => ({ default: m.SeekersClassView })))
-const DevotionJournalPage = lazy(() => import('./DevotionJournalPage'))
-const RecycleBinPage = lazy(() => import('./RecycleBinPage'))
-const DecisionSupportPage = lazy(() => import('./DecisionSupportPage'))
-const MirrorPage = lazy(() => import('./MirrorPage'))
-const DailySoulQuestionPage = lazy(() => import('./DailySoulQuestionPage'))
-const GrowthMapPage = lazy(() => import('./GrowthMapPage'))
-const SpiritualPartnerPage = lazy(() => import('./SpiritualPartnerPage'))
-const QuickDevotionPage = lazy(() => import('./QuickDevotionPage'))
-const BibleReadingPage = lazy(() => import('./BibleReadingPage'))
-const DailyDevotionPage = lazy(() => import('./DailyDevotionPage'))
-const SpiritualBooksPage = lazy(() => import('./SpiritualBooksPage'))
-const PersonalDevotionPage = lazy(() => import('./PersonalDevotionPage'))
-const ReadingPlanPage = lazy(() => import('./ReadingPlanPage'))
-const MemoryVersePage = lazy(() => import('./MemoryVersePage'))
-const MorningDewPage = lazy(() => import('./MorningDewPage'))
-const EngineeringPage = lazy(() => import('./EngineeringPage'))
-const BibleMapsPage = lazy(() => import('./BibleMapsPage'))
-const BibleAtlasPage = lazy(() => import('./features/bible-map/BibleAtlasPage'))
-const CommunityPage = lazy(() => import('./CommunityPage'))
-const VoiceRoomPage = lazy(() => import('./VoiceRoomPage'))
-const CommunionPage = lazy(() => import('./CommunionPage'))
-const MccheynePage = lazy(() => import('./MccheynePage'))
-const MemoryDeckPage = lazy(() => import('./MemoryDeckPage'))
-const PersonalSearchPage = lazy(() => import('./PersonalSearchPage'))
-const BibleSearchPage = lazy(() => import('./BibleSearchPage'))
-const ExportDataPage = lazy(() => import('./ExportDataPage'))
-const SpiritualFormationPage = lazy(() => import('./features/spiritual-formation/app/SpiritualFormationPage'))
+const CheckInPage = lazyWithRetry(() => import('./CheckInPage'))
+const ShareWallPage = lazyWithRetry(() => import('./ShareWallPage'))
+const SermonJournalPage = lazyWithRetry(() => import('./SermonJournalPage'))
+const PrayerWallPage = lazyWithRetry(() => import('./PrayerWallPage'))
+const EvangelismPage = lazyWithRetry(() => import('./EvangelismPage'))
+const SeekersClassView = lazyWithRetry(() => import('./EvangelismPage').then(m => ({ default: m.SeekersClassView })))
+const DevotionJournalPage = lazyWithRetry(() => import('./DevotionJournalPage'))
+const RecycleBinPage = lazyWithRetry(() => import('./RecycleBinPage'))
+const DecisionSupportPage = lazyWithRetry(() => import('./DecisionSupportPage'))
+const MirrorPage = lazyWithRetry(() => import('./MirrorPage'))
+const DailySoulQuestionPage = lazyWithRetry(() => import('./DailySoulQuestionPage'))
+const GrowthMapPage = lazyWithRetry(() => import('./GrowthMapPage'))
+const SpiritualPartnerPage = lazyWithRetry(() => import('./SpiritualPartnerPage'))
+const QuickDevotionPage = lazyWithRetry(() => import('./QuickDevotionPage'))
+const BibleReadingPage = lazyWithRetry(() => import('./BibleReadingPage'))
+const DailyDevotionPage = lazyWithRetry(() => import('./DailyDevotionPage'))
+const SpiritualBooksPage = lazyWithRetry(() => import('./SpiritualBooksPage'))
+const PersonalDevotionPage = lazyWithRetry(() => import('./PersonalDevotionPage'))
+const ReadingPlanPage = lazyWithRetry(() => import('./ReadingPlanPage'))
+const MemoryVersePage = lazyWithRetry(() => import('./MemoryVersePage'))
+const MorningDewPage = lazyWithRetry(() => import('./MorningDewPage'))
+const EngineeringPage = lazyWithRetry(() => import('./EngineeringPage'))
+const BibleMapsPage = lazyWithRetry(() => import('./BibleMapsPage'))
+const BibleAtlasPage = lazyWithRetry(() => import('./features/bible-map/BibleAtlasPage'))
+const CommunityPage = lazyWithRetry(() => import('./CommunityPage'))
+const VoiceRoomPage = lazyWithRetry(() => import('./VoiceRoomPage'))
+const CommunionPage = lazyWithRetry(() => import('./CommunionPage'))
+const MccheynePage = lazyWithRetry(() => import('./MccheynePage'))
+const MemoryDeckPage = lazyWithRetry(() => import('./MemoryDeckPage'))
+const PersonalSearchPage = lazyWithRetry(() => import('./PersonalSearchPage'))
+const BibleSearchPage = lazyWithRetry(() => import('./BibleSearchPage'))
+const ExportDataPage = lazyWithRetry(() => import('./ExportDataPage'))
+const SpiritualFormationPage = lazyWithRetry(() => import('./features/spiritual-formation/app/SpiritualFormationPage'))
 
 // React Query client for HabitsPage
 const queryClient = new QueryClient({
@@ -2858,7 +2860,7 @@ function AppContent() {
           <div className="page-overlay">
             <div style={{ maxWidth: 560, margin: '0 auto', padding: '24px 20px calc(env(safe-area-inset-bottom) + 96px)', color: 'rgba(255,255,255,0.88)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-                <button onClick={() => setActivePanel('sphere')} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8, color: '#fff', padding: '6px 12px', cursor: 'pointer', fontSize: 16 }} aria-label="返回">‹</button>
+                <BackButton onClick={() => setActivePanel('sphere')} />
                 <h2 style={{ margin: 0, fontSize: 20 }}>ℹ️ 关于本站</h2>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '18px 16px', lineHeight: 2, fontSize: 14 }}>

@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
+import BackButton from './BackButton'
 import { API_BASE } from './api.js'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 
@@ -328,7 +329,7 @@ export default function DailyDevotionPage({ onBack }) {
       {/* ── Header ── */}
       <div style={S.header}>
         {onBack && (
-          <button style={S.backBtn} onClick={onBack}>‹</button>
+          <BackButton onClick={onBack} />
         )}
         <div style={S.titleBlock}>
           <div style={S.titleMain}>晨恩日新</div>
