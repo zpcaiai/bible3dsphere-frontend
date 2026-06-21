@@ -1619,14 +1619,16 @@ function AppContent() {
                   { icon: '🎙', label: '语音通话', panel: 'voice' },
                   { icon: '💬', label: '圣徒相通', panel: 'communion' },
                   { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
+                  { icon: '🚶', label: '天路历程', url: 'https://pilgrims.holiness.uk/' },
                 ].map((item) => (
-                  <button key={item.panel}
-                    onClick={() => handlePanelSwitch(item.panel)}
+                  <button key={item.panel || item.url}
+                    onClick={() => item.url ? window.open(item.url, '_blank', 'noopener,noreferrer') : handlePanelSwitch(item.panel)}
                     style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                       fontSize: '13px', padding: '10px 12px',
                       background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
                       borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     <span style={{ fontSize: '16px' }}>{item.icon}</span>{item.label}
