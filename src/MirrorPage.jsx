@@ -5,7 +5,7 @@ import { saveJournal } from './api'
 import BibleMap from './BibleMap'
 import { CHARACTER_JOURNEYS, buildCharacterMapConfig } from './data/characterJourneys'
 import { getRuntimeLang } from './i18n/runtime'
-import { useAutoTranslate } from './autoTranslate'
+import { useAutoTranslate, AutoText } from './autoTranslate'
 import RelationshipGraphView from './RelationshipGraphView'
 
 const ERAS = ['全部', '族长时代', '出埃及时代', '士师时代', '进入迦南时代', '王国时代', '被掳归回时代', '新约时代', '教会时代']
@@ -132,6 +132,10 @@ function CharacterAvatar({ name, en, size = 56 }) {
 }
 
 
+// EN 模式下名字主显英文(c.en)，中文作副标题；ZH 模式相反。
+const dispName = (c) => getRuntimeLang() === 'en' ? (c.en || c.name) : c.name
+const dispSub = (c) => getRuntimeLang() === 'en' ? c.name : c.en
+
 // EN 模式下用人工英文字段(*_en)替换正文内容；缺失则回退中文。
 function localizeMirrorCard(c) {
   if (!c || getRuntimeLang() !== 'en') return c
@@ -183,8 +187,8 @@ function CharacterCard({ char: _rawChar, onClick }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <CharacterAvatar name={char.name} en={char.en} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>{char.name}</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{char.en}</div>
+          <div style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>{dispName(char)}</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{dispSub(char)}</div>
         </div>
       </div>
       <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
@@ -194,18 +198,18 @@ function CharacterCard({ char: _rawChar, onClick }) {
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
           background: (eraColor[char.era] || '#555') + '33',
           color: eraColor[char.era] || '#aaa', border: `1px solid ${eraColor[char.era] || '#555'}55` }}>
-          {char.era}
+          <AutoText>{char.era}</AutoText>
         </span>
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
           background: (typeColor[typeTag] || '#888') + '22',
           color: typeColor[typeTag] || '#aaa', border: `1px solid ${typeColor[typeTag] || '#888'}44` }}>
-          {typeTag}
+          <AutoText>{typeTag}</AutoText>
         </span>
         {char.kingdom && (
           <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
             background: 'rgba(255,214,10,0.12)', color: '#ffd60a',
             border: '1px solid rgba(255,214,10,0.3)' }}>
-            {char.kingdom}
+            <AutoText>{char.kingdom}</AutoText>
           </span>
         )}
         {char.typology && (
@@ -213,7 +217,7 @@ function CharacterCard({ char: _rawChar, onClick }) {
             background: (TYPO_COLOR[char.typology.level] || '#888') + '22',
             color: TYPO_COLOR[char.typology.level] || '#aaa',
             border: `1px solid ${TYPO_COLOR[char.typology.level] || '#888'}44` }}>
-            ✝ {char.typology.level}
+            ✝ <AutoText>{char.typology.level}</AutoText>
           </span>
         )}
       </div>
@@ -392,24 +396,24 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       </button>
 
       {/* TTS */}
-      <_TTSFullBar buildText={() => buildCharSpeechText(char)} label="整体朗读" />
+      <_TTSFullBar buildText={() => buildCharSpeechText(char)} label={getRuntimeLang() === 'en' ? 'Read all' : '整体朗读'} />
 
       {/* Header */}
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 28, alignItems: 'center' }}>
         <CharacterAvatar name={char.name} en={char.en} size={80} />
         <div>
-          <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{char.name}</h2>
-          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginTop: 2 }}>{char.en}</div>
+          <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{dispName(char)}</h2>
+          <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginTop: 2 }}>{dispSub(char)}</div>
           <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
             {char.tags.map(t => (
               <span key={t} style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20,
                 background: (typeColor[t] || eraColor[char.era] || '#555') + '33',
                 color: typeColor[t] || eraColor[char.era] || '#ccc',
-                border: `1px solid ${typeColor[t] || eraColor[char.era] || '#555'}55` }}>{t}</span>
+                border: `1px solid ${typeColor[t] || eraColor[char.era] || '#555'}55` }}><AutoText>{t}</AutoText></span>
             ))}
             <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20,
               background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
-              {char.era} · {char.ref}
+              <AutoText>{char.era}</AutoText> · {char.ref}
             </span>
           </div>
         </div>
@@ -418,7 +422,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 1. 人物简介 */}
       <div style={sectionStyle}>
         <div style={{ ...sectionTitle, display: 'flex', alignItems: 'center', gap: 6 }}>
-          📖 人物简介 <_TTSBtn text={`人物简介：${char.summary}`} />
+          📖 <AutoText>人物简介</AutoText> <_TTSBtn text={`人物简介：${char.summary}`} />
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.7 }}>{char.summary}</div>
       </div>
@@ -426,7 +430,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 2. 信靠神的核心见证 */}
       {char.witness && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #ffd60a', background: 'rgba(255,214,10,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>⭐ 信靠神的核心见证 <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
+          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>⭐ <AutoText>信靠神的核心见证</AutoText> <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
           <CollapsibleText text={char.witness} limit={100} color="rgba(255,255,255,0.82)" />
         </div>
       )}
@@ -435,16 +439,16 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {char.typology && (
         <div style={{ ...sectionStyle, background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)' }}>
           <div style={{ ...sectionTitle, color: '#e8b04b', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            ✝️ 基督预表
+            ✝️ <AutoText>基督预表</AutoText>
             <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
               background: (TYPO_COLOR[char.typology.level] || '#888') + '26',
               color: TYPO_COLOR[char.typology.level] || '#aaa',
               border: `1px solid ${TYPO_COLOR[char.typology.level] || '#888'}55`, fontWeight: 600 }}>
-              {char.typology.level}
+              <AutoText>{char.typology.level}</AutoText>
             </span>
             {char.typology.strength && (
               <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>
-                {STRENGTH_LABEL[char.typology.strength] || char.typology.strength}
+                <AutoText>{STRENGTH_LABEL[char.typology.strength] || char.typology.strength}</AutoText>
               </span>
             )}
             <_TTSBtn text={`基督预表：${char.typology.summary}`} />
@@ -455,7 +459,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
                 <span key={m} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
                   background: 'rgba(192,132,252,0.13)', color: '#c084fc',
                   border: '1px solid rgba(192,132,252,0.35)' }}>
-                  {MOTIF_LABEL[m] || m}
+                  <AutoText>{MOTIF_LABEL[m] || m}</AutoText>
                 </span>
               ))}
             </div>
@@ -472,10 +476,10 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 三一真神的作为（按位格分组；此条不列效法点）*/}
       {Array.isArray(char.works) && char.works.length > 0 && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #c084fc', background: 'rgba(192,132,252,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>✨ 三一真神的作为 <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>✨ <AutoText>三一真神的作为</AutoText> <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
           {char.works.map((g, gi) => (
             <div key={gi} style={{ marginBottom: gi < char.works.length - 1 ? 16 : 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#c084fc', margin: '4px 0 8px' }}>{g.group}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#c084fc', margin: '4px 0 8px' }}><AutoText>{g.group}</AutoText></div>
               <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
                 {g.items.map((item, ii) => (
                   <li key={ii} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'flex-start' }}>
@@ -492,7 +496,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 3. 可效法的点 */}
       {char.follow && char.follow.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>✅ 可效法的点 <_TTSBtn text={char.follow?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>✅ <AutoText>可效法的点</AutoText> <_TTSBtn text={char.follow?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.follow.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[i]
@@ -516,7 +520,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 4. 需要警戒的点 */}
       {char.caution && char.caution.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(255,59,48,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>⚠️ 需要警戒的点 <_TTSBtn text={char.caution?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>⚠️ <AutoText>需要警戒的点</AutoText> <_TTSBtn text={char.caution?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.caution.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[(char.follow?.length || 0) + i]
@@ -540,7 +544,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 5. 今日实际应用 */}
       {char.applications && char.applications.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(90,200,250,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>🌱 今日实际应用 <_TTSBtn text={char.applications?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>🌱 <AutoText>今日实际应用</AutoText> <_TTSBtn text={char.applications?.join('。')} /></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {char.applications.map((app, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
@@ -557,7 +561,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 6. 相关经文 */}
       {char.scriptures && char.scriptures.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>📜 相关经文（点击展开和合本）</div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>📜 <AutoText>相关经文（点击展开和合本）</AutoText></div>
           <ScriptureChipList refs={char.scriptures} />
         </div>
       )}
@@ -565,7 +569,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 生平活动轨迹地图 */}
       {journey && journey.stops && journey.stops.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#e8b04b' }}>🗺️ 生平活动轨迹</div>
+          <div style={{ ...sectionTitle, color: '#e8b04b' }}>🗺️ <AutoText>生平活动轨迹</AutoText></div>
           <button onClick={() => setShowMap(true)}
             style={{ width: '100%', padding: '13px 12px', background: 'rgba(232,176,75,0.13)',
               border: '1px solid rgba(232,176,75,0.42)', borderRadius: 10, color: '#e8b04b',
@@ -584,7 +588,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
 
       {/* 7. 祷告指引 */}
       <div style={{ ...sectionStyle, background: 'rgba(0,122,255,0.06)' }}>
-        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>🙏 祷告指引 <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
+        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>🙏 <AutoText>祷告指引</AutoText> <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
         <div style={{ ...quoteStyle, borderLeftColor: '#007aff', background: 'rgba(0,122,255,0.05)',
           padding: '12px 14px', borderRadius: '0 8px 8px 0' }}>
           {char.prayer}
@@ -593,7 +597,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
 
       {/* 8. 立志输入框 */}
       <div style={{ ...sectionStyle, background: 'rgba(52,199,89,0.05)', border: '1px solid rgba(52,199,89,0.2)' }}>
-        <div style={{ ...sectionTitle, color: '#34c759' }}>✍️ 我的立志</div>
+        <div style={{ ...sectionTitle, color: '#34c759' }}>✍️ <AutoText>我的立志</AutoText></div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>
           {char.type === '警戒' ? `以${char.name}为警戒，今天我立志：`
             : char.type === '混合' ? `效法${char.name}的长处、以其失败为警戒，今天我立志：`
@@ -611,7 +615,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
           }}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, gap: 8, alignItems: 'center' }}>
-          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}>✅ 已存入灵修日记</span>}
+          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}><AutoText>✅ 已存入灵修日记</AutoText></span>}
           {user ? (
             <button
               onClick={handleSaveCommitment}
@@ -622,10 +626,10 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
                 padding: '7px 16px', cursor: 'pointer',
               }}
             >
-              {savingCommitment ? '保存中...' : '📔 存入灵修日记'}
+              {savingCommitment ? <AutoText>保存中...</AutoText> : <AutoText>📔 存入灵修日记</AutoText>}
             </button>
           ) : (
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>登录后可保存立志</span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}><AutoText>登录后可保存立志</AutoText></span>
           )}
         </div>
       </div>
@@ -952,7 +956,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
                   borderRadius: 20, padding: '5px 14px', color: '#e0d4ff', fontSize: 13,
                   cursor: 'pointer', fontWeight: 600,
                 }}>
-                  {c.name} <span style={{ fontSize: 11, opacity: 0.6, fontWeight: 400 }}>{c.en}</span>
+                  {dispName(c)} <span style={{ fontSize: 11, opacity: 0.6, fontWeight: 400 }}>{dispSub(c)}</span>
                 </button>
               ))}
             </div>

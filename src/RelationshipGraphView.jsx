@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { API_BASE } from './api'
 import { getRuntimeLang } from './i18n/runtime'
 import { MIRROR_CHARACTERS } from './mirrorData'
+import { AutoText } from './autoTranslate'
 
 // 圣经人物关系图谱 —— 无第三方依赖的力导向图（SVG + requestAnimationFrame）
 // 数据来源：GET /api/characters/knowledge-graph
@@ -46,7 +47,7 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
   const [error, setError] = useState('')
   const [focusInput, setFocusInput] = useState(initialFocus)
   const [focus, setFocus] = useState(initialFocus)
-  const [depth, setDepth] = useState(initialFocus ? 2 : 1)
+  const [depth, setDepth] = useState(1)
   const [typeFilter, setTypeFilter] = useState('all')
   const [selected, setSelected] = useState(null)
 
@@ -222,7 +223,7 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
     rerender()
   }, [size.w, size.h, rerender])
 
-  const submitFocus = (val) => { setFocus(val.trim()); setDepth(val.trim() ? 2 : 1) }
+  const submitFocus = (val) => { setFocus(val.trim()) }
 
   const { nodes, edges } = simRef.current
   const selId = selected?.id
@@ -243,7 +244,7 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
   const selCard = selected ? resolveCard(selected) : null
   const v = viewRef.current
   const labelCut = nodes.length > 120 ? 4 : 2
-  const nm = (node) => en ? (node.englishName || node.nameEn || node.name) : (node.chineseName || node.name)
+  const nm = (node) => { if (!en) return node.chineseName || node.name; const cc = resolveCard(node); return (cc && cc.en) || node.englishName || node.nameEn || node.name }
 
   return (
     <div style={{ padding: '16px 16px 0', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -261,6 +262,14 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
             style={{ flex: 1, minWidth: 120, padding: '7px 11px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)', color: '#fff', fontSize: 13, outline: 'none' }} />
           <button type="submit" style={{ padding: '7px 12px', borderRadius: 8, border: 'none', background: '#007aff', color: '#fff', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>{en ? 'Focus' : '聚焦'}</button>
           {focus && <button type="button" onClick={() => { setFocusInput(''); submitFocus('') }} style={{ padding: '7px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 13, cursor: 'pointer' }}>{en ? 'Clear' : '全部'}</button>}
+          {focus && (
+            <select value={depth} onChange={(e) => setDepth(Number(e.target.value))} title={en ? 'Expansion hops' : '展开层数'}
+              style={{ padding: '7px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(30,30,40,0.9)', color: '#fff', fontSize: 13, cursor: 'pointer' }}>
+              <option value={1}>{en ? '1 hop' : '直接关系'}</option>
+              <option value={2}>{en ? '2 hops' : '2层'}</option>
+              <option value={3}>{en ? '3 hops' : '3层'}</option>
+            </select>
+          )}
         </form>
       </div>
 
@@ -338,7 +347,7 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>×</button>
             </div>
-            {selected.summary && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 8, lineHeight: 1.5 }}>{String(selected.summary).slice(0, 160)}</div>}
+            {selected.summary && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 8, lineHeight: 1.5 }}><AutoText>{String(selected.summary).slice(0, 160)}</AutoText></div>}
             {selCard && onOpenChar && (
               <button onClick={() => onOpenChar(selCard)} style={{ marginTop: 10, width: '100%', padding: '7px', borderRadius: 8, border: 'none', background: 'rgba(52,199,89,0.28)', color: '#7ee2a0', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>{en ? 'Open mirror card →' : '查看镜鉴卡片 →'}</button>
             )}
@@ -351,9 +360,9 @@ export default function RelationshipGraphView({ token, onBack, initialFocus = ''
                   return (
                   <div key={r.id} style={{ fontSize: 12, color: 'rgba(255,255,255,0.78)', padding: '3px 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                     <span style={{ color: 'rgba(255,255,255,0.45)' }}>{r.dir === 'out' ? '→ ' : '← '}</span>
-                    <span style={{ color: '#9ecbff' }}>{r.label}</span> · {(rc && onOpenChar)
-                      ? <span onClick={() => onOpenChar(rc)} style={{ cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 2 }}>{r.otherName}</span>
-                      : r.otherName}
+                    <span style={{ color: '#9ecbff' }}><AutoText>{r.label}</AutoText></span> · {(rc && onOpenChar)
+                      ? <span onClick={() => onOpenChar(rc)} style={{ cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 2 }}>{en && rc ? rc.en : r.otherName}</span>
+                      : <AutoText>{r.otherName}</AutoText>}
                   </div>
                 )})}
               </div>
