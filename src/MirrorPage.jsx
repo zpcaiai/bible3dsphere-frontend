@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useGlobalAudio, TTSButton as _TTSBtn, TTSFullBar as _TTSFullBar } from './useGlobalAudio.jsx'
 import { MIRROR_CHARACTERS, MIRROR_THEMES } from './mirrorData'
 import { saveJournal } from './api'
@@ -704,12 +704,25 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
   )
 }
 
-export default function MirrorPage({ user, token, guidance, onBack, initialView }) {
-  const [view, setView] = useState(initialView === 'graph' ? 'graph' : 'list') // 'list' | 'themes' | 'character' | 'theme' | 'graph'
-  const [selectedChar, setSelectedChar] = useState(null)
-  const [selectedTheme, setSelectedTheme] = useState(null)
-  const [returnView, setReturnView] = useState('list')
-  const [graphFocus, setGraphFocus] = useState('')
+export default function MirrorPage({ user, token, guidance, onBack, initialView, initialCharId, initialThemeId, initialGraphFocus, initialReturnView }) {
+  const [view, setView] = useState(() => {
+    if (initialView === 'character') return (initialCharId && MIRROR_CHARACTERS.some(c => c.id === initialCharId)) ? 'character' : 'list'
+    if (initialView === 'theme') return (initialThemeId && MIRROR_THEMES.some(t => t.id === initialThemeId)) ? 'theme' : 'list'
+    if (initialView === 'graph') return 'graph'
+    if (initialView === 'themes') return 'themes'
+    return 'list'
+  }) // 'list' | 'themes' | 'character' | 'theme' | 'graph'
+  const [selectedChar, setSelectedChar] = useState(() => initialCharId ? (MIRROR_CHARACTERS.find(c => c.id === initialCharId) || null) : null)
+  const [selectedTheme, setSelectedTheme] = useState(() => initialThemeId ? (MIRROR_THEMES.find(t => t.id === initialThemeId) || null) : null)
+  const [returnView, setReturnView] = useState(initialReturnView || 'list')
+  const [graphFocus, setGraphFocus] = useState(initialGraphFocus || '')
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem('nav-mirror', JSON.stringify({
+        view, charId: selectedChar?.id ?? null, themeId: selectedTheme?.id ?? null, graphFocus, returnView,
+      }))
+    } catch { /* ignore */ }
+  }, [view, selectedChar, selectedTheme, graphFocus, returnView])
   const [search, setSearch] = useState('')
   const [filterEra, setFilterEra] = useState('全部')
   const [filterRole, setFilterRole] = useState('全部')

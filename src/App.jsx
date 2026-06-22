@@ -131,7 +131,22 @@ function AppContent() {
   const [savingJournal, setSavingJournal] = useState(false)
   const [dailySnapshot, setDailySnapshot] = useState(null)
   const [emotionTrajectory, setEmotionTrajectory] = useState(null)
-  const [activePanel, setActivePanel] = useState('sphere')
+  const [navRestore] = useState(() => {
+    try {
+      const ts = Number(window.sessionStorage.getItem('lang-switch') || 0)
+      if (ts && Date.now() - ts < 15000) {
+        const panel = window.sessionStorage.getItem('nav-activePanel')
+        let mirror = null
+        try { mirror = JSON.parse(window.sessionStorage.getItem('nav-mirror') || 'null') } catch { /* ignore */ }
+        window.sessionStorage.removeItem('lang-switch')
+        return { panel: panel || null, mirror }
+      }
+    } catch { /* ignore */ }
+    return null
+  })
+  const [activePanel, setActivePanel] = useState(navRestore?.panel || 'sphere')
+  useEffect(() => { try { window.sessionStorage.setItem('nav-activePanel', activePanel) } catch { /* ignore */ } }, [activePanel])
+  const _mirrorRestore = (navRestore && (navRestore.panel === 'mirror' || navRestore.panel === 'mirror-graph')) ? navRestore.mirror : null
   const [pendingPanel, setPendingPanel] = useState(null)
   const [loginMessage, setLoginMessage] = useState('')
   const [gardenClickCount, setGardenClickCount] = useState(0)
@@ -2764,7 +2779,11 @@ function AppContent() {
                 user={user}
                 token={getToken()}
                 guidance={guidance}
-                initialView={activePanel === 'mirror-graph' ? 'graph' : 'list'}
+                initialView={_mirrorRestore?.view || (activePanel === 'mirror-graph' ? 'graph' : 'list')}
+                initialCharId={_mirrorRestore?.charId}
+                initialThemeId={_mirrorRestore?.themeId}
+                initialGraphFocus={_mirrorRestore?.graphFocus}
+                initialReturnView={_mirrorRestore?.returnView}
                 onBack={() => setActivePanel('sphere')}
               />
             </Suspense>

@@ -21,7 +21,7 @@ function applyLangAndReload(next) {
   }
   // 整页刷新，确保所有模块（含顶层常量文案）在新语言下重建
   // 置 flag：刷新后让 App 恢复到切换前的 tab（在当前 tab 自由切换语言）
-  try { window.sessionStorage.setItem('lang-switch', '1') } catch { /* ignore */ }
+  try { window.sessionStorage.setItem('lang-switch', String(Date.now())) } catch { /* ignore */ }
   if (typeof window !== 'undefined') window.location.reload()
 }
 
