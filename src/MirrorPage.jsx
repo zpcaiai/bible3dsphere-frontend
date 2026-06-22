@@ -276,7 +276,7 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
           fontSize: 13, color: 'rgba(255,255,255,0.88)', lineHeight: 1.75,
           maxWidth: 480 }}>
           {loading ? (
-            <span style={{ color: 'rgba(255,255,255,0.4)' }}>加载中…</span>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{getRuntimeLang() === 'en' ? 'Loading…' : '加载中…'}</span>
           ) : text ? (
             <>
               <span>{displayText}</span>
@@ -293,7 +293,7 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
               </a>
             </>
           ) : (
-            <span style={{ color: 'rgba(255,255,255,0.4)' }}>点击上方链接在 wd.bible 查看 ↗</span>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>{getRuntimeLang() === 'en' ? 'Open the link above to view on wd.bible ↗' : '点击上方链接在 wd.bible 查看 ↗'}</span>
           )}
         </div>
       )}
@@ -352,6 +352,7 @@ const TTSBar = _TTSFullBar
 const SectionTTSButton = _TTSBtn
 
 function CharacterDetail({ char: _rawChar, onBack, user, token }) {
+  const L = getRuntimeLang()
   const char = useLocalizedCard(_rawChar)
   const [commitment, setCommitment] = useState('')
   const [savingCommitment, setSavingCommitment] = useState(false)
@@ -575,7 +576,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
               border: '1px solid rgba(232,176,75,0.42)', borderRadius: 10, color: '#e8b04b',
               fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex',
               alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            🗺️ 点开地图 · 跟随{char.name}的脚踪（{journey.stops.length}站）
+            {L === 'en' ? `🗺️ Open map · follow ${dispName(char)}'s journey (${journey.stops.length} stops)` : `🗺️ 点开地图 · 跟随${char.name}的脚踪（${journey.stops.length}站）`}
           </button>
         </div>
       )}
@@ -599,14 +600,18 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       <div style={{ ...sectionStyle, background: 'rgba(52,199,89,0.05)', border: '1px solid rgba(52,199,89,0.2)' }}>
         <div style={{ ...sectionTitle, color: '#34c759' }}>✍️ <AutoText>我的立志</AutoText></div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>
-          {char.type === '警戒' ? `以${char.name}为警戒，今天我立志：`
-            : char.type === '混合' ? `效法${char.name}的长处、以其失败为警戒，今天我立志：`
-            : `效法${char.name}，今天我立志：`}
+          {L === 'en'
+            ? (char.type === '警戒' ? `Take ${dispName(char)} as a warning — today I resolve to:`
+              : char.type === '混合' ? `Follow ${dispName(char)}'s strengths and heed his failings — today I resolve to:`
+              : `Following ${dispName(char)}, today I resolve to:`)
+            : (char.type === '警戒' ? `以${char.name}为警戒，今天我立志：`
+              : char.type === '混合' ? `效法${char.name}的长处、以其失败为警戒，今天我立志：`
+              : `效法${char.name}，今天我立志：`)}
         </div>
         <textarea
           value={commitment}
           onChange={e => setCommitment(e.target.value)}
-          placeholder={char.type === '警戒' ? `例：不像${char.name}那样，当面对试探时，我要警醒祷告，远离罪...` : `例：像${char.name}一样，当面对恐惧时，我要先求问神，再行动...`}
+          placeholder={L === 'en' ? (char.type === '警戒' ? `e.g. Unlike ${dispName(char)}, when tempted I will watch, pray, and flee from sin...` : `e.g. Like ${dispName(char)}, when afraid I will first seek God, then act...`) : (char.type === '警戒' ? `例：不像${char.name}那样，当面对试探时，我要警醒祷告，远离罪...` : `例：像${char.name}一样，当面对恐惧时，我要先求问神，再行动...`)}
           style={{
             width: '100%', minHeight: 80, background: 'rgba(255,255,255,0.07)',
             border: '1px solid rgba(52,199,89,0.3)', borderRadius: 8, color: '#fff',
@@ -644,13 +649,14 @@ const quoteStyle = { borderLeft: '3px solid #34c759', paddingLeft: 14, color: 'r
 function Section({ title, children }) {
   return (
     <div style={sectionStyle}>
-      <div style={sectionTitle}>{title}</div>
+      <div style={sectionTitle}><AutoText>{title}</AutoText></div>
       <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.7 }}>{children}</div>
     </div>
   )
 }
 
 function ThemeDetail({ theme, characters, onBack, onCharClick }) {
+  const L = getRuntimeLang()
   const themeChars = characters.filter(c => theme.characterIds.includes(c.id))
   return (
     <div style={{ padding: '0 0 40px' }}>
@@ -666,31 +672,31 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
 
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>{theme.emoji}</div>
-        <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}>{theme.title}</h2>
+        <h2 style={{ margin: 0, fontSize: 26, color: '#fff' }}><AutoText>{theme.title}</AutoText></h2>
         <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 8, fontStyle: 'italic' }}>
-          {theme.scripture}
+          <AutoText>{theme.scripture}</AutoText>
         </div>
       </div>
 
-      <Section title="导言">{theme.intro}</Section>
+      <Section title="导言"><AutoText>{theme.intro}</AutoText></Section>
 
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}>相关人物</div>
+        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}><AutoText>相关人物</AutoText></div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
           {themeChars.map(c => <CharacterCard key={c.id} char={c} onClick={onCharClick} />)}
         </div>
       </div>
 
-      <Section title="📌 主题总结">{theme.summary}</Section>
+      <Section title="📌 主题总结"><AutoText>{theme.summary}</AutoText></Section>
 
       <div style={sectionStyle}>
-        <div style={sectionTitle}>🔑 如何应用</div>
+        <div style={sectionTitle}>🔑 <AutoText>如何应用</AutoText></div>
         {theme.howToApply.map((step, i) => (
           <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
             <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#007aff',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{i+1}</span>
-            <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.6 }}>{step}</span>
+            <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.6 }}><AutoText>{step}</AutoText></span>
           </div>
         ))}
       </div>
@@ -711,6 +717,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
   const [sort, setSort] = useState('era')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [filterKingdom, setFilterKingdom] = useState('全部')
+  const L = getRuntimeLang()
 
   const KINGDOMS = ['全部', '统一王国', '南国犹大', '北国以色列', '外邦君王']
   // Succession order IDs for kings
@@ -848,7 +855,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </button>
-          <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}>主题合集</h2>
+          <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}><AutoText>主题合集</AutoText></h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 14 }}>
           {MIRROR_THEMES.map(t => (
@@ -861,10 +868,10 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
             >
               <div style={{ fontSize: 32, marginBottom: 8 }}>{t.emoji}</div>
-              <div style={{ fontWeight: 700, fontSize: 16, color: '#fff', marginBottom: 6 }}>{t.title}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{t.intro.slice(0, 60)}…</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: '#fff', marginBottom: 6 }}><AutoText>{t.title}</AutoText></div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}><AutoText>{t.intro.slice(0, 60)}</AutoText>…</div>
               <div style={{ marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
-                {t.characterIds.length} 位人物
+                {t.characterIds.length} {L === 'en' ? 'people' : '位人物'}
               </div>
             </div>
           ))}
@@ -892,7 +899,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
           background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)',
           cursor: 'pointer', fontSize: 14, marginBottom: sidebarOpen ? 12 : 0, padding: 0,
           whiteSpace: 'nowrap'
-        }}>{sidebarOpen ? '◀ 筛选' : <span style={{ writingMode: 'vertical-rl', letterSpacing: 2, fontSize: 12 }}>筛选</span>}</button>
+        }}>{sidebarOpen ? (L === 'en' ? '◀ Filters' : '◀ 筛选') : <span style={{ writingMode: 'vertical-rl', letterSpacing: 2, fontSize: 12 }}>{L === 'en' ? 'Filters' : '筛选'}</span>}</button>
         {sidebarOpen && (
           <>
             <FilterGroup label="时代" value={filterEra} options={ERAS} onChange={setFilterEra} />
@@ -907,7 +914,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
               style={{ width: '100%', marginTop: 8, padding: '6px 8px', borderRadius: 8, border: 'none',
                 background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 12,
                 whiteSpace: 'nowrap' }}>
-              重置筛选
+              {L === 'en' ? 'Reset' : '重置筛选'}
             </button>
           </>
         )}
@@ -919,7 +926,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
         <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
           <input
             value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="搜索人物"
+            placeholder={L === 'en' ? 'Search people' : '搜索人物'}
             style={{ flex: 1, minWidth: 160, padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)',
               background: 'rgba(255,255,255,0.08)', color: '#fff', fontSize: 14, outline: 'none' }}
           />
@@ -927,17 +934,17 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
             padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)',
             background: 'rgba(30,30,40,0.9)', color: '#fff', fontSize: 13, cursor: 'pointer'
           }}>
-            <option value="era">按年代</option>
-            <option value="name">按名字</option>
+            <option value="era">{L === 'en' ? 'By era' : '按年代'}</option>
+            <option value="name">{L === 'en' ? 'By name' : '按名字'}</option>
           </select>
           <button onClick={() => setView('themes')} style={{
             padding: '8px 14px', borderRadius: 8, border: 'none',
             background: '#007aff', color: '#fff', fontSize: 13, cursor: 'pointer', fontWeight: 600
-          }}>主题合集 ✨</button>
+          }}>{L === 'en' ? 'Themes ✨' : '主题合集 ✨'}</button>
           <button onClick={() => setView('graph')} style={{
             padding: '8px 14px', borderRadius: 8, border: 'none',
             background: '#5856d6', color: '#fff', fontSize: 13, cursor: 'pointer', fontWeight: 600
-          }}>关系图谱 🕸</button>
+          }}>{L === 'en' ? 'Graph 🕸' : '关系图谱 🕸'}</button>
         </div>
 
         {recommendedChars.length > 0 && (
@@ -947,7 +954,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
             border: '1px solid rgba(88,86,214,0.35)', borderRadius: 12,
           }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: '#c4b5fd', marginBottom: 10, letterSpacing: '0.05em' }}>
-              ✨ 根据你的情绪，推荐认识这几位圣经人物
+              {L === 'en' ? '✨ Based on your mood, here are a few people to meet' : '✨ 根据你的情绪，推荐认识这几位圣经人物'}
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {recommendedChars.map(c => (
@@ -964,7 +971,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView 
         )}
 
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>
-          共 {filtered.length} 位人物
+          {L === 'en' ? `${filtered.length} people` : `共 ${filtered.length} 位人物`}
         </div>
 
         <div style={{
@@ -983,7 +990,7 @@ function FilterGroup({ label, value, options, onChange }) {
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 5, fontWeight: 600, letterSpacing: 1 }}>
-        {label}
+        <AutoText>{label}</AutoText>
       </div>
       {options.map(o => (
         <div key={o} onClick={() => onChange(o)} style={{
@@ -991,7 +998,7 @@ function FilterGroup({ label, value, options, onChange }) {
           color: value === o ? '#fff' : 'rgba(255,255,255,0.5)',
           background: value === o ? 'rgba(0,122,255,0.3)' : 'transparent',
           marginBottom: 2, whiteSpace: 'nowrap'
-        }}>{o}</div>
+        }}><AutoText>{o}</AutoText></div>
       ))}
     </div>
   )
