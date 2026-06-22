@@ -1614,24 +1614,25 @@ function AppContent() {
             <div className="mobile-card-stack">
 
               {/* 圣经地图 / 语音通话 快捷入口（置于今日灵命快照上方）*/}
-              <div style={{ display: 'flex', gap: '5px', margin: '0 0 4px' }}>
+              <div style={{ display: 'flex', gap: '4px', margin: '0 0 4px' }}>
                 {[
                   { icon: '🎙', label: '语音通话', panel: 'voice' },
                   { icon: '💬', label: '圣徒相通', panel: 'communion' },
+                  { icon: '🕸', label: '人物图谱', panel: 'mirror-graph' },
                   { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
                   { icon: '🚶', label: '天路历程', url: 'https://pilgrims.holiness.uk/' },
                 ].map((item) => (
                   <button key={item.panel || item.url}
                     onClick={() => item.url ? window.open(item.url, '_blank', 'noopener,noreferrer') : handlePanelSwitch(item.panel)}
                     style={{
-                      flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(3px, 1vw, 6px)',
-                      fontSize: 'clamp(10px, 2.7vw, 13px)', padding: 'clamp(6px, 1.7vw, 9px) clamp(2px, 1vw, 8px)',
+                      flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(2px, 0.8vw, 6px)',
+                      fontSize: 'clamp(9px, 2.3vw, 13px)', padding: 'clamp(5px, 1.5vw, 9px) clamp(1px, 0.8vw, 8px)',
                       background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
                       borderRadius: '12px', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontFamily: 'inherit',
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    <span style={{ fontSize: 'clamp(13px, 3.4vw, 16px)' }}>{item.icon}</span>{item.label}
+                    <span style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>{item.icon}</span>{item.label}
                   </button>
                 ))}
               </div>
@@ -2756,13 +2757,14 @@ function AppContent() {
         )}
 
         {/* 镜鉴人物 */}
-        {activePanel === 'mirror' && (
+        {(activePanel === 'mirror' || activePanel === 'mirror-graph') && (
           <div className="page-overlay">
             <Suspense fallback={null}>
               <MirrorPage
                 user={user}
                 token={getToken()}
                 guidance={guidance}
+                initialView={activePanel === 'mirror-graph' ? 'graph' : 'list'}
                 onBack={() => setActivePanel('sphere')}
               />
             </Suspense>

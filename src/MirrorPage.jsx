@@ -694,8 +694,8 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
   )
 }
 
-export default function MirrorPage({ user, token, guidance, onBack }) {
-  const [view, setView] = useState('list') // 'list' | 'themes' | 'character' | 'theme' | 'graph'
+export default function MirrorPage({ user, token, guidance, onBack, initialView }) {
+  const [view, setView] = useState(initialView === 'graph' ? 'graph' : 'list') // 'list' | 'themes' | 'character' | 'theme' | 'graph'
   const [selectedChar, setSelectedChar] = useState(null)
   const [selectedTheme, setSelectedTheme] = useState(null)
   const [search, setSearch] = useState('')
