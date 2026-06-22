@@ -50,10 +50,10 @@ describe('PlanetHome', () => {
   })
 
   it('closes for close chips and the back button', () => {
-    const { getByText, onClose, go } = renderPlanetHome()
+    const { getByText, container, onClose, go } = renderPlanetHome()
 
     fireEvent.click(getByText('本周牧养小结 ›'))
-    fireEvent.click(getByText('‹'))
+    fireEvent.click(container.querySelector('.app-back-btn'))
 
     expect(onClose).toHaveBeenCalledTimes(2)
     expect(go).not.toHaveBeenCalled()
