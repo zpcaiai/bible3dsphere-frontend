@@ -1,6 +1,15 @@
 // 自动抽取的「中文原文 → 英文」映射 / auto-extracted zh→en map.
 // 由 scripts/i18n_autoen_fill.mjs 机翻补全；缺失键回退显示中文原文。
 export default {
+  "成长曲线 · 纵向": "Growth curve · longitudinal",
+  "近8周": "Last 8 weeks",
+  "近12周": "Last 12 weeks",
+  "近一年": "Last year",
+  "需留意": "Watch",
+  "高负荷": "High load",
+  "里程碑": "Milestones",
+  "主要成长领域": "Main growth areas",
+  "还没有足够的成长记录来绘制曲线。做一次诊断 / 操练 / 读经后，这里会显示你的轨迹。": "Not enough growth records yet to draw a curve. After a diagnosis / practice / Bible reading, your trajectory will appear here.",
   "从这里开始": "Start Here",
   "用几分钟做一次基线诊断，系统会据此为你生成一条个性化的成长路径——而不是让你在众多入口里迷路。": "Take a few minutes for a baseline assessment, and the system will generate a personalized growth path for you — instead of leaving you lost among many entry points.",
   "此刻你的处境 / 挣扎": "Your situation / struggle right now",

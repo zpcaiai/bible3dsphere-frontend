@@ -2096,6 +2096,11 @@ export async function fetchFormationNext(token) {
   const res = await fetch(`${API_BASE}/formation/next`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
   const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '加载失败'); return d
 }
+export async function fetchFormationCurve(token, days = 90, bucket = 'week') {
+  const qs = new URLSearchParams({ days: String(days), bucket })
+  const res = await fetch(`${API_BASE}/formation/curve?${qs.toString()}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '加载失败'); return d
+}
 export async function postFormationEvent(payload, token) {
   const res = await fetch(`${API_BASE}/formation/event`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(payload) })
   const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '写入失败'); return d
