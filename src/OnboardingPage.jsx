@@ -3,7 +3,7 @@ import BackButton from './BackButton'
 import { getToken } from './auth'
 import { t } from './i18n/runtime'
 import { AutoText } from './autoTranslate'
-import { postFormationBaseline } from './api'
+import { postFormationBaseline, postFormationEvent } from './api'
 
 // 统一入门漏斗 / Onboarding —— 一次基线诊断 → 个性化成长路径（接 /api/formation/baseline）
 // i18n：静态文案走 t()；后端动态/AI 文案走 <AutoText>。
@@ -136,7 +136,7 @@ export default function OnboardingPage({ onBack, onNavigate }) {
               {s.action && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}>
                 <AutoText>{s.action}</AutoText></div>}
               {onNavigate && s.route && (
-                <button onClick={() => onNavigate(s.route)}
+                <button onClick={() => { try { postFormationEvent({ source: 'next_step', event_type: 'adopted', domain: s.domain || s.kind, title: '采纳建议 · ' + (s.title || ''), severity: 'green' }, getToken()) } catch (e) {} onNavigate(s.route) }}
                   style={{ marginTop: 10, padding: '8px 14px', background: i === 0 ? ACCENT : 'rgba(255,255,255,0.08)',
                     color: i === 0 ? '#06281d' : '#fff', border: 'none', borderRadius: 9, fontSize: 13,
                     fontWeight: 600, cursor: 'pointer' }}>
