@@ -1,6 +1,7 @@
 // 自动抽取的「中文原文 → 英文」映射 / auto-extracted zh→en map.
 // 由 scripts/i18n_autoen_fill.mjs 机翻补全；缺失键回退显示中文原文。
 export default {
+  "可多选": "Multi-select",
   "本系统提供辅助性的世界观辨识与生命叙事重写，不是最终定论。最终方向需要圣经、祷告、教会共同体与牧者印证；如遇危机请立即寻求帮助与专业支持。": "This tool offers supportive worldview discernment and life-narrative rewriting—not a final verdict. The final direction needs Scripture, prayer, the church community, and pastoral confirmation. If you are in crisis, please seek help and professional support right away.",
   "请先登录后再使用": "Please sign in first.",
   "请写下旧叙事，或选择一个偶像类别": "Write down an old narrative, or choose an idol category.",

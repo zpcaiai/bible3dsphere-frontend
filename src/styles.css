@@ -5201,3 +5201,49 @@ canvas {
 .app-back-btn:hover, .checkin-back-btn:hover { background: rgba(255,255,255,0.24); }
 .app-back-btn:active, .checkin-back-btn:active { transform: scale(0.92); }
 .app-back-btn > svg, .checkin-back-btn > svg { width: 22px; height: 22px; }
+
+/* ───────── 耶路撒冷数字孪生沙盘 (JerusalemSandbox) ─────────
+   修复：此前 .jeru-* 布局样式缺失，导致 .jeru-map 高度为 0、地图区域全黑。下面补齐布局与样式。 */
+.jeru{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:#0b1220;color:#e8eaf0;font-family:inherit;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.jeru .biblemap-head{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:#0b1220;z-index:6}
+.jeru .biblemap-title h2{margin:0;font-size:16px;font-weight:800}
+.jeru .biblemap-title p{margin:2px 0 0;font-size:11.5px;color:rgba(255,255,255,.5)}
+.jeru-timeline{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);-webkit-overflow-scrolling:touch}
+.jeru-era{flex:0 0 auto;display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 10px;border-radius:10px;cursor:pointer;font-family:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.78);white-space:nowrap}
+.jeru-era .y{font-size:10px;color:#e8b04b;font-weight:700;line-height:1.2}
+.jeru-era .l{font-size:12px;line-height:1.2}
+.jeru-era.on{background:rgba(232,176,75,.16);border-color:rgba(232,176,75,.55);color:#ffd98a}
+.jeru-stage{position:relative;flex:0 0 auto;height:clamp(320px,56vh,600px);background:#0e1726;overflow:hidden}
+.jeru-map{position:absolute;inset:0;width:100%;height:100%}
+.jeru-map canvas{outline:none}
+.jeru-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:20px}
+.jeru-loading{background:rgba(0,0,0,.5);padding:12px 18px;border-radius:12px;font-size:14px}
+.jeru-err{background:rgba(0,0,0,.62);padding:16px 20px;border-radius:12px;max-width:440px}
+.jeru-err .dim{color:rgba(255,255,255,.55);font-size:12px;margin-top:6px;line-height:1.6}
+.jeru-controls{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:8px;z-index:5}
+.jeru-controls button{padding:7px 12px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12.5px;background:rgba(18,24,38,.82);border:1px solid rgba(255,255,255,.16);color:#e8eaf0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.jeru-controls button.primary{background:rgba(232,176,75,.92);border-color:#e8b04b;color:#1a1206;font-weight:700}
+.jeru-controls button.on{background:rgba(120,160,255,.28);border-color:rgba(120,160,255,.6);color:#cfe0ff}
+.jeru-erainfo{flex:0 0 auto;padding:10px 14px;border-top:1px solid rgba(232,176,75,.33);background:rgba(232,176,75,.06)}
+.jeru-erainfo-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.jeru-erainfo-h strong{font-size:14px;color:#ffd98a}
+.jeru-erainfo-h .en{font-size:11.5px;color:rgba(255,255,255,.5)}
+.jeru-erainfo-h .ref{font-size:11.5px;color:#9ad0ff}
+.jeru-erainfo p{margin:0;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.78)}
+.jeru-passion{flex:0 0 auto;padding:10px 14px;border-top:1px solid rgba(255,255,255,.08);background:#0e1726}
+.jeru-passion-h{font-size:12.5px;font-weight:700;color:#e8b04b;margin-bottom:8px}
+.jeru-stops{display:flex;flex-wrap:wrap;gap:6px}
+.jeru-stop{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 10px;border-radius:9px;cursor:pointer;font-family:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.78);white-space:nowrap}
+.jeru-stop .d{font-size:10px;color:#9ad0ff;line-height:1.2}
+.jeru-stop .t{font-size:12px;line-height:1.2}
+.jeru-stop.on{background:rgba(120,160,255,.2);border-color:rgba(120,160,255,.55);color:#cfe0ff}
+.jeru-stopdetail{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.jeru-stopdetail .h,.jeru-locdetail .h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.jeru-stopdetail .ref,.jeru-locdetail .ref{font-size:11.5px;color:#9ad0ff}
+.jeru-stopdetail strong,.jeru-locdetail strong{font-size:13.5px;color:#ffd98a}
+.jeru-stopdetail p{margin:0;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.78)}
+.jeru-locdetail{position:relative;flex:0 0 auto;margin:10px 14px 0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.jeru-locdetail .en{font-size:11.5px;color:rgba(255,255,255,.5)}
+.jeru-locdetail p{margin:4px 0 0;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.8)}
+.jeru-locdetail .x{position:absolute;top:8px;right:10px;width:26px;height:26px;border-radius:8px;cursor:pointer;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:15px;line-height:1}
+.jeru-foot{flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom) + 14px);font-size:11px;color:rgba(255,255,255,.42);line-height:1.6;border-top:1px solid rgba(255,255,255,.06)}

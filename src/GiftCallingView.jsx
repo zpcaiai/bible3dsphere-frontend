@@ -319,12 +319,16 @@ function ComboField({ label, value, onChange, placeholder, options = [], multili
     document.addEventListener('mousedown', onDoc)
     return () => document.removeEventListener('mousedown', onDoc)
   }, [open])
+  function isOn(opt) {
+    return (value || '').split(/[；;，,、\n]/).map(x => x.trim()).filter(Boolean).includes(t(opt))
+  }
   function pick(opt) {
     const cur = (value || '').trim()
     const parts = cur ? cur.split(/[；;，,、\n]/).map(x => x.trim()).filter(Boolean) : []
     const v = t(opt)
-    if (!parts.includes(v)) onChange(cur ? cur + sep + v : v)
-    setOpen(false)
+    const i = parts.indexOf(v)
+    if (i >= 0) { parts.splice(i, 1); onChange(parts.join(sep)) }
+    else onChange(cur ? cur + sep + v : v)
   }
   return (
     <div style={{ position: 'relative' }} ref={wrapRef}>
@@ -338,14 +342,19 @@ function ComboField({ label, value, onChange, placeholder, options = [], multili
         )}
         {open && options.length > 0 && (
           <div style={comboPanel}>
-            {options.map(opt => (
-              <div key={opt} style={comboItem}
-                onMouseDown={e => e.preventDefault()}
-                onClick={() => pick(opt)}
-                onMouseEnter={e => { e.currentTarget.style.background = ACCENT_DIM }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
-              >{t(opt)}</div>
-            ))}
+            <div style={{ padding: '2px 10px 6px', fontSize: 10.5, color: 'rgba(245,181,63,0.85)' }}>{t('可多选')}</div>
+            {options.map(opt => {
+              const on = isOn(opt)
+              return (
+                <div key={opt}
+                  style={{ ...comboItem, display: 'flex', gap: 6, alignItems: 'flex-start', color: on ? ACCENT : 'rgba(255,255,255,0.85)', background: on ? ACCENT_DIM : 'transparent' }}
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={() => pick(opt)}
+                  onMouseEnter={e => { e.currentTarget.style.background = ACCENT_DIM }}
+                  onMouseLeave={e => { e.currentTarget.style.background = on ? ACCENT_DIM : 'transparent' }}
+                ><span style={{ flex: '0 0 12px', color: ACCENT }}>{on ? '✓' : ''}</span>{t(opt)}</div>
+              )
+            })}
           </div>
         )}
       </div>
