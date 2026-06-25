@@ -2101,6 +2101,16 @@ export async function fetchFormationCurve(token, days = 90, bucket = 'week') {
   const res = await fetch(`${API_BASE}/formation/curve?${qs.toString()}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
   const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '加载失败'); return d
 }
+
+// ── 关怀可见性同意 (/api/care/my-consent) ──
+export async function fetchCareConsent(token) {
+  const res = await fetch(`${API_BASE}/care/my-consent`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '加载失败'); return d
+}
+export async function saveCareConsent(share, token) {
+  const res = await fetch(`${API_BASE}/care/my-consent`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ share_formation_flags: share }) })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '保存失败'); return d
+}
 export async function postFormationEvent(payload, token) {
   const res = await fetch(`${API_BASE}/formation/event`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(payload) })
   const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '写入失败'); return d
