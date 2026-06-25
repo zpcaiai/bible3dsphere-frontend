@@ -1836,6 +1836,10 @@ export async function fetchFuelMeta() {
 export async function fetchFuelPack(key, ai = 0) {
   const res = await fetch(`${API_BASE}/fuel/pack/${key}?ai=${ai}`); if (!res.ok) throw new Error('加载失败'); return res.json()
 }
+export async function fetchRecommendedFuel(token) {
+  const res = await fetch(`${API_BASE}/formation/recommend`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '加载失败'); return d
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 双属灵 Agent / Spiritual Agents (司布真 / 钟马田)
