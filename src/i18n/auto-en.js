@@ -1,6 +1,14 @@
 // 自动抽取的「中文原文 → 英文」映射 / auto-extracted zh→en map.
 // 由 scripts/i18n_autoen_fill.mjs 机翻补全；缺失键回退显示中文原文。
 export default {
+  "群体": "Community",
+  "社区": "Community feed",
+  "小组": "Groups",
+  "每日灵修": "Daily devotion",
+  "晨露": "Morning dew",
+  "个人灵修": "Personal devotion",
+  "每日一问": "Daily question",
+  "2分钟灵修": "2-min devotion",
   "成长曲线 · 纵向": "Growth curve · longitudinal",
   "近8周": "Last 8 weeks",
   "近12周": "Last 12 weeks",

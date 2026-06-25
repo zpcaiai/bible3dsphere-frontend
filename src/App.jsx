@@ -46,6 +46,8 @@ const PersonalDevotionPage = lazyWithRetry(() => import('./PersonalDevotionPage'
 const ReadingPlanPage = lazyWithRetry(() => import('./ReadingPlanPage'))
 const MemoryVersePage = lazyWithRetry(() => import('./MemoryVersePage'))
 const MorningDewPage = lazyWithRetry(() => import('./MorningDewPage'))
+const DevotionHubPage = lazyWithRetry(() => import('./DevotionHubPage'))
+const CommunityHubPage = lazyWithRetry(() => import('./CommunityHubPage'))
 const EngineeringPage = lazyWithRetry(() => import('./EngineeringPage'))
 const BibleMapsPage = lazyWithRetry(() => import('./BibleMapsPage'))
 const BibleAtlasPage = lazyWithRetry(() => import('./features/bible-map/BibleAtlasPage'))
@@ -1638,7 +1640,7 @@ function AppContent() {
               <div style={{ display: 'flex', gap: '4px', margin: '0 0 4px' }}>
                 {[
                   { icon: '🎙', label: '语音通话', panel: 'voice' },
-                  { icon: '💬', label: '圣徒相通', panel: 'communion' },
+                  { icon: '👥', label: '群体', panel: 'community-hub' },
                   { icon: '🕸', label: '人物图谱', panel: 'mirror-graph' },
                   { icon: '🗺', label: '圣经地图', panel: 'bible-maps' },
                   { icon: '🚶', label: '天路历程', url: 'https://pilgrims.holiness.uk/' },
@@ -1702,9 +1704,8 @@ function AppContent() {
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {[
                       { icon: '🌱', label: '开始', panel: 'onboarding' },
-                      { icon: '🔍', label: '每日一问', panel: 'soul-question' },
+                      { icon: '🕊', label: '灵修', panel: 'devotion-hub' },
                       { icon: '🧭', label: '世界观', panel: 'worldview' },
-                      { icon: '⏱', label: '2分钟灵修', action: () => setShowQuickDevotion(true) },
                       { icon: '📊', label: '灵命图谱', panel: 'growth-map' },
                       { icon: '📈', label: '灵命成长', panel: 'engineering' },
                       { icon: '🤝', label: '属灵伙伴', panel: 'partner' },
@@ -2916,6 +2917,23 @@ function AppContent() {
                   setActivePanel(map[route] || 'sphere')
                 }}
               />
+            </Suspense>
+          </div>
+        )}
+
+        {activePanel === 'devotion-hub' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <DevotionHubPage user={user} onBack={() => setActivePanel('sphere')} />
+            </Suspense>
+          </div>
+        )}
+
+        {activePanel === 'community-hub' && (
+          <div className="page-overlay">
+            <Suspense fallback={null}>
+              <CommunityHubPage user={user} onBack={() => setActivePanel('sphere')}
+                onOpenPanel={(pnl) => setActivePanel(pnl)} onOpenVoice={() => setActivePanel('voice')} />
             </Suspense>
           </div>
         )}
