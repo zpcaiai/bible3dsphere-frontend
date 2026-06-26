@@ -234,6 +234,15 @@ function BronzeAltar({ c, onSel }: { c: Vec2; onSel: SelFn }) {
       ))}
       {/* 坛坡（由南向北） */}
       <mesh position={[0, 1.5 * C, 12 * C]} rotation={[0.2, 0, 0]}>{bd}<boxGeometry args={[6 * C, 0.5 * C, 8 * C]} /></mesh>
+      {/* 坛顶铜网（供通风承托） */}
+      <group onClick={(e: any) => { e.stopPropagation(); onSel('altar-network') }} onPointerOver={(e: any) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = 'default' }}>
+        {[-6, -2, 2, 6].map((x) => (
+          <mesh key={`x-${x}`} position={[x * C, 10.15 * C, 0]}>{b}<boxGeometry args={[0.12 * C, 0.04 * C, 14 * C]} /></mesh>
+        ))}
+        {[-6, -2, 2, 6].map((z) => (
+          <mesh key={`z-${z}`} position={[0, 10.15 * C, z * C]}>{b}<boxGeometry args={[14 * C, 0.04 * C, 0.12 * C]} /></mesh>
+        ))}
+      </group>
     </group>
   )
 }
@@ -263,6 +272,41 @@ function BronzeSea({ c, onSel }: { c: Vec2; onSel: SelFn }) {
   )
 }
 
+function Laver({ c, onSel }: { c: Vec2; onSel: SelFn }) {
+  const BRONZE = '#b87333', BRONZE_D = '#a8632a'
+  const b = mat(BRONZE, false, true), bd = mat(BRONZE_D, false, true)
+  return (
+    <group position={[c[0] * C, 0, c[1] * C]} onClick={(e: any) => { e.stopPropagation(); onSel('laver') }} onPointerOver={(e: any) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = 'default' }}>
+      {/* 带轮铜座 */}
+      <mesh position={[0, 0.6 * C, 0]}>{bd}<cylinderGeometry args={[0.9 * C, 0.9 * C, 1.2 * C, 12]} /></mesh>
+      {/* 轮子示意 */}
+      {[[0.7, 0.7], [0.7, -0.7], [-0.7, 0.7], [-0.7, -0.7]].map(([x, z], i) => (
+        <mesh key={i} position={[x * C, 0.35 * C, z * C]} rotation={[Math.PI / 2, 0, 0]}>{b}<torusGeometry args={[0.22 * C, 0.06 * C, 6, 12]} /></mesh>
+      ))}
+      {/* 铜盆 */}
+      <mesh position={[0, 1.55 * C, 0]}>{b}<cylinderGeometry args={[0.8 * C, 0.55 * C, 0.7 * C, 14]} /></mesh>
+      {/* 水 */}
+      <mesh position={[0, 1.75 * C, 0]}>{mat('#8ecae6', false, false, 0.6)}<cylinderGeometry args={[0.65 * C, 0.65 * C, 0.05 * C, 14]} /></mesh>
+    </group>
+  )
+}
+
+function EastGate({ c, onSel }: { c: Vec2; onSel: SelFn }) {
+  const STONE = '#cfc5b0', WOOD = '#7a5c3a'
+  const s = mat(STONE), w = mat(WOOD)
+  return (
+    <group position={[c[0] * C, 0, c[1] * C]} onClick={(e: any) => { e.stopPropagation(); onSel('eastGate') }} onPointerOver={(e: any) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = 'default' }}>
+      {/* 两侧门楼 */}
+      <mesh position={[0, 7.5 * C, 16 * C]}>{s}<boxGeometry args={[10 * C, 15 * C, 6 * C]} /></mesh>
+      <mesh position={[0, 7.5 * C, -16 * C]}>{s}<boxGeometry args={[10 * C, 15 * C, 6 * C]} /></mesh>
+      {/* 门楣 / 横梁 */}
+      <mesh position={[0, 15 * C, 0]}>{w}<boxGeometry args={[8 * C, 2 * C, 38 * C]} /></mesh>
+      {/* 顶盖 */}
+      <mesh position={[0, 17.5 * C, 0]}>{w}<boxGeometry args={[10 * C, 1 * C, 40 * C]} /></mesh>
+    </group>
+  )
+}
+
 // ── 圣殿场景 ──
 function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
   const ghost = cut ? 0.1 : 1 // 被剖去的构件以「幽灵面」淡显
@@ -278,8 +322,11 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
 
   return (
     <group>
-      {/* 院基台 */}
-      <Box c={[-2, 0]} size={[150, 96]} base={-2.5} top={0} color={COURT} id="court" onSel={onSel} />
+      {/* 外院（百姓/外邦人院）台基 */}
+      <Box c={[40, 0]} size={[260, 220]} base={-4} top={-0.5} color="#6d6148" id="outerCourt" onSel={onSel} />
+
+      {/* 内院（祭司院）台基 */}
+      <Box c={[-2, 0]} size={[150, 96]} base={-0.5} top={0} color={COURT} id="court" onSel={onSel} />
 
       {/* 殿内地板（三个区域） */}
       <Box c={[-40, 0]} size={[20, 20]} base={0} top={0.15} color="#c6b8a0" opacity={0.8} />
@@ -321,6 +368,17 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
       {/* 铜海（径10·高5，立于十二铜牛）*/}
       <BronzeSea c={[40, -25]} onSel={onSel} />
 
+      {/* 十个洗濯盆（南北各五，王上7:38-39）*/}
+      {[30, 38, 46, 54, 62].map((x, i) => (
+        <Laver key={`laver-n-${i}`} c={[x, 34]} onSel={onSel} />
+      ))}
+      {[30, 38, 46, 54, 62].map((x, i) => (
+        <Laver key={`laver-s-${i}`} c={[x, -34]} onSel={onSel} />
+      ))}
+
+      {/* 东门（朝东，面向橄榄山）*/}
+      <EastGate c={[148, 0]} onSel={onSel} />
+
       {/* ── 内殿陈设（剖视时可见）── */}
       {/* 至圣所：约柜 + 两基路伯 */}
       <Ark c={[-40, 0]} onSel={onSel} />
@@ -352,11 +410,14 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
       <Label c={[24, 7]} y={26} text="波阿斯（北）" tone="bronze" />
       <Label c={[45, 0]} y={13} text="铜祭坛" tone="bronze" />
       <Label c={[40, -25]} y={10} text="铜海" tone="bronze" />
+      <Label c={[46, 34]} y={3} text="洗濯盆" tone="bronze" />
+      <Label c={[40, 0]} y={1} text="外院（百姓/外邦人院）" tone="stone" />
+      <Label c={[148, 0]} y={20} text="东门" tone="east" />
       {cut && <Label c={[-40, 0]} y={3.2} text="约柜" tone="gold" />}
       {cut && <Label c={[-28, 0]} y={4.5} text="金香坛" tone="gold" />}
       {cut && <Label c={[-16, 6]} y={6} text="金灯台" tone="gold" />}
       {cut && <Label c={[-14, 3]} y={3.5} text="陈设饼桌" tone="gold" />}
-      <Label c={[62, 0]} y={2} text="← 殿门朝东 (East)" tone="east" />
+      <Label c={[170, 0]} y={2} text="← 殿门朝东 (East)" tone="east" />
     </group>
   )
 }
@@ -370,11 +431,12 @@ export function SolomonTempleSection({ onBack }: Props) {
   const part = sel ? (TEMPLE_PARTS as Record<string, any>)[sel] : null
 
   const legend: Array<{ c: string; t: string }> = [
-    { c: '#cfc5b0', t: '殿墙·廊子（凿石）' },
+    { c: '#cfc5b0', t: '殿墙·廊子·东门（凿石）' },
     { c: '#7a5c3a', t: '殿顶（香柏木）' },
-    { c: '#b87333', t: '铜器（柱·坛·海）' },
+    { c: '#b87333', t: '铜器（柱·坛·海·盆）' },
     { c: '#f0d060', t: '金器（约柜·灯台·香坛）' },
     { c: '#8d7f63', t: '祭司内院' },
+    { c: '#6d6148', t: '外院（百姓/外邦人院）' },
   ]
 
   return (
@@ -423,7 +485,7 @@ export function SolomonTempleSection({ onBack }: Props) {
             ref={controls}
             target={[-2, 1.2, 0]}
             minDistance={3}
-            maxDistance={22}
+            maxDistance={40}
             maxPolarAngle={Math.PI / 2.05}
             enablePan
           />
