@@ -113,21 +113,24 @@ function Ark({ c, onSel }: { c: Vec2; onSel: SelFn }) {
   )
 }
 
-function Cherub({ position, onSel, facing = 'center' }: { position: Vec3; onSel: SelFn; facing?: 'center' | 'outward' }) {
+function Cherub({ position, onSel }: { position: Vec3; onSel: SelFn }) {
   const GOLD = '#f0d060', GOLD_D = '#d8b040'
   const g = mat(GOLD, true), gd = mat(GOLD_D, true)
   const x = position[0] * C, y = position[1] * C, z = position[2] * C
-  const s = facing === 'center' ? -1 : 1
+  // 基路伯位于至圣所南北两侧，翅膀沿南北展开，外翼触及墙壁，内翼在中间相接
+  const isNorth = position[2] > 0
+  const outerDir = isNorth ? 1 : -1
+  const innerDir = -outerDir
   return (
     <group position={[x, y, z]} onClick={(e: any) => { e.stopPropagation(); onSel('cherubim') }} onPointerOver={(e: any) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = 'default' }}>
-      {/* 身体 */}
-      <mesh position={[0, 4.5 * C, 0]}>{g}<boxGeometry args={[1.2 * C, 9 * C, 1.0 * C]} /></mesh>
+      {/* 身体 10 肘 */}
+      <mesh position={[0, 5 * C, 0]}>{g}<boxGeometry args={[1.2 * C, 10 * C, 1.0 * C]} /></mesh>
       {/* 头 */}
-      <mesh position={[0, 9.4 * C, 0]}>{gd}<sphereGeometry args={[0.7 * C, 16, 16]} /></mesh>
-      {/* 外翼（达墙） */}
-      <mesh position={[s * 4.5 * C, 7 * C, 0]} rotation={[0, 0, s * 0.55]}>{g}<boxGeometry args={[7 * C, 0.3 * C, 3.2 * C]} /></mesh>
-      {/* 内翼（相接） */}
-      <mesh position={[s * 1.2 * C, 7 * C, 0]} rotation={[0, 0, s * -0.35]}>{g}<boxGeometry args={[5 * C, 0.3 * C, 3.2 * C]} /></mesh>
+      <mesh position={[0, 10.3 * C, 0]}>{gd}<sphereGeometry args={[0.8 * C, 16, 16]} /></mesh>
+      {/* 外翼（触及墙壁，5 肘） */}
+      <mesh position={[0, 7 * C, outerDir * 2.5 * C]} rotation={[0.2, 0, 0]}>{g}<boxGeometry args={[3.0 * C, 0.25 * C, 5 * C]} /></mesh>
+      {/* 内翼（居中相接，5 肘） */}
+      <mesh position={[0, 7 * C, innerDir * 2.5 * C]} rotation={[-0.2, 0, 0]}>{g}<boxGeometry args={[3.0 * C, 0.25 * C, 5 * C]} /></mesh>
     </group>
   )
 }
@@ -307,6 +310,57 @@ function EastGate({ c, onSel }: { c: Vec2; onSel: SelFn }) {
   )
 }
 
+// 至圣所包金橄榄木门（王上6:31-32）
+function OliveDoors({ c, onSel }: { c: Vec2; onSel: SelFn }) {
+  const OLIVE = '#5a4a3a', GOLD = '#e0b050'
+  const o = mat(OLIVE), g = mat(GOLD, true)
+  return (
+    <group position={[c[0] * C, 0, c[1] * C]} onClick={(e: any) => { e.stopPropagation(); onSel('veil') }} onPointerOver={(e: any) => { e.stopPropagation(); document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = 'default' }}>
+      {/* 左门（北） */}
+      <mesh position={[0, 5 * C, 2.5 * C]}>{o}<boxGeometry args={[0.8 * C, 10 * C, 5 * C]} /></mesh>
+      <mesh position={[0.25 * C, 5 * C, 2.5 * C]}>{g}<boxGeometry args={[0.05 * C, 10 * C, 5 * C]} /></mesh>
+      {/* 右门（南） */}
+      <mesh position={[0, 5 * C, -2.5 * C]}>{o}<boxGeometry args={[0.8 * C, 10 * C, 5 * C]} /></mesh>
+      <mesh position={[0.25 * C, 5 * C, -2.5 * C]}>{g}<boxGeometry args={[0.05 * C, 10 * C, 5 * C]} /></mesh>
+    </group>
+  )
+}
+
+// 圣所「有棂子的窗户」（王上6:4）
+function LatticeWindows({ c, opacity = 1 }: { c: Vec2; opacity?: number }) {
+  const GLASS = '#d0c8a0'
+  const g = mat(GLASS, false, false, opacity)
+  const frame = mat('#8a8068', false, false, opacity)
+  return (
+    <group position={[c[0] * C, 0, c[1] * C]}>
+      {[-10, 0, 10].map((x, i) => (
+        <group key={i} position={[x * C, 0, 0]}>
+          <mesh position={[0, 25 * C, 0]}>{g}<boxGeometry args={[3 * C, 2.5 * C, 0.2 * C]} /></mesh>
+          <mesh position={[0, 25 * C, 0.05 * C]}>{frame}<boxGeometry args={[2.8 * C, 0.1 * C, 0.1 * C]} /></mesh>
+          <mesh position={[0, 25 * C, 0.05 * C]}>{frame}<boxGeometry args={[0.1 * C, 2.3 * C, 0.1 * C]} /></mesh>
+        </group>
+      ))}
+    </group>
+  )
+}
+
+// 圣所墙雕：基路伯、棕树、初开的花（王上6:29）
+function WallCarvings({ c, opacity = 1 }: { c: Vec2; opacity?: number }) {
+  const GOLD = '#d8b040'
+  const g = mat(GOLD, true, false, opacity)
+  return (
+    <group position={[c[0] * C, 0, c[1] * C]}>
+      {[-20, -10, 0, 10].map((x, i) => (
+        <group key={i} position={[x * C, 15 * C, 0.3 * C]}>
+          <mesh position={[-0.6 * C, 0, 0]}>{g}<boxGeometry args={[0.8 * C, 1.2 * C, 0.08 * C]} /></mesh>
+          <mesh position={[0, -0.2 * C, 0]}>{g}<boxGeometry args={[0.3 * C, 1.6 * C, 0.08 * C]} /></mesh>
+          <mesh position={[0.6 * C, 0.2 * C, 0]}>{g}<sphereGeometry args={[0.3 * C, 8, 8]} /></mesh>
+        </group>
+      ))}
+    </group>
+  )
+}
+
 // ── 圣殿场景 ──
 function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
   const ghost = cut ? 0.1 : 1 // 被剖去的构件以「幽灵面」淡显
@@ -328,22 +382,45 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
       {/* 内院（祭司院）台基 */}
       <Box c={[-2, 0]} size={[150, 96]} base={-0.5} top={0} color={COURT} id="court" onSel={onSel} />
 
+      {/* 内院围墙：三层凿石 + 一层香柏木（王上6:36） */}
+      <Box c={[-77, 0]} size={[1, 96]} base={0} top={3} color="#a89a82" id="court" onSel={onSel} />
+      <Box c={[73, 0]} size={[1, 96]} base={0} top={3} color="#a89a82" id="court" onSel={onSel} />
+      <Box c={[-2, 48.5]} size={[150, 1]} base={0} top={3} color="#a89a82" id="court" onSel={onSel} />
+      <Box c={[-2, -48.5]} size={[150, 1]} base={0} top={3} color="#a89a82" id="court" onSel={onSel} />
+      <Box c={[-77, 0]} size={[1.2, 96]} base={3} top={3.5} color={CEDAR} id="court" onSel={onSel} />
+      <Box c={[73, 0]} size={[1.2, 96]} base={3} top={3.5} color={CEDAR} id="court" onSel={onSel} />
+      <Box c={[-2, 48.5]} size={[150, 1.2]} base={3} top={3.5} color={CEDAR} id="court" onSel={onSel} />
+      <Box c={[-2, -48.5]} size={[150, 1.2]} base={3} top={3.5} color={CEDAR} id="court" onSel={onSel} />
+
       {/* 殿内地板（三个区域） */}
       <Box c={[-40, 0]} size={[20, 20]} base={0} top={0.15} color="#c6b8a0" opacity={0.8} />
       <Box c={[-20, 0]} size={[40, 20]} base={0} top={0.15} color="#c6b8a0" opacity={0.8} />
       <Box c={[15, 0]} size={[10, 20]} base={0} top={0.15} color="#c6b8a0" opacity={0.8} />
 
-      {/* ── 殿墙（殿身长60×宽20×高30 肘）── */}
-      <Box c={[-51, 0]} size={[2, 24]} base={0} top={30} color={STONE} id="walls" onSel={onSel} />         {/* 西墙 */}
-      <Box c={[-20, 11]} size={[64, 2]} base={0} top={30} color={STONE} id="walls" onSel={onSel} />        {/* 北墙 */}
-      <Box c={[-20, -11]} size={[64, 2]} base={0} top={30} color={STONE} id="walls" onSel={onSel} opacity={ghost} /> {/* 南墙（剖去） */}
-      <Box c={[10, 6.25]} size={[2, 9.5]} base={0} top={30} color={STONE} id="walls" onSel={onSel} />      {/* 东墙·北段 */}
-      <Box c={[10, -6.25]} size={[2, 9.5]} base={0} top={30} color={STONE} id="walls" onSel={onSel} opacity={ghost} /> {/* 东墙·南段 */}
-      <Box c={[10, 0]} size={[2, 5]} base={20} top={30} color={STONE} id="walls" onSel={onSel} />          {/* 殿门门楣 */}
+      {/* ── 殿墙 ──
+        至圣所：20×20×20 立方体；圣所：40×20×30；廊子：20×20×30 */}
+      {/* 西墙（至圣所外墙，高20） */}
+      <Box c={[-51, 0]} size={[2, 24]} base={0} top={20} color={STONE} id="walls" onSel={onSel} />
+      {/* 北墙：至圣所段（高20）+ 圣所段（高30） */}
+      <Box c={[-40, 11]} size={[20, 2]} base={0} top={20} color={STONE} id="walls" onSel={onSel} />
+      <Box c={[-10, 11]} size={[40, 2]} base={0} top={30} color={STONE} id="walls" onSel={onSel} />
+      {/* 南墙（剖去）：至圣所段（高20）+ 圣所段（高30） */}
+      <Box c={[-40, -11]} size={[20, 2]} base={0} top={20} color={STONE} id="walls" onSel={onSel} opacity={ghost} />
+      <Box c={[-10, -11]} size={[40, 2]} base={0} top={30} color={STONE} id="walls" onSel={onSel} opacity={ghost} />
+      {/* 东墙（圣所/廊子） */}
+      <Box c={[10, 6.25]} size={[2, 9.5]} base={0} top={30} color={STONE} id="walls" onSel={onSel} />
+      <Box c={[10, -6.25]} size={[2, 9.5]} base={0} top={30} color={STONE} id="walls" onSel={onSel} opacity={ghost} />
+      <Box c={[10, 0]} size={[2, 5]} base={20} top={30} color={STONE} id="walls" onSel={onSel} />
 
-      {/* 至圣所 / 圣所 隔断 + 幔子 */}
-      <Box c={[-30, 0]} size={[1, 22]} base={0} top={30} color="#b8aa8c" id="veil" onSel={onSel} />
-      <Box c={[-29.3, 0]} size={[0.3, 20]} base={0} top={30} color="#5a4a8a" id="veil" onSel={onSel} opacity={0.55} />
+      {/* 至圣所：包金橄榄木门 + 幔子（双重屏障） */}
+      <OliveDoors c={[-30, 0]} onSel={onSel} />
+      <Box c={[-29.3, 0]} size={[0.3, 20]} base={0} top={20} color="#5a4a8a" id="veil" onSel={onSel} opacity={0.55} />
+
+      {/* 圣所墙饰：有棂子窗户 + 雕刻（基路伯、棕树、初开的花） */}
+      <LatticeWindows c={[-20, 11]} />
+      <LatticeWindows c={[-20, -11]} opacity={ghost} />
+      <WallCarvings c={[-20, 11]} />
+      <WallCarvings c={[-20, -11]} opacity={ghost} />
 
       {/* 廊子（殿前门廊，朝东）*/}
       <Box c={[15, 11]} size={[10, 2]} base={0} top={30} color={STONE} id="porch" onSel={onSel} />
@@ -382,8 +459,8 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
       {/* ── 内殿陈设（剖视时可见）── */}
       {/* 至圣所：约柜 + 两基路伯 */}
       <Ark c={[-40, 0]} onSel={onSel} />
-      <Cherub position={[-40, 0, 6.5]} onSel={onSel} facing="center" />
-      <Cherub position={[-40, 0, -6.5]} onSel={onSel} facing="center" />
+      <Cherub position={[-40, 0, 5]} onSel={onSel} />
+      <Cherub position={[-40, 0, -5]} onSel={onSel} />
 
       {/* 圣所：金香坛 + 金灯台×10 + 陈设饼桌×10 */}
       <IncenseAltar c={[-28, 0]} onSel={onSel} />
