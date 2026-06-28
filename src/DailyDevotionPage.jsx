@@ -7,7 +7,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import BackButton from './BackButton'
-import { API_BASE } from './api.js'
+import { API_BASE, fetchScripture } from './api.js'
 import { TTSButton, TTSFullBar } from './useGlobalAudio.jsx'
 
 // ── Chinese month / day labels ────────────────────────────────────────────────
@@ -226,8 +226,7 @@ function ScriptureVerses({ scriptureRef }) {
     setLoading(true)
     setVerses(null)
     setError(null)
-    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(scriptureRef)}`)
-      .then(r => r.json())
+    fetchScripture(scriptureRef)
       .then(d => {
         if (d.ok && d.verses?.length) setVerses(d)
         else setError(d.error || '暂无经文')

@@ -2,7 +2,7 @@
 // 结果可：复制 / 生成分享卡 / 存入背经卡 / 跳相关地图。
 import { useEffect, useRef, useState } from 'react'
 import BackButton from './BackButton'
-import { API_BASE } from './api'
+import { API_BASE, normalizeBibleText } from './api'
 import { t, getRuntimeLang } from './i18n/runtime'
 import ShareCardModal from './components/ShareCardModal'
 import { addMemoryCard } from './lib/memoryDeck'
@@ -45,14 +45,14 @@ export default function BibleSearchPage({ onBack, onOpenMap }) {
   const refOf = (v) => getRuntimeLang() === 'en'
     ? `${v.bookEn} ${v.chapter}:${v.verse}`
     : `${v.bookZh} ${v.chapter}:${v.verse}`
-  const textOf = (v) => (lang === 'esv' || getRuntimeLang() === 'en') ? v.textEsv : v.textCuv
+  const textOf = (v) => (lang === 'esv' || getRuntimeLang() === 'en') ? v.textEsv : normalizeBibleText(v.textCuv)
 
   function copyVerse(v) {
     navigator.clipboard?.writeText(`${textOf(v)}（${refOf(v)}）`)
       .then(() => toast(t('已复制经文'), 'success')).catch(() => {})
   }
   function saveCard(v) {
-    const added = addMemoryCard({ ref: refOf(v), textCuv: v.textCuv, textEsv: v.textEsv, pkId: v.pkId })
+    const added = addMemoryCard({ ref: refOf(v), textCuv: normalizeBibleText(v.textCuv), textEsv: v.textEsv, pkId: v.pkId })
     toast(added ? t('已存入背经卡 🃏') : t('这节已在背经卡中'), added ? 'success' : 'info')
   }
 

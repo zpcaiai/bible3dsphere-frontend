@@ -123,6 +123,16 @@ describe('fetchEmotionTrajectory', () => {
   })
 })
 
+describe('normalizeBibleText', () => {
+  it('repairs known CUV mojibake placeholders and removes residual inline question marks', async () => {
+    const { normalizeBibleText } = await import('../api')
+
+    expect(normalizeBibleText('丢在神忿怒的大酒?中。')).toBe('丢在神忿怒的大酒榨中。')
+    expect(normalizeBibleText('洪水?滥在地上，米利暗长了大?疯。')).toBe('洪水泛滥在地上，米利暗长了大麻风。')
+    expect(normalizeBibleText('逃脱地狱?的刑罚')).toBe('逃脱地狱的刑罚')
+  })
+})
+
 describe('fetchTTS', () => {
   afterEach(() => vi.restoreAllMocks())
 

@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState, useCallback } from 'react'
 import BackButton from './BackButton'
-import { API_BASE, fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture } from './api'
+import { fetchReadingProgress, markChapterRead, fetchBibleStudy, fetchScripture } from './api'
 import { TTSFullBar, TTSButton } from './useGlobalAudio.jsx'
 
 // ── 全部 66 卷（旧约 39 + 新约 27）────────────────────────────────────────────
@@ -236,8 +236,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
 
   const load = useCallback(() => {
     setVerses(null); setLoadErr(null)
-    fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(book.name + chapter)}`)
-      .then(r => r.json())
+    fetchScripture(book.name + chapter)
       .then(d => {
         if (d.ok && d.verses?.length) setVerses(d.verses)
         else setLoadErr(d.error || '暂无经文内容')

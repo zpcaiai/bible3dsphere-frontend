@@ -22,6 +22,40 @@ function resolveDefaultApiBase() {
 
 export const API_BASE = configuredApiBase || resolveDefaultApiBase()
 
+const BIBLE_TEXT_FIXES = [
+  [/酒\?/g, '酒榨'],
+  [/大\?疯/g, '大麻风'],
+  [/洪水\?滥/g, '洪水泛滥'],
+  [/不\?滥/g, '不泛滥'],
+  [/灯\?/g, '灯台'],
+  [/门\?/g, '门帘'],
+  [/血\?在/g, '血洒在'],
+  [/就\?在/g, '就洒在'],
+  [/要\?在/g, '要洒在'],
+  [/\?七次/g, '洒七次'],
+  [/\?房子/g, '洒房子'],
+]
+
+export function normalizeBibleText(text) {
+  if (typeof text !== 'string' || !text) return text
+  let fixed = text
+  for (const [pattern, replacement] of BIBLE_TEXT_FIXES) {
+    fixed = fixed.replace(pattern, replacement)
+  }
+  return fixed.replace(/([\u3400-\u9fff])\?([\u3400-\u9fff])/g, '$1$2')
+}
+
+function normalizeScripturePayload(data) {
+  if (!data || !Array.isArray(data.verses)) return data
+  return {
+    ...data,
+    verses: data.verses.map((verse) => ({
+      ...verse,
+      text: normalizeBibleText(verse.text),
+    })),
+  }
+}
+
 export async function fetchLayout() {
   console.log('[api] fetchLayout')
   try {
@@ -941,7 +975,8 @@ export async function fetchScripture(ref) {
   // ref e.g. "以赛亚书40:3" or "创世记1"
   const r = await fetch(`${API_BASE}/scripture?ref=${encodeURIComponent(ref)}`)
   if (!r.ok) throw new Error(`scripture ${r.status}`)
-  return r.json()  // {ok, ref, verses:[{verse,text},...]}
+  const data = await r.json()  // {ok, ref, verses:[{verse,text},...]}
+  return normalizeScripturePayload(data)
 }
 
 export async function fetchTTS(text, language_code = 'zh-CN', voice_name = 'zh-CN-XiaoxiaoNeural') {
