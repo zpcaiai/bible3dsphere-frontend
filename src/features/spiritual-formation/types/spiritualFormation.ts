@@ -248,6 +248,47 @@ export type RecommendationResult = {
   pastoralNote: string;
 };
 
+export type HolyLifeSkillId =
+  | "morning_consecration"
+  | "purpose_reset"
+  | "presence_of_god"
+  | "thought_examination"
+  | "intention_inspector"
+  | "holy_speech"
+  | "ordinary_life_worship"
+  | "self_denial_trainer"
+  | "humility_detector"
+  | "charity_practice"
+  | "evening_examen"
+  | "eternal_perspective";
+
+export type HolyLifeSkillEntry = {
+  skillId: HolyLifeSkillId;
+  score: number;
+  reflection: string;
+  completed: boolean;
+  updatedAt: string;
+};
+
+export type HolyLifePresenceLog = {
+  id: string;
+  createdAt: string;
+  reflection: string;
+};
+
+export type HolyLifeDayLog = {
+  id: string;
+  userId: string;
+  date: string;
+  intention: string;
+  entries: HolyLifeSkillEntry[];
+  presenceLogs: HolyLifePresenceLog[];
+  dailyReport: string;
+  tomorrowFormation: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export const HOLY_SPIRIT_FRUITS: HolySpiritFruit[] = [
   "love",
   "joy",

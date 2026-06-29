@@ -502,6 +502,7 @@ export default function SoulDashboard({ user }) {
           {overlay === 'fuel' && <FuelLibraryPage onClose={() => setOverlay(null)} />}
           {overlay === 'agent' && <AgentChatPage onBack={() => setOverlay(null)} />}
           {overlay === 'checkup' && <SpiritualCheckupPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'holy-life' && <SpiritualFormationPage user={user} token={getToken()} initialTab="holy-life" onBack={() => setOverlay(null)} />}
           {overlay === 'spiritual-formation' && <SpiritualFormationPage user={user} token={getToken()} onBack={() => setOverlay(null)} />}
         </div>
       )}

@@ -1,5 +1,5 @@
 import { API_BASE } from "../../../api";
-import type { DailyExamen, GraceRecoveryEntry, ThoughtCaptiveEntry, TransformationPlan } from "../types/spiritualFormation";
+import type { DailyExamen, GraceRecoveryEntry, HolyLifeDayLog, ThoughtCaptiveEntry, TransformationPlan } from "../types/spiritualFormation";
 
 async function requestJson(path: string, token?: string, init: RequestInit = {}) {
   const res = await fetch(`${API_BASE}/spiritual-formation${path}`, {
@@ -18,12 +18,13 @@ async function requestJson(path: string, token?: string, init: RequestInit = {})
 
 export async function loadSpiritualFormationData(token?: string) {
   if (!token) throw new Error("No auth token");
-  const [daily, thoughts, recoveries, plans, activePlan] = await Promise.all([
+  const [daily, thoughts, recoveries, plans, activePlan, holyLife] = await Promise.all([
     requestJson("/daily-examens?limit=365", token),
     requestJson("/thought-captive?limit=365", token),
     requestJson("/grace-recovery?limit=365", token),
     requestJson("/plans?limit=200", token),
     requestJson("/plans/active", token),
+    requestJson("/holy-life/day-logs?limit=365", token),
   ]);
   return {
     dailyExamens: daily.items || [],
@@ -31,6 +32,7 @@ export async function loadSpiritualFormationData(token?: string) {
     graceRecoveryEntries: recoveries.items || [],
     plans: plans.items || [],
     activePlan: activePlan.plan || null,
+    holyLifeDayLogs: holyLife.items || [],
   };
 }
 
@@ -63,4 +65,9 @@ export async function updateTransformationPlanRemote(plan: TransformationPlan, t
       completedPracticeIds: plan.completedPracticeIds || [],
     }),
   })).plan;
+}
+
+export async function createHolyLifeDayLogRemote(dayLog: HolyLifeDayLog, token?: string) {
+  if (!token) throw new Error("No auth token");
+  return (await requestJson("/holy-life/day-logs", token, { method: "POST", body: JSON.stringify(dayLog) })).dayLog;
 }

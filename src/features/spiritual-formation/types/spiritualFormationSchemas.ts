@@ -5,6 +5,8 @@ import {
   type DailyExamen,
   type GraceRecoveryEntry,
   type HolySpiritFruit,
+  type HolyLifeDayLog,
+  type HolyLifeSkillId,
   type NewLifeVirtue,
   type SinPatternId,
   type ThoughtCaptiveEntry,
@@ -46,6 +48,38 @@ const isPatternArray = (value: unknown): value is SinPatternId[] =>
   Array.isArray(value) && value.every((item) => SIN_PATTERN_IDS.includes(item));
 const isPracticeArray = (value: unknown) =>
   Array.isArray(value) && value.every((item) => isRecord(item) && isNonEmptyString(item.id) && isNonEmptyString(item.name));
+const HOLY_LIFE_SKILL_IDS: HolyLifeSkillId[] = [
+  "morning_consecration",
+  "purpose_reset",
+  "presence_of_god",
+  "thought_examination",
+  "intention_inspector",
+  "holy_speech",
+  "ordinary_life_worship",
+  "self_denial_trainer",
+  "humility_detector",
+  "charity_practice",
+  "evening_examen",
+  "eternal_perspective",
+];
+const isHolyLifeEntryArray = (value: unknown) =>
+  Array.isArray(value) && value.every((item) =>
+    isRecord(item) &&
+    HOLY_LIFE_SKILL_IDS.includes(item.skillId as HolyLifeSkillId) &&
+    typeof item.score === "number" &&
+    item.score >= 0 &&
+    item.score <= 100 &&
+    typeof item.reflection === "string" &&
+    typeof item.completed === "boolean" &&
+    isNonEmptyString(item.updatedAt)
+  );
+const isPresenceLogArray = (value: unknown) =>
+  Array.isArray(value) && value.every((item) =>
+    isRecord(item) &&
+    isNonEmptyString(item.id) &&
+    isNonEmptyString(item.createdAt) &&
+    typeof item.reflection === "string"
+  );
 
 function requireFields(obj: Record<string, unknown>, fields: string[]) {
   return fields.filter((field) => !isNonEmptyString(obj[field])).map((field) => `${field} is required`);
@@ -136,5 +170,22 @@ export const TransformationPlanSchema = makeSchema<TransformationPlan>((value) =
   if (!isPracticeArray(value.dailyPractices)) errors.push("dailyPractices must contain practice objects");
   if (!isPracticeArray(value.weeklyPractices)) errors.push("weeklyPractices must contain practice objects");
   if (!isStringArray(value.reviewQuestions)) errors.push("reviewQuestions must be an array of strings");
+  return errors;
+});
+
+export const HolyLifeDayLogSchema = makeSchema<HolyLifeDayLog>((value) => {
+  if (!isRecord(value)) return ["HolyLifeDayLog must be an object"];
+  const errors = requireFields(value, [
+    "id",
+    "userId",
+    "date",
+    "createdAt",
+    "updatedAt",
+  ]);
+  if (typeof value.intention !== "string") errors.push("intention must be a string");
+  if (!isHolyLifeEntryArray(value.entries)) errors.push("entries must contain known holy life skill entries");
+  if (!isPresenceLogArray(value.presenceLogs)) errors.push("presenceLogs must contain presence log objects");
+  if (typeof value.dailyReport !== "string") errors.push("dailyReport must be a string");
+  if (typeof value.tomorrowFormation !== "string") errors.push("tomorrowFormation must be a string");
   return errors;
 });

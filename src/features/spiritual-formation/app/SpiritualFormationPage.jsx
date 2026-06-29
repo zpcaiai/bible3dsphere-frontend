@@ -5,6 +5,7 @@ import { MODULE_DISCLAIMER } from '../lib/pastoralSafety'
 import {
   createDailyExamenRemote,
   createGraceRecoveryRemote,
+  createHolyLifeDayLogRemote,
   createThoughtCaptiveRemote,
   createTransformationPlanRemote,
   loadSpiritualFormationData,
@@ -15,8 +16,10 @@ import {
   getActiveTransformationPlan,
   listDailyExamens,
   listGraceRecoveryEntries,
+  listHolyLifeDayLogs,
   listThoughtCaptiveEntries,
   listTransformationPlans,
+  saveHolyLifeDayLog,
   saveDailyExamen,
   saveGraceRecoveryEntry,
   saveThoughtCaptiveEntry,
@@ -26,6 +29,7 @@ import {
 import DailySpiritualScanForm from '../components/DailySpiritualScanForm'
 import FruitTree from '../components/FruitTree'
 import GraceRecoveryFlow from '../components/GraceRecoveryFlow'
+import HolyLifeEngine from '../components/HolyLifeEngine'
 import NewCreationMap from '../components/NewCreationMap'
 import SinPatternLibrary from '../components/SinPatternLibrary'
 import StrongholdPage from '../components/StrongholdPage'
@@ -38,6 +42,7 @@ const TABS = [
   ['home', '首页'],
   ['library', '罪模式库'],
   ['stronghold', '自高之事'],
+  ['holy-life', '圣洁生活'],
   ['daily', '每日扫描'],
   ['thought', '思想俘虏'],
   ['recovery', '恩典恢复'],
@@ -47,13 +52,21 @@ const TABS = [
   ['map', '新造地图'],
 ]
 
+function todayKey() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 function resolveUserId(user) {
   return String(user?.id || user?.userId || user?.email || DEFAULT_USER_ID)
 }
 
-export default function SpiritualFormationPage({ user, token, onBack }) {
+export default function SpiritualFormationPage({ user, token, onBack, initialTab = 'home' }) {
   const userId = resolveUserId(user)
-  const [tab, setTab] = useState('home')
+  const [tab, setTab] = useState(initialTab)
   const [refreshKey, setRefreshKey] = useState(0)
   const [remoteData, setRemoteData] = useState(null)
   const [syncState, setSyncState] = useState(token ? 'syncing' : 'local')
@@ -62,10 +75,11 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
     dailyExamens: listDailyExamens(userId),
     thoughtEntries: listThoughtCaptiveEntries(userId),
     graceRecoveryEntries: listGraceRecoveryEntries(userId),
+    holyLifeDayLogs: listHolyLifeDayLogs(userId),
     plans: listTransformationPlans(userId),
     activePlan: getActiveTransformationPlan(userId),
   }), [userId, refreshKey])
-  const data = remoteData || localData
+  const data = { ...localData, ...(remoteData || {}), holyLifeDayLogs: remoteData?.holyLifeDayLogs || localData.holyLifeDayLogs }
 
   useEffect(() => {
     let cancelled = false
@@ -147,6 +161,7 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
           <div className="sf-action-grid">
             {[
               ['daily', 'Start Daily Scan', 'Name emotion, trigger, lie, confession, and obedience.'],
+              ['holy-life', 'Holy Life Engine', 'Practice consecration, purpose, presence, speech, charity, examen, and eternal perspective.'],
               ['thought', 'Take a Thought Captive', 'Catch a thought and answer it with gospel truth.'],
               ['recovery', 'I Fell and Need Grace Recovery', 'Come into the light without hiding or despair.'],
               ['plans', 'Create Transformation Plan', 'Choose a 7-day, 30-day, 90-day, or 1-year plan.'],
@@ -181,12 +196,23 @@ export default function SpiritualFormationPage({ user, token, onBack }) {
                 </>
               ) : <p className="sf-empty">No entries yet. Begin with a simple daily scan.</p>}
             </article>
+            <article className="sf-card">
+              <h3>Holy Life Today</h3>
+              {data.holyLifeDayLogs?.[0] ? (
+                <>
+                  <p>{data.holyLifeDayLogs[0].date}</p>
+                  <p>{data.holyLifeDayLogs[0].dailyReport || data.holyLifeDayLogs[0].tomorrowFormation || '今日圣洁生活操练已开始。'}</p>
+                  <button type="button" onClick={() => setTab('holy-life')}>Open engine</button>
+                </>
+              ) : <p className="sf-empty">No holy life entry yet. Begin with morning consecration or one 30-second presence pause.</p>}
+            </article>
           </div>
         </section>
       )}
 
       {tab === 'library' && <SinPatternLibrary />}
       {tab === 'stronghold' && <StrongholdPage userId={userId} token={token} />}
+      {tab === 'holy-life' && <HolyLifeEngine userId={userId} initialTodayLog={data.holyLifeDayLogs?.find((entry) => entry.date === todayKey())} history={data.holyLifeDayLogs || []} onSave={(entry) => saveAndRefresh(saveHolyLifeDayLog, createHolyLifeDayLogRemote, entry)} />}
       {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, createDailyExamenRemote, entry)} />}
       {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, createThoughtCaptiveRemote, entry)} />}
       {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}

@@ -1,5 +1,5 @@
-import type { DailyExamen, GraceRecoveryEntry, ThoughtCaptiveEntry, TransformationPlan } from "../types/spiritualFormation";
-import { DailyExamenSchema, GraceRecoveryEntrySchema, ThoughtCaptiveEntrySchema, TransformationPlanSchema } from "../types/spiritualFormationSchemas";
+import type { DailyExamen, GraceRecoveryEntry, HolyLifeDayLog, ThoughtCaptiveEntry, TransformationPlan } from "../types/spiritualFormation";
+import { DailyExamenSchema, GraceRecoveryEntrySchema, HolyLifeDayLogSchema, ThoughtCaptiveEntrySchema, TransformationPlanSchema } from "../types/spiritualFormationSchemas";
 
 export const DEFAULT_USER_ID = "local-user";
 
@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   thoughtCaptiveEntries: "spiritualFormation.thoughtCaptiveEntries",
   graceRecoveryEntries: "spiritualFormation.graceRecoveryEntries",
   transformationPlans: "spiritualFormation.transformationPlans",
+  holyLifeDayLogs: "spiritualFormation.holyLifeDayLogs",
 } as const;
 
 function hasStorage() {
@@ -100,4 +101,18 @@ export function getActiveTransformationPlan(userId: string): TransformationPlan 
 
 export function updateTransformationPlan(plan: TransformationPlan): void {
   upsert(STORAGE_KEYS.transformationPlans, validateOrThrow(TransformationPlanSchema, plan));
+}
+
+export function saveHolyLifeDayLog(log: HolyLifeDayLog): void {
+  upsert(STORAGE_KEYS.holyLifeDayLogs, validateOrThrow(HolyLifeDayLogSchema, log));
+}
+
+export function listHolyLifeDayLogs(userId: string): HolyLifeDayLog[] {
+  return readList<HolyLifeDayLog>(STORAGE_KEYS.holyLifeDayLogs)
+    .filter((entry) => entry.userId === userId)
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export function getHolyLifeDayLog(userId: string, date: string): HolyLifeDayLog | null {
+  return listHolyLifeDayLogs(userId).find((entry) => entry.date === date) ?? null;
 }

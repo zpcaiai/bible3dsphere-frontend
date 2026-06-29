@@ -2,11 +2,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { generateTransformationPlan } from "../lib/planGenerator";
 import {
   getActiveTransformationPlan,
+  getHolyLifeDayLog,
   listDailyExamens,
   listGraceRecoveryEntries,
+  listHolyLifeDayLogs,
   listThoughtCaptiveEntries,
   saveDailyExamen,
   saveGraceRecoveryEntry,
+  saveHolyLifeDayLog,
   saveThoughtCaptiveEntry,
   saveTransformationPlan,
   STORAGE_KEYS,
@@ -56,5 +59,31 @@ describe("spiritual formation storage", () => {
 
   it("rejects invalid daily examen data", () => {
     expect(() => saveDailyExamen({ id: "bad" } as never)).toThrow("We could not save this entry");
+  });
+
+  it("stores holy life day logs by user and date", () => {
+    saveHolyLifeDayLog({
+      id: "h1",
+      userId: "u1",
+      date: "2026-06-29",
+      intention: "Offer the day to God",
+      entries: [
+        {
+          skillId: "morning_consecration",
+          score: 80,
+          reflection: "I surrendered my work.",
+          completed: true,
+          updatedAt: now,
+        },
+      ],
+      presenceLogs: [{ id: "p1", createdAt: now, reflection: "Observe, repent, return." }],
+      dailyReport: "Daily report",
+      tomorrowFormation: "Practice humility",
+      createdAt: now,
+      updatedAt: now,
+    });
+    expect(listHolyLifeDayLogs("u1")).toHaveLength(1);
+    expect(listHolyLifeDayLogs("u2")).toHaveLength(0);
+    expect(getHolyLifeDayLog("u1", "2026-06-29")?.dailyReport).toBe("Daily report");
   });
 });

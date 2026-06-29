@@ -426,6 +426,172 @@
   background: linear-gradient(90deg, #34c759, #5ac8fa);
 }
 
+.holy-life-heading,
+.holy-life-card-head,
+.holy-life-presence,
+.holy-life-range {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.holy-life-save {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.holy-life-summary,
+.holy-life-grid,
+.holy-life-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.holy-life-score {
+  margin: 8px 0 4px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 850;
+  color: #8effae;
+}
+
+.holy-life-intention {
+  margin-bottom: 12px;
+}
+
+.holy-life-intention label,
+.holy-life-skill label,
+.holy-life-report-grid label {
+  display: grid;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.holy-life-intention textarea,
+.holy-life-presence textarea,
+.holy-life-skill textarea,
+.holy-life-report-grid textarea {
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  padding: 11px 12px;
+  outline: none;
+  font: inherit;
+}
+
+.holy-life-pipeline {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.holy-life-pipeline span,
+.holy-life-practice {
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(90, 200, 250, 0.1);
+  color: rgba(190, 236, 255, 0.9);
+  font-size: 12px;
+}
+
+.holy-life-practice {
+  border-radius: 8px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.holy-life-filter {
+  margin-top: 14px;
+}
+
+.holy-life-skill {
+  display: grid;
+  gap: 10px;
+}
+
+.holy-life-skill.is-complete {
+  border-color: rgba(52, 199, 89, 0.25);
+  background: rgba(52, 199, 89, 0.07);
+}
+
+.holy-life-card-head h3 {
+  margin-top: 8px;
+}
+
+.holy-life-toggle {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 8px !important;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.holy-life-range {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.holy-life-range input {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: #34c759;
+}
+
+.holy-life-range b {
+  color: #8effae;
+}
+
+.holy-life-report-grid {
+  margin-top: 14px;
+}
+
+.holy-life-history {
+  display: grid;
+  gap: 10px;
+}
+
+.holy-life-history div {
+  display: grid;
+  grid-template-columns: 96px 52px 1fr 38px;
+  gap: 10px;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.holy-life-history i {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.holy-life-history b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #34c759, #5ac8fa);
+}
+
+.holy-life-history em {
+  color: #8effae;
+  font-style: normal;
+  font-weight: 800;
+  text-align: right;
+}
+
 @media (max-width: 640px) {
   .sf-page {
     padding-left: 12px;
@@ -447,5 +613,15 @@
   .sf-create-plan,
   .sf-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .holy-life-heading,
+  .holy-life-presence,
+  .holy-life-card-head {
+    display: grid;
+  }
+
+  .holy-life-history div {
+    grid-template-columns: 82px 42px 1fr 30px;
   }
 }
