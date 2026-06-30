@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 // CareDashboardPage.jsx — Advanced Batch · Module 3 (Group Leader Care Dashboard)
 // Shows CARE SIGNALS only (authorised summaries) — never private journals,
 // diagnostic detail, "spiritual scores", or rankings. Leaders log care actions.
@@ -70,35 +71,35 @@ export default function CareDashboardPage({ user, token, churchId: churchIdProp,
   return (
     <div className="max-w-3xl mx-auto p-4 text-slate-800">
       <div className="flex items-center gap-3 mb-3">
-        {onBack && <button onClick={onBack} className="text-sm text-slate-500">← 返回</button>}
-        <h1 className="text-xl font-semibold">小组关怀面板</h1>
+        {onBack && <button onClick={onBack} className="text-sm text-slate-500">{i18nT('← 返回')}</button>}
+        <h1 className="text-xl font-semibold">{i18nT('小组关怀面板')}</h1>
       </div>
 
       {!churchIdProp && (
         <div className="flex gap-2 mb-4">
-          <input value={churchId} onChange={(e) => setChurchId(e.target.value)} placeholder="小组/教会 ID"
+          <input value={churchId} onChange={(e) => setChurchId(e.target.value)} placeholder={i18nT('小组/教会 ID')}
                  className="border rounded px-2 py-1 text-sm w-40" />
-          <button onClick={load} className="text-sm bg-slate-800 text-white rounded px-3 py-1">加载</button>
+          <button onClick={load} className="text-sm bg-slate-800 text-white rounded px-3 py-1">{i18nT('加载')}</button>
         </div>
       )}
 
       <p className="text-xs text-slate-400 mb-4">
-        本面板只显示关怀信号与授权摘要，不显示私密日志、属灵分数或排名。AI 不替代真实关怀。
+        {i18nT('本面板只显示关怀信号与授权摘要，不显示私密日志、属灵分数或排名。AI 不替代真实关怀。')}
       </p>
 
-      {loading && <p className="text-sm text-slate-500">加载中…</p>}
+      {loading && <p className="text-sm text-slate-500">{i18nT('加载中…')}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {data && (
         <>
           <div className="grid grid-cols-4 gap-3 mb-5">
-            <Kpi label="成员" value={s.members_count} />
-            <Kpi label="代祷请求" value={s.prayer_requests_count} />
-            <Kpi label="待跟进" value={s.needs_followup_count} />
-            <Kpi label="高风险" value={s.high_risk_count} danger={s.high_risk_count > 0} />
+            <Kpi label={i18nT('成员')} value={s.members_count} />
+            <Kpi label={i18nT('代祷请求')} value={s.prayer_requests_count} />
+            <Kpi label={i18nT('待跟进')} value={s.needs_followup_count} />
+            <Kpi label={i18nT('高风险')} value={s.high_risk_count} danger={s.high_risk_count > 0} />
           </div>
 
-          {data.items.length === 0 && <p className="text-sm text-slate-500">暂无需要关注的关怀信号。</p>}
+          {data.items.length === 0 && <p className="text-sm text-slate-500">{i18nT('暂无需要关注的关怀信号。')}</p>}
 
           <ul className="space-y-3">
             {data.items.map((it) => (
@@ -107,7 +108,7 @@ export default function CareDashboardPage({ user, token, churchId: churchIdProp,
                   <div>
                     <div className="font-medium">{it.display_name} · {it.title}</div>
                     <div className="text-sm mt-1 opacity-90">{it.summary}</div>
-                    {it.suggested_action && <div className="text-xs mt-1 opacity-80">建议：{it.suggested_action}</div>}
+                    {it.suggested_action && <div className="text-xs mt-1 opacity-80">{i18nT('建议：')}{it.suggested_action}</div>}
                   </div>
                   <span className="text-xs uppercase shrink-0">{it.signal_level}</span>
                 </div>
@@ -128,14 +129,14 @@ export default function CareDashboardPage({ user, token, churchId: churchIdProp,
           </ul>
 
           {flags && flags.restricted && (
-            <p className="mt-6 text-xs text-slate-400">成长风险汇总仅向牧者级开放；小组长请使用上方关怀信号。</p>
+            <p className="mt-6 text-xs text-slate-400">{i18nT('成长风险汇总仅向牧者级开放；小组长请使用上方关怀信号。')}</p>
           )}
           {flags && !flags.restricted && (
             <div className="mt-6">
-              <h2 className="text-sm font-semibold mb-1">成长风险汇总 · 近 {flags.window_days} 天</h2>
-              <p className="text-xs text-slate-400 mb-3">由统一成长事件聚合，仅显示风险类别与时间，不含日志全文——帮助你看见谁这阵子可能需要主动关怀。</p>
+              <h2 className="text-sm font-semibold mb-1">{i18nT('成长风险汇总 · 近')} {flags.window_days} {i18nT('天')}</h2>
+              <p className="text-xs text-slate-400 mb-3">{i18nT('由统一成长事件聚合，仅显示风险类别与时间，不含日志全文——帮助你看见谁这阵子可能需要主动关怀。')}</p>
               {(!flags.items || flags.items.length === 0) && (
-                <p className="text-sm text-slate-500">近期没有需要留意的成长风险信号。</p>
+                <p className="text-sm text-slate-500">{i18nT('近期没有需要留意的成长风险信号。')}</p>
               )}
               <ul className="space-y-2">
                 {(flags.items || []).map((m) => (
@@ -153,7 +154,7 @@ export default function CareDashboardPage({ user, token, churchId: churchIdProp,
                         </span>
                       ))}
                     </div>
-                    <div className="text-xs text-slate-400 mt-1">最近活动：{m.last_at ? String(m.last_at).slice(0, 10) : '—'}</div>
+                    <div className="text-xs text-slate-400 mt-1">{i18nT('最近活动：')}{m.last_at ? String(m.last_at).slice(0, 10) : '—'}</div>
                   </li>
                 ))}
               </ul>

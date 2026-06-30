@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useRef, useState } from 'react'
 import { fetchTranslate } from './api'
 import { getCached } from './translationCache'
@@ -124,13 +125,13 @@ export default function TranslatableParagraph({ children, className, style }) {
           padding: '4px 10px', borderRadius: '6px', pointerEvents: 'none',
           whiteSpace: 'nowrap', zIndex: 9999,
         }}>
-          已复制 ✓
+          {i18nT('已复制 ✓')}
         </span>
       )}
 
       {translating && (
         <p className={className} style={{ ...style, opacity: 0.5, fontStyle: 'italic', textIndent: '2em' }}>
-          正在翻译...
+          {i18nT('正在翻译...')}
         </p>
       )}
 
@@ -168,7 +169,7 @@ export default function TranslatableParagraph({ children, className, style }) {
               padding: '0',
               verticalAlign: 'middle',
             }}
-            title="关闭译文"
+            title={i18nT('关闭译文')}
           >
             ✕
           </button>
@@ -196,17 +197,17 @@ export default function TranslatableParagraph({ children, className, style }) {
             }}
           >
             <button onClick={() => doCopy(text)} style={menuBtnStyle}>
-              📋 复制原文
+              {i18nT('📋 复制原文')}
             </button>
             <div style={dividerStyle} />
             <button onClick={doTranslate} style={menuBtnStyle}>
-              🌐 转为英文
+              {i18nT('🌐 转为英文')}
             </button>
             {translation && (
               <>
                 <div style={dividerStyle} />
                 <button onClick={() => doCopy(translation)} style={menuBtnStyle}>
-                  📋 复制译文
+                  {i18nT('📋 复制译文')}
                 </button>
               </>
             )}

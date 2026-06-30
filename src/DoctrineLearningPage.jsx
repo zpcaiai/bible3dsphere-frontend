@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** DoctrineLearningPage — 教义学习路径 (B9)。入口：知识智能 / 今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -29,8 +30,8 @@ export default function DoctrineLearningPage({ user, onBack }) {
         <div style={{ marginTop: 6, fontSize: 13, color: 'rgba(255,255,255,0.78)' }}>
           <div>{tp.summary}</div>
           {tp.scripture_refs && tp.scripture_refs.length > 0 && <div style={{ marginTop: 4, color: '#8be9c0' }}>📖 {tp.scripture_refs.join('、')}</div>}
-          {tp.formation_relevance && <div style={{ marginTop: 4, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>与成长：{tp.formation_relevance}</div>}
-          <button style={{ ...btn, marginTop: 8, padding: '5px 10px', fontSize: 12 }} onClick={() => markDone(tp.topic_key)}>标记学过</button>
+          {tp.formation_relevance && <div style={{ marginTop: 4, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{i18nT('与成长：')}{tp.formation_relevance}</div>}
+          <button style={{ ...btn, marginTop: 8, padding: '5px 10px', fontSize: 12 }} onClick={() => markDone(tp.topic_key)}>{i18nT('标记学过')}</button>
         </div>
       )}
     </div>
@@ -40,14 +41,14 @@ export default function DoctrineLearningPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>📚 教义学习</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>区分经文/教义/传统/应用 · 连接到成长操练</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('📚 教义学习')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('区分经文/教义/传统/应用 · 连接到成长操练')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input value={goal} onChange={e => setGoal(e.target.value)} placeholder="想学什么 / 在挣扎什么（如：羞耻、苦难、初信、领袖）" style={{ ...fld, marginBottom: 0, flex: 1 }} />
-          <button style={btn} onClick={recommend}>推荐路径</button>
+          <input value={goal} onChange={e => setGoal(e.target.value)} placeholder={i18nT('想学什么 / 在挣扎什么（如：羞耻、苦难、初信、领袖）')} style={{ ...fld, marginBottom: 0, flex: 1 }} />
+          <button style={btn} onClick={recommend}>{i18nT('推荐路径')}</button>
         </div>
         {rec && rec.recommended_path && (
           <div style={{ marginTop: 12 }}>
@@ -59,7 +60,7 @@ export default function DoctrineLearningPage({ user, onBack }) {
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>全部主题（{topics.length}）</div>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{i18nT('全部主题（')}{topics.length}）</div>
         {topics.map(tp => <Topic key={tp.topic_key} tp={tp} />)}
       </div>
     </div>

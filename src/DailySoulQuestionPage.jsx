@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const DSQ_OPTS = ['我现在最真实的感受是…', '这件事让我想到神…', '我需要在这方面成长', '我想诚实地承认…', '我盼望神在这件事上帮助我…']
@@ -72,18 +73,18 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
   return (
     <div className="pw-page">
       <header className="pw-header">
-        <button className="checkin-back-btn" onClick={onBack} aria-label="返回">
+        <button className="checkin-back-btn" onClick={onBack} aria-label={i18nT('返回')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div className="pw-header-center">
-          <div className="pw-title">🔍 每日灵魂一问</div>
-          <div className="pw-subtitle">每天一个诚实的问题，是属灵成长的开始</div>
+          <div className="pw-title">{i18nT('🔍 每日灵魂一问')}</div>
+          <div className="pw-subtitle">{i18nT('每天一个诚实的问题，是属灵成长的开始')}</div>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
-          <button onClick={() => setView('today')} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 8, border: 'none', background: view === 'today' ? 'rgba(88,86,214,0.4)' : 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' }}>今日</button>
-          <button onClick={() => setView('history')} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 8, border: 'none', background: view === 'history' ? 'rgba(88,86,214,0.4)' : 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' }}>回顾</button>
+          <button onClick={() => setView('today')} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 8, border: 'none', background: view === 'today' ? 'rgba(88,86,214,0.4)' : 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' }}>{i18nT('今日')}</button>
+          <button onClick={() => setView('history')} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 8, border: 'none', background: view === 'history' ? 'rgba(88,86,214,0.4)' : 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' }}>{i18nT('回顾')}</button>
         </div>
       </header>
 
@@ -95,7 +96,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
             {loading ? (
               <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.5)' }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>✨</div>
-                <div>正在为你生成今日的问题...</div>
+                <div>{i18nT('正在为你生成今日的问题...')}</div>
               </div>
             ) : questionData ? (
               <>
@@ -120,7 +121,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                   borderRadius: 16, padding: '28px 24px', marginBottom: 24, textAlign: 'center',
                 }}>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 14, letterSpacing: '0.06em' }}>
-                    {questionData.date} · 今日一问
+                    {questionData.date} {i18nT('· 今日一问')}
                   </div>
                   <div style={{ fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
                     {questionData.question}
@@ -130,7 +131,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                 {/* Answer area */}
                 {submitted ? (
                   <div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>你的回答</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>{i18nT('你的回答')}</div>
                     <div style={{
                       background: 'rgba(52,199,89,0.08)', border: '1px solid rgba(52,199,89,0.25)',
                       borderRadius: 12, padding: '16px', fontSize: 15, color: 'rgba(255,255,255,0.85)',
@@ -139,20 +140,20 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                       {answer}
                     </div>
                     <div style={{ marginTop: 12, fontSize: 12, color: 'rgba(52,199,89,0.8)', textAlign: 'center' }}>
-                      ✅ 已记录，明日再见
+                      {i18nT('✅ 已记录，明日再见')}
                     </div>
                   </div>
                 ) : (
                   <div>
                     <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>
-                      诚实地回答这个问题（无需完美，只需真实）
+                      {i18nT('诚实地回答这个问题（无需完美，只需真实）')}
                     </div>
                     <span style={{ position: 'relative', display: 'block' }}>
                     <textarea
                       ref={textareaRef}
                       value={answer}
                       onChange={e => setAnswer(e.target.value)}
-                      placeholder="在这里写下你真实的回应..."
+                      placeholder={i18nT('在这里写下你真实的回应...')}
                       style={{
                         width: '100%', minHeight: 120, background: 'rgba(255,255,255,0.07)',
                         border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, color: '#fff',
@@ -165,7 +166,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}>
                         <input type="checkbox" checked={saveToJournal} onChange={e => setSaveToJournal(e.target.checked)} />
-                        同步到今日灵修日记
+                        {i18nT('同步到今日灵修日记')}
                       </label>
                       <button
                         onClick={handleSubmit}
@@ -184,7 +185,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
 
                 {/* Reflection note */}
                 <div style={{ marginTop: 28, padding: '14px 16px', background: 'rgba(255,255,255,0.04)', borderRadius: 10, fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, textAlign: 'center' }}>
-                  「省察自己是否在信仰中站立得稳」— 哥林多后书 13:5
+                  {i18nT('「省察自己是否在信仰中站立得稳」— 哥林多后书 13:5')}
                 </div>
               </>
             ) : null}
@@ -194,13 +195,13 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
         {view === 'history' && (
           <div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 16 }}>
-              你的灵魂省察记录 · 30天内对比成长
+              {i18nT('你的灵魂省察记录 · 30天内对比成长')}
             </div>
             {histLoading ? (
-              <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.4)' }}>加载中...</div>
+              <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.4)' }}>{i18nT('加载中...')}</div>
             ) : history.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>
-                还没有回答记录，从今天开始吧 🌱
+                {i18nT('还没有回答记录，从今天开始吧 🌱')}
               </div>
             ) : (
               history.map((item, i) => (
@@ -223,7 +224,7 @@ export default function DailySoulQuestionPage({ user, token, onBack }) {
                     {item.answer}
                   </div>
                   {item.saved_to_journal && (
-                    <div style={{ marginTop: 6, fontSize: 11, color: '#34c759' }}>📔 已存入灵修日记</div>
+                    <div style={{ marginTop: 6, fontSize: 11, color: '#34c759' }}>{i18nT('📔 已存入灵修日记')}</div>
                   )}
                 </div>
               ))

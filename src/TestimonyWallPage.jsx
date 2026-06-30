@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * TestimonyWallPage — ✨ 见证墙 · 述说祂的作为
  *
@@ -147,10 +148,10 @@ export default function TestimonyWallPage({ user, token }) {
   }
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px 90px' }} role="region" aria-label="见证墙">
+    <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px 90px' }} role="region" aria-label={i18nT('见证墙')}>
       {/* 标题 */}
       <div style={{ textAlign: 'center', margin: '4px 0 14px' }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>✨ 见证墙 · 述说祂的作为</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>{i18nT('✨ 见证墙 · 述说祂的作为')}</div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>
           {total > 0 ? `共 ${total} 篇见证` : '「来听我诉说，我要述说他为我所行的事。」（诗 66:16）'}
         </div>
@@ -173,12 +174,12 @@ export default function TestimonyWallPage({ user, token }) {
 
       {showCompose && (
         <div style={{ ...card, borderColor: 'rgba(255,184,76,0.25)' }}>
-          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }} htmlFor="tw-title">见证标题</label>
+          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }} htmlFor="tw-title">{i18nT('见证标题')}</label>
           <input
             id="tw-title"
             value={form.title}
             onChange={e => setField('title', e.target.value, TITLE_MAX)}
-            placeholder="如：祂在病床边遇见了我"
+            placeholder={i18nT('如：祂在病床边遇见了我')}
             style={{ ...inp, resize: 'none' }}
           />
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textAlign: 'right', marginTop: 4 }}>{form.title.length}/{TITLE_MAX}</div>
@@ -205,14 +206,14 @@ export default function TestimonyWallPage({ user, token }) {
 
           <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.55)', cursor: 'pointer', userSelect: 'none', margin: '8px 0 4px' }}>
             <input type="checkbox" checked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} style={{ accentColor: '#ffd43b' }} />
-            🙈 匿名分享
+            {i18nT('🙈 匿名分享')}
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.55)', cursor: 'pointer', userSelect: 'none', margin: '4px 0 8px' }}>
             <input type="checkbox" checked={isPublic} onChange={e => setIsPublic(e.target.checked)} style={{ accentColor: '#ffd43b' }} />
-            🌍 公开到众教会
+            {i18nT('🌍 公开到众教会')}
           </label>
 
-          {savedHint && <div role="status" style={{ fontSize: 11, color: 'rgba(52,199,89,0.75)', marginBottom: 6 }}>✓ 草稿已自动保存</div>}
+          {savedHint && <div role="status" style={{ fontSize: 11, color: 'rgba(52,199,89,0.75)', marginBottom: 6 }}>{i18nT('✓ 草稿已自动保存')}</div>}
           {submitMsg && !submitMsg.startsWith('✓') && (
             <div role="alert" style={{ fontSize: 12.5, color: '#ff8787', marginBottom: 8 }}>⚠️ {submitMsg}</div>
           )}
@@ -230,19 +231,19 @@ export default function TestimonyWallPage({ user, token }) {
 
       {/* 列表 */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '50px 0', color: 'rgba(255,255,255,0.4)', fontSize: 13 }} role="status">加载中…</div>
+        <div style={{ textAlign: 'center', padding: '50px 0', color: 'rgba(255,255,255,0.4)', fontSize: 13 }} role="status">{i18nT('加载中…')}</div>
       ) : error ? (
         <div style={{ ...card, textAlign: 'center' }} role="alert">
           <div style={{ fontSize: 30, marginBottom: 8 }}>⚠️</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 12 }}>{error}</div>
-          <button type="button" onClick={() => load(true)} style={{ minHeight: 44, padding: '10px 26px', borderRadius: 10, border: '1px solid rgba(90,200,250,0.4)', background: 'rgba(90,200,250,0.12)', color: '#5ac8fa', fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit' }}>重试</button>
+          <button type="button" onClick={() => load(true)} style={{ minHeight: 44, padding: '10px 26px', borderRadius: 10, border: '1px solid rgba(90,200,250,0.4)', background: 'rgba(90,200,250,0.12)', color: '#5ac8fa', fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit' }}>{i18nT('重试')}</button>
         </div>
       ) : items.length === 0 ? (
         <div style={{ ...card, textAlign: 'center', padding: '32px 18px' }}>
           <div style={{ fontSize: 36, marginBottom: 10 }}>🕊️</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: 8 }}>还没有见证</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginBottom: 8 }}>{i18nT('还没有见证')}</div>
           <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8 }}>
-            「他们胜过他，是因羔羊的血和自己所见证的道。」（启 12:11）<br />成为第一个述说神恩典的人吧。
+            {i18nT('「他们胜过他，是因羔羊的血和自己所见证的道。」（启 12:11）')}<br />{i18nT('成为第一个述说神恩典的人吧。')}
           </div>
         </div>
       ) : (
@@ -261,11 +262,11 @@ export default function TestimonyWallPage({ user, token }) {
                   {t.is_own && (
                     deletingId === t.id ? (
                       <span style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                        <button type="button" onClick={() => handleDelete(t.id)} aria-label="确认删除见证" style={{ minWidth: 44, minHeight: 32, padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.18)', color: '#ef4444', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>确认</button>
-                        <button type="button" onClick={() => setDeletingId(null)} aria-label="取消删除" style={{ minWidth: 44, minHeight: 32, padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>取消</button>
+                        <button type="button" onClick={() => handleDelete(t.id)} aria-label={i18nT('确认删除见证')} style={{ minWidth: 44, minHeight: 32, padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.18)', color: '#ef4444', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>{i18nT('确认')}</button>
+                        <button type="button" onClick={() => setDeletingId(null)} aria-label={i18nT('取消删除')} style={{ minWidth: 44, minHeight: 32, padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>{i18nT('取消')}</button>
                       </span>
                     ) : (
-                      <button type="button" onClick={() => setDeletingId(t.id)} aria-label="删除这篇见证" style={{ flexShrink: 0, minWidth: 44, minHeight: 32, background: 'none', border: 'none', color: 'rgba(255,135,135,0.6)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>删除</button>
+                      <button type="button" onClick={() => setDeletingId(t.id)} aria-label={i18nT('删除这篇见证')} style={{ flexShrink: 0, minWidth: 44, minHeight: 32, background: 'none', border: 'none', color: 'rgba(255,135,135,0.6)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>{i18nT('删除')}</button>
                     )
                   )}
                 </div>
@@ -306,7 +307,7 @@ export default function TestimonyWallPage({ user, token }) {
             </button>
           )}
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
-            「你们就是这些事的见证。」（路 24:48）
+            {i18nT('「你们就是这些事的见证。」（路 24:48）')}
           </div>
         </>
       )}

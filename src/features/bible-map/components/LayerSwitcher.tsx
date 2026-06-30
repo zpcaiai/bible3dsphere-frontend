@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import { LAYERS } from '../domain/constants'
 import type { BibleLayer } from '../domain/types'
@@ -11,7 +12,7 @@ interface Props {
 export function LayerSwitcher({ layer, onLayerChange }: Props) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-      <div className="mb-2 text-xs text-gray-400">图层</div>
+      <div className="mb-2 text-xs text-gray-400">{i18nT('图层')}</div>
       <div className="flex flex-wrap gap-2">
         {LAYERS.map((l) => (
           <button

@@ -1,3 +1,4 @@
+import { t as i18nT } from '../i18n/runtime'
 import { useEffect, useState } from 'react'
 import { fetchFormationTimeline } from '../api'
 
@@ -13,7 +14,7 @@ export default function FormationHistory({ token, source, onOpen, emptyText = '�
   }, [token, source, limit])
   const dim = { color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }
   if (err) return <div style={dim}>{err}</div>
-  if (items == null) return <div style={dim}>加载中…</div>
+  if (items == null) return <div style={dim}>{i18nT('加载中…')}</div>
   if (items.length === 0) return <div style={dim}>{emptyText}</div>
   return (
     <div>

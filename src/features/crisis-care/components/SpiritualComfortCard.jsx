@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useState } from 'react'
 import { COMFORT_SCRIPTURES, CONVICTION_VS_CONDEMNATION } from '../data/crisisContent'
 import { crisisApi } from '../lib/api'
@@ -33,12 +34,12 @@ export default function SpiritualComfortCard({ detectedType, message }) {
         <div style={{ fontSize: 13.5 }}>「{scripture.text}」</div>
         <div className="cc-muted" style={{ marginTop: 4 }}>—— {scripture.ref}</div>
       </div>
-      <p className="cc-muted">我不会用经文压你。这里只给你一句可以抓住的话。你现在不需要表现得刚强。</p>
+      <p className="cc-muted">{i18nT('我不会用经文压你。这里只给你一句可以抓住的话。你现在不需要表现得刚强。')}</p>
 
-      <h3 style={{ marginTop: 14 }}>分辨：是责备，还是控告？</h3>
+      <h3 style={{ marginTop: 14 }}>{i18nT('分辨：是责备，还是控告？')}</h3>
       <table className="cc-cvc">
         <thead>
-          <tr><th></th><th className="conviction">圣灵的责备</th><th className="condemnation">撒但的控告</th></tr>
+          <tr><th></th><th className="conviction">{i18nT('圣灵的责备')}</th><th className="condemnation">{i18nT('撒但的控告')}</th></tr>
         </thead>
         <tbody>
           {table.map((row) => (

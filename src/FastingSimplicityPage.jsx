@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** FastingSimplicityPage — 禁食与简朴操练 (B4)。入口：今日心镜。 */
 import { useState } from 'react'
 import BackButton from './BackButton'
@@ -31,15 +32,15 @@ export default function FastingSimplicityPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🍃 禁食与简朴</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>训练欲望、操练依靠与慷慨 · 安全第一，不强求食物禁食</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🍃 禁食与简朴')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('训练欲望、操练依靠与慷慨 · 安全第一，不强求食物禁食')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>① 推荐操练</div>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('① 推荐操练')}</div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input value={need} onChange={e => setNeed(e.target.value)} placeholder="成长需要（如：刷手机分心、攀比、舒适依赖）" style={{ ...fld, marginBottom: 0, flex: 1 }} />
-          <button style={btn} disabled={busy} onClick={recommend}>推荐</button>
+          <input value={need} onChange={e => setNeed(e.target.value)} placeholder={i18nT('成长需要（如：刷手机分心、攀比、舒适依赖）')} style={{ ...fld, marginBottom: 0, flex: 1 }} />
+          <button style={btn} disabled={busy} onClick={recommend}>{i18nT('推荐')}</button>
         </div>
         {recs && recs.message && <div style={{ marginTop: 10, fontSize: 13, color: '#f5c451' }}>{recs.message}</div>}
         {recs && (recs.practices || []).map(p => (
@@ -52,7 +53,7 @@ export default function FastingSimplicityPage({ user, onBack }) {
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>② 简朴审视（0–10 越高越过剩）</div>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{i18nT('② 简朴审视（0–10 越高越过剩）')}</div>
         {SF.map(([k, label]) => (
           <div key={k} style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}><span>{label}</span><span style={{ color: '#8be9c0' }}>{scores[k]}</span></div>
@@ -62,7 +63,7 @@ export default function FastingSimplicityPage({ user, onBack }) {
         <button style={btn} disabled={busy} onClick={audit}>{busy ? '…' : '生成简化建议'}</button>
         {simp && (
           <div style={{ marginTop: 12, fontSize: 13 }}>
-            {simp.dominant_clutter && <div>最大过剩：<b>{simp.dominant_clutter}</b>{simp.possible_idol ? `（可能的偶像：${simp.possible_idol}）` : ''}</div>}
+            {simp.dominant_clutter && <div>{i18nT('最大过剩：')}<b>{simp.dominant_clutter}</b>{simp.possible_idol ? `（可能的偶像：${simp.possible_idol}）` : ''}</div>}
             <div style={{ marginTop: 6 }}>· {simp.recommended_action}</div>
             <div style={{ marginTop: 4 }}>· {simp.generosity_response}</div>
             <div style={{ marginTop: 4 }}>· {simp.gratitude_practice}</div>

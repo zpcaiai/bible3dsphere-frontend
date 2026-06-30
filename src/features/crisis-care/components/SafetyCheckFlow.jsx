@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 
 /**
@@ -44,18 +45,18 @@ export default function SafetyCheckFlow({ onEscalate, onStabilize, onSafetyPlan 
       <p style={{ whiteSpace: 'pre-line' }}>{message}</p>
       {!terminal && (
         <div className="cc-choice">
-          <button className="cc-btn danger" type="button" onClick={() => answer(true)}>是 / 有</button>
-          <button className="cc-btn secondary" type="button" onClick={() => answer(false)}>没有</button>
+          <button className="cc-btn danger" type="button" onClick={() => answer(true)}>{i18nT('是 / 有')}</button>
+          <button className="cc-btn secondary" type="button" onClick={() => answer(false)}>{i18nT('没有')}</button>
         </div>
       )}
       {state === 'stabilize' && (
-        <button className="cc-btn full" type="button" onClick={() => onStabilize && onStabilize()}>开始 60 秒稳定练习</button>
+        <button className="cc-btn full" type="button" onClick={() => onStabilize && onStabilize()}>{i18nT('开始 60 秒稳定练习')}</button>
       )}
       {state === 'create_safety_plan' && (
-        <button className="cc-btn full" type="button" onClick={() => onSafetyPlan && onSafetyPlan()}>一起做今晚的安全计划</button>
+        <button className="cc-btn full" type="button" onClick={() => onSafetyPlan && onSafetyPlan()}>{i18nT('一起做今晚的安全计划')}</button>
       )}
       <p className="cc-muted" style={{ marginTop: 10 }}>
-        你可以不回答。我不会逼你。无论如何，联系一个信任的人或拨打热线，都不是软弱。
+        {i18nT('你可以不回答。我不会逼你。无论如何，联系一个信任的人或拨打热线，都不是软弱。')}
       </p>
     </div>
   )

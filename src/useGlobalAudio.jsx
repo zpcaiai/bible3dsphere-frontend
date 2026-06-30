@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * useGlobalAudio — Module-level singleton TTS hook.
  *
@@ -353,13 +354,13 @@ export function TTSFullBar({ buildText, label = '全文朗读' }) {
             cursor: 'pointer',
           }}
         >
-          ⏹ 停止
+          {i18nT('⏹ 停止')}
         </button>
       )}
 
       {isIdle && (
         <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginLeft: 4 }}>
-          小晓语音 · XiaoxiaoNeural
+          {i18nT('小晓语音 · XiaoxiaoNeural')}
         </span>
       )}
     </div>

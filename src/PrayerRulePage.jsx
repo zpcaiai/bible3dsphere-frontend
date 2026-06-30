@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** PrayerRulePage — 固定祷告规则 / 每日祷告节奏 (B2)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -45,30 +46,30 @@ export default function PrayerRulePage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🕯 祷告规则 · 每日节奏</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>与神相交，不是表现 · 错过不定罪</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🕯 祷告规则 · 每日节奏')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('与神相交，不是表现 · 错过不定罪')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       {active ? (
         <div style={card}>
           <div style={{ fontWeight: 700, marginBottom: 8 }}>{active.slot.display_name}</div>
-          <textarea value={prayerText} onChange={e => setPrayerText(e.target.value)} rows={4} placeholder="在神面前的祷告…" style={{ ...fld, resize: 'vertical' }} />
-          <input value={gratitude} onChange={e => setGratitude(e.target.value)} placeholder="一件感恩（可选）" style={fld} />
-          <button style={btn} disabled={busy} onClick={finishSlot}>完成这次祷告</button>
+          <textarea value={prayerText} onChange={e => setPrayerText(e.target.value)} rows={4} placeholder={i18nT('在神面前的祷告…')} style={{ ...fld, resize: 'vertical' }} />
+          <input value={gratitude} onChange={e => setGratitude(e.target.value)} placeholder={i18nT('一件感恩（可选）')} style={fld} />
+          <button style={btn} disabled={busy} onClick={finishSlot}>{i18nT('完成这次祷告')}</button>
         </div>
-      ) : !data ? <div style={card}>加载中…</div> : !data.rule_id ? (
+      ) : !data ? <div style={card}>{i18nT('加载中…')}</div> : !data.rule_id ? (
         <div style={card}>
           <div style={{ marginBottom: 10, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{data.hint || '还没有祷告规则。'}</div>
-          <button style={btn} disabled={busy} onClick={makeDefault}>一键创建初学者规则（晨 / 午 / 晚）</button>
+          <button style={btn} disabled={busy} onClick={makeDefault}>{i18nT('一键创建初学者规则（晨 / 午 / 晚）')}</button>
         </div>
       ) : (
         <div style={card}>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>{data.rule_title} · 今日 {data.completed_count}/{data.total}</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>{data.rule_title} {i18nT('· 今日')} {data.completed_count}/{data.total}</div>
           {data.slots.map(s => (
             <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               <div><div style={{ fontSize: 14, fontWeight: 600 }}>{s.completed_today ? '✅ ' : ''}{s.display_name}</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{s.target_time} · {s.duration_minutes} 分钟</div></div>
-              {!s.completed_today && <button style={{ ...btn, padding: '6px 12px' }} disabled={busy} onClick={() => startSlot(s)}>开始</button>}
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{s.target_time} · {s.duration_minutes} {i18nT('分钟')}</div></div>
+              {!s.completed_today && <button style={{ ...btn, padding: '6px 12px' }} disabled={busy} onClick={() => startSlot(s)}>{i18nT('开始')}</button>}
             </div>
           ))}
         </div>
@@ -76,7 +77,7 @@ export default function PrayerRulePage({ user, onBack }) {
 
       {review && review.insights && (
         <div style={card}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>本周回顾</div>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{i18nT('本周回顾')}</div>
           {review.insights.map((i, k) => <div key={k} style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginBottom: 4 }}>· {i}</div>)}
         </div>
       )}

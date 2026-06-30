@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * MissionLifePage — 使命生活设计 Mission Life Design
  *
@@ -73,21 +74,21 @@ export default function MissionLifePage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🌍 使命生活设计 · Mission Life</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>把基督的使命整合进日常 · 始于日常忠心，而非靠项目证明自己</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🌍 使命生活设计 · Mission Life')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('把基督的使命整合进日常 · 始于日常忠心，而非靠项目证明自己')}</div>
 
       {error && <div style={{ ...card, borderColor: 'rgba(255,107,107,0.4)', color: '#ffb4b4' }}>{error}</div>}
 
       {/* 设计 */}
       <div style={card}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>① 按生命季节生成推荐</div>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>{i18nT('① 按生命季节生成推荐')}</div>
         <select value={season} onChange={e => setSeason(e.target.value)} style={fieldStyle}>
           {SEASONS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
         </select>
         <select value={energy} onChange={e => setEnergy(e.target.value)} style={fieldStyle}>
-          <option value="low">当前精力：低（需要恢复）</option>
-          <option value="normal">当前精力：正常</option>
-          <option value="high">当前精力：充沛</option>
+          <option value="low">{i18nT('当前精力：低（需要恢复）')}</option>
+          <option value="normal">{i18nT('当前精力：正常')}</option>
+          <option value="high">{i18nT('当前精力：充沛')}</option>
         </select>
         <button style={btn} disabled={busy} onClick={generate}>{busy ? '…' : '生成推荐'}</button>
       </div>
@@ -95,12 +96,12 @@ export default function MissionLifePage({ user, onBack }) {
       {/* 推荐结果 */}
       {result && (
         <div style={card}>
-          {result.recovery_mode && <div style={{ fontSize: 12, color: '#f5c451', marginBottom: 8 }}>🕊 恢复模式：先安息、简化，第一步保持小而真实。</div>}
+          {result.recovery_mode && <div style={{ fontSize: 12, color: '#f5c451', marginBottom: 8 }}>{i18nT('🕊 恢复模式：先安息、简化，第一步保持小而真实。')}</div>}
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', marginBottom: 10 }}>{result.mission_summary}</div>
           {(result.recommended_domains || []).map(d => (
             <div key={d.domain_key} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: 10, marginBottom: 8 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#8be9c0' }}>{d.display_name}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>最小一步：{d.minimum_viable_action}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>{i18nT('最小一步：')}{d.minimum_viable_action}</div>
             </div>
           ))}
           {(result.guardrails || []).map((g, i) => <div key={i} style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>· {g}</div>)}
@@ -111,11 +112,11 @@ export default function MissionLifePage({ user, onBack }) {
       {/* 我的承诺 */}
       {commitments.length > 0 && (
         <div style={card}>
-          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>② 我的使命承诺</div>
+          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>{i18nT('② 我的使命承诺')}</div>
           {commitments.map(c => (
             <div key={c.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '8px 0' }}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{c.title} <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>· {c.frequency}</span></div>
-              {c.minimum_action && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>最小一步：{c.minimum_action}</div>}
+              {c.minimum_action && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{i18nT('最小一步：')}{c.minimum_action}</div>}
             </div>
           ))}
         </div>
@@ -123,13 +124,13 @@ export default function MissionLifePage({ user, onBack }) {
 
       {/* 使命项目 */}
       <div style={card}>
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>③ 使命项目</div>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>{i18nT('③ 使命项目')}</div>
         {projects.map(p => (
           <div key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '8px 0', fontSize: 13 }}>{p.title}</div>
         ))}
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          <input value={newProject} onChange={e => setNewProject(e.target.value)} placeholder="新项目（如：每月款待晚餐）" style={{ ...fieldStyle, marginBottom: 0, flex: 1 }} />
-          <button style={{ ...btn, width: 'auto', padding: '10px 16px' }} disabled={busy} onClick={addProject}>添加</button>
+          <input value={newProject} onChange={e => setNewProject(e.target.value)} placeholder={i18nT('新项目（如：每月款待晚餐）')} style={{ ...fieldStyle, marginBottom: 0, flex: 1 }} />
+          <button style={{ ...btn, width: 'auto', padding: '10px 16px' }} disabled={busy} onClick={addProject}>{i18nT('添加')}</button>
         </div>
       </div>
     </div>

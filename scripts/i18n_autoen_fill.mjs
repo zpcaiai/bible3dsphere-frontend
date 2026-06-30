@@ -36,7 +36,7 @@ function loadExisting() {
 // ── 2. 扫描源码收集 t() 中文键 ──
 function collectKeys() {
   const keys = new Set()
-  const re = /\bt\(\s*(["'])((?:\\.|(?!\1).)*?)\1/g
+  const re = /\b(?:i18nT|t)\(\s*(["'])((?:\\.|(?!\1).)*?)\1/g
   const walk = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (e.name === 'node_modules' || e.name === 'dist') continue

@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * GrowthAnalysisPage (formerly EngineeringPage) — 灵命成长分析
  *
@@ -157,9 +158,9 @@ export default function EngineeringPage({ onBack, user, token }) {
       }}>
         <BackButton onClick={onBack} />
         <div>
-          <div style={{ fontSize: 17, fontWeight: 700 }}>🌱 灵命成长分析</div>
+          <div style={{ fontSize: 17, fontWeight: 700 }}>{i18nT('🌱 灵命成长分析')}</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>
-            八个维度 · 当前状态 · 成长建议
+            {i18nT('八个维度 · 当前状态 · 成长建议')}
           </div>
         </div>
       </div>
@@ -171,16 +172,16 @@ export default function EngineeringPage({ onBack, user, token }) {
             color: 'rgba(255,255,255,0.5)', fontSize: 14,
           }}>
             <div style={{ fontSize: 36, marginBottom: 12 }}>🔒</div>
-            <div style={{ fontWeight: 700, marginBottom: 6 }}>登录后查看灵命成长分析</div>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>{i18nT('登录后查看灵命成长分析')}</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
-              根据你的灵修记录、情绪打卡和属灵操练，系统会评估8个灵命维度的成长状态
+              {i18nT('根据你的灵修记录、情绪打卡和属灵操练，系统会评估8个灵命维度的成长状态')}
             </div>
           </div>
         )}
 
         {user && loading && (
           <div style={{ textAlign: 'center', padding: '32px', color: 'rgba(255,255,255,0.4)' }}>
-            ✨ 分析中…
+            {i18nT('✨ 分析中…')}
           </div>
         )}
 
@@ -202,7 +203,7 @@ export default function EngineeringPage({ onBack, user, token }) {
                 background: 'rgba(90,200,250,0.07)', border: '1px solid rgba(90,200,250,0.15)',
               }}>
                 <div style={{ fontSize: 12, color: 'rgba(90,200,250,0.7)', fontWeight: 700, marginBottom: 8, letterSpacing: '0.04em' }}>
-                  ✨ 今日聚焦维度
+                  {i18nT('✨ 今日聚焦维度')}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 28 }}>
@@ -244,21 +245,21 @@ export default function EngineeringPage({ onBack, user, token }) {
                   marginTop: 8, padding: '8px 12px', background: 'rgba(255,255,255,0.04)',
                   borderRadius: 10, fontSize: 13, color: 'rgba(255,255,255,0.6)',
                 }}>
-                  💡 今日可行一步 — {formation.stage_action}
+                  {i18nT('💡 今日可行一步 —')} {formation.stage_action}
                 </div>
               </div>
             )}
 
             {/* 8 dimensions overview */}
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10, letterSpacing: '0.04em' }}>
-              📊 八维灵命评估
+              {i18nT('📊 八维灵命评估')}
             </div>
             <div style={{
               padding: '12px 14px', borderRadius: 14, marginBottom: 14,
               background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
               fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7,
             }}>
-              评分来自你的情绪打卡、灵修日记和属灵操练记录。每次互动后自动更新，帮助你看见灵命成长的轨迹。
+              {i18nT('评分来自你的情绪打卡、灵修日记和属灵操练记录。每次互动后自动更新，帮助你看见灵命成长的轨迹。')}
             </div>
             {Object.entries(DIM_META).map(([key, meta]) => {
               // We don't have individual scores here, show placeholder bars based on focus_dim
@@ -274,7 +275,7 @@ export default function EngineeringPage({ onBack, user, token }) {
               background: 'rgba(52,199,89,0.06)', border: '1px solid rgba(52,199,89,0.15)',
               fontSize: 12, color: 'rgba(52,199,89,0.7)', textAlign: 'center',
             }}>
-              💬 持续使用灵修日记与情绪打卡，系统会更准确地评估你的灵命维度
+              {i18nT('💬 持续使用灵修日记与情绪打卡，系统会更准确地评估你的灵命维度')}
             </div>
           </>
         )}

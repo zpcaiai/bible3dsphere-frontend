@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { crisisResourceTemplates, healingJourneyTypes, sufferingCategories } from '../../data/sufferingCareSeed'
 import {
@@ -98,7 +99,7 @@ export function SufferingTheologyGuide({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Suffering Theology / 苦难神学</h2><p>Lament, endurance, hope, cross, resurrection, and new creation without minimizing pain.</p></div>
+      <div className="sf-section-heading"><h2>{T('苦难神学', 'Suffering Theology')}</h2><p>Lament, endurance, hope, cross, resurrection, and new creation without minimizing pain.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Suffering or grief<textarea value={text} onChange={(event) => setText(event.target.value)} /></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={reflect}>Reflect Safely</button><button type="button" onClick={saveSession}>Save Suffering Session</button></div>
@@ -142,7 +143,7 @@ export function CrisisTriagePanel({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Crisis Triage / 危机分流</h2><p>Safety routing before ordinary spiritual formation. This does not replace emergency, clinical, legal, or pastoral help.</p></div>
+      <div className="sf-section-heading"><h2>{T('危机分流', 'Crisis Triage')}</h2><p>Safety routing before ordinary spiritual formation. This does not replace emergency, clinical, legal, or pastoral help.</p></div>
       <article className="sf-card sf-flow-card">
         <label>What is happening?<textarea value={text} onChange={(event) => setText(event.target.value)} /></label>
         <button className="sf-primary" type="button" onClick={triage}>Run Crisis Triage</button>
@@ -211,7 +212,7 @@ export function HealingJourneyTimeline({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Healing Journey / 医治旅程</h2><p>Trauma-informed, consent-based support for grief, wounds, boundaries, forgiveness, repair discernment, and rebuilding.</p></div>
+      <div className="sf-section-heading"><h2>{T('医治旅程', 'Healing Journey')}</h2><p>Trauma-informed, consent-based support for grief, wounds, boundaries, forgiveness, repair discernment, and rebuilding.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <label>Wound or healing need<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
@@ -280,7 +281,7 @@ export function PastoralCareDashboard({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Pastoral Care Companion / 牧养陪伴</h2><p>Consent-based care relationships, logs, plans, follow-ups, summaries, and escalation recommendations.</p></div>
+      <div className="sf-section-heading"><h2>{T('牧养陪伴', 'Pastoral Care Companion')}</h2><p>Consent-based care relationships, logs, plans, follow-ups, summaries, and escalation recommendations.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Consent and relationship</h3>
@@ -313,7 +314,7 @@ export default function SufferingCareDashboard({ userId = 'local-user' }) {
   return (
     <section className="sf-module">
       <div className="sf-section-heading">
-        <h2>Suffering, Crisis & Healing Formation OS / 苦难、危机与医治塑造系统</h2>
+        <h2>{T('苦难、危机与医治塑造系统', 'Suffering, Crisis & Healing Formation OS')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <MiniTabs active={tab} onChange={setTab} />

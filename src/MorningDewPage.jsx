@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * MorningDewPage — 清晨甘露 / Morning Dew（司布真式每日默想，5/10/15 分钟）
  * 灵修 tab 子页。
@@ -20,8 +21,8 @@ export default function MorningDewPage() {
     <div style={{ padding: '14px 16px 90px', maxWidth: 660, margin: '0 auto', color: '#fff' }}>
       <div style={{ ...card, background: 'linear-gradient(135deg, rgba(255,212,59,0.10), rgba(90,200,250,0.06))', textAlign: 'center', padding: '20px 16px' }}>
         <div style={{ fontSize: 26, marginBottom: 6 }}>🌅</div>
-        <div style={{ fontSize: 17, fontWeight: 700 }}>清晨甘露</div>
-        <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.5)', marginTop: 3 }}>司布真式默想 · 每早晨都是新的</div>
+        <div style={{ fontSize: 17, fontWeight: 700 }}>{i18nT('清晨甘露')}</div>
+        <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.5)', marginTop: 3 }}>{i18nT('司布真式默想 · 每早晨都是新的')}</div>
       </div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -30,8 +31,8 @@ export default function MorningDewPage() {
         ))}
       </div>
 
-      {loading ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>正在汲取今晨的甘露…</div>
-        : !dew ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>加载失败，请稍后重试</div>
+      {loading ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('正在汲取今晨的甘露…')}</div>
+        : !dew ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('加载失败，请稍后重试')}</div>
         : (
           <>
             {dew.scripture?.text && (
@@ -40,13 +41,13 @@ export default function MorningDewPage() {
                 <div style={{ fontSize: 12.5, color: '#ffd43b', marginTop: 8, textAlign: 'right' }}>—— {dew.scripture.ref}</div>
               </div>
             )}
-            <Sec title="默想">{dew.meditation}</Sec>
-            {dew.christ && <Sec title="基督连结" color="#a78bfa">{dew.christ}</Sec>}
-            {dew.reflection && <Sec title="反思" color="#5ac8fa"><span style={{ fontStyle: 'italic' }}>{dew.reflection}</span></Sec>}
-            {dew.prayer && <Sec title="祷告">{dew.prayer}</Sec>}
-            {dew.action && <Sec title="今日信心行动" color="#34c759">{dew.action}</Sec>}
+            <Sec title={i18nT('默想')}>{dew.meditation}</Sec>
+            {dew.christ && <Sec title={i18nT('基督连结')} color="#a78bfa">{dew.christ}</Sec>}
+            {dew.reflection && <Sec title={i18nT('反思')} color="#5ac8fa"><span style={{ fontStyle: 'italic' }}>{dew.reflection}</span></Sec>}
+            {dew.prayer && <Sec title={i18nT('祷告')}>{dew.prayer}</Sec>}
+            {dew.action && <Sec title={i18nT('今日信心行动')} color="#34c759">{dew.action}</Sec>}
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', marginTop: 8, lineHeight: 1.6 }}>
-              愿这滴甘露润泽你一整天。默想不为知识，乃为与主相会。
+              {i18nT('愿这滴甘露润泽你一整天。默想不为知识，乃为与主相会。')}
             </div>
           </>
         )}

@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useMemo, useState } from 'react'
 import { REGION_OPTIONS, getResources } from '../data/crisisResources'
 
@@ -21,7 +22,7 @@ export default function CrisisResourcePanel({ block, defaultRegion = 'TW', compa
     <div>
       {!compact && (
         <div className="cc-field">
-          <label>选择你所在的地区（用于显示对的热线）</label>
+          <label>{i18nT('选择你所在的地区（用于显示对的热线）')}</label>
           <select className="cc-select" value={region} onChange={(e) => setRegion(e.target.value)}>
             {REGION_OPTIONS.map((o) => (
               <option key={o.code} value={o.code}>{o.label}</option>
@@ -39,14 +40,14 @@ export default function CrisisResourcePanel({ block, defaultRegion = 'TW', compa
               <div className="meta">{r.contact} · {r.availability}{r.note ? ` · ${r.note}` : ''}</div>
             </div>
             {href ? (
-              <a className={`cc-call ${isEmergency ? 'emergency' : ''}`} href={href}>拨打</a>
+              <a className={`cc-call ${isEmergency ? 'emergency' : ''}`} href={href}>{i18nT('拨打')}</a>
             ) : (
               <span className="meta">{r.contact}</span>
             )}
           </div>
         )
       })}
-      <p className="cc-muted">如果你此刻有立即危险，请直接拨打{data?.emergencyNumber ? ` ${data.emergencyNumber} ` : '当地紧急电话'}。</p>
+      <p className="cc-muted">{i18nT('如果你此刻有立即危险，请直接拨打')}{data?.emergencyNumber ? ` ${data.emergencyNumber} ` : '当地紧急电话'}。</p>
     </div>
   )
 }

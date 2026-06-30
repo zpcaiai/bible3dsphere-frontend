@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * ReadingPlanPage — 读经计划（结构化通读 + 进度 + 连续天数）
  * 灵修 tab 子页。计划内容来自 readingPlans.js，进度存后端。
@@ -72,8 +73,8 @@ export default function ReadingPlanPage({ user }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 14 }}>
               <Ring pct={pct} color={plan.color} />
               <div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>已完成 {status?.completed_count || 0} / {plan.length} 天</div>
-                <div style={{ fontSize: 13, color: plan.color, fontWeight: 700, marginTop: 4 }}>🔥 连续 {status?.streak || 0} 天</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{i18nT('已完成')} {status?.completed_count || 0} / {plan.length} {i18nT('天')}</div>
+                <div style={{ fontSize: 13, color: plan.color, fontWeight: 700, marginTop: 4 }}>{i18nT('🔥 连续')} {status?.streak || 0} {i18nT('天')}</div>
               </div>
             </div>
           </div>
@@ -98,7 +99,7 @@ export default function ReadingPlanPage({ user }) {
             </button>
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', textAlign: 'center', lineHeight: 1.6 }}>
-            读经不为打卡，乃为遇见神。慢慢读，让一句话住在你里面。
+            {i18nT('读经不为打卡，乃为遇见神。慢慢读，让一句话住在你里面。')}
           </div>
         </>
       )}

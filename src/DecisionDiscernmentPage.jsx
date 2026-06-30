@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * DecisionDiscernmentPage — 决策辨识（司布真版，Skill 6）
  * 神的旨意不是算出来的，而是在与神同行中辨明的。今日心镜 overlay。
@@ -32,7 +33,7 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
 
   async function run() {
     const t = getToken(); if (!t) { onNeedLogin && onNeedLogin(); return }
-    if (!opts[0].label.trim() || !opts[1].label.trim()) { setError('请先写下两个选项'); return }
+    if (!opts[0].label.trim() || !opts[1].label.trim()) { setError(i18nT('请先写下两个选项')); return }
     setBusy(true); setError('')
     try { const r = await runDiscernment({ situation, options: opts, use_ai: true }, t); setResult(r); window.scrollTo({ top: 0 }) }
     catch (e) { setError(e.message || '辨识失败') } finally { setBusy(false) }
@@ -42,8 +43,8 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
     <div style={{ width: '100%', height: '100%', background: '#000', color: '#fff', overflowY: 'auto', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(28,28,30,0.92)', position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(10px)' }}>
         <BackButton onClick={result ? () => setResult(null) : onBack} />
-        <div><div style={{ fontSize: 17, fontWeight: 600 }}>决策辨识</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>司布真 · 在与神同行中辨明</div></div>
+        <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('决策辨识')}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{i18nT('司布真 · 在与神同行中辨明')}</div></div>
       </div>
 
       <div style={{ padding: '14px 16px 100px', maxWidth: 680, margin: '0 auto' }}>
@@ -53,16 +54,16 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(90,200,250,0.10), rgba(139,92,246,0.06))' }}>
               <div style={{ fontSize: 13, lineHeight: 1.8, color: 'rgba(255,255,255,0.82)' }}>
-                这不是收益计算器。我们不问「哪条路更划算」，而问：<strong style={{ color: '#5ac8fa' }}>哪条路更需要信心、更带来顺服、更少被恐惧驱动</strong>。
+                {i18nT('这不是收益计算器。我们不问「哪条路更划算」，而问：')}<strong style={{ color: '#5ac8fa' }}>{i18nT('哪条路更需要信心、更带来顺服、更少被恐惧驱动')}</strong>。
               </div>
             </div>
             <div style={card}>
-              <label style={lbl}>我正在面对的决定</label>
-              <span style={{ position: 'relative', display: 'block' }}><textarea value={situation} onChange={e => setSituation(e.target.value)} rows={2} placeholder="如：要不要换城市 / 接受这份工作 / 结束这段关系…" style={{ ...inp, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DD_OPTS} value={situation} onChange={setSituation} /></span>
+              <label style={lbl}>{i18nT('我正在面对的决定')}</label>
+              <span style={{ position: 'relative', display: 'block' }}><textarea value={situation} onChange={e => setSituation(e.target.value)} rows={2} placeholder={i18nT('如：要不要换城市 / 接受这份工作 / 结束这段关系…')} style={{ ...inp, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DD_OPTS} value={situation} onChange={setSituation} /></span>
             </div>
             {opts.map((o, i) => (
               <div key={i} style={card}>
-                <div style={{ fontSize: 12, color: '#a78bfa', fontWeight: 700, marginBottom: 8 }}>选项 {String.fromCharCode(65 + i)}</div>
+                <div style={{ fontSize: 12, color: '#a78bfa', fontWeight: 700, marginBottom: 8 }}>{i18nT('选项')} {String.fromCharCode(65 + i)}</div>
                 <input value={o.label} onChange={e => setOpt(i, 'label', e.target.value)} placeholder={`第 ${i + 1} 个选项是…`} style={inp} />
                 {SLIDERS.map(s => (
                   <div key={s.key} style={{ marginTop: 10 }}>
@@ -84,7 +85,7 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
             </div>
 
             <div style={{ ...card }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>司布真的提问</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>{i18nT('司布真的提问')}</div>
               {Object.entries(QLABEL).map(([k, label]) => {
                 const idx = result.questions?.[k]
                 const ans = idx === 0 || idx === 1 ? result.options[idx]?.label : '两者相近'
@@ -99,25 +100,25 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
             </div>
 
             <div style={{ ...card, borderColor: 'rgba(52,199,89,0.3)' }}>
-              <div style={{ fontSize: 11, color: '#34c759', fontWeight: 700, marginBottom: 6 }}>信心建议</div>
+              <div style={{ fontSize: 11, color: '#34c759', fontWeight: 700, marginBottom: 6 }}>{i18nT('信心建议')}</div>
               <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.85)', lineHeight: 1.8 }}>{result.recommendation}</div>
             </div>
 
             {(result.blind_spots || []).length > 0 && (
               <div style={card}>
-                <div style={{ fontSize: 11, color: '#ffa94d', fontWeight: 700, marginBottom: 6 }}>盲点提醒</div>
+                <div style={{ fontSize: 11, color: '#ffa94d', fontWeight: 700, marginBottom: 6 }}>{i18nT('盲点提醒')}</div>
                 {result.blind_spots.map((b, i) => <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, marginBottom: 5 }}>· {b}</div>)}
               </div>
             )}
             {(result.idols || []).length > 0 && (
               <div style={card}>
-                <div style={{ fontSize: 11, color: '#ff8787', fontWeight: 700, marginBottom: 6 }}>潜在偶像</div>
+                <div style={{ fontSize: 11, color: '#ff8787', fontWeight: 700, marginBottom: 6 }}>{i18nT('潜在偶像')}</div>
                 {result.idols.map((b, i) => <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, marginBottom: 5 }}>· {b}</div>)}
               </div>
             )}
 
             <div style={card}>
-              <div style={{ fontSize: 11, color: '#a78bfa', fontWeight: 700, marginBottom: 6 }}>祷告方向</div>
+              <div style={{ fontSize: 11, color: '#a78bfa', fontWeight: 700, marginBottom: 6 }}>{i18nT('祷告方向')}</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.82)', lineHeight: 1.8 }}>{result.prayer}</div>
             </div>
             {result.scripture?.text && (
@@ -125,7 +126,7 @@ export default function DecisionDiscernmentPage({ user, onBack, onNeedLogin }) {
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.78)', fontStyle: 'italic' }}>「{result.scripture.text}」<span style={{ color: '#a78bfa', fontStyle: 'normal' }}> —— {result.scripture.ref}</span></div>
               </div>
             )}
-            <button onClick={() => setResult(null)} style={{ width: '100%', padding: 13, borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>再辨识一次</button>
+            <button onClick={() => setResult(null)} style={{ width: '100%', padding: 13, borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{i18nT('再辨识一次')}</button>
           </>
         )}
       </div>

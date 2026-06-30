@@ -1,13 +1,14 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { holyLifePipeline, holyLifeSkills, holyLifeSkillsById } from '../data/holyLifeSkills'
 import { generateRuleOfLifeRemote } from '../lib/apiStorage'
 
 const DEFAULT_SCORE = 50
 const TIME_LABELS = {
-  morning: '早晨',
-  day: '日间',
-  decision: '决定',
-  evening: '晚上',
+  morning: i18nT('早晨'),
+  day: i18nT('日间'),
+  decision: i18nT('决定'),
+  evening: i18nT('晚上'),
 }
 
 function todayKey() {
@@ -99,8 +100,8 @@ function summarizeDay(log) {
   const avg = averageScore(log.entries)
   const lowest = [...log.entries].sort((a, b) => a.score - b.score)[0]
   const highest = [...log.entries].sort((a, b) => b.score - a.score)[0]
-  const weakest = lowest ? holyLifeSkillsById[lowest.skillId]?.shortTitle : '未记录'
-  const strongest = highest ? holyLifeSkillsById[highest.skillId]?.shortTitle : '未记录'
+  const weakest = lowest ? holyLifeSkillsById[lowest.skillId]?.shortTitle : i18nT('未记录')
+  const strongest = highest ? holyLifeSkillsById[highest.skillId]?.shortTitle : i18nT('未记录')
   return {
     done,
     avg,
@@ -116,7 +117,7 @@ function buildReport(log) {
     .filter((entry) => entry.completed)
     .map((entry) => holyLifeSkillsById[entry.skillId]?.shortTitle)
     .filter(Boolean)
-    .join('、') || '尚未完成具体操练'
+    .join('、') || i18nT('尚未完成具体操练')
   return `今日圣洁生活报告：完成 ${summary.done}/${holyLifeSkills.length} 项，平均分 ${summary.avg}。较强处：${summary.strongest}。需要留意：${summary.weakest}。已操练：${completed}。`
 }
 
@@ -130,7 +131,7 @@ function buildRuleOfLife(log) {
   const summary = summarizeDay(log)
   const weakest = [...log.entries].sort((a, b) => a.score - b.score)[0]
   const focusSkill = weakest ? holyLifeSkillsById[weakest.skillId] : holyLifeSkillsById.purpose_reset
-  const intention = log.intention.trim() || '今天把普通生活献给神'
+  const intention = log.intention.trim() || i18nT('今天把普通生活献给神')
   return createRuleOfLife({
     theme: `${focusSkill.shortTitle}：${focusSkill.metric}`,
     morningPrayer: `主啊，${intention}。求你洁净我的动机，使今天的时间、言语和选择都归向你。`,
@@ -321,42 +322,42 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
     <section className="sf-section">
       <div className="sf-section-heading holy-life-heading">
         <div>
-          <h2>圣洁生活引擎</h2>
-          <p>基于 William Law 的 Daily Practice Layer：不是增加任务，而是把普通生活重新带回敬拜。</p>
+          <h2>{i18nT('圣洁生活引擎')}</h2>
+          <p>{i18nT('基于 William Law 的 Daily Practice Layer：不是增加任务，而是把普通生活重新带回敬拜。')}</p>
         </div>
         <button className="sf-primary holy-life-save" type="button" onClick={save} disabled={saveState === 'saving'}>{saveLabel}</button>
       </div>
 
       <div className="holy-life-summary">
         <article className="sf-card">
-          <h3>今日进度</h3>
+          <h3>{i18nT('今日进度')}</h3>
           <div className="holy-life-score">{summary.done}/{holyLifeSkills.length}</div>
           <div className="sf-progress"><i style={{ width: `${summary.completion}%` }} /></div>
-          <p>完成率 {summary.completion}%</p>
+          <p>{i18nT('完成率')} {summary.completion}%</p>
         </article>
         <article className="sf-card">
-          <h3>平均形成分</h3>
+          <h3>{i18nT('平均形成分')}</h3>
           <div className="holy-life-score">{summary.avg}</div>
           <div className="sf-progress"><i style={{ width: `${summary.avg}%` }} /></div>
-          <p>较强：{summary.strongest} · 留意：{summary.weakest}</p>
+          <p>{i18nT('较强：')}{summary.strongest} {i18nT('· 留意：')}{summary.weakest}</p>
         </article>
         <article className="sf-card">
-          <h3>同在暂停</h3>
+          <h3>{i18nT('同在暂停')}</h3>
           <div className="holy-life-score">{log.presenceLogs.length}</div>
-          <p>目标不是频率本身，而是日间真实归回。</p>
+          <p>{i18nT('目标不是频率本身，而是日间真实归回。')}</p>
         </article>
         {summaryStats && (
           <article className="sf-card">
-            <h3>近 {summaryStats.days || 30} 天趋势</h3>
+            <h3>{i18nT('近')} {summaryStats.days || 30} {i18nT('天趋势')}</h3>
             <div className="holy-life-score">{summaryStats.averageScore || 0}</div>
-            <p>{summaryStats.logCount || 0} 天记录 · {summaryStats.presencePauseCount || 0} 次同在暂停 · {summaryStats.decisionLogCount || 0} 个成圣决定</p>
+            <p>{summaryStats.logCount || 0} {i18nT('天记录 ·')} {summaryStats.presencePauseCount || 0} {i18nT('次同在暂停 ·')} {summaryStats.decisionLogCount || 0} {i18nT('个成圣决定')}</p>
           </article>
         )}
       </div>
 
       <div className="sf-card holy-life-intention">
-        <label>今日奉献意向
-          <textarea value={log.intention} onChange={(event) => updateLog((prev) => ({ ...prev, intention: event.target.value }))} placeholder="今天我愿意在哪个具体领域承认：每一分钟都属于神？" />
+        <label>{i18nT('今日奉献意向')}
+          <textarea value={log.intention} onChange={(event) => updateLog((prev) => ({ ...prev, intention: event.target.value }))} placeholder={i18nT('今天我愿意在哪个具体领域承认：每一分钟都属于神？')} />
         </label>
       </div>
 
@@ -372,42 +373,42 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
           <div className="holy-life-card-head">
             <div>
               <h3>Daily Rule of Life</h3>
-              <p>{log.ruleOfLife?.theme || '从今日意向与最低形成分生成一条日规。'}</p>
+              <p>{i18nT(log.ruleOfLife?.theme || '从今日意向与最低形成分生成一条日规。')}</p>
             </div>
-            <button className="sf-primary" type="button" onClick={generateRuleOfLife}>生成日规</button>
+            <button className="sf-primary" type="button" onClick={generateRuleOfLife}>{i18nT('生成日规')}</button>
           </div>
           <div className="holy-life-rule-list">
-            <p><b>晨祷</b>{log.ruleOfLife?.morningPrayer || '尚未生成。'}</p>
-            <p><b>日间操练</b>{log.ruleOfLife?.dailyPractice || '尚未生成。'}</p>
-            <p><b>决策护栏</b>{log.ruleOfLife?.decisionGuardrail || '尚未生成。'}</p>
-            <p><b>晚间省察</b>{log.ruleOfLife?.eveningExamen || '尚未生成。'}</p>
+            <p><b>{i18nT('晨祷')}</b>{i18nT(log.ruleOfLife?.morningPrayer || '尚未生成。')}</p>
+            <p><b>{i18nT('日间操练')}</b>{i18nT(log.ruleOfLife?.dailyPractice || '尚未生成。')}</p>
+            <p><b>{i18nT('决策护栏')}</b>{i18nT(log.ruleOfLife?.decisionGuardrail || '尚未生成。')}</p>
+            <p><b>{i18nT('晚间省察')}</b>{i18nT(log.ruleOfLife?.eveningExamen || '尚未生成。')}</p>
           </div>
         </article>
         <article className="sf-card holy-life-purpose">
           <h3>Purpose Review</h3>
-          <label>今日呼召陈述
-            <textarea value={log.purposeReview?.callingStatement || ''} onChange={(event) => updatePurposeReview('callingStatement', event.target.value)} placeholder="今天神托付我的中心责任是什么？" />
+          <label>{i18nT('今日呼召陈述')}
+            <textarea value={log.purposeReview?.callingStatement || ''} onChange={(event) => updatePurposeReview('callingStatement', event.target.value)} placeholder={i18nT('今天神托付我的中心责任是什么？')} />
           </label>
-          <label>管家职分焦点
-            <textarea value={log.purposeReview?.stewardshipFocus || ''} onChange={(event) => updatePurposeReview('stewardshipFocus', event.target.value)} placeholder="时间、关系、工作、身体或资源中，哪个领域需要忠心？" />
+          <label>{i18nT('管家职分焦点')}
+            <textarea value={log.purposeReview?.stewardshipFocus || ''} onChange={(event) => updatePurposeReview('stewardshipFocus', event.target.value)} placeholder={i18nT('时间、关系、工作、身体或资源中，哪个领域需要忠心？')} />
           </label>
-          <label>偏离警戒
-            <textarea value={log.purposeReview?.misalignment || ''} onChange={(event) => updatePurposeReview('misalignment', event.target.value)} placeholder="今天最容易把目的从神转向自己的地方是什么？" />
+          <label>{i18nT('偏离警戒')}
+            <textarea value={log.purposeReview?.misalignment || ''} onChange={(event) => updatePurposeReview('misalignment', event.target.value)} placeholder={i18nT('今天最容易把目的从神转向自己的地方是什么？')} />
           </label>
-          <label>下一步忠心
-            <textarea value={log.purposeReview?.nextFaithfulAction || ''} onChange={(event) => updatePurposeReview('nextFaithfulAction', event.target.value)} placeholder="一个可以执行的顺服动作。" />
+          <label>{i18nT('下一步忠心')}
+            <textarea value={log.purposeReview?.nextFaithfulAction || ''} onChange={(event) => updatePurposeReview('nextFaithfulAction', event.target.value)} placeholder={i18nT('一个可以执行的顺服动作。')} />
           </label>
         </article>
       </div>
 
       <div className="sf-card holy-life-presence">
         <div>
-          <h3>30 秒神同在练习</h3>
-          <p>暂停。观察此刻的心。必要时悔改。重新开始。</p>
+          <h3>{i18nT('30 秒神同在练习')}</h3>
+          <p>{i18nT('暂停。观察此刻的心。必要时悔改。重新开始。')}</p>
         </div>
         <div>
-          <textarea value={presenceDraft} onChange={(event) => setPresenceDraft(event.target.value)} placeholder="此刻我归回神的一句话..." />
-          <button className="sf-primary" type="button" onClick={addPresencePause}>记录一次暂停</button>
+          <textarea value={presenceDraft} onChange={(event) => setPresenceDraft(event.target.value)} placeholder={i18nT('此刻我归回神的一句话...')} />
+          <button className="sf-primary" type="button" onClick={addPresencePause}>{i18nT('记录一次暂停')}</button>
         </div>
       </div>
 
@@ -419,7 +420,7 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
           ['evening', '晚上'],
           ['all', '全部'],
         ].map(([id, label]) => (
-          <button key={id} className={activeTime === id ? 'active' : ''} type="button" onClick={() => setActiveTime(id)}>{label}</button>
+          <button key={id} className={activeTime === id ? 'active' : ''} type="button" onClick={() => setActiveTime(id)}>{i18nT(label)}</button>
         ))}
       </div>
 
@@ -431,22 +432,22 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
               <div className="holy-life-card-head">
                 <div>
                   <span className="sf-card-short">{TIME_LABELS[skill.time]}</span>
-                  <h3>{skill.shortTitle}</h3>
-                  <p>{skill.title} · {skill.metric}</p>
+                  <h3>{i18nT(skill.shortTitle)}</h3>
+                  <p>{i18nT(skill.title)} · {skill.metric}</p>
                 </div>
                 <label className="holy-life-toggle">
                   <input type="checkbox" checked={entry.completed} onChange={(event) => updateEntry(skill.id, { completed: event.target.checked })} />
-                  完成
+                  {i18nT('完成')}
                 </label>
               </div>
-              <p>{skill.purpose}</p>
-              <div className="holy-life-practice">{skill.practice}</div>
-              <label>{skill.prompt}
-                <textarea value={entry.reflection} onChange={(event) => updateEntry(skill.id, { reflection: event.target.value })} placeholder={skill.placeholder} />
+              <p>{i18nT(skill.purpose)}</p>
+              <div className="holy-life-practice">{i18nT(skill.practice)}</div>
+              <label>{i18nT(skill.prompt)}
+                <textarea value={entry.reflection} onChange={(event) => updateEntry(skill.id, { reflection: event.target.value })} placeholder={i18nT(skill.placeholder)} />
               </label>
               <div className="sf-chip-row">
                 {skill.suggestions.map((suggestion) => (
-                  <button className="sf-chip-btn" key={suggestion} type="button" onClick={() => applySuggestion(skill.id, suggestion)}>{suggestion}</button>
+                  <button className="sf-chip-btn" key={suggestion} type="button" onClick={() => applySuggestion(skill.id, suggestion)}>{i18nT(suggestion)}</button>
                 ))}
               </div>
               <label className="holy-life-range">
@@ -463,25 +464,25 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
         <div className="holy-life-card-head">
           <div>
             <h3>Decision Sanctification</h3>
-            <p>把重要决定带到动机、省察、经文与顺服行动里。</p>
+            <p>{i18nT('把重要决定带到动机、省察、经文与顺服行动里。')}</p>
           </div>
-          <button className="sf-primary" type="button" onClick={addDecisionLog}>记录决定</button>
+          <button className="sf-primary" type="button" onClick={addDecisionLog}>{i18nT('记录决定')}</button>
         </div>
         <div className="holy-life-decision-grid">
-          <label>决定
-            <textarea value={decisionDraft.decision} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, decision: event.target.value }))} placeholder="我要做的决定是什么？" />
+          <label>{i18nT('决定')}
+            <textarea value={decisionDraft.decision} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, decision: event.target.value }))} placeholder={i18nT('我要做的决定是什么？')} />
           </label>
-          <label>动机省察
-            <textarea value={decisionDraft.motive} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, motive: event.target.value }))} placeholder="这是出于爱、真理、谦卑，还是恐惧、骄傲、逃避？" />
+          <label>{i18nT('动机省察')}
+            <textarea value={decisionDraft.motive} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, motive: event.target.value }))} placeholder={i18nT('这是出于爱、真理、谦卑，还是恐惧、骄傲、逃避？')} />
           </label>
-          <label>愿意交托的欲望
-            <textarea value={decisionDraft.desireToSurrender} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, desireToSurrender: event.target.value }))} placeholder="若神引导不同，我愿意放下什么？" />
+          <label>{i18nT('愿意交托的欲望')}
+            <textarea value={decisionDraft.desireToSurrender} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, desireToSurrender: event.target.value }))} placeholder={i18nT('若神引导不同，我愿意放下什么？')} />
           </label>
-          <label>经文锚点
-            <textarea value={decisionDraft.scriptureAnchor} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, scriptureAnchor: event.target.value }))} placeholder="罗马书 12:1-2" />
+          <label>{i18nT('经文锚点')}
+            <textarea value={decisionDraft.scriptureAnchor} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, scriptureAnchor: event.target.value }))} placeholder={i18nT('罗马书 12:1-2')} />
           </label>
-          <label>顺服行动
-            <textarea value={decisionDraft.obedienceStep} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, obedienceStep: event.target.value }))} placeholder="下一步可执行的忠心是什么？" />
+          <label>{i18nT('顺服行动')}
+            <textarea value={decisionDraft.obedienceStep} onChange={(event) => setDecisionDraft((prev) => ({ ...prev, obedienceStep: event.target.value }))} placeholder={i18nT('下一步可执行的忠心是什么？')} />
           </label>
         </div>
         {(log.decisionSanctificationLogs || []).length ? (
@@ -494,23 +495,23 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
               </div>
             ))}
           </div>
-        ) : <p className="sf-empty">还没有记录需要成圣辨识的决定。</p>}
+        ) : <p className="sf-empty">{i18nT('还没有记录需要成圣辨识的决定。')}</p>}
       </div>
 
       <div className="holy-life-report-grid">
         <article className="sf-card">
           <h3>Daily Holiness Report</h3>
-          <textarea value={log.dailyReport} onChange={(event) => updateLog((prev) => ({ ...prev, dailyReport: event.target.value }))} placeholder="点击生成，或手动记录今天的圣洁生活报告。" />
-          <button className="sf-primary" type="button" onClick={generateReport}>生成今日报告</button>
+          <textarea value={log.dailyReport} onChange={(event) => updateLog((prev) => ({ ...prev, dailyReport: event.target.value }))} placeholder={i18nT('点击生成，或手动记录今天的圣洁生活报告。')} />
+          <button className="sf-primary" type="button" onClick={generateReport}>{i18nT('生成今日报告')}</button>
         </article>
         <article className="sf-card">
           <h3>Tomorrow Formation</h3>
-          <textarea value={log.tomorrowFormation} onChange={(event) => updateLog((prev) => ({ ...prev, tomorrowFormation: event.target.value }))} placeholder="明天最重要的一步顺服是什么？" />
+          <textarea value={log.tomorrowFormation} onChange={(event) => updateLog((prev) => ({ ...prev, tomorrowFormation: event.target.value }))} placeholder={i18nT('明天最重要的一步顺服是什么？')} />
         </article>
       </div>
 
       <div className="sf-card">
-        <h3>最近 14 天</h3>
+        <h3>{i18nT('最近 14 天')}</h3>
         {recent.length ? (
           <div className="holy-life-history">
             {recent.map((item) => {
@@ -525,7 +526,7 @@ export default function HolyLifeEngine({ userId, token, initialTodayLog, history
               )
             })}
           </div>
-        ) : <p className="sf-empty">还没有历史记录。保存今日后，这里会显示趋势。</p>}
+        ) : <p className="sf-empty">{i18nT('还没有历史记录。保存今日后，这里会显示趋势。')}</p>}
       </div>
     </section>
   )

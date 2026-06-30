@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { intercessionCategories, prayerTemplates, presencePractices, psalmProfiles } from '../../data/prayerCommunionSeed'
 import {
@@ -101,7 +102,7 @@ export function PrayerRuleCard({ userId, rules, sessions, onSaveRule, onSaveSess
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Prayer Rule / 固定祷告规则</h2><p>Build a small daily rhythm of communion, not a performance system.</p></div>
+      <div className="sf-section-heading"><h2>{T('固定祷告规则', 'Prayer Rule')}</h2><p>Build a small daily rhythm of communion, not a performance system.</p></div>
       {!rules.find((rule) => rule.active) && <button className="sf-primary" type="button" onClick={ensureRule}>Create Beginner Prayer Rule</button>}
       <div className="sf-home-grid">
         {plan.slots.map((slot) => (
@@ -185,7 +186,7 @@ export function IntercessionList({ userId, targets, requests, onSaveTarget, onSa
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Intercession / 代祷追踪</h2><p>Pray with wisdom, privacy, love, perseverance, and concrete follow-up.</p></div>
+      <div className="sf-section-heading"><h2>{T('代祷追踪', 'Intercession')}</h2><p>Pray with wisdom, privacy, love, perseverance, and concrete follow-up.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Add target</h3>
@@ -262,7 +263,7 @@ export function PsalmPrayerGuide({ userId, sessions, onSaveSession }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Psalm Prayer / 诗篇祷告</h2><p>Pray praise, lament, confession, thanksgiving, trust, and hope without forced positivity.</p></div>
+      <div className="sf-section-heading"><h2>{T('诗篇祷告', 'Psalm Prayer')}</h2><p>Pray praise, lament, confession, thanksgiving, trust, and hope without forced positivity.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Recommend a Psalm</h3>
@@ -336,7 +337,7 @@ export function PracticingPresenceCheckIn({ userId, checkins, rules, onSaveCheck
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Practicing Presence / 操练与神同在</h2><p>Short, embodied returns to God in ordinary work, conflict, fatigue, commute, and temptation.</p></div>
+      <div className="sf-section-heading"><h2>{T('操练与神同在', 'Practicing Presence')}</h2><p>Short, embodied returns to God in ordinary work, conflict, fatigue, commute, and temptation.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Presence Now</h3>
@@ -394,7 +395,7 @@ export default function PrayerCommunionDashboard({ userId }) {
   return (
     <section className="sf-section prayer-communion">
       <div className="sf-section-heading">
-        <h2>Prayer & Communion OS / 祷告与神相交系统</h2>
+        <h2>{T('祷告与神相交系统', 'Prayer & Communion OS')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <MiniTabs active={tab} onChange={setTab} />

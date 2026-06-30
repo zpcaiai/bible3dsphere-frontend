@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { gospelAssuranceTexts, memoryVerses } from '../../data/scriptureFormationSeed'
 import {
@@ -105,7 +106,7 @@ export function LectioDivinaCard({ userId, session, onSave }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Lectio Divina / 圣经默想</h2>
+        <h2>{T('圣经默想', 'Lectio Divina')}</h2>
         <p>Read, meditate, pray, contemplate, and choose one concrete obedience action.</p>
       </div>
       <PassageDisplay passage={activeSession.passage || dailyPassage} />
@@ -176,7 +177,7 @@ export function ScriptureMemoryTrainer({ userId, items, onSave }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Scripture Memory / 经文背诵</h2>
+        <h2>{T('经文背诵', 'Scripture Memory')}</h2>
         <p>Memorize, review, recall, and apply verses with a simple spaced repetition rhythm.</p>
       </div>
       <div className="sf-home-grid">
@@ -256,7 +257,7 @@ export function SpiritualExamenForm({ userId, session, onSave }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Spiritual Examen / 每日省察</h2>
+        <h2>{T('每日省察', 'Spiritual Examen')}</h2>
         <p>Grateful awareness, truthfulness, repentance, gospel grace, and a small intention for tomorrow.</p>
       </div>
       {!session && <button className="sf-primary" type="button" onClick={start}>Start Evening Examen</button>}
@@ -351,7 +352,7 @@ export function ConfessionRepentanceFlow({ userId, session, onSave }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Confession & Repentance / 认罪悔改</h2>
+        <h2>{T('认罪悔改', 'Confession & Repentance')}</h2>
         <p>Truthful confession, gospel assurance, wise repair, and concrete repentance without shame loops.</p>
       </div>
       {!session && <button className="sf-primary" type="button" onClick={start}>Start Private Session</button>}

@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * GospelDiagnosticPage — 福音诊断室 / Gospel Diagnostic Lab
  * 钟马田诊断（挖到偶像与不信）+ 司布真牧养（带回基督）。
@@ -54,8 +55,8 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
       <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(28,28,30,0.92)', position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(10px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <BackButton onClick={onBack} />
-          <div><div style={{ fontSize: 17, fontWeight: 600 }}>福音诊断室</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>钟马田诊断 · 司布真牧养</div></div>
+          <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('福音诊断室')}</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{i18nT('钟马田诊断 · 司布真牧养')}</div></div>
         </div>
         <button onClick={view === 'history' ? () => setView('form') : openHistory} style={pill}>{view === 'history' ? '← 返回' : '病历'}</button>
       </div>
@@ -67,12 +68,11 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(90,200,250,0.06))' }}>
               <div style={{ fontSize: 13, lineHeight: 1.75, color: 'rgba(255,255,255,0.82)' }}>
-                症状不是问题。让我们一层层往下看——情绪揭示信念，信念揭示偶像，偶像揭示不信；
-                而福音，正是对付不信的良药。
+                {i18nT('症状不是问题。让我们一层层往下看——情绪揭示信念，信念揭示偶像，偶像揭示不信； 而福音，正是对付不信的良药。')}
               </div>
             </div>
             <div style={card}>
-              <div style={{ fontSize: 11, color: '#a78bfa', fontWeight: 700, marginBottom: 8 }}>第 {step + 1} / {STEPS.length} 问</div>
+              <div style={{ fontSize: 11, color: '#a78bfa', fontWeight: 700, marginBottom: 8 }}>{i18nT('第')} {step + 1} / {STEPS.length} {i18nT('问')}</div>
               <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{cur.q}</div>
               <span style={{ position: 'relative', display: 'block' }}>
               <textarea value={vals[cur.key]} onChange={e => set(cur.key, e.target.value)} rows={3} placeholder={cur.ph}
@@ -80,9 +80,9 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
               <SuggestMenu accent="#a78bfa" top={8} right={8} options={GD_OPTS[cur.key] || []} value={vals[cur.key]} onChange={(v) => set(cur.key, v)} />
               </span>
               <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-                {step > 0 && <button onClick={() => setStep(step - 1)} style={{ ...btn('rgba(255,255,255,0.08)'), color: 'rgba(255,255,255,0.7)', flex: 1 }}>上一步</button>}
+                {step > 0 && <button onClick={() => setStep(step - 1)} style={{ ...btn('rgba(255,255,255,0.08)'), color: 'rgba(255,255,255,0.7)', flex: 1 }}>{i18nT('上一步')}</button>}
                 {step < STEPS.length - 1
-                  ? <button onClick={() => setStep(step + 1)} style={{ ...btn('linear-gradient(135deg,#8b5cf6,#5ac8fa)'), flex: 2 }}>下一步</button>
+                  ? <button onClick={() => setStep(step + 1)} style={{ ...btn('linear-gradient(135deg,#8b5cf6,#5ac8fa)'), flex: 2 }}>{i18nT('下一步')}</button>
                   : <button onClick={submit} disabled={busy} style={{ ...btn('linear-gradient(135deg,#8b5cf6,#5ac8fa)'), flex: 2 }}>{busy ? '诊断中…' : '生成属灵病历'}</button>}
               </div>
             </div>
@@ -95,13 +95,13 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
         {view === 'result' && result && (
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(52,199,89,0.10), rgba(139,92,246,0.08))' }}>
-              <div style={{ fontSize: 11, color: 'rgba(52,199,89,0.8)', fontWeight: 700, marginBottom: 8 }}>✦ 属灵病历</div>
+              <div style={{ fontSize: 11, color: 'rgba(52,199,89,0.8)', fontWeight: 700, marginBottom: 8 }}>{i18nT('✦ 属灵病历')}</div>
               <div style={{ fontSize: 13.5, lineHeight: 1.85, color: 'rgba(255,255,255,0.88)' }}>{result.summary}</div>
             </div>
 
             {/* 钟马田 · 诊断 */}
             <div style={{ ...card, borderColor: 'rgba(218,119,242,0.3)' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#da77f2', marginBottom: 12 }}>🔬 钟马田 · 诊断（挖到根）</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#da77f2', marginBottom: 12 }}>{i18nT('🔬 钟马田 · 诊断（挖到根）')}</div>
               {[['情绪', result.emotion], ['渴望', result.desire], ['害怕失去', result.fear_named], ['偶像', result.idol_name], ['底层的不信', result.unbelief]].map(([k, v], i) => (
                 <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 9 }}>
                   <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', width: 64, flexShrink: 0, paddingTop: 2 }}>{k}</span>
@@ -112,25 +112,25 @@ export default function GospelDiagnosticPage({ user, onBack, onNeedLogin }) {
 
             {/* 司布真 · 牧养 */}
             <div style={{ ...card, borderColor: 'rgba(255,212,59,0.3)' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#ffd43b', marginBottom: 12 }}>🕊 司布真 · 牧养（带回基督）</div>
-              <Block label="福音真理">{result.gospel_truth}</Block>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#ffd43b', marginBottom: 12 }}>{i18nT('🕊 司布真 · 牧养（带回基督）')}</div>
+              <Block label={i18nT('福音真理')}>{result.gospel_truth}</Block>
               {result.scripture?.text && (
                 <div style={{ borderLeft: '3px solid rgba(167,139,250,0.5)', paddingLeft: 10, margin: '10px 0', fontSize: 13, color: 'rgba(255,255,255,0.78)', fontStyle: 'italic' }}>
                   「{result.scripture.text}」<span style={{ color: 'rgba(167,139,250,0.85)', fontStyle: 'normal' }}> —— {result.scripture.ref}</span>
                 </div>
               )}
-              <Block label="默想">{result.meditation}</Block>
-              <Block label="祷告">{result.prayer}</Block>
-              <Block label="今日信心行动" color="#5ac8fa">{result.action}</Block>
+              <Block label={i18nT('默想')}>{result.meditation}</Block>
+              <Block label={i18nT('祷告')}>{result.prayer}</Block>
+              <Block label={i18nT('今日信心行动')} color="#5ac8fa">{result.action}</Block>
             </div>
 
-            <button onClick={restart} style={{ ...btn('rgba(255,255,255,0.08)'), color: 'rgba(255,255,255,0.7)' }}>再做一次诊断</button>
+            <button onClick={restart} style={{ ...btn('rgba(255,255,255,0.08)'), color: 'rgba(255,255,255,0.7)' }}>{i18nT('再做一次诊断')}</button>
           </>
         )}
 
         {view === 'history' && (
           history.length === 0
-            ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>还没有诊断记录</div>
+            ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('还没有诊断记录')}</div>
             : history.map((h, i) => (
               <div key={i} style={card}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>

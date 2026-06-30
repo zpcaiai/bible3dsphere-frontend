@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useState } from 'react'
 import { crisisApi } from '../lib/api'
 import CaregiverInbox from './CaregiverInbox'
@@ -46,9 +47,9 @@ export default function CollaborationConsole({ authed }) {
   if (!authed) {
     return (
       <div className="cc-card">
-        <h3>协作</h3>
-        <p className="cc-muted">登录后，你可以把危机状态有限地、可撤销地分享给你的牧者或咨询师；牧者/咨询师登录后，也能在这里看到分享给他们的人（只读）。</p>
-        <p className="cc-muted">牧者/咨询师也可以直接访问独立入口 <code>/caregiver</code> 登录查看。</p>
+        <h3>{i18nT('协作')}</h3>
+        <p className="cc-muted">{i18nT('登录后，你可以把危机状态有限地、可撤销地分享给你的牧者或咨询师；牧者/咨询师登录后，也能在这里看到分享给他们的人（只读）。')}</p>
+        <p className="cc-muted">{i18nT('牧者/咨询师也可以直接访问独立入口')} <code>/caregiver</code> {i18nT('登录查看。')}</p>
       </div>
     )
   }
@@ -56,62 +57,62 @@ export default function CollaborationConsole({ authed }) {
   return (
     <div>
       <div className="cc-card">
-        <h3>我分享给谁</h3>
-        <p className="cc-muted">明确授权、随时可撤销。对方只能看到你勾选的范围，且每次查看你都会看到记录。</p>
-        {outgoing.length === 0 && <p className="cc-muted">还没有分享给任何人。</p>}
+        <h3>{i18nT('我分享给谁')}</h3>
+        <p className="cc-muted">{i18nT('明确授权、随时可撤销。对方只能看到你勾选的范围，且每次查看你都会看到记录。')}</p>
+        {outgoing.length === 0 && <p className="cc-muted">{i18nT('还没有分享给任何人。')}</p>}
         {outgoing.map((s) => (
           <div key={s.id}>
             <div className="cc-resource">
               <div>
                 <div style={{ fontWeight: 600 }}>
                   {s.caregiverName || s.caregiverEmail} <span className="cc-badge orange" style={{ fontSize: 10 }}>{ROLE_LABEL[s.caregiverRole] || s.caregiverRole}</span>
-                  {s.caregiverRegistered === false && <span className="cc-badge yellow" style={{ fontSize: 10, marginLeft: 6 }}>未注册</span>}
+                  {s.caregiverRegistered === false && <span className="cc-badge yellow" style={{ fontSize: 10, marginLeft: 6 }}>{i18nT('未注册')}</span>}
                 </div>
                 <div className="meta">
-                  {s.caregiverEmail} · 范围：{(s.scope || []).map((x) => SCOPE_LABEL[x] || x).join('、')}
+                  {s.caregiverEmail} {i18nT('· 范围：')}{(s.scope || []).map((x) => SCOPE_LABEL[x] || x).join('、')}
                   {typeof s.viewCount === 'number' ? ` · 已被查看 ${s.viewCount} 次${s.lastViewedAt ? `（最近 ${s.lastViewedAt}）` : ''}` : ''}{s.expiresAt ? (new Date(s.expiresAt) < new Date() ? ' · 已过期' : ` · ${s.expiresAt} 到期`) : ''}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 6, flex: '0 0 auto' }}>
                 {s.viewCount > 0 && <button className="cc-btn ghost" type="button" onClick={() => toggleViews(s.id)}>{views[s.id] ? '收起' : '查看记录'}</button>}
-                <button className="cc-btn ghost" type="button" onClick={() => revoke(s.id)}>撤销</button>
+                <button className="cc-btn ghost" type="button" onClick={() => revoke(s.id)}>{i18nT('撤销')}</button>
               </div>
             </div>
             {views[s.id] && (
               <div style={{ padding: '2px 12px 10px' }}>
-                {views[s.id].length === 0 && <p className="cc-muted" style={{ margin: 0 }}>暂无查看记录。</p>}
+                {views[s.id].length === 0 && <p className="cc-muted" style={{ margin: 0 }}>{i18nT('暂无查看记录。')}</p>}
                 {views[s.id].map((v, i) => (<p key={i} className="cc-muted" style={{ margin: '2px 0' }}>{v.viewedAt} · {v.caregiverEmail}</p>))}
               </div>
             )}
           </div>
         ))}
         <form onSubmit={grant} style={{ marginTop: 12 }}>
-          <div className="cc-field"><label>对方邮箱（TA 登录属灵星球用的邮箱，需唯一且已验证）</label><input className="cc-input" value={form.caregiverEmail} onChange={(e) => setForm({ ...form, caregiverEmail: e.target.value })} /></div>
-          <div className="cc-field"><label>称呼（可选）</label><input className="cc-input" value={form.caregiverName} onChange={(e) => setForm({ ...form, caregiverName: e.target.value })} /></div>
-          <div className="cc-field"><label>我的回拨电话（可选，便于牧者一键联系你）</label><input className="cc-input" value={form.contactPhone} onChange={(e) => setForm({ ...form, contactPhone: e.target.value })} /></div>
+          <div className="cc-field"><label>{i18nT('对方邮箱（TA 登录属灵星球用的邮箱，需唯一且已验证）')}</label><input className="cc-input" value={form.caregiverEmail} onChange={(e) => setForm({ ...form, caregiverEmail: e.target.value })} /></div>
+          <div className="cc-field"><label>{i18nT('称呼（可选）')}</label><input className="cc-input" value={form.caregiverName} onChange={(e) => setForm({ ...form, caregiverName: e.target.value })} /></div>
+          <div className="cc-field"><label>{i18nT('我的回拨电话（可选，便于牧者一键联系你）')}</label><input className="cc-input" value={form.contactPhone} onChange={(e) => setForm({ ...form, contactPhone: e.target.value })} /></div>
           <div className="cc-field">
-            <label>有效期</label>
+            <label>{i18nT('有效期')}</label>
             <select className="cc-select" value={form.expiresInDays} onChange={(e) => setForm({ ...form, expiresInDays: Number(e.target.value) })}>
-              <option value={0}>长期有效</option>
-              <option value={30}>30 天后自动失效</option>
-              <option value={90}>90 天后自动失效</option>
+              <option value={0}>{i18nT('长期有效')}</option>
+              <option value={30}>{i18nT('30 天后自动失效')}</option>
+              <option value={90}>{i18nT('90 天后自动失效')}</option>
             </select>
           </div>
           <div className="cc-field">
-            <label>角色</label>
+            <label>{i18nT('角色')}</label>
             <select className="cc-select" value={form.caregiverRole} onChange={(e) => setForm({ ...form, caregiverRole: e.target.value })}>
-              <option value="pastor">牧者</option><option value="counselor">咨询师</option><option value="small_group_leader">小组长</option>
+              <option value="pastor">{i18nT('牧者')}</option><option value="counselor">{i18nT('咨询师')}</option><option value="small_group_leader">{i18nT('小组长')}</option>
             </select>
           </div>
           <div className="cc-field">
-            <label>分享范围</label>
+            <label>{i18nT('分享范围')}</label>
             <div className="cc-pill-row">
               {Object.keys(SCOPE_LABEL).map((k) => (
                 <button key={k} type="button" className={`cc-pill ${form.scope.includes(k) ? 'active' : ''}`} onClick={() => toggleScope(k)}>{SCOPE_LABEL[k]}</button>
               ))}
             </div>
           </div>
-          <button className="cc-btn full" type="submit">授权分享</button>
+          <button className="cc-btn full" type="submit">{i18nT('授权分享')}</button>
         </form>
         {msg && <p className="cc-toast" style={{ padding: '0 4px' }}>{msg}</p>}
       </div>

@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MapCanvas } from './MapCanvas'
@@ -65,7 +66,7 @@ export function BibleMapClient() {
     if (layer === 'prophecies') {
       return (
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <div className="mb-2 text-xs text-gray-400">先知预言（点击发射预言射线）</div>
+          <div className="mb-2 text-xs text-gray-400">{i18nT('先知预言（点击发射预言射线）')}</div>
           <ul className="space-y-1.5">
             {prophecies.map((p) => (
               <li key={p.id}>
@@ -77,7 +78,7 @@ export function BibleMapClient() {
                   }`}
                 >
                   <span className="mr-2 inline-block h-2 w-2 rounded-full align-middle" style={{ background: PROPHECY_COLORS[p.prophecyType] }} />
-                  <span className="font-semibold text-gray-100">{p.book} {p.chapterStart} · 论{p.targetNationZh}</span>
+                  <span className="font-semibold text-gray-100">{p.book} {p.chapterStart} {i18nT('· 论')}{p.targetNationZh}</span>
                 </button>
               </li>
             ))}
@@ -88,7 +89,7 @@ export function BibleMapClient() {
     if (layer === 'campaigns') {
       return (
         <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-          <div className="mb-2 text-xs text-gray-400">战役（点击播放路线）</div>
+          <div className="mb-2 text-xs text-gray-400">{i18nT('战役（点击播放路线）')}</div>
           <ul className="space-y-1.5">
             {campaigns.map((c) => (
               <li key={c.id}>

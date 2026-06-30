@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** MentorCoachingPage — 导师陪跑 (B7)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -35,24 +36,24 @@ export default function MentorCoachingPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🤝 导师陪跑</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>同意范围内的陪伴 · 提问、观察、行动计划</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🤝 导师陪跑')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('同意范围内的陪伴 · 提问、观察、行动计划')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>建立关系</div>
-        <input value={cp} onChange={e => setCp(e.target.value)} placeholder="对方邮箱" style={fld} />
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('建立关系')}</div>
+        <input value={cp} onChange={e => setCp(e.target.value)} placeholder={i18nT('对方邮箱')} style={fld} />
         <div style={{ display: 'flex', gap: 8 }}>
           <select value={role} onChange={e => setRole(e.target.value)} style={{ ...fld, marginBottom: 0, flex: 1 }}>
-            <option value="mentee">我是被陪伴者</option><option value="mentor">我是导师</option>
+            <option value="mentee">{i18nT('我是被陪伴者')}</option><option value="mentor">{i18nT('我是导师')}</option>
           </select>
-          <button style={btn} onClick={createRel}>邀请</button>
+          <button style={btn} onClick={createRel}>{i18nT('邀请')}</button>
         </div>
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>我的关系</div>
-        {rels.length === 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>还没有陪跑关系。</div>}
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('我的关系')}</div>
+        {rels.length === 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{i18nT('还没有陪跑关系。')}</div>}
         {rels.map(r => (
           <div key={r.id} onClick={() => openRel(r)} style={{ padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
             <div style={{ fontSize: 14 }}>{r.my_role === 'mentee' ? '导师：' + r.mentor_email : '被陪伴：' + r.mentee_email} <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>· {r.status}</span></div>
@@ -62,15 +63,15 @@ export default function MentorCoachingPage({ user, onBack }) {
 
       {sel && (
         <div style={card}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>会面记录</div>
-          <button style={{ ...btn, marginBottom: 10 }} onClick={recommend}>建议议程与提问</button>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('会面记录')}</div>
+          <button style={{ ...btn, marginBottom: 10 }} onClick={recommend}>{i18nT('建议议程与提问')}</button>
           {rec && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>
             {(rec.suggested_agenda || []).map((a, i) => <div key={i}>· {a}</div>)}
-            <div style={{ marginTop: 6, color: '#8be9c0' }}>提问：</div>
+            <div style={{ marginTop: 6, color: '#8be9c0' }}>{i18nT('提问：')}</div>
             {(rec.suggested_questions || []).map((q, i) => <div key={i}>– {q}</div>)}
           </div>}
-          <textarea value={summary} onChange={e => setSummary(e.target.value)} rows={3} placeholder="这次会面的摘要…" style={{ ...fld, resize: 'vertical' }} />
-          <button style={btn} onClick={addSession}>记录会面</button>
+          <textarea value={summary} onChange={e => setSummary(e.target.value)} rows={3} placeholder={i18nT('这次会面的摘要…')} style={{ ...fld, resize: 'vertical' }} />
+          <button style={btn} onClick={addSession}>{i18nT('记录会面')}</button>
           <div style={{ marginTop: 10 }}>
             {sessions.map(s => <div key={s.id} style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', padding: '4px 0' }}>· {s.summary || s.session_type}</div>)}
           </div>

@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
 import { getToken } from './auth'
@@ -65,8 +66,8 @@ function NarrativeTab({ token }) {
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
         {t('人不只活在概念里，也活在故事里。写下你心里反复出现的「旧叙事」（例如「我必须……否则……」），系统会辨识核心恐惧、隐藏偶像与谎言，并以福音重写出新叙事与操练。')}
       </div>
-      <SuggestField label="旧叙事 / 此刻的处境" value={text} onChange={setText} accent={ACCENT}
-        placeholder="例如：我必须把每件事都做到完美，否则我就没有价值。" options={OLD_NARR_OPTS} minHeight={84} />
+      <SuggestField label={i18nT('旧叙事 / 此刻的处境')} value={text} onChange={setText} accent={ACCENT}
+        placeholder={i18nT('例如：我必须把每件事都做到完美，否则我就没有价值。')} options={OLD_NARR_OPTS} minHeight={84} />
       <label style={lbl}>{t('偶像类别（可选，留空则自动识别）')}</label>
       <select value={idol} onChange={(e) => setIdol(e.target.value)} style={inp}>
         {IDOL_OPTS.map(([k, z]) => <option key={k} value={k} style={{ color: '#000' }}>{t(z)}</option>)}
@@ -151,8 +152,8 @@ function DiagnoseTab({ token }) {
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
         {t('把一段真实的日记、祷告或处境写下来，系统会先过「危机优先」守卫，再辨识其中的世界观倾向、底层信念与可能的偶像。安全优先——若检测到高危，会转向关怀而不做分析。')}
       </div>
-      <SuggestField label="日记 / 祷告 / 处境" value={text} onChange={setText} accent={ACCENT}
-        placeholder="诚实地写下你近来的内心、挣扎或一段经历…" options={DIAG_OPTS} minHeight={110} />
+      <SuggestField label={i18nT('日记 / 祷告 / 处境')} value={text} onChange={setText} accent={ACCENT}
+        placeholder={i18nT('诚实地写下你近来的内心、挣扎或一段经历…')} options={DIAG_OPTS} minHeight={110} />
       <label style={lbl}>{t('来源类型')}</label>
       <select value={src} onChange={(e) => setSrc(e.target.value)} style={inp}>
         {SOURCE_OPTS.map(([k, z]) => <option key={k} value={k} style={{ color: '#000' }}>{t(z)}</option>)}

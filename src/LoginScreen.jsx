@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
 import { loginWithEmail, registerWithEmail, sendEmailCode, sendResetCode, resetPassword } from './auth'
@@ -63,7 +64,7 @@ export default function LoginScreen({ onLogin, onBack, message }) {
       )}
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <div style={{ fontSize: '64px', lineHeight: 1, marginBottom: '12px' }}>🔮</div>
-        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>属灵星球</h1>
+        <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>{i18nT('属灵星球')}</h1>
         <p style={{ margin: '6px 0 0', fontSize: '14px', color: 'rgba(255,255,255,0.4)' }}>Bible Emotion Sphere</p>
       </div>
 
@@ -108,13 +109,13 @@ export default function LoginScreen({ onLogin, onBack, message }) {
         {tab === 'register' && <RegisterForm email={sharedEmail} setEmail={setSharedEmail} onDone={() => setTab('login')} onLogin={onLogin} />}
         {tab === 'reset' && <ResetPasswordForm email={sharedEmail} setEmail={setSharedEmail} onDone={() => setTab('login')} />}
 
-        <p style={mutedText}>登录即表示同意服务条款与隐私政策</p>
+        <p style={mutedText}>{i18nT('登录即表示同意服务条款与隐私政策')}</p>
       </div>
 
       {/* 站点声明 */}
       <div style={{ marginTop: '18px', textAlign: 'center', fontSize: '11px',
         color: 'rgba(255,255,255,0.32)', lineHeight: 1.8, maxWidth: 360 }}>
-        <div>本站内容为开发者 Ethan 原创，仅供个人灵修学习，不得用于商业用途，最终解释权归开发者所有</div>
+        <div>{i18nT('本站内容为开发者 Ethan 原创，仅供个人灵修学习，不得用于商业用途，最终解释权归开发者所有')}</div>
         <a href="mailto:zpchoney@gmail.com" style={{ color: 'rgba(90,200,250,0.7)', textDecoration: 'none' }}>zpchoney@gmail.com</a>
       </div>
     </div>
@@ -159,7 +160,7 @@ function LoginForm({ email, setEmail, onLogin, onReset }) {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div>
-        <label style={labelStyle}>邮箱</label>
+        <label style={labelStyle}>{i18nT('邮箱')}</label>
         <input
           type="email" required value={email} onChange={e => setEmail(e.target.value)}
           placeholder="john@bible-sphere.com" autoComplete="email"
@@ -167,10 +168,10 @@ function LoginForm({ email, setEmail, onLogin, onReset }) {
         />
       </div>
       <div>
-        <label style={labelStyle}>密码</label>
+        <label style={labelStyle}>{i18nT('密码')}</label>
         <input
           type="password" required value={password} onChange={e => setPassword(e.target.value)}
-          placeholder="输入密码" autoComplete="current-password"
+          placeholder={i18nT('输入密码')} autoComplete="current-password"
           style={inputStyle}
         />
       </div>
@@ -179,7 +180,7 @@ function LoginForm({ email, setEmail, onLogin, onReset }) {
           type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
           style={{ width: '16px', height: '16px', accentColor: '#007aff' }}
         />
-        记住账号密码
+        {i18nT('记住账号密码')}
       </label>
       {error && <p style={errorText}>{error}</p>}
       <button type="submit" disabled={loading} style={primaryBtnStyle(loading)}>
@@ -195,7 +196,7 @@ function LoginForm({ email, setEmail, onLogin, onReset }) {
             fontFamily: 'inherit',
           }}
         >
-          🔒 忘记密码？
+          {i18nT('🔒 忘记密码？')}
         </button>
       </div>
     </form>
@@ -272,7 +273,7 @@ function RegisterForm({ email, setEmail, onDone, onLogin }) {
   return (
     <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div>
-        <label style={labelStyle}>邮箱</label>
+        <label style={labelStyle}>{i18nT('邮箱')}</label>
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
             type="email" required value={email} onChange={e => handleEmailChange(e.target.value)}
@@ -296,31 +297,31 @@ function RegisterForm({ email, setEmail, onDone, onLogin }) {
         </div>
       </div>
       <div>
-        <label style={labelStyle}>验证码</label>
+        <label style={labelStyle}>{i18nT('验证码')}</label>
         <input
           type="text" required value={code} onChange={e => setCode(e.target.value)}
-          placeholder="6位验证码" maxLength={6} inputMode="numeric"
+          placeholder={i18nT('6位验证码')} maxLength={6} inputMode="numeric"
           style={inputStyle}
         />
         {devCode && (
           <p style={{ fontSize: '12px', color: '#34c759', margin: '6px 0 0', textAlign: 'center' }}>
-            开发模式 — 验证码: <b>{devCode}</b>（请在上方输入）
+            {i18nT('开发模式 — 验证码:')} <b>{devCode}</b>{i18nT('（请在上方输入）')}
           </p>
         )}
       </div>
       <div>
-        <label style={labelStyle}>密码（至少6位）</label>
+        <label style={labelStyle}>{i18nT('密码（至少6位）')}</label>
         <input
           type="password" required value={password} onChange={e => setPassword(e.target.value)}
-          placeholder="设置登录密码" autoComplete="new-password" minLength={6}
+          placeholder={i18nT('设置登录密码')} autoComplete="new-password" minLength={6}
           style={inputStyle}
         />
       </div>
       <div>
-        <label style={labelStyle}>昵称（选填）</label>
+        <label style={labelStyle}>{i18nT('昵称（选填）')}</label>
         <input
           type="text" value={nickname} onChange={e => setNickname(e.target.value)}
-          placeholder="你的名字"
+          placeholder={i18nT('你的名字')}
           style={inputStyle}
         />
       </div>
@@ -374,11 +375,11 @@ function ResetPasswordForm({ email, setEmail, onDone }) {
     setError('')
 
     if (password !== confirmPassword) {
-      setError('两次输入的密码不一致')
+      setError(i18nT('两次输入的密码不一致'))
       return
     }
     if (password.length < 6) {
-      setError('密码至少需要6位')
+      setError(i18nT('密码至少需要6位'))
       return
     }
 
@@ -398,8 +399,8 @@ function ResetPasswordForm({ email, setEmail, onDone }) {
     return (
       <div style={{ textAlign: 'center', padding: '20px' }}>
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
-        <div style={{ fontSize: '16px', color: '#fff', marginBottom: '8px' }}>密码重置成功</div>
-        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>请使用新密码登录</div>
+        <div style={{ fontSize: '16px', color: '#fff', marginBottom: '8px' }}>{i18nT('密码重置成功')}</div>
+        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>{i18nT('请使用新密码登录')}</div>
       </div>
     )
   }
@@ -407,7 +408,7 @@ function ResetPasswordForm({ email, setEmail, onDone }) {
   return (
     <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div>
-        <label style={labelStyle}>注册邮箱</label>
+        <label style={labelStyle}>{i18nT('注册邮箱')}</label>
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
             type="email" required value={email} onChange={e => setEmail(e.target.value)}
@@ -431,31 +432,31 @@ function ResetPasswordForm({ email, setEmail, onDone }) {
         </div>
       </div>
       <div>
-        <label style={labelStyle}>验证码</label>
+        <label style={labelStyle}>{i18nT('验证码')}</label>
         <input
           type="text" required value={code} onChange={e => setCode(e.target.value)}
-          placeholder="6位验证码" maxLength={6} inputMode="numeric"
+          placeholder={i18nT('6位验证码')} maxLength={6} inputMode="numeric"
           style={inputStyle}
         />
         {devCode && (
           <p style={{ fontSize: '12px', color: '#34c759', margin: '6px 0 0', textAlign: 'center' }}>
-            开发模式 — 验证码: <b>{devCode}</b>（请在上方输入）
+            {i18nT('开发模式 — 验证码:')} <b>{devCode}</b>{i18nT('（请在上方输入）')}
           </p>
         )}
       </div>
       <div>
-        <label style={labelStyle}>新密码（至少6位）</label>
+        <label style={labelStyle}>{i18nT('新密码（至少6位）')}</label>
         <input
           type="password" required value={password} onChange={e => setPassword(e.target.value)}
-          placeholder="设置新密码" autoComplete="new-password" minLength={6}
+          placeholder={i18nT('设置新密码')} autoComplete="new-password" minLength={6}
           style={inputStyle}
         />
       </div>
       <div>
-        <label style={labelStyle}>确认密码</label>
+        <label style={labelStyle}>{i18nT('确认密码')}</label>
         <input
           type="password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-          placeholder="再次输入新密码" autoComplete="new-password"
+          placeholder={i18nT('再次输入新密码')} autoComplete="new-password"
           style={inputStyle}
         />
       </div>
@@ -473,7 +474,7 @@ function ResetPasswordForm({ email, setEmail, onDone }) {
             fontFamily: 'inherit',
           }}
         >
-          ← 返回登录
+          {i18nT('← 返回登录')}
         </button>
       </div>
     </form>

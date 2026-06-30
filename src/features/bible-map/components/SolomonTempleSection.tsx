@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 /**
  * SolomonTempleSection — 所罗门第一圣殿 3D 结构剖面图
@@ -480,21 +481,21 @@ function TempleScene({ cut, onSel }: { cut: boolean; onSel: SelFn }) {
       ))}
 
       {/* ── 浮动标注 ── */}
-      <Label c={[-40, 0]} y={26} text="至圣所 (20×20×20肘)" tone="gold" />
-      <Label c={[-10, 0]} y={34} text="圣所 (40×20×30肘)" tone="stone" />
-      <Label c={[15, 0]} y={34} text="廊子" tone="stone" />
-      <Label c={[24, -7]} y={26} text="雅斤（南）" tone="bronze" />
-      <Label c={[24, 7]} y={26} text="波阿斯（北）" tone="bronze" />
-      <Label c={[45, 0]} y={13} text="铜祭坛" tone="bronze" />
-      <Label c={[40, -25]} y={10} text="铜海" tone="bronze" />
-      <Label c={[46, 34]} y={3} text="洗濯盆" tone="bronze" />
-      <Label c={[40, 0]} y={1} text="外院（百姓/外邦人院）" tone="stone" />
-      <Label c={[148, 0]} y={20} text="东门" tone="east" />
-      {cut && <Label c={[-40, 0]} y={3.2} text="约柜" tone="gold" />}
-      {cut && <Label c={[-28, 0]} y={4.5} text="金香坛" tone="gold" />}
-      {cut && <Label c={[-16, 6]} y={6} text="金灯台" tone="gold" />}
-      {cut && <Label c={[-14, 3]} y={3.5} text="陈设饼桌" tone="gold" />}
-      <Label c={[170, 0]} y={2} text="← 殿门朝东 (East)" tone="east" />
+      <Label c={[-40, 0]} y={26} text={i18nT('至圣所 (20×20×20肘)')} tone="gold" />
+      <Label c={[-10, 0]} y={34} text={i18nT('圣所 (40×20×30肘)')} tone="stone" />
+      <Label c={[15, 0]} y={34} text={i18nT('廊子')} tone="stone" />
+      <Label c={[24, -7]} y={26} text={i18nT('雅斤（南）')} tone="bronze" />
+      <Label c={[24, 7]} y={26} text={i18nT('波阿斯（北）')} tone="bronze" />
+      <Label c={[45, 0]} y={13} text={i18nT('铜祭坛')} tone="bronze" />
+      <Label c={[40, -25]} y={10} text={i18nT('铜海')} tone="bronze" />
+      <Label c={[46, 34]} y={3} text={i18nT('洗濯盆')} tone="bronze" />
+      <Label c={[40, 0]} y={1} text={i18nT('外院（百姓/外邦人院）')} tone="stone" />
+      <Label c={[148, 0]} y={20} text={i18nT('东门')} tone="east" />
+      {cut && <Label c={[-40, 0]} y={3.2} text={i18nT('约柜')} tone="gold" />}
+      {cut && <Label c={[-28, 0]} y={4.5} text={i18nT('金香坛')} tone="gold" />}
+      {cut && <Label c={[-16, 6]} y={6} text={i18nT('金灯台')} tone="gold" />}
+      {cut && <Label c={[-14, 3]} y={3.5} text={i18nT('陈设饼桌')} tone="gold" />}
+      <Label c={[170, 0]} y={2} text={i18nT('← 殿门朝东 (East)')} tone="east" />
     </group>
   )
 }
@@ -586,7 +587,7 @@ export function SolomonTempleSection({ onBack }: Props) {
           <div className="absolute right-4 top-4 max-w-xs rounded-xl border border-amber-400/20 bg-black/75 p-4 backdrop-blur">
             <div className="mb-1 flex items-start justify-between gap-3">
               <h2 className="text-base font-bold text-amber-300">{t(part.name)}</h2>
-              <button onClick={() => setSel(null)} className="text-gray-400 hover:text-white" aria-label="关闭">✕</button>
+              <button onClick={() => setSel(null)} className="text-gray-400 hover:text-white" aria-label={i18nT('关闭')}>✕</button>
             </div>
             <div className="mb-2 text-xs text-amber-400/90">{t(part.ref)}</div>
             {part.dims && <div className="mb-2 text-xs text-gray-400">{t('尺寸：')}{t(part.dims)}</div>}

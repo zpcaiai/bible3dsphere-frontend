@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 
 /**
@@ -21,7 +22,7 @@ export default function GroundingExercise() {
 
   return (
     <div>
-      <p className="cc-muted">不用做得完美，只要慢慢把自己带回此刻。</p>
+      <p className="cc-muted">{i18nT('不用做得完美，只要慢慢把自己带回此刻。')}</p>
       {STEPS.map((s, i) => (
         <div
           key={s.n}
@@ -36,7 +37,7 @@ export default function GroundingExercise() {
         </div>
       ))}
       {done.length === STEPS.length && (
-        <p style={{ color: '#34c759' }}>你已经把自己带回到现在了。这是现在，不是那时，你是安全的。</p>
+        <p style={{ color: '#34c759' }}>{i18nT('你已经把自己带回到现在了。这是现在，不是那时，你是安全的。')}</p>
       )}
     </div>
   )

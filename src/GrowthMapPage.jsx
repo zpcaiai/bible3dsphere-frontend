@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState } from 'react'
 import { fetchMilestones } from './api'
 import { API_BASE } from './api'
@@ -122,14 +123,14 @@ export default function GrowthMapPage({ user, token, onBack }) {
   return (
     <div className="pw-page">
       <header className="pw-header">
-        <button className="checkin-back-btn" onClick={onBack} aria-label="返回">
+        <button className="checkin-back-btn" onClick={onBack} aria-label={i18nT('返回')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div className="pw-header-center">
-          <div className="pw-title">📊 灵命成长图谱</div>
-          <div className="pw-subtitle">SFDS 8维度灵命轨迹可视化</div>
+          <div className="pw-title">{i18nT('📊 灵命成长图谱')}</div>
+          <div className="pw-subtitle">{i18nT('SFDS 8维度灵命轨迹可视化')}</div>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {[['chart', '图谱'], ['milestones', '徽章']].map(([k, l]) => (
@@ -140,7 +141,7 @@ export default function GrowthMapPage({ user, token, onBack }) {
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', boxSizing: 'border-box' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.4)' }}>加载中...</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.4)' }}>{i18nT('加载中...')}</div>
         ) : tab === 'chart' ? (
           <>
             {/* Summary chips */}
@@ -160,7 +161,7 @@ export default function GrowthMapPage({ user, token, onBack }) {
 
                 {/* Bars */}
                 <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: '18px' }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 14 }}>8维度详细数值</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 14 }}>{i18nT('8维度详细数值')}</div>
                   {Object.keys(DIM_LABELS).map(dim => {
                     const ds = dimScores.find(s => s.dimension === dim)
                     return <DimBar key={dim} dim={dim} value={stateVector[dim] ?? 0.5} delta={ds?.delta ?? 0} />
@@ -170,7 +171,7 @@ export default function GrowthMapPage({ user, token, onBack }) {
                 {/* Trajectory narrative */}
                 {profile?.formation?.trajectory_narrative && (
                   <div style={{ marginTop: 16, padding: '14px 16px', background: 'rgba(88,86,214,0.08)', border: '1px solid rgba(88,86,214,0.2)', borderRadius: 12, fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
-                    <div style={{ fontSize: 11, color: '#c4b5fd', fontWeight: 700, marginBottom: 6 }}>🧭 轨迹叙述</div>
+                    <div style={{ fontSize: 11, color: '#c4b5fd', fontWeight: 700, marginBottom: 6 }}>{i18nT('🧭 轨迹叙述')}</div>
                     {profile.formation.trajectory_narrative}
                   </div>
                 )}
@@ -185,8 +186,8 @@ export default function GrowthMapPage({ user, token, onBack }) {
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>📊</div>
-                <div>完成几次情绪打卡或心迹分析后</div>
-                <div>图谱将自动生成你的灵命轨迹</div>
+                <div>{i18nT('完成几次情绪打卡或心迹分析后')}</div>
+                <div>{i18nT('图谱将自动生成你的灵命轨迹')}</div>
               </div>
             )}
           </>
@@ -194,14 +195,14 @@ export default function GrowthMapPage({ user, token, onBack }) {
           /* Milestones tab */
           <>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 20 }}>
-              里程碑是你属灵旅程中的见证，不是成就，而是回忆。
+              {i18nT('里程碑是你属灵旅程中的见证，不是成就，而是回忆。')}
             </div>
             {milestones.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 14, lineHeight: 1.8 }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}>🌱</div>
-                <div>旅程才刚刚开始</div>
-                <div style={{ fontSize: 12, marginTop: 8 }}>连续7天灵修、提交10条代祷、回答7次灵魂一问...</div>
-                <div style={{ fontSize: 12 }}>每一步都会被记录。</div>
+                <div>{i18nT('旅程才刚刚开始')}</div>
+                <div style={{ fontSize: 12, marginTop: 8 }}>{i18nT('连续7天灵修、提交10条代祷、回答7次灵魂一问...')}</div>
+                <div style={{ fontSize: 12 }}>{i18nT('每一步都会被记录。')}</div>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
@@ -222,7 +223,7 @@ export default function GrowthMapPage({ user, token, onBack }) {
 
             {/* Future badges preview */}
             <div style={{ marginTop: 24 }}>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>🔒 待解锁</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>{i18nT('🔒 待解锁')}</div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[
                   { icon: '🌿', name: '旷野七日', desc: '连续7天灵修' },

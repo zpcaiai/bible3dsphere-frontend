@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import { YEAR_MIN, YEAR_MAX, YEAR_STEP } from '../domain/constants'
 import { formatYear } from '../lib/format'
@@ -11,7 +12,7 @@ export function TimelineSlider({ year, onYearChange }: Props) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-3">
       <div className="mb-1 flex items-center justify-between">
-        <span className="text-xs text-gray-400">时间轴</span>
+        <span className="text-xs text-gray-400">{i18nT('时间轴')}</span>
         <span className="text-lg font-bold text-amber-400">{formatYear(year)}</span>
       </div>
       <input
@@ -22,7 +23,7 @@ export function TimelineSlider({ year, onYearChange }: Props) {
         value={year}
         onChange={(e) => onYearChange(Number.parseInt(e.target.value, 10))}
         className="w-full accent-amber-400"
-        aria-label="年份时间轴"
+        aria-label={i18nT('年份时间轴')}
       />
       <div className="mt-1 flex justify-between text-[10px] text-gray-500">
         <span>{formatYear(YEAR_MIN)}</span>

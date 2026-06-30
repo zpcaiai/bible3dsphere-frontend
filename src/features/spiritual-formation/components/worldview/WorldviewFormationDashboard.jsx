@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { beliefDomains, gospelFrameTemplates, idolCategories } from '../../data/worldviewFormationSeed'
 import {
@@ -105,7 +106,7 @@ export function BeliefDiagnosticPanel({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Belief Diagnostic / 底层信念诊断</h2><p>{'event -> emotion -> interpretation -> belief -> desire -> behavior -> fruit.'}</p></div>
+      <div className="sf-section-heading"><h2>{T('底层信念诊断', 'Belief Diagnostic')}</h2><p>{'event -> emotion -> interpretation -> belief -> desire -> behavior -> fruit.'}</p></div>
       <article className="sf-card sf-flow-card">
         <label>Situation, emotion, or recurring struggle<textarea value={text} onChange={(event) => setText(event.target.value)} /></label>
         <button className="sf-primary" type="button" onClick={diagnose}>Diagnose Possible Belief</button>
@@ -163,7 +164,7 @@ export function IdolMappingPanel({ userId, data, onRefresh }) {
   const practices = primaryKey ? recommendSurrenderPractices(primaryKey) : []
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Idol Mapping / 偶像地图</h2><p>{'desire -> promise -> fear -> sacrifice -> fruit -> gospel counter-truth -> surrender practice.'}</p></div>
+      <div className="sf-section-heading"><h2>{T('偶像地图', 'Idol Mapping')}</h2><p>{'desire -> promise -> fear -> sacrifice -> fruit -> gospel counter-truth -> surrender practice.'}</p></div>
       <article className="sf-card sf-flow-card">
         <label>Recurring anxiety, anger, desire, or conflict<textarea value={text} onChange={(event) => setText(event.target.value)} /></label>
         <button className="sf-primary" type="button" onClick={detect}>Detect Possible Idol</button>
@@ -218,7 +219,7 @@ export function GospelReframingPanel({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Gospel Reframing / 福音重构</h2><p>Creation, Fall, Redemption, Restoration. Lament is allowed; cheap positivity is not.</p></div>
+      <div className="sf-section-heading"><h2>{T('福音重构', 'Gospel Reframing')}</h2><p>Creation, Fall, Redemption, Restoration. Lament is allowed; cheap positivity is not.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <label>Situation<textarea value={situation} onChange={(event) => setSituation(event.target.value)} /></label>
@@ -293,7 +294,7 @@ export function DecisionDiscernmentPanel({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Decision Discernment / 决策分辨</h2><p>Clarify options, facts, motives, values, counsel, prayer, timing, risks, and long-term fruit. This is not divination.</p></div>
+      <div className="sf-section-heading"><h2>{T('决策分辨', 'Decision Discernment')}</h2><p>Clarify options, facts, motives, values, counsel, prayer, timing, risks, and long-term fruit. This is not divination.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Decision question<textarea value={decisionText} onChange={(event) => setDecisionText(event.target.value)} /></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={oneShot}>One-shot Discernment</button><button type="button" onClick={createSession}>Create Decision Session</button></div>
@@ -332,7 +333,7 @@ export default function WorldviewFormationDashboard({ userId = 'local-user' }) {
   return (
     <section className="sf-module">
       <div className="sf-section-heading">
-        <h2>Worldview Formation OS Expansion / 世界观塑造系统扩展</h2>
+        <h2>{T('世界观塑造系统扩展', 'Worldview Formation OS Expansion')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <MiniTabs active={tab} onChange={setTab} />

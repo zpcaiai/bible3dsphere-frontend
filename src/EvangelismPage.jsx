@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
@@ -135,7 +136,7 @@ async function exportAllPrayersToPdf(items) {
       pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
     }
     pdf.save(`传FY祷告墙_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert('PDF 生成失败，请重试') }
+  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
   finally { document.body.removeChild(el) }
 }
 
@@ -206,7 +207,7 @@ export function SeekersClassView() {
   useEffect(() => {
     fetchSeekersClassCourses()
       .then(d => setCourses(d.courses || []))
-      .catch(() => setErr('课程加载失败，请稍后重试'))
+      .catch(() => setErr(i18nT('课程加载失败，请稍后重试')))
   }, [])
 
   if (err) return (
@@ -217,7 +218,7 @@ export function SeekersClassView() {
 
   if (!courses) return (
     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>
-      加载中…
+      {i18nT('加载中…')}
     </div>
   )
 
@@ -226,9 +227,9 @@ export function SeekersClassView() {
   if (allCourses.length === 0) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 12 }}>
       <div style={{ fontSize: 44 }}>📚</div>
-      <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>暂无慕道班课程</div>
+      <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>{i18nT('暂无慕道班课程')}</div>
       <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textAlign: 'center', lineHeight: 1.7 }}>
-        课程文件（文字 / PPT / 视频）上传到<br />cdn.holiness.uk/seekers-class/ 后将自动显示
+        {i18nT('课程文件（文字 / PPT / 视频）上传到')}<br />{i18nT('cdn.holiness.uk/seekers-class/ 后将自动显示')}
       </div>
     </div>
   )
@@ -308,7 +309,7 @@ export function SeekersClassView() {
                 }}>{meta.emoji}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: meta.color, marginBottom: 2 }}>
-                    {meta.label} · 点击打开
+                    {meta.label} {i18nT('· 点击打开')}
                   </div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {c.filename}
@@ -649,7 +650,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
     <div className="pw-page">
       {/* Header */}
       <header className="pw-header">
-        <button className="checkin-back-btn" onClick={onBack} aria-label="返回">
+        <button className="checkin-back-btn" onClick={onBack} aria-label={i18nT('返回')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -667,14 +668,14 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
               padding: '5px 12px', cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
-            🙏 代祷墙
+            {i18nT('🙏 代祷墙')}
           </button>
         )}
         {subTab === 'fy' && (
         <button
           className="pw-compose-btn"
           onClick={() => setShowCompose(true)}
-          title="提交传FY祷告"
+          title={i18nT('提交传FY祷告')}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12h14" />
@@ -689,32 +690,32 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
           className={`ev-subtab ${subTab === 'fy' ? 'active' : ''}`}
           onClick={() => setSubTab('fy')}
         >
-          🌍 传FY
+          {i18nT('🌍 传FY')}
         </button>
         <button
           className={`ev-subtab ${subTab === 'map' ? 'active' : ''}`}
           onClick={() => setSubTab('map')}
         >
-          🗺️ 圣经地图
+          {i18nT('🗺️ 圣经地图')}
         </button>
         <button
           className={`ev-subtab ${subTab === 'seekers' ? 'active' : ''}`}
           onClick={() => setSubTab('seekers')}
         >
-          📚 慕道班
+          {i18nT('📚 慕道班')}
         </button>
       </div>
 
       {/* Success toast */}
       {submitDone && (
-        <div className="pw-toast">✅ 祷告已提交，愿福音广传</div>
+        <div className="pw-toast">{i18nT('✅ 祷告已提交，愿福音广传')}</div>
       )}
 
       {/* Compose Overlay */}
       {showCompose && (
         <div className="pw-compose-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowCompose(false) }}>
           <div className="pw-compose-sheet glass">
-            <div className="pw-compose-title">🌍 提交传FY祷告</div>
+            <div className="pw-compose-title">{i18nT('🌍 提交传FY祷告')}</div>
 
             {/* Current User Info */}
             <div style={{
@@ -774,7 +775,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
               <textarea
                 ref={textareaRef}
                 className="pw-compose-textarea"
-                placeholder="为传福音祷告...（例如：为家人信主祷告、为福音事工祷告、为宣教士祷告等）"
+                placeholder={i18nT('为传福音祷告...（例如：为家人信主祷告、为福音事工祷告、为宣教士祷告等）')}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value.slice(0, 500))}
                 rows={5}
@@ -841,7 +842,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                   transition: 'all 0.2s ease',
                   zIndex: 10,
                 }}
-                title="润色文字"
+                title={i18nT('润色文字')}
               >
                 {isPolishing ? '✨' : '✏️'}
               </button>
@@ -863,7 +864,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
             <div className="pw-compose-actions">
               <button className="pw-cancel-btn" onClick={() => setShowCompose(false)}>
                 <span style={{ fontSize: '16px', marginRight: '4px' }}>✕</span>
-                取消
+                {i18nT('取消')}
               </button>
               <button
                 className="primary-btn"
@@ -874,12 +875,12 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                 {submitting ? (
                   <>
                     <span className="spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }} />
-                    提交中…
+                    {i18nT('提交中…')}
                   </>
                 ) : (
                   <>
                     <span>🌍</span>
-                    提交
+                    {i18nT('提交')}
                   </>
                 )}
               </button>
@@ -915,10 +916,10 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
           }}>
             <div style={{ fontSize: '40px', marginBottom: '12px' }}>⚠️</div>
             <div style={{ fontSize: '17px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', marginBottom: '8px' }}>
-              确定要删除这条祷告吗？
+              {i18nT('确定要删除这条祷告吗？')}
             </div>
             <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>
-              删除后无法恢复，请谨慎操作
+              {i18nT('删除后无法恢复，请谨慎操作')}
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
               <button
@@ -939,7 +940,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                 }}
               >
                 <span>✕</span>
-                取消
+                {i18nT('取消')}
               </button>
               <button
                 onClick={handleDelete}
@@ -960,7 +961,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                 }}
               >
                 <span>🗑️</span>
-                删除
+                {i18nT('删除')}
               </button>
             </div>
           </div>
@@ -972,11 +973,11 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
       <div className="pw-list" ref={listRef} style={{ position: 'relative' }}>
         <div style={indicatorStyle}>{indicatorText}</div>
         {loading ? (
-          <div className="pw-loading">加载中...</div>
+          <div className="pw-loading">{i18nT('加载中...')}</div>
         ) : error ? (
           <div className="pw-error">{error}</div>
         ) : items.length === 0 ? (
-          <div className="pw-empty">还没有人提交传FY祷告<br />点击右上角 + 开始祷告</div>
+          <div className="pw-empty">{i18nT('还没有人提交传FY祷告')}<br />{i18nT('点击右上角 + 开始祷告')}</div>
         ) : (
           <>
             {sortedWeeks.map(week => (
@@ -1001,7 +1002,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                               padding: '2px 6px',
                               borderRadius: '4px'
                             }}>
-                              已删除
+                              {i18nT('已删除')}
                             </span>
                           )}
                         </div>
@@ -1014,7 +1015,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                             <>
                                 <button
                                   onClick={() => startEdit(prayer)}
-                                  title="编辑"
+                                  title={i18nT('编辑')}
                                   style={{
                                     padding: '6px',
                                     background: 'rgba(255,255,255,0.08)',
@@ -1034,7 +1035,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                                 </button>
                                 <button
                                   onClick={() => confirmDelete(prayer.id)}
-                                  title="删除"
+                                  title={i18nT('删除')}
                                   style={{
                                     padding: '6px',
                                     background: 'rgba(239,68,68,0.15)',
@@ -1058,7 +1059,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                               {user.email === 'zpclord@sina.com' && (
                                 <button
                                   onClick={() => handleRestore(prayer.id)}
-                                  title="恢复"
+                                  title={i18nT('恢复')}
                                   style={{
                                     padding: '6px',
                                     background: 'rgba(34,197,94,0.15)',
@@ -1171,7 +1172,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                               transition: 'all 0.2s ease',
                               zIndex: 10,
                             }}
-                            title="润色文字"
+                            title={i18nT('润色文字')}
                           >
                             {isPolishing ? '✨' : '✏️'}
                           </button>
@@ -1205,7 +1206,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                             }}
                           >
                             <span>✕</span>
-                            取消
+                            {i18nT('取消')}
                           </button>
                           <button
                             onClick={handleUpdate}
@@ -1225,7 +1226,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                             }}
                           >
                             <span>💾</span>
-                            保存
+                            {i18nT('保存')}
                           </button>
                         </div>
                       </div>
@@ -1246,12 +1247,12 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
                   {loadingMore ? (
                     <>
                       <span className="spinner" style={{ width: '14px', height: '14px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }} />
-                      加载中…
+                      {i18nT('加载中…')}
                     </>
                   ) : (
                     <>
                       <span>↓</span>
-                      加载更多 ({total - items.length})
+                      {i18nT('加载更多 (')}{total - items.length})
                     </>
                   )}
                 </button>
@@ -1271,7 +1272,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
       {/* Export Bar */}
       {subTab === 'fy' && !loading && !error && items.length > 0 && (
         <div className="sj-export-bar">
-          <button className="sj-export-btn-bottom" onClick={() => exportAllPrayersToTxt(items)} title="导出TXT">
+          <button className="sj-export-btn-bottom" onClick={() => exportAllPrayersToTxt(items)} title={i18nT('导出TXT')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -1281,7 +1282,7 @@ export default function EvangelismPage({ user, token, onBack, onPrayerWall }) {
             </svg>
             TXT
           </button>
-          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllPrayersToPdf(items), "生成 PDF 中…", "✅ PDF 已导出")} title="导出PDF">
+          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllPrayersToPdf(items), "生成 PDF 中…", "✅ PDF 已导出")} title={i18nT('导出PDF')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>

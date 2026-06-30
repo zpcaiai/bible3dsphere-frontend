@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const DS_SIT_OPTS = ['要不要接受一个新工作机会', '要不要换城市 / 搬家', '一段关系是否继续', '一个重大的经济决定', '要不要接受 / 放下一个服事', '子女教育 / 家庭安排']
@@ -510,11 +511,11 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           marginBottom: '12px',
         }}>
           <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>
-            🏷️ 我的个人标签
+            {i18nT('🏷️ 我的个人标签')}
           </div>
           {tagInsights && (
             <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>
-              共 {tagInsights.total_tags} 个标签 · {tagInsights.total_categories} 个维度
+              {i18nT('共')} {tagInsights.total_tags} {i18nT('个标签 ·')} {tagInsights.total_categories} {i18nT('个维度')}
             </div>
           )}
         </div>
@@ -553,7 +554,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             color: 'rgba(255,255,255,0.4)',
             textAlign: 'center'
           }}>
-            +{userTags.length - 15} 更多标签
+            +{userTags.length - 15} {i18nT('更多标签')}
           </div>
         )}
       </div>
@@ -968,14 +969,14 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* ── 第一步：描述处境 ── */}
         {discernStep === 1 && (
           <div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>第一步：描述处境</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>用一两句话说出你正在面对的处境或决策</div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>{i18nT('第一步：描述处境')}</div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>{i18nT('用一两句话说出你正在面对的处境或决策')}</div>
 
             <div style={{ position: 'relative' }}>
             <textarea
               value={discernSituation}
               onChange={e => setDiscernSituation(e.target.value)}
-              placeholder="例如：我收到了另一家公司的工作邀请，薪资更高但离家更远…"
+              placeholder={i18nT('例如：我收到了另一家公司的工作邀请，薪资更高但离家更远…')}
               rows={4}
               style={{
                 width:'100%', boxSizing:'border-box',
@@ -990,7 +991,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             <SuggestMenu accent="#a78bfa" top={8} right={8} options={DS_SIT_OPTS} value={discernSituation} onChange={setDiscernSituation} />
             </div>
 
-            <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:10 }}>这属于哪类处境？</div>
+            <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:10 }}>{i18nT('这属于哪类处境？')}</div>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
               {DECISION_CATS.map(cat => (
                 <button key={cat.value} onClick={() => setDiscernCategory(cat.value)} style={{
@@ -1012,12 +1013,12 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* ── 第二步：神慰/神枯 ── */}
         {discernStep === 2 && (
           <div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>第二步：内心感受</div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>{i18nT('第二步：内心感受')}</div>
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>
-              在这个处境中，你内心有什么样的属灵感受？
+              {i18nT('在这个处境中，你内心有什么样的属灵感受？')}
             </div>
             <div style={{ fontSize:11, color:'rgba(255,255,255,0.25)', marginBottom:16, fontStyle:'italic' }}>
-              伊纳爵灵修传统：神慰指向神，神枯需分辨根源
+              {i18nT('伊纳爵灵修传统：神慰指向神，神枯需分辨根源')}
             </div>
 
             <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
@@ -1040,13 +1041,13 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             {discernMovement && (
               <div>
                 <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:8 }}>
-                  简短描述你的感受原因（可选）
+                  {i18nT('简短描述你的感受原因（可选）')}
                 </div>
                 <div style={{ position: 'relative' }}>
                 <textarea
                   value={discernMovementNote}
                   onChange={e => setDiscernMovementNote(e.target.value)}
-                  placeholder="例如：每次想到这个方向，内心就感到平安和兴奋；但想到另一个方向，就感到焦虑…"
+                  placeholder={i18nT('例如：每次想到这个方向，内心就感到平安和兴奋；但想到另一个方向，就感到焦虑…')}
                   rows={3}
                   style={{
                     width:'100%', boxSizing:'border-box',
@@ -1068,9 +1069,9 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* ── 第三步：经文检索 ── */}
         {discernStep === 3 && (
           <div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>第三步：相关经文</div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>{i18nT('第三步：相关经文')}</div>
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>
-              输入一个关键词，检索与你处境相关的圣经经文（可跳过）
+              {i18nT('输入一个关键词，检索与你处境相关的圣经经文（可跳过）')}
             </div>
 
             <div style={{ display:'flex', gap:8, marginBottom:14 }}>
@@ -1078,7 +1079,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                 value={discernKeyword}
                 onChange={e => setDiscernKeyword(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && searchVerses()}
-                placeholder="如：工作、等候、恐惧、信靠、呼召…"
+                placeholder={i18nT('如：工作、等候、恐惧、信靠、呼召…')}
                 style={{
                   flex:1, background:'rgba(255,255,255,0.06)',
                   border:'1px solid rgba(255,255,255,0.12)',
@@ -1114,13 +1115,13 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
 
             {discernVerses.length === 0 && !discernVersesLoading && discernKeyword && (
               <div style={{ textAlign:'center', padding:'20px', color:'rgba(255,255,255,0.3)', fontSize:13 }}>
-                未找到相关经文，尝试其他关键词
+                {i18nT('未找到相关经文，尝试其他关键词')}
               </div>
             )}
 
             <div style={{ marginTop:16, padding:'10px 14px', background:'rgba(255,255,255,0.04)', borderRadius:10 }}>
               <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)' }}>
-                💡 你也可以直接跳到第四步生成祷告文
+                {i18nT('💡 你也可以直接跳到第四步生成祷告文')}
               </div>
             </div>
           </div>
@@ -1129,14 +1130,14 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* ── 第四步：祷告文 ── */}
         {discernStep === 4 && (
           <div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>第四步：属灵祷告</div>
+            <div style={{ fontSize:16, fontWeight:700, color:'#fff', marginBottom:6 }}>{i18nT('第四步：属灵祷告')}</div>
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>
-              基于你的处境和内心感受，生成一段属灵祷告文
+              {i18nT('基于你的处境和内心感受，生成一段属灵祷告文')}
             </div>
 
             {/* 分辨摘要 */}
             <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:12, padding:'12px 14px', marginBottom:16 }}>
-              <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', marginBottom:6 }}>分辨摘要</div>
+              <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', marginBottom:6 }}>{i18nT('分辨摘要')}</div>
               <div style={{ fontSize:13, color:'rgba(255,255,255,0.75)', lineHeight:1.6, marginBottom:6 }}>
                 {discernSituation || '（未填写处境）'}
               </div>
@@ -1158,9 +1159,9 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                 display:'flex', alignItems:'center', justifyContent:'center', gap:8,
               }}>
                 {discernPrayerLoading ? (
-                  <><span>⏳</span><span>祷告文生成中…</span></>
+                  <><span>⏳</span><span>{i18nT('祷告文生成中…')}</span></>
                 ) : (
-                  <><span>🙏</span><span>生成属灵祷告文</span></>
+                  <><span>🙏</span><span>{i18nT('生成属灵祷告文')}</span></>
                 )}
               </button>
             ) : (
@@ -1171,7 +1172,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                   borderRadius:14, padding:'16px',
                   marginBottom:12,
                 }}>
-                  <div style={{ fontSize:11, color:'rgba(52,199,89,0.7)', fontWeight:700, marginBottom:10 }}>🙏 属灵祷告</div>
+                  <div style={{ fontSize:11, color:'rgba(52,199,89,0.7)', fontWeight:700, marginBottom:10 }}>{i18nT('🙏 属灵祷告')}</div>
                   <div style={{ fontSize:14, color:'rgba(255,255,255,0.88)', lineHeight:1.85, whiteSpace:'pre-wrap' }}>{discernPrayer}</div>
                 </div>
                 <button onClick={() => { setDiscernPrayer(''); generatePrayer() }} style={{
@@ -1179,7 +1180,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                   borderRadius:10, border:'1px solid rgba(255,255,255,0.12)',
                   background:'transparent', color:'rgba(255,255,255,0.5)',
                   fontSize:12, cursor:'pointer',
-                }}>重新生成</button>
+                }}>{i18nT('重新生成')}</button>
               </div>
             )}
 
@@ -1193,7 +1194,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               borderRadius:8, border:'none',
               background:'transparent', color:'rgba(255,255,255,0.25)',
               fontSize:11, cursor:'pointer',
-            }}>↩ 重新开始分辨</button>
+            }}>{i18nT('↩ 重新开始分辨')}</button>
           </div>
         )}
 
@@ -1204,7 +1205,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               flex:1, padding:'12px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)',
               background:'transparent', color:'rgba(255,255,255,0.55)',
               fontSize:14, fontWeight:600, cursor:'pointer',
-            }}>← 上一步</button>
+            }}>{i18nT('← 上一步')}</button>
           )}
           {discernStep < 4 && (
             <button onClick={() => canNext && setDiscernStep(s => s + 1)} disabled={!canNext} style={{
@@ -1212,7 +1213,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               background: canNext ? 'rgba(90,200,250,0.2)' : 'rgba(255,255,255,0.06)',
               color: canNext ? '#5ac8fa' : 'rgba(255,255,255,0.25)',
               fontSize:14, fontWeight:700, cursor: canNext ? 'pointer' : 'default',
-            }}>下一步 →</button>
+            }}>{i18nT('下一步 →')}</button>
           )}
         </div>
       </div>
@@ -1236,21 +1237,21 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           color: '#fff',
         }}>
           <div style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>
-            ✨ 辨识分析完成
+            {i18nT('✨ 辨识分析完成')}
           </div>
           <div style={{ fontSize: '14px', opacity: 0.9 }}>
-            基于当前状态，系统已完成动机分析与来源辨识
+            {i18nT('基于当前状态，系统已完成动机分析与来源辨识')}
           </div>
         </div>
 
         {/* 动机分析 */}
         {motive_analysis && (
           <div style={resultCardStyle}>
-            <div style={resultTitleStyle}>🧠 动机分析</div>
+            <div style={resultTitleStyle}>{i18nT('🧠 动机分析')}</div>
             <div style={{ marginBottom: '12px' }}>
               <div style={progressBarContainer}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                  <span>😨 恐惧驱动</span>
+                  <span>{i18nT('😨 恐惧驱动')}</span>
                   <span>{(motive_analysis.fear_driven_score * 100).toFixed(2)}%</span>
                 </div>
                 <div style={progressBarBg}>
@@ -1260,7 +1261,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               
               <div style={progressBarContainer}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                  <span>😤 骄傲驱动</span>
+                  <span>{i18nT('😤 骄傲驱动')}</span>
                   <span>{(motive_analysis.pride_driven_score * 100).toFixed(2)}%</span>
                 </div>
                 <div style={progressBarBg}>
@@ -1270,7 +1271,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               
               <div style={progressBarContainer}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                  <span>❤️ 爱驱动</span>
+                  <span>{i18nT('❤️ 爱驱动')}</span>
                   <span>{(motive_analysis.love_driven_score * 100).toFixed(2)}%</span>
                 </div>
                 <div style={progressBarBg}>
@@ -1280,7 +1281,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               
               <div style={progressBarContainer}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                  <span>🔥 欲望驱动</span>
+                  <span>{i18nT('🔥 欲望驱动')}</span>
                   <span>{(motive_analysis.desire_driven_score * 100).toFixed(2)}%</span>
                 </div>
                 <div style={progressBarBg}>
@@ -1295,7 +1296,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               padding: '12px',
               fontSize: '13px',
             }}>
-              <strong>主导动机：</strong>
+              <strong>{i18nT('主导动机：')}</strong>
               <span style={{ color: '#007aff', fontWeight: 600 }}>
                 {motive_analysis.dominant_motive === 'fear' && '😨 恐惧'}
                 {motive_analysis.dominant_motive === 'pride' && '😤 骄傲'}
@@ -1311,7 +1312,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* 来源辨识 */}
         {discernment_result && (
           <div style={resultCardStyle}>
-            <div style={resultTitleStyle}>🔮 来源辨识</div>
+            <div style={resultTitleStyle}>{i18nT('🔮 来源辨识')}</div>
             
             <div style={{ 
               background: 'rgba(255,255,255,0.05)',
@@ -1343,8 +1344,8 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
               </div>
               
               <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
-                <span>置信度: {(discernment_result.confidence * 100).toFixed(2)}%</span>
-                <span>长期果实: {discernment_result.long_term_fruit_score > 0 ? '+' : ''}{discernment_result.long_term_fruit_score}</span>
+                <span>{i18nT('置信度:')} {(discernment_result.confidence * 100).toFixed(2)}%</span>
+                <span>{i18nT('长期果实:')} {discernment_result.long_term_fruit_score > 0 ? '+' : ''}{discernment_result.long_term_fruit_score}</span>
               </div>
             </div>
           </div>
@@ -1353,7 +1354,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* 指导建议 */}
         {guidance && (
           <div style={resultCardStyle}>
-            <div style={resultTitleStyle}>📖 指导建议</div>
+            <div style={resultTitleStyle}>{i18nT('📖 指导建议')}</div>
             
             <div style={{ 
               background: 'rgba(52,199,89,0.15)',
@@ -1371,7 +1372,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             {guidance.risks && guidance.risks.length > 0 && (
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#ff3b30' }}>
-                  ⚠️ 潜在风险
+                  {i18nT('⚠️ 潜在风险')}
                 </div>
                 {guidance.risks.map((risk, i) => (
                   <div key={i} style={{
@@ -1391,7 +1392,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             {guidance.alternative_interpretations && guidance.alternative_interpretations.length > 0 && (
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#ff9500' }}>
-                  💭 替代视角
+                  {i18nT('💭 替代视角')}
                 </div>
                 {guidance.alternative_interpretations.map((alt, i) => (
                   <div key={i} style={{
@@ -1411,7 +1412,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             {guidance.recommended_actions && guidance.recommended_actions.length > 0 && (
               <div>
                 <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#007aff' }}>
-                  ✅ 建议行动
+                  {i18nT('✅ 建议行动')}
                 </div>
                 {guidance.recommended_actions.map((action, i) => (
                   <div key={i} style={{
@@ -1433,9 +1434,9 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         {/* SFDS → 习惯行动链路 */}
         {guidance && (guidance.recommended_actions?.length > 0 || discernment_result) && (
           <div style={{ ...resultCardStyle, background: 'rgba(52,199,89,0.07)', border: '1px solid rgba(52,199,89,0.2)' }}>
-            <div style={{ ...resultTitleStyle, color: '#34c759' }}>🌱 本周属灵操练建议</div>
+            <div style={{ ...resultTitleStyle, color: '#34c759' }}>{i18nT('🌱 本周属灵操练建议')}</div>
             <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', marginBottom: '12px', lineHeight: 1.6 }}>
-              根据辨识结果，建议本周将以下操练设为习惯：
+              {i18nT('根据辨识结果，建议本周将以下操练设为习惯：')}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
               {[
@@ -1461,14 +1462,14 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                 color: '#34c759', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
               }}
             >
-              ➕ 前往习惯页面，将这些操练加入每日习惯
+              {i18nT('➕ 前往习惯页面，将这些操练加入每日习惯')}
             </button>
           </div>
         )}
 
         {/* 灵性原则引用 */}
         <div style={resultCardStyle}>
-          <div style={resultTitleStyle}>📜 相关灵性原则</div>
+          <div style={resultTitleStyle}>{i18nT('📜 相关灵性原则')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {spiritualPrinciples.slice(0, 5).map(p => (
               <div key={p.id} style={{
@@ -1498,7 +1499,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
           color: 'rgba(255,255,255,0.7)',
           textAlign: 'center',
         }}>
-          ⚠️ 本分析仅供参考，不构成权威属灵指导。请寻求属灵导师、牧师或专业辅导的意见。
+          {i18nT('⚠️ 本分析仅供参考，不构成权威属灵指导。请寻求属灵导师、牧师或专业辅导的意见。')}
         </div>
 
         {/* 返回按钮 */}
@@ -1542,7 +1543,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
             cursor: 'pointer',
           }}
         >
-          🔄 新辨识
+          {i18nT('🔄 新辨识')}
         </button>
       </div>
     )
@@ -1554,7 +1555,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
       {decisions.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.5)' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>📭</div>
-          <div>暂无决策记录</div>
+          <div>{i18nT('暂无决策记录')}</div>
         </div>
       ) : (
         decisions.map((d, i) => (
@@ -1592,7 +1593,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
                 {decisionCategories.find(c => c.value === d.category)?.emoji} {decisionCategories.find(c => c.value === d.category)?.label}
               </span>
               <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
-                紧急{d.urgency} • 重要{d.importance}
+                {i18nT('紧急')}{d.urgency} {i18nT('• 重要')}{d.importance}
               </span>
             </div>
           </div>
@@ -1605,7 +1606,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
   const renderPrinciples = () => (
     <div style={{ padding: '16px' }}>
       <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', marginBottom: '16px', textAlign: 'center' }}>
-        在决策中默想这些原则，帮助辨识真伪
+        {i18nT('在决策中默想这些原则，帮助辨识真伪')}
       </div>
       
       {spiritualPrinciples.map(p => (
@@ -1795,7 +1796,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <BackButton onClick={onBack} />
           <div>
-            <div style={{ fontSize: '17px', fontWeight: 600 }}>心迹</div>
+            <div style={{ fontSize: '17px', fontWeight: 600 }}>{i18nT('心迹')}</div>
           </div>
         </div>
 
@@ -1828,7 +1829,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
         fontSize: '11px',
         color: 'rgba(255,255,255,0.5)',
       }}>
-        本系统旨在辅助属灵辨识，不取代个人自由意志或权威属灵指导
+        {i18nT('本系统旨在辅助属灵辨识，不取代个人自由意志或权威属灵指导')}
       </div>
 
       {/* 添加CSS动画 */}

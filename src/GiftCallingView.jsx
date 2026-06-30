@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import { t } from './i18n/runtime'
 import {
@@ -112,18 +113,18 @@ function Report({ r, meta }) {
       <div style={{ ...card, borderColor: 'rgba(245,181,63,0.3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 16 }}>🎁</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>恩赐与呼召分析</span>
-          <Chip tone="accent">置信度 {CONF_ZH[r.confidence] || r.confidence || '中'}</Chip>
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{i18nT('恩赐与呼召分析')}</span>
+          <Chip tone="accent">{i18nT('置信度')} {CONF_ZH[r.confidence] || r.confidence || '中'}</Chip>
           {r.source === 'heuristic'
-            ? <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>确定性分析（AI 暂不可用）</span>
-            : <Chip tone="ok">AI 增强</Chip>}
+            ? <span style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>{i18nT('确定性分析（AI 暂不可用）')}</span>
+            : <Chip tone="ok">{i18nT('AI 增强')}</Chip>}
         </div>
         {r.summary && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7 }}>{r.summary}</div>}
       </div>
 
       {/* 1. 天然优势 */}
       <div style={card}>
-        <div style={sectionTitle}>🌟 天然优势</div>
+        <div style={sectionTitle}>{i18nT('🌟 天然优势')}</div>
         {(sp.core_strengths || []).map((c, i) => (
           <div key={i} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: i < sp.core_strengths.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
             <ScoreBar label={c.name} value={c.score} />
@@ -141,7 +142,7 @@ function Report({ r, meta }) {
 
       {/* 2. 属灵恩赐 */}
       <div style={card}>
-        <div style={sectionTitle}>🎁 属灵恩赐（需共同体确认）</div>
+        <div style={sectionTitle}>{i18nT('🎁 属灵恩赐（需共同体确认）')}</div>
         {(sg.likely_gifts || []).map((g, i) => (
           <div key={i} style={{ marginBottom: 12 }}>
             <ScoreBar label={g.gift} value={g.score} />
@@ -150,22 +151,22 @@ function Report({ r, meta }) {
             {g.validation_task && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, marginTop: 2 }}>✅ {g.validation_task}</div>}
           </div>
         ))}
-        {(sg.likely_gifts || []).length === 0 && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)' }}>资料尚不足以辨识明显恩赐，请在测评中提供更多经历。</div>}
+        {(sg.likely_gifts || []).length === 0 && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('资料尚不足以辨识明显恩赐，请在测评中提供更多经历。')}</div>}
         {sg.summary && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginTop: 4 }}>{sg.summary}</div>}
       </div>
 
       {/* 3. 属灵果子 */}
       <div style={card}>
         <div style={{ ...sectionTitle, display: 'flex', justifyContent: 'space-between' }}>
-          <span>🍇 属灵果子</span>
-          {typeof fr.average_score === 'number' && <span style={{ color: scoreColor(fr.average_score) }}>均值 {Math.round(fr.average_score)}</span>}
+          <span>{i18nT('🍇 属灵果子')}</span>
+          {typeof fr.average_score === 'number' && <span style={{ color: scoreColor(fr.average_score) }}>{i18nT('均值')} {Math.round(fr.average_score)}</span>}
         </div>
         {fr.scores && Object.entries(fr.scores).map(([k, v]) => <ScoreBar key={k} label={fZh[k] || k} value={v} />)}
-        {(fr.supporting_fruits || []).length > 0 && <div style={{ marginTop: 6 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>较成熟：</span>{fr.supporting_fruits.map((x, i) => <Chip key={i} tone="ok">{x}</Chip>)}</div>}
-        {(fr.growth_fruits || []).length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>待操练：</span>{fr.growth_fruits.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
+        {(fr.supporting_fruits || []).length > 0 && <div style={{ marginTop: 6 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('较成熟：')}</span>{fr.supporting_fruits.map((x, i) => <Chip key={i} tone="ok">{x}</Chip>)}</div>}
+        {(fr.growth_fruits || []).length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('待操练：')}</span>{fr.growth_fruits.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
         {(fr.gift_fruit_alignment || []).map((a, i) => (
           <div key={i} style={{ marginTop: 10, padding: 10, borderRadius: 10, background: 'rgba(255,255,255,0.03)' }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: '#fff' }}>{a.gift_or_strength} · 需 {(a.supporting_fruits || []).join('、')}</div>
+            <div style={{ fontSize: 12.5, fontWeight: 600, color: '#fff' }}>{a.gift_or_strength} {i18nT('· 需')} {(a.supporting_fruits || []).join('、')}</div>
             {a.current_risk && <div style={{ fontSize: 12, color: '#ff9f0a', lineHeight: 1.5, marginTop: 3 }}>{a.current_risk}</div>}
             {a.growth_practice && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5, marginTop: 2 }}>🌱 {a.growth_practice}</div>}
           </div>
@@ -174,21 +175,21 @@ function Report({ r, meta }) {
 
       {/* 4. 使命负担 */}
       <div style={card}>
-        <div style={sectionTitle}>🧭 使命负担模式</div>
+        <div style={sectionTitle}>{i18nT('🧭 使命负担模式')}</div>
         {cp.primary_pattern
           ? <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 4 }}>{cp.primary_pattern}</div>
-          : <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)' }}>使命主题尚不明显，建议在祷告与小范围服事中继续观察。</div>}
+          : <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('使命主题尚不明显，建议在祷告与小范围服事中继续观察。')}</div>}
         {(cp.secondary_patterns || []).length > 0 && <div style={{ marginBottom: 6 }}>{cp.secondary_patterns.map((x, i) => <Chip key={i}>{x}</Chip>)}</div>}
         {cp.possible_mission_sentence && (
           <div style={{ ...card, marginBottom: 8, background: ACCENT_DIM, border: '1px solid rgba(245,181,63,0.4)' }}>
-            <div style={{ fontSize: 11, color: ACCENT, marginBottom: 3 }}>可探索的使命方向</div>
+            <div style={{ fontSize: 11, color: ACCENT, marginBottom: 3 }}>{i18nT('可探索的使命方向')}</div>
             <div style={{ fontSize: 13, color: '#fff', lineHeight: 1.7 }}>{cp.possible_mission_sentence}</div>
           </div>
         )}
         {(cp.evidence || []).length > 0 && <div>{cp.evidence.map((x, i) => <Chip key={i}>{x}</Chip>)}</div>}
         {(cp.validation_path || []).length > 0 && (
           <div style={{ marginTop: 6 }}>
-            <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>如何验证：</div>
+            <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>{i18nT('如何验证：')}</div>
             {cp.validation_path.map((x, i) => <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.8)', lineHeight: 1.6 }}>· {x}</div>)}
           </div>
         )}
@@ -198,8 +199,8 @@ function Report({ r, meta }) {
       {/* 5. 误用风险 */}
       <div style={card}>
         <div style={{ ...sectionTitle, display: 'flex', justifyContent: 'space-between' }}>
-          <span>⚠️ 恩赐误用风险</span>
-          <span style={{ color: riskColor(mr.overall_risk_score) }}>总体 {Math.round(mr.overall_risk_score || 0)}</span>
+          <span>{i18nT('⚠️ 恩赐误用风险')}</span>
+          <span style={{ color: riskColor(mr.overall_risk_score) }}>{i18nT('总体')} {Math.round(mr.overall_risk_score || 0)}</span>
         </div>
         {(mr.top_risks || []).map((rk, i) => (
           <div key={i} style={{ marginBottom: 10, padding: 10, borderRadius: 10, background: 'rgba(255,159,10,0.06)', border: '1px solid rgba(255,159,10,0.18)' }}>
@@ -211,16 +212,16 @@ function Report({ r, meta }) {
             {rk.practice && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, marginTop: 2 }}>🛠 {rk.practice}</div>}
           </div>
         ))}
-        {(mr.protective_disciplines || []).length > 0 && <div style={{ marginTop: 4 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>护栏：</span>{mr.protective_disciplines.map((x, i) => <Chip key={i}>{x}</Chip>)}</div>}
-        {(mr.warning_signs || []).length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>预警：</span>{mr.warning_signs.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
+        {(mr.protective_disciplines || []).length > 0 && <div style={{ marginTop: 4 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('护栏：')}</span>{mr.protective_disciplines.map((x, i) => <Chip key={i}>{x}</Chip>)}</div>}
+        {(mr.warning_signs || []).length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('预警：')}</span>{mr.warning_signs.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
       </div>
 
       {/* 6. 服事匹配 */}
       <div style={card}>
-        <div style={sectionTitle}>🤝 服事岗位匹配</div>
+        <div style={sectionTitle}>{i18nT('🤝 服事岗位匹配')}</div>
         {mm.top_ministry && (
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 8 }}>
-            最匹配：{mm.top_ministry}{typeof mm.top_match_score === 'number' && <span style={{ color: ACCENT, marginLeft: 6 }}>{Math.round(mm.top_match_score)}</span>}
+            {i18nT('最匹配：')}{mm.top_ministry}{typeof mm.top_match_score === 'number' && <span style={{ color: ACCENT, marginLeft: 6 }}>{Math.round(mm.top_match_score)}</span>}
           </div>
         )}
         {[...(mm.recommended_ministries || []), ...(mm.experimental_ministries || [])].map((m, i) => (
@@ -231,7 +232,7 @@ function Report({ r, meta }) {
               {typeof m.match_score === 'number' && <span style={{ fontSize: 12, color: scoreColor(m.match_score) }}>{Math.round(m.match_score)}</span>}
             </div>
             {(m.matched_gifts || []).map((x, j) => <Chip key={'g' + j} tone="accent">{x}</Chip>)}
-            {(m.fruit_requirements || []).map((x, j) => <Chip key={'f' + j} tone="ok">需{x}</Chip>)}
+            {(m.fruit_requirements || []).map((x, j) => <Chip key={'f' + j} tone="ok">{i18nT('需')}{x}</Chip>)}
             {(m.risks || []).map((x, j) => <Chip key={'r' + j} tone="warn">{x}</Chip>)}
             {(m.safeguards || []).length > 0 && <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, marginTop: 3 }}>🛡 {m.safeguards.join('；')}</div>}
             {m.first_step && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', lineHeight: 1.5, marginTop: 2 }}>👣 {m.first_step}</div>}
@@ -239,21 +240,21 @@ function Report({ r, meta }) {
         ))}
         {(mm.not_recommended_now || []).length > 0 && (
           <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>
-            暂不建议主责：{mm.not_recommended_now.map(x => x.ministry || x).join('、')}
+            {i18nT('暂不建议主责：')}{mm.not_recommended_now.map(x => x.ministry || x).join('、')}
           </div>
         )}
       </div>
 
       {/* 7. 成长计划 */}
       <div style={card}>
-        <div style={sectionTitle}>🌱 30 / 90 / 180 天成长计划</div>
+        <div style={sectionTitle}>{i18nT('🌱 30 / 90 / 180 天成长计划')}</div>
         {['30_days', '90_days', '180_days'].map(phase => {
           const p = (gp.plan_json || {})[phase]
           if (!p) return null
           const days = phase.split('_')[0]
           return (
             <div key={phase} style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: ACCENT, marginBottom: 4 }}>{days} 天 · {p.theme || ''}</div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: ACCENT, marginBottom: 4 }}>{days} {i18nT('天 ·')} {p.theme || ''}</div>
               {Object.entries(p).filter(([k]) => k !== 'theme').map(([k, arr]) => (
                 Array.isArray(arr) && arr.length > 0 && (
                   <div key={k} style={{ marginBottom: 3 }}>
@@ -266,7 +267,7 @@ function Report({ r, meta }) {
         })}
         {(gp.weekly_rhythm || []).length > 0 && (
           <div style={{ marginTop: 4 }}>
-            <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>节奏：</div>
+            <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>{i18nT('节奏：')}</div>
             {gp.weekly_rhythm.map((w, i) => <div key={i} style={{ fontSize: 12, color: 'rgba(255,255,255,0.78)' }}>· {w.day}：{w.practice}</div>)}
           </div>
         )}
@@ -276,15 +277,15 @@ function Report({ r, meta }) {
       {/* 8. 共同体确认 */}
       {cc && (cc.recommended_reviewers || cc.count >= 0) && (
         <div style={card}>
-          <div style={sectionTitle}>👥 共同体确认</div>
+          <div style={sectionTitle}>{i18nT('👥 共同体确认')}</div>
           {(cc.recommended_reviewers || []).length > 0 && (
             <div style={{ marginBottom: 6 }}>
-              <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>建议邀请：</span>
+              <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('建议邀请：')}</span>
               {cc.recommended_reviewers.map((x, i) => <Chip key={i}>{x}</Chip>)}
             </div>
           )}
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6 }}>{cc.alignment_analysis}</div>
-          <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>在「反馈」标签邀请牧者、同工、被服事者填写。</div>
+          <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{i18nT('在「反馈」标签邀请牧者、同工、被服事者填写。')}</div>
         </div>
       )}
 
@@ -398,7 +399,7 @@ function AssessForm({ meta, token, onDone }) {
   const [err, setErr] = useState('')
 
   async function submit() {
-    if (!ack) { setErr('请先确认神学边界说明'); return }
+    if (!ack) { setErr(i18nT('请先确认神学边界说明')); return }
     setBusy(true); setErr('')
     try {
       const payload = { ...vals, use_ai: useAi, theological_boundary_ack: true }
@@ -410,7 +411,7 @@ function AssessForm({ meta, token, onDone }) {
   return (
     <div>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
-        诚实地写下你的长期经历、负担与挣扎。系统会辅助辨识天然优势、属灵恩赐、果子成熟度、使命方向、误用风险与服事方向，并给出成长计划。资料越具体，辨识越准。
+        {i18nT('诚实地写下你的长期经历、负担与挣扎。系统会辅助辨识天然优势、属灵恩赐、果子成熟度、使命方向、误用风险与服事方向，并给出成长计划。资料越具体，辨识越准。')}
       </div>
       {fields.map(f => (
         <ComboField
@@ -424,13 +425,13 @@ function AssessForm({ meta, token, onDone }) {
       ))}
       <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'rgba(255,255,255,0.75)', margin: '12px 0 4px', cursor: 'pointer' }}>
         <input type="checkbox" checked={useAi} onChange={e => setUseAi(e.target.checked)} />
-        启用 AI 增强分析（关闭则用确定性分析）
+        {i18nT('启用 AI 增强分析（关闭则用确定性分析）')}
       </label>
       <Banner>
         {meta?.boundary_notice}
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12.5, color: '#fff', marginTop: 8, cursor: 'pointer' }}>
           <input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} style={{ marginTop: 2 }} />
-          我已理解：这是辅助辨识，不是最终呼召宣告。
+          {i18nT('我已理解：这是辅助辨识，不是最终呼召宣告。')}
         </label>
       </Banner>
       {err && <div style={{ color: '#ff6b6b', fontSize: 12, marginBottom: 8 }}>{err}</div>}
@@ -479,9 +480,9 @@ function FeedbackForm({ token }) {
   return (
     <div>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
-        恩赐需要在基督身体中被验证。把此页转给牧者、同工或被服事者填写（1=明显不足，5=非常成熟）。
+        {i18nT('恩赐需要在基督身体中被验证。把此页转给牧者、同工或被服事者填写（1=明显不足，5=非常成熟）。')}
       </div>
-      <label style={lbl}>反馈来源</label>
+      <label style={lbl}>{i18nT('反馈来源')}</label>
       <select value={src} onChange={e => setSrc(e.target.value)} style={inp}>
         {SOURCE_OPTS.map(([k, z]) => <option key={k} value={k} style={{ color: '#000' }}>{z}</option>)}
       </select>
@@ -498,20 +499,20 @@ function FeedbackForm({ token }) {
           ))}
         </div>
       ))}
-      <ComboField label="你观察到的明显恩赐（逗号分隔）" value={gifts} onChange={setGifts} placeholder="如：教导、分辨" options={FB_GIFT_OPTS} multiline={false} sep="、" />
-      <ComboField label="需要成长/留意之处（逗号分隔）" value={concerns} onChange={setConcerns} placeholder="如：表达过于直接" options={FB_CONCERN_OPTS} multiline={false} sep="、" />
-      <ComboField label="具体例子 / 自由反馈" value={text} onChange={setText} placeholder="一个具体的服事例子…" options={FB_TEXT_OPTS} minHeight={70} />
+      <ComboField label={i18nT('你观察到的明显恩赐（逗号分隔）')} value={gifts} onChange={setGifts} placeholder={i18nT('如：教导、分辨')} options={FB_GIFT_OPTS} multiline={false} sep="、" />
+      <ComboField label={i18nT('需要成长/留意之处（逗号分隔）')} value={concerns} onChange={setConcerns} placeholder={i18nT('如：表达过于直接')} options={FB_CONCERN_OPTS} multiline={false} sep="、" />
+      <ComboField label={i18nT('具体例子 / 自由反馈')} value={text} onChange={setText} placeholder={i18nT('一个具体的服事例子…')} options={FB_TEXT_OPTS} minHeight={70} />
       <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '8px 0', cursor: 'pointer' }}>
-        <input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} /> 同意将此反馈用于辅助辨识
+        <input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} /> {i18nT('同意将此反馈用于辅助辨识')}
       </label>
       {err && <div style={{ color: '#ff6b6b', fontSize: 12, marginBottom: 8 }}>{err}</div>}
       <button onClick={submit} disabled={busy} style={{ ...primaryBtn, width: '100%', opacity: busy ? 0.6 : 1 }}>{busy ? '提交中…' : '提交反馈'}</button>
 
       {data && data.count > 0 && (
         <div style={{ ...card, marginTop: 16 }}>
-          <div style={sectionTitle}>📊 已收到 {data.count} 份反馈</div>
-          {data.aggregate?.confirmed_gifts?.length > 0 && <div style={{ marginBottom: 6 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>共识恩赐：</span>{data.aggregate.confirmed_gifts.map((x, i) => <Chip key={i} tone="accent">{x}</Chip>)}</div>}
-          {data.aggregate?.areas_of_concern?.length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>共识关注：</span>{data.aggregate.areas_of_concern.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
+          <div style={sectionTitle}>{i18nT('📊 已收到')} {data.count} {i18nT('份反馈')}</div>
+          {data.aggregate?.confirmed_gifts?.length > 0 && <div style={{ marginBottom: 6 }}><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('共识恩赐：')}</span>{data.aggregate.confirmed_gifts.map((x, i) => <Chip key={i} tone="accent">{x}</Chip>)}</div>}
+          {data.aggregate?.areas_of_concern?.length > 0 && <div><span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('共识关注：')}</span>{data.aggregate.areas_of_concern.map((x, i) => <Chip key={i} tone="warn">{x}</Chip>)}</div>}
           {data.aggregate?.alignment_analysis && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginTop: 4 }}>{data.aggregate.alignment_analysis}</div>}
         </div>
       )}
@@ -537,7 +538,7 @@ function ReviewForm({ token }) {
   useEffect(() => { if (token) load() }, [token])
 
   async function submit() {
-    if (!obs.trim()) { setErr('请至少写下本期观察'); return }
+    if (!obs.trim()) { setErr(i18nT('请至少写下本期观察')); return }
     setBusy(true); setErr('')
     try {
       await submitGiftReview({
@@ -552,17 +553,17 @@ function ReviewForm({ token }) {
   return (
     <div>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
-        属灵恩赐不是测完就结束，而需长期验证。每周/每月记录服事中的观察、感恩、悔改与下一步。
+        {i18nT('属灵恩赐不是测完就结束，而需长期验证。每周/每月记录服事中的观察、感恩、悔改与下一步。')}
       </div>
-      <label style={lbl}>复盘类型</label>
+      <label style={lbl}>{i18nT('复盘类型')}</label>
       <select value={kind} onChange={e => setKind(e.target.value)} style={inp}>
         {REVIEW_OPTS.map(([k, z]) => <option key={k} value={k} style={{ color: '#000' }}>{z}</option>)}
       </select>
-      <ComboField label="本期观察" required value={obs} onChange={setObs} placeholder="这段时间服事中我看见什么？人是否被造就？" options={RV_OBS_OPTS} minHeight={90} />
-      <ComboField label="感恩" value={grat} onChange={setGrat} placeholder="为神的工作感恩…" options={RV_GRAT_OPTS} minHeight={56} />
-      <ComboField label="悔改" value={rep} onChange={setRep} placeholder="需要向神承认与转向的…" options={RV_REP_OPTS} minHeight={56} />
-      <ComboField label="祷告" value={pray} onChange={setPray} placeholder="主啊…" options={RV_PRAY_OPTS} minHeight={56} />
-      <ComboField label="下一步行动" value={action} onChange={setAction} placeholder="如：下月做一次小组护教学分享" options={RV_ACTION_OPTS} multiline={false} />
+      <ComboField label={i18nT('本期观察')} required value={obs} onChange={setObs} placeholder={i18nT('这段时间服事中我看见什么？人是否被造就？')} options={RV_OBS_OPTS} minHeight={90} />
+      <ComboField label={i18nT('感恩')} value={grat} onChange={setGrat} placeholder={i18nT('为神的工作感恩…')} options={RV_GRAT_OPTS} minHeight={56} />
+      <ComboField label={i18nT('悔改')} value={rep} onChange={setRep} placeholder={i18nT('需要向神承认与转向的…')} options={RV_REP_OPTS} minHeight={56} />
+      <ComboField label={i18nT('祷告')} value={pray} onChange={setPray} placeholder={i18nT('主啊…')} options={RV_PRAY_OPTS} minHeight={56} />
+      <ComboField label={i18nT('下一步行动')} value={action} onChange={setAction} placeholder={i18nT('如：下月做一次小组护教学分享')} options={RV_ACTION_OPTS} multiline={false} />
       {err && <div style={{ color: '#ff6b6b', fontSize: 12, marginBottom: 8 }}>{err}</div>}
       <button onClick={submit} disabled={busy} style={{ ...primaryBtn, width: '100%', opacity: busy ? 0.6 : 1 }}>{busy ? '保存中…' : '保存复盘'}</button>
 
@@ -588,9 +589,9 @@ function ReviewForm({ token }) {
 function HistoryList({ token, onOpen }) {
   const [items, setItems] = useState([])
   const [err, setErr] = useState('')
-  useEffect(() => { if (token) fetchGiftHistory(token, 30).then(d => setItems(d.items || [])).catch(() => setErr('加载失败')) }, [token])
+  useEffect(() => { if (token) fetchGiftHistory(token, 30).then(d => setItems(d.items || [])).catch(() => setErr(i18nT('加载失败'))) }, [token])
   if (err) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{err}</div>
-  if (items.length === 0) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>还没有测评记录</div>
+  if (items.length === 0) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{i18nT('还没有测评记录')}</div>
   return (
     <div>
       {items.map(it => (
@@ -600,7 +601,7 @@ function HistoryList({ token, onOpen }) {
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{(it.completed_at || it.created_at || '').slice(0, 10)}</span>
           </div>
           {it.summary && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>{it.summary}</div>}
-          <div style={{ marginTop: 4 }}><Chip tone="accent">置信度 {CONF_ZH[it.confidence] || it.confidence}</Chip></div>
+          <div style={{ marginTop: 4 }}><Chip tone="accent">{i18nT('置信度')} {CONF_ZH[it.confidence] || it.confidence}</Chip></div>
         </div>
       ))}
     </div>
@@ -620,15 +621,15 @@ export default function GiftCallingView({ user, token }) {
     .catch(() => {})
 
   useEffect(() => {
-    fetchGiftMeta().then(setMeta).catch(() => setErr('加载失败'))
+    fetchGiftMeta().then(setMeta).catch(() => setErr(i18nT('加载失败')))
     loadProfile()
   }, [token])
 
   if (!user) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 10 }}>
       <div style={{ fontSize: 44 }}>🎁</div>
-      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>恩赐与呼召识别</div>
-      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>登录后开始辨识你的恩赐、果子与使命方向</div>
+      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>{i18nT('恩赐与呼召识别')}</div>
+      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>{i18nT('登录后开始辨识你的恩赐、果子与使命方向')}</div>
     </div>
   )
   if (!meta) return (
@@ -668,9 +669,9 @@ export default function GiftCallingView({ user, token }) {
             : (
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                 <div style={{ fontSize: 40, marginBottom: 10 }}>🎁</div>
-                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginBottom: 6 }}>还没有分析报告</div>
-                <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16 }}>完成一次测评，辨识你的优势、恩赐、果子、使命与服事方向。</div>
-                <button onClick={() => setView('assess')} style={primaryBtn}>开始测评</button>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginBottom: 6 }}>{i18nT('还没有分析报告')}</div>
+                <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: 16 }}>{i18nT('完成一次测评，辨识你的优势、恩赐、果子、使命与服事方向。')}</div>
+                <button onClick={() => setView('assess')} style={primaryBtn}>{i18nT('开始测评')}</button>
               </div>
             )
         )}

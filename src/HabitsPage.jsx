@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * HabitsPage — 灵修操练
  *
@@ -189,7 +190,7 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
     return (
       <div style={{ padding: 40, textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
         <div style={{ fontSize: 32, marginBottom: 12 }}>🌱</div>
-        <div>加载灵修操练…</div>
+        <div>{i18nT('加载灵修操练…')}</div>
       </div>
     )
   }
@@ -210,19 +211,19 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>灵修操练</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>{i18nT('灵修操练')}</div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{todayDate}</div>
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             {streak > 0 && (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 18, fontWeight: 700, color: streak >= 7 ? '#ffd700' : '#34c759' }}>🔥 {streak}</div>
-                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>连续天数</div>
+                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>{i18nT('连续天数')}</div>
               </div>
             )}
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#60a5fa' }}>{doneCount}/{habits.length}</div>
-              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>今日完成</div>
+              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>{i18nT('今日完成')}</div>
             </div>
           </div>
         </div>
@@ -266,12 +267,12 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
           {habits.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: 'rgba(255,255,255,0.3)' }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>🌱</div>
-              <div style={{ fontSize: 14, marginBottom: 16 }}>还没有灵修操练习惯</div>
+              <div style={{ fontSize: 14, marginBottom: 16 }}>{i18nT('还没有灵修操练习惯')}</div>
               <button onClick={() => setActiveView('add')} style={{
                 padding: '10px 20px', borderRadius: 10, border: 'none',
                 background: 'rgba(52,199,89,0.2)', color: '#34c759',
                 fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              }}>＋ 从预设习惯开始</button>
+              }}>{i18nT('＋ 从预设习惯开始')}</button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -330,7 +331,7 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
                         value={note}
                         onChange={e => setNotes(prev => ({ ...prev, [habit.id]: e.target.value }))}
                         onBlur={() => note !== (log?.note || '') && saveNote(habit)}
-                        placeholder="今日反思（可选）…"
+                        placeholder={i18nT('今日反思（可选）…')}
                         rows={note ? 2 : 1}
                         style={{
                           width: '100%',
@@ -360,7 +361,7 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
       {activeView === 'add' && (
         <div style={{ padding: '0 16px' }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>
-            灵修习惯模板
+            {i18nT('灵修习惯模板')}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
             {PRESET_HABITS.map(preset => {
@@ -389,13 +390,13 @@ export default function HabitsPage({ user, token: propToken, embedded = false, o
 
           {/* 自定义习惯 */}
           <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: '14px 16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>自定义操练</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>{i18nT('自定义操练')}</div>
             <div style={{ display: 'flex', gap: 8 }}>
               <input
                 value={customName}
                 onChange={e => setCustomName(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && addCustom()}
-                placeholder="输入习惯名称…"
+                placeholder={i18nT('输入习惯名称…')}
                 style={{
                   flex: 1,
                   background: 'rgba(255,255,255,0.06)',

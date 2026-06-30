@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 // ChurchOnboardingModal.jsx — 登录后无教会时的引导弹窗
 import { useState } from 'react'
 import { createChurch, joinChurch } from './api'
@@ -65,16 +66,16 @@ export default function ChurchOnboardingModal({ token, onJoined, onSkip }) {
   return (
     <div style={S.overlay} onClick={onSkip}>
       <div style={S.card} onClick={e => e.stopPropagation()}>
-        <div style={S.title}>⛪ 加入或创建教会</div>
-        <div style={S.hint}>社区发帖、代祷等功能需要隶属一个教会。你可以输入邀请码加入现有教会，或创建一个新的。</div>
+        <div style={S.title}>{i18nT('⛪ 加入或创建教会')}</div>
+        <div style={S.hint}>{i18nT('社区发帖、代祷等功能需要隶属一个教会。你可以输入邀请码加入现有教会，或创建一个新的。')}</div>
 
         {/* Tabs */}
         <div style={S.tabs}>
           <button style={{ ...S.tabBtn, ...(tab === 'join' ? S.tabActive : {}) }} onClick={() => setTab('join')}>
-            输入邀请码加入
+            {i18nT('输入邀请码加入')}
           </button>
           <button style={{ ...S.tabBtn, ...(tab === 'create' ? S.tabActive : {}) }} onClick={() => setTab('create')}>
-            创建教会
+            {i18nT('创建教会')}
           </button>
         </div>
 
@@ -85,7 +86,7 @@ export default function ChurchOnboardingModal({ token, onJoined, onSkip }) {
               style={{ ...S.input, letterSpacing: 3, textTransform: 'uppercase' }}
               value={code}
               maxLength={12}
-              placeholder="输入邀请码（如 ABC123）"
+              placeholder={i18nT('输入邀请码（如 ABC123）')}
               onChange={e => setCode(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && doJoin()}
               autoFocus
@@ -106,7 +107,7 @@ export default function ChurchOnboardingModal({ token, onJoined, onSkip }) {
                   style={S.input}
                   value={name}
                   maxLength={50}
-                  placeholder="教会名称，如「恩典河滨教会」"
+                  placeholder={i18nT('教会名称，如「恩典河滨教会」')}
                   onChange={e => setName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && doCreate()}
                   autoFocus
@@ -119,23 +120,23 @@ export default function ChurchOnboardingModal({ token, onJoined, onSkip }) {
             ) : (
               <div style={S.successBox}>
                 <div style={S.successIcon}>🎉</div>
-                <div style={S.successTitle}>「{createdChurch.name}」已创建！</div>
-                <div style={S.codeLabel}>教会邀请码</div>
+                <div style={S.successTitle}>「{createdChurch.name}{i18nT('」已创建！')}</div>
+                <div style={S.codeLabel}>{i18nT('教会邀请码')}</div>
                 <div style={S.codeRow}>
                   <span style={S.codeText}>{createdChurch.join_code}</span>
                   <button style={S.copyBtn} onClick={copyCode}>
                     {copied ? '已复制 ✓' : '复制'}
                   </button>
                 </div>
-                <div style={S.codeHint}>将邀请码发给弟兄姐妹，他们即可加入你的教会。</div>
-                <button style={S.primaryBtn} onClick={handleDone}>完成</button>
+                <div style={S.codeHint}>{i18nT('将邀请码发给弟兄姐妹，他们即可加入你的教会。')}</div>
+                <button style={S.primaryBtn} onClick={handleDone}>{i18nT('完成')}</button>
               </div>
             )}
           </div>
         )}
 
         {/* Skip */}
-        <button style={S.skipBtn} onClick={onSkip}>暂时跳过</button>
+        <button style={S.skipBtn} onClick={onSkip}>{i18nT('暂时跳过')}</button>
       </div>
     </div>
   )

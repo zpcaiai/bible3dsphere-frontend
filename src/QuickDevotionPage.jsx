@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const QD_QUESTION_OPTS = ['这句话提醒我神是信实的', '我需要在这件事上更信靠神', '我想为此向神祷告', '我要把它化作今天一个小行动', '我被神的爱触动了']
@@ -64,7 +65,7 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
           </div>
           <div style={{ fontSize: 13, color: '#c4b5fd' }}>{devotion.ref}</div>
           <div style={{ marginTop: 24, fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
-            慢慢读一遍，让这句话进入你心里
+            {i18nT('慢慢读一遍，让这句话进入你心里')}
           </div>
         </div>
       ),
@@ -80,7 +81,7 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
           <textarea
             value={questionAnswer}
             onChange={e => setQuestionAnswer(e.target.value)}
-            placeholder="简短地写下你真实的回应（也可以跳过）"
+            placeholder={i18nT('简短地写下你真实的回应（也可以跳过）')}
             style={{ width: '100%', minHeight: 90, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, color: '#fff', fontSize: 14, padding: '12px 96px 12px 12px', resize: 'none', outline: 'none', fontFamily: 'inherit', lineHeight: 1.6, boxSizing: 'border-box' }}
           />
           <SuggestMenu accent="#c4b5fd" top={8} right={8} options={QD_QUESTION_OPTS} value={questionAnswer} onChange={setQuestionAnswer} />
@@ -93,13 +94,13 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
       content: (
         <div>
           <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 16, lineHeight: 1.6, textAlign: 'center' }}>
-            今天，你感谢神的一件事是什么？
+            {i18nT('今天，你感谢神的一件事是什么？')}
           </div>
           <span style={{ position: 'relative', display: 'block' }}>
           <textarea
             value={gratitude}
             onChange={e => setGratitude(e.target.value)}
-            placeholder="写下一件，哪怕很小的事..."
+            placeholder={i18nT('写下一件，哪怕很小的事...')}
             style={{ width: '100%', minHeight: 80, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, color: '#fff', fontSize: 14, padding: '12px 96px 12px 12px', resize: 'none', outline: 'none', fontFamily: 'inherit', lineHeight: 1.6, boxSizing: 'border-box' }}
           />
           <SuggestMenu accent="#c4b5fd" top={8} right={8} options={QD_GRAT_OPTS} value={gratitude} onChange={setGratitude} />
@@ -114,15 +115,15 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
       {saved ? (
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-          <div style={{ fontSize: 18, color: '#fff', fontWeight: 600 }}>灵修完成！</div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>已存入今日灵修日记</div>
+          <div style={{ fontSize: 18, color: '#fff', fontWeight: 600 }}>{i18nT('灵修完成！')}</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{i18nT('已存入今日灵修日记')}</div>
         </div>
       ) : (
         <div style={{ width: '100%', maxWidth: 420 }}>
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
             <BackButton onClick={onBack} />
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>⏱ 约2分钟</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>{i18nT('⏱ 约2分钟')}</div>
           </div>
 
           {/* Step indicator */}
@@ -145,10 +146,10 @@ export default function QuickDevotionPage({ user, token, onBack, onDone }) {
           {/* Navigation */}
           <div style={{ marginTop: 28, display: 'flex', gap: 10 }}>
             {step > 0 && (
-              <button onClick={() => setStep(s => s - 1)} style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, color: 'rgba(255,255,255,0.6)', fontSize: 14, cursor: 'pointer' }}>← 上一步</button>
+              <button onClick={() => setStep(s => s - 1)} style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, color: 'rgba(255,255,255,0.6)', fontSize: 14, cursor: 'pointer' }}>{i18nT('← 上一步')}</button>
             )}
             {step < steps.length - 1 ? (
-              <button onClick={() => setStep(s => s + 1)} style={{ flex: 2, padding: '12px', background: 'linear-gradient(135deg,#5856d6,#007aff)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>继续 →</button>
+              <button onClick={() => setStep(s => s + 1)} style={{ flex: 2, padding: '12px', background: 'linear-gradient(135deg,#5856d6,#007aff)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{i18nT('继续 →')}</button>
             ) : (
               <button onClick={handleFinish} disabled={saving} style={{ flex: 2, padding: '12px', background: 'linear-gradient(135deg,#34c759,#00b300)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                 {saving ? '保存中...' : '✅ 完成今日灵修'}

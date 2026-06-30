@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import type { BibleMapSelection } from '../domain/types'
 import { formatYear } from '../lib/format'
@@ -25,7 +26,7 @@ export function DetailPanel({ selection }: Props) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <div className="text-sm text-gray-400">
-          点击地图上的支派 / 帝国疆域，或左侧事件、图层中的预言与战役，查看详情。
+          {i18nT('点击地图上的支派 / 帝国疆域，或左侧事件、图层中的预言与战役，查看详情。')}
         </div>
       </div>
     )
@@ -40,10 +41,10 @@ export function DetailPanel({ selection }: Props) {
           <h3 className="text-lg font-bold text-white">{t.nameZh}</h3>
           <span className="text-xs text-gray-400">{t.name}</span>
         </div>
-        <Row label="类型" value={t.ownerType === 'tribe' ? '支派' : '帝国'} />
-        <Row label="时期" value={`${formatYear(t.startYear)} – ${t.endYear === null ? '今' : formatYear(t.endYear)}`} />
-        <Row label="控制指数" value={`${t.controlScore} / 100`} />
-        <Row label="状态" value={STATUS_LABEL[t.status] ?? t.status} />
+        <Row label={i18nT('类型')} value={t.ownerType === 'tribe' ? '支派' : '帝国'} />
+        <Row label={i18nT('时期')} value={`${formatYear(t.startYear)} – ${t.endYear === null ? '今' : formatYear(t.endYear)}`} />
+        <Row label={i18nT('控制指数')} value={`${t.controlScore} / 100`} />
+        <Row label={i18nT('状态')} value={STATUS_LABEL[t.status] ?? t.status} />
         {t.description && <p className="mt-2 text-sm leading-relaxed text-gray-300">{t.description}</p>}
       </div>
     )
@@ -53,15 +54,15 @@ export function DetailPanel({ selection }: Props) {
     const p = selection.prophecy
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <h3 className="mb-2 text-lg font-bold text-white">{p.book} {p.chapterStart}{p.chapterEnd ? `-${p.chapterEnd}` : ''} · 论{p.targetNationZh}</h3>
-        <Row label="对象" value={`${p.targetNationZh} (${p.targetNation})`} />
-        <Row label="类型" value={p.prophecyType} />
-        <Row label="发出" value={p.sourceLocation} />
-        {p.fulfillmentYear !== null && <Row label="应验" value={formatYear(p.fulfillmentYear)} />}
+        <h3 className="mb-2 text-lg font-bold text-white">{p.book} {p.chapterStart}{p.chapterEnd ? `-${p.chapterEnd}` : ''} {i18nT('· 论')}{p.targetNationZh}</h3>
+        <Row label={i18nT('对象')} value={`${p.targetNationZh} (${p.targetNation})`} />
+        <Row label={i18nT('类型')} value={p.prophecyType} />
+        <Row label={i18nT('发出')} value={p.sourceLocation} />
+        {p.fulfillmentYear !== null && <Row label={i18nT('应验')} value={formatYear(p.fulfillmentYear)} />}
         <p className="mt-2 text-sm leading-relaxed text-gray-300">{p.description}</p>
         {p.fulfillmentDescription && (
           <p className="mt-2 rounded-lg bg-emerald-500/10 p-2 text-sm leading-relaxed text-emerald-300">
-            应验：{p.fulfillmentDescription}
+            {i18nT('应验：')}{p.fulfillmentDescription}
           </p>
         )}
       </div>
@@ -73,10 +74,10 @@ export function DetailPanel({ selection }: Props) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 className="mb-2 text-lg font-bold text-white">{c.nameZh}</h3>
-        <Row label="名称" value={c.name} />
-        {c.commanderZh && <Row label="统帅" value={c.commanderZh} />}
-        <Row label="年代" value={formatYear(c.startYear)} />
-        {c.book && <Row label="经文" value={`${c.book} ${c.chapter ?? ''}`} />}
+        <Row label={i18nT('名称')} value={c.name} />
+        {c.commanderZh && <Row label={i18nT('统帅')} value={c.commanderZh} />}
+        <Row label={i18nT('年代')} value={formatYear(c.startYear)} />
+        {c.book && <Row label={i18nT('经文')} value={`${c.book} ${c.chapter ?? ''}`} />}
         {c.description && <p className="mt-2 text-sm leading-relaxed text-gray-300">{c.description}</p>}
       </div>
     )
@@ -87,13 +88,13 @@ export function DetailPanel({ selection }: Props) {
     return (
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 className="mb-2 text-lg font-bold text-white">{e.titleZh}</h3>
-        <Row label="年代" value={formatYear(e.startYear)} />
-        {e.locationName && <Row label="地点" value={e.locationName} />}
-        {e.book && <Row label="经文" value={`${e.book} ${e.chapter ?? ''}`} />}
+        <Row label={i18nT('年代')} value={formatYear(e.startYear)} />
+        {e.locationName && <Row label={i18nT('地点')} value={e.locationName} />}
+        {e.book && <Row label={i18nT('经文')} value={`${e.book} ${e.chapter ?? ''}`} />}
         {e.description && <p className="mt-2 text-sm leading-relaxed text-gray-300">{e.description}</p>}
         {e.spiritualMeaning && (
           <p className="mt-2 rounded-lg bg-amber-500/10 p-2 text-sm leading-relaxed text-amber-200">
-            属灵意义：{e.spiritualMeaning}
+            {i18nT('属灵意义：')}{e.spiritualMeaning}
           </p>
         )}
       </div>

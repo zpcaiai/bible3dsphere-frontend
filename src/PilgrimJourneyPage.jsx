@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * PilgrimJourneyPage — 第六大陆 · 天路客（本仁《天路历程》游戏化）
  * 据近期状态定位你此刻身处天路历程的哪一处。作为今日心镜 overlay，go() 跳转相关功能。
@@ -29,15 +30,15 @@ export default function PilgrimJourneyPage({ onClose, go }) {
       <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, background: 'rgba(5,6,12,0.7)', backdropFilter: 'blur(10px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <BackButton onClick={onClose} />
-          <div><div style={{ fontSize: 17, fontWeight: 600 }}>天路客</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>本仁《天路历程》· 你此刻走到哪里</div></div>
+          <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('天路客')}</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>{i18nT('本仁《天路历程》· 你此刻走到哪里')}</div></div>
         </div>
         <button onClick={() => setTab(tab === 'now' ? 'map' : 'now')} style={pill}>{tab === 'now' ? '路线图' : '当前'}</button>
       </div>
 
       <div style={{ padding: '8px 16px 110px', maxWidth: 640, margin: '0 auto' }}>
-        {loading ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>正在辨认你脚下的路…</div>
-          : !cur ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>先做几次打卡/省察，我才能认出你走到了哪里</div>
+        {loading ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('正在辨认你脚下的路…')}</div>
+          : !cur ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('先做几次打卡/省察，我才能认出你走到了哪里')}</div>
           : tab === 'now' ? (
             <>
               <div style={{ textAlign: 'center', padding: '10px 0 4px' }}>
@@ -48,8 +49,8 @@ export default function PilgrimJourneyPage({ onClose, go }) {
               <div style={{ ...card, background: `linear-gradient(135deg, ${cur.color}1f, rgba(255,255,255,0.02))`, borderColor: `${cur.color}44` }}>
                 <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.85)', lineHeight: 1.85 }}>{cur.meaning}</div>
               </div>
-              <Row label="危险" color="#ff8787">{cur.danger}</Row>
-              <Row label="出路" color="#34c759">{cur.way}</Row>
+              <Row label={i18nT('危险')} color="#ff8787">{cur.danger}</Row>
+              <Row label={i18nT('出路')} color="#34c759">{cur.way}</Row>
               {cur.scripture?.text && (
                 <div style={{ ...card, borderLeft: `3px solid ${cur.color}88`, borderRadius: 8 }}>
                   <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.82)', fontStyle: 'italic', lineHeight: 1.8 }}>「{cur.scripture.text}」</div>
@@ -79,7 +80,7 @@ export default function PilgrimJourneyPage({ onClose, go }) {
           )}
         {tab === 'now' && journey.length > 1 && (
           <div style={{ ...card, marginTop: 4 }}>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>你近来的天路足迹</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>{i18nT('你近来的天路足迹')}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {journey.slice(0, 8).reverse().map((v, i) => (
                 <span key={i} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)' }}>{v.name}</span>

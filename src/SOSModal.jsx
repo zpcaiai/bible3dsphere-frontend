@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useState } from 'react'
 
 const DARK_MOMENT_CHARACTERS = [
@@ -46,11 +47,11 @@ export default function SOSModal({ onClose, onPrayerWall }) {
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{ fontSize: 36, marginBottom: 10 }}>🕯️</div>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 6 }}>
-            你不是一个人
+            {i18nT('你不是一个人')}
           </div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
-            就在黑暗中，神的眼目仍在看顾你。<br />
-            在圣经里，许多神所爱的人也走过这样的时刻。
+            {i18nT('就在黑暗中，神的眼目仍在看顾你。')}<br />
+            {i18nT('在圣经里，许多神所爱的人也走过这样的时刻。')}
           </div>
         </div>
 
@@ -74,7 +75,7 @@ export default function SOSModal({ onClose, onPrayerWall }) {
               {expanded === i && (
                 <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.65, marginBottom: 8 }}>
-                    <span style={{ color: '#5ac8fa', fontWeight: 600 }}>神的回应：</span> {char.how_god_met}
+                    <span style={{ color: '#5ac8fa', fontWeight: 600 }}>{i18nT('神的回应：')}</span> {char.how_god_met}
                   </div>
                   <div style={{ fontSize: 12, color: '#ffd700', lineHeight: 1.65, fontStyle: 'italic', background: 'rgba(255,215,0,0.07)', padding: '8px 10px', borderRadius: 8 }}>
                     💛 {char.hope}
@@ -88,20 +89,20 @@ export default function SOSModal({ onClose, onPrayerWall }) {
         {/* Key verse */}
         <div style={{ background: 'rgba(88,86,214,0.1)', border: '1px solid rgba(88,86,214,0.25)', borderRadius: 12, padding: '16px', marginBottom: 20, textAlign: 'center' }}>
           <div style={{ fontSize: 14, color: '#fff', lineHeight: 1.8, fontStyle: 'italic', marginBottom: 8 }}>
-            「你们要将一切的忧虑卸给神，<br />因为他顾念你们。」
+            {i18nT('「你们要将一切的忧虑卸给神，')}<br />{i18nT('因为他顾念你们。」')}
           </div>
-          <div style={{ fontSize: 12, color: '#c4b5fd' }}>彼得前书 5:7</div>
+          <div style={{ fontSize: 12, color: '#c4b5fd' }}>{i18nT('彼得前书 5:7')}</div>
         </div>
 
         {/* Actions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {onPrayerWall && (
             <button onClick={onPrayerWall} style={{ padding: '12px', background: 'rgba(0,122,255,0.2)', border: '1px solid rgba(0,122,255,0.4)', borderRadius: 12, color: '#5eb0ff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              🙏 在代祷墙上提出来，让弟兄姐妹同心代祷
+              {i18nT('🙏 在代祷墙上提出来，让弟兄姐妹同心代祷')}
             </button>
           )}
           <button onClick={onClose} style={{ padding: '12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: 'rgba(255,255,255,0.6)', fontSize: 13, cursor: 'pointer' }}>
-            我明白了，继续
+            {i18nT('我明白了，继续')}
           </button>
         </div>
       </div>

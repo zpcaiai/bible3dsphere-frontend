@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../i18n/runtime'
 import { useEffect, useRef } from 'react'
 import './PilgrimsGame.css'
 
@@ -18,7 +19,7 @@ export default function PilgrimsGame() {
       ref={iframeRef}
       className="pilgrims-game-iframe"
       src="/godot/embed.html"
-      title="天路历程"
+      title={i18nT('天路历程')}
       allow="fullscreen"
       sandbox="allow-scripts allow-same-origin allow-popups allow-pointer-lock"
     />

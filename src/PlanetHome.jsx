@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import BackButton from './BackButton'
 /**
  * PlanetHome — 属灵星球 · 成长地图（IA v1，增量、不删现有功能）
@@ -50,14 +51,14 @@ export default function PlanetHome({ onClose, go }) {
     <div style={{ width: '100%', height: '100%', background: 'radial-gradient(circle at 50% 12%, rgba(139,92,246,0.18), #05060c 60%)', color: '#fff', overflowY: 'auto', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, position: 'sticky', top: 0, zIndex: 100, background: 'rgba(5,6,12,0.7)', backdropFilter: 'blur(10px)' }}>
         <BackButton onClick={onClose} />
-        <div><div style={{ fontSize: 17, fontWeight: 600 }}>属灵星球</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>你不是在课程里学习，而是在一颗星球上成长</div></div>
+        <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('属灵星球')}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>{i18nT('你不是在课程里学习，而是在一颗星球上成长')}</div></div>
       </div>
 
       <div style={{ textAlign: 'center', padding: '8px 16px 16px' }}>
         <div style={{ fontSize: 46 }}>🪐</div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 420, margin: '6px auto 0' }}>
-          状态 → 识别 → 引导 → 行动 → 复盘 → 人格形成。<br />一条把你塑造得越来越像基督的成长路径。
+          {i18nT('状态 → 识别 → 引导 → 行动 → 复盘 → 人格形成。')}<br />{i18nT('一条把你塑造得越来越像基督的成长路径。')}
         </div>
       </div>
 
@@ -81,7 +82,7 @@ export default function PlanetHome({ onClose, go }) {
           </div>
         ))}
         <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.3)', textAlign: 'center', lineHeight: 1.7, marginTop: 4 }}>
-          内容只是燃料，养料库随你的状态被自动调用。<br />愿你在这颗星球上，越来越有信、有望、有爱，越来越像祂。
+          {i18nT('内容只是燃料，养料库随你的状态被自动调用。')}<br />{i18nT('愿你在这颗星球上，越来越有信、有望、有爱，越来越像祂。')}
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** DiscipleshipPathwayPage — 门徒成长路径 (B7)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -35,13 +36,13 @@ export default function DiscipleshipPathwayPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🌱 门徒成长路径</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>阶段是成长辅助，不是身份高低；慢成长不羞辱</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🌱 门徒成长路径')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('阶段是成长辅助，不是身份高低；慢成长不羞辱')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       {!path && (
         <div style={card}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>阶段自评（0–10）</div>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{i18nT('阶段自评（0–10）')}</div>
           {SL.map(([k, l]) => (
             <div key={k} style={{ marginBottom: 8 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}><span>{l}</span><span style={{ color: '#8be9c0' }}>{scores[k]}</span></div>
@@ -49,14 +50,14 @@ export default function DiscipleshipPathwayPage({ user, onBack }) {
             </div>
           ))}
           <select value={conn} onChange={e => setConn(e.target.value)} style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }}>
-            <option value="none">未连接教会</option><option value="visiting">在探访</option><option value="regular_attender">规律参加</option><option value="member">成员</option><option value="serving_member">服事成员</option>
+            <option value="none">{i18nT('未连接教会')}</option><option value="visiting">{i18nT('在探访')}</option><option value="regular_attender">{i18nT('规律参加')}</option><option value="member">{i18nT('成员')}</option><option value="serving_member">{i18nT('服事成员')}</option>
           </select>
-          <button style={btn} onClick={assess}>评估我的阶段</button>
+          <button style={btn} onClick={assess}>{i18nT('评估我的阶段')}</button>
           {assessed && (
             <div style={{ marginTop: 12 }}>
-              <div style={{ fontSize: 14, fontWeight: 700 }}>当前阶段：{assessed.assessed_stage_name}</div>
+              <div style={{ fontSize: 14, fontWeight: 700 }}>{i18nT('当前阶段：')}{assessed.assessed_stage_name}</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '4px 0 10px' }}>{assessed.note}</div>
-              <button style={btn} onClick={createPath}>创建成长路径</button>
+              <button style={btn} onClick={createPath}>{i18nT('创建成长路径')}</button>
             </div>
           )}
         </div>

@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useEffect, useMemo, useState } from 'react'
 import { analyticsMetricDefinitions, bibleCharacters, biblicalTimelineMovements, doctrineTopics, platformModules, productPlans, skillRegistry } from '../../data/platformIntegrationSeed'
 import {
@@ -96,7 +97,7 @@ export function BibleDoctrinePanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Bible Knowledge Graph & Doctrine Learning OS / 圣经知识图谱与教义学习系统</h2><p>Distinguishes biblical text, interpretation, tradition, and formation application.</p></div>
+      <div className="sf-section-heading"><h2>{T('圣经知识图谱与教义学习系统', 'Bible Knowledge Graph & Doctrine Learning OS')}</h2><p>Distinguishes biblical text, interpretation, tradition, and formation application.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Character search<input value={query} onChange={(event) => setQuery(event.target.value)} /></label>
         <button className="sf-primary" type="button" onClick={createLearningArtifacts}>Create Doctrine Path and Dialogue</button>
@@ -154,7 +155,7 @@ export function AIFormationAgentPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>AI Spiritual Tutor & Personal Formation Agent OS / AI 属灵导师与个人成长代理系统</h2><p>The tutor is not God, not a prophet, not a pastor, therapist, or emergency service.</p></div>
+      <div className="sf-section-heading"><h2>{T('AI 属灵导师与个人成长代理系统', 'AI Spiritual Tutor & Personal Formation Agent OS')}</h2><p>The tutor is not God, not a prophet, not a pastor, therapist, or emergency service.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Situational question<textarea value={intent} onChange={(event) => setIntent(event.target.value)} /></label>
         <div className="sf-card-head"><h3>Route</h3><span className="sf-status">{route.module}</span></div>
@@ -214,7 +215,7 @@ export function AnalyticsPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Analytics, Progress & Formation Metrics OS / 成长分析与生命果效指标系统</h2><p>Metrics are indicators, not spiritual rank. Grace evidence appears before performance metrics.</p></div>
+      <div className="sf-section-heading"><h2>{T('成长分析与生命果效指标系统', 'Analytics, Progress & Formation Metrics OS')}</h2><p>Metrics are indicators, not spiritual rank. Grace evidence appears before performance metrics.</p></div>
       <button className="sf-primary" type="button" onClick={createAnalyticsArtifacts}>Aggregate Formation Metrics</button>
       <div className="sf-home-grid">
         <SummaryCard title="Analytics state" items={[
@@ -262,7 +263,7 @@ export function ProductizationPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Deployment, Multi-Tenant, Admin & Productization OS / 部署、多租户、管理与产品化系统</h2><p>Tenant isolation, explicit roles, audited admin access, soft-fail safety flows, and deployment runbooks.</p></div>
+      <div className="sf-section-heading"><h2>{T('部署、多租户、管理与产品化系统', 'Deployment, Multi-Tenant, Admin & Productization OS')}</h2><p>Tenant isolation, explicit roles, audited admin access, soft-fail safety flows, and deployment runbooks.</p></div>
       <button className="sf-primary" type="button" onClick={createProductArtifacts}>Create Productization Artifacts</button>
       <div className="sf-home-grid">
         <SummaryCard title="Product state" items={[
@@ -308,7 +309,7 @@ export function MasterBuildPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Full-Scale Integration, Enterprise Roadmap & Master Build OS / 最终整合与总开发任务书</h2><p>All 52 skills registered with event bus, safety-first, consent, permissions, analytics, billing, and ops contracts.</p></div>
+      <div className="sf-section-heading"><h2>{T('最终整合与总开发任务书', 'Full-Scale Integration, Enterprise Roadmap & Master Build OS')}</h2><p>All 52 skills registered with event bus, safety-first, consent, permissions, analytics, billing, and ops contracts.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Global intent<textarea value={intent} onChange={(event) => setIntent(event.target.value)} /></label>
         <div className="sf-card-head"><h3>Safety-first route</h3><span className="sf-status">{safetyRoute.riskLevel}</span></div>

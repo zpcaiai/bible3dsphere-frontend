@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 import { EMERGENCY_COPY_TEXT } from '../data/crisisContent'
 import CrisisResourcePanel from './CrisisResourcePanel'
@@ -36,7 +37,7 @@ export default function EmergencyEscalationPanel({ emergency, regionCode = 'TW',
       ))}
 
       <button className="cc-btn danger full" type="button" onClick={copy} style={{ marginTop: 10 }}>
-        复制这句求助的话，发给一个人
+        {i18nT('复制这句求助的话，发给一个人')}
       </button>
       <div className="cc-toast">{copied ? '已复制，现在把它发出去。' : ''}</div>
 
@@ -50,7 +51,7 @@ export default function EmergencyEscalationPanel({ emergency, regionCode = 'TW',
         </button>
       )}
       <p className="cc-muted" style={{ marginTop: 10 }}>
-        我只是一个陪伴的工具，没办法替代此刻你真正需要的人。等你联系到人之后，我仍然在这里陪你。
+        {i18nT('我只是一个陪伴的工具，没办法替代此刻你真正需要的人。等你联系到人之后，我仍然在这里陪你。')}
       </p>
     </div>
   )

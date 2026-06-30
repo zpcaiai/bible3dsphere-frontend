@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * WaitingPathPage — 等候之路 / Waiting Transformation Module
  *
@@ -84,11 +85,11 @@ export default function WaitingPathPage({ user, onBack, onNeedLogin }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <BackButton onClick={view === 'home' ? onBack : () => { setView('home'); loadHome() }} />
           <div>
-            <div style={{ fontSize: 17, fontWeight: 600 }}>等候之路</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>从等待戈多，到等候上帝</div>
+            <div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('等候之路')}</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{i18nT('从等待戈多，到等候上帝')}</div>
           </div>
         </div>
-        {view === 'home' && <button onClick={() => setView('create')} style={primaryPill}>＋ 新建</button>}
+        {view === 'home' && <button onClick={() => setView('create')} style={primaryPill}>{i18nT('＋ 新建')}</button>}
       </div>
 
       <div style={{ padding: '14px 16px 100px', maxWidth: 720, margin: '0 auto' }}>
@@ -106,17 +107,16 @@ function HomeView({ cases, loading, onOpen, onNew }) {
   return (
     <>
       <div style={{ ...card, background: 'linear-gradient(135deg, rgba(52,199,89,0.10), rgba(90,200,250,0.08))' }}>
-        <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>🕯️ 等候，不是枯等</div>
+        <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{i18nT('🕯️ 等候，不是枯等')}</div>
         <div style={{ fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.78)' }}>
-          等待可以是焦虑、被动、幻想式的「等戈多」；也可以是有信、有望、有爱、有行动、
-          有顺服的「等候上帝」。这里陪你温柔地分辨，并在等待中被塑造——而非被消耗。
+          {i18nT('等待可以是焦虑、被动、幻想式的「等戈多」；也可以是有信、有望、有爱、有行动、 有顺服的「等候上帝」。这里陪你温柔地分辨，并在等待中被塑造——而非被消耗。')}
         </div>
       </div>
-      {loading && <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>加载中…</div>}
+      {loading && <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('加载中…')}</div>}
       {!loading && cases.length === 0 && (
         <div style={{ ...card, textAlign: 'center', padding: '28px 14px' }}>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 14 }}>还没有等待案例。你此刻在等什么？</div>
-          <button onClick={onNew} style={primaryBtn}>＋ 命名我的等待</button>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 14 }}>{i18nT('还没有等待案例。你此刻在等什么？')}</div>
+          <button onClick={onNew} style={primaryBtn}>{i18nT('＋ 命名我的等待')}</button>
         </div>
       )}
       {cases.map(c => {
@@ -128,8 +128,8 @@ function HomeView({ cases, loading, onOpen, onNew }) {
               <span style={{ fontSize: 11, fontWeight: 700, color: t.color, padding: '2px 8px', borderRadius: 10, background: `${t.color}22`, flexShrink: 0 }}>{t.label}</span>
             </div>
             <div style={{ display: 'flex', gap: 14, marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>
-              <span>焦虑 {Math.round((c.anxiety_level || 0))}</span>
-              <span>盼望 {Math.round((c.hope_level || 0))}</span>
+              <span>{i18nT('焦虑')} {Math.round((c.anxiety_level || 0))}</span>
+              <span>{i18nT('盼望')} {Math.round((c.hope_level || 0))}</span>
               <span>{(c.created_at || '').slice(0, 10)}</span>
             </div>
           </div>
@@ -147,7 +147,7 @@ function CreateView({ onCancel, onCreated, onNeedLogin, setError }) {
 
   async function submit() {
     const token = getToken(); if (!token) { onNeedLogin && onNeedLogin(); return }
-    if (!waitingFor.trim()) { setError('请先写下你在等什么'); return }
+    if (!waitingFor.trim()) { setError(i18nT('请先写下你在等什么')); return }
     setBusy(true); setError('')
     try {
       const created = await createWaitingCase({ waiting_for: waitingFor.trim(), waiting_description: desc.trim(), ...vals }, token)
@@ -162,13 +162,13 @@ function CreateView({ onCancel, onCreated, onNeedLogin, setError }) {
   return (
     <>
       <div style={card}>
-        <label style={lbl}>我正在等什么？</label>
-        <input value={waitingFor} onChange={e => setWaitingFor(e.target.value)} placeholder="如：一个 offer、一段关系的回应、一个突破…" style={input} />
-        <label style={{ ...lbl, marginTop: 14 }}>具体描述（可选）</label>
-        <span style={{ position: 'relative', display: 'block' }}><textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3} placeholder="发生了什么？你最害怕它不来的原因是什么？" style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_DESC} value={desc} onChange={setDesc} /></span>
+        <label style={lbl}>{i18nT('我正在等什么？')}</label>
+        <input value={waitingFor} onChange={e => setWaitingFor(e.target.value)} placeholder={i18nT('如：一个 offer、一段关系的回应、一个突破…')} style={input} />
+        <label style={{ ...lbl, marginTop: 14 }}>{i18nT('具体描述（可选）')}</label>
+        <span style={{ position: 'relative', display: 'block' }}><textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3} placeholder={i18nT('发生了什么？你最害怕它不来的原因是什么？')} style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_DESC} value={desc} onChange={setDesc} /></span>
       </div>
       <div style={card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>诚实地为此刻打分（0–10）</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{i18nT('诚实地为此刻打分（0–10）')}</div>
         {SLIDERS.map(s => (
           <div key={s.key} style={{ marginTop: 12 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
@@ -181,8 +181,8 @@ function CreateView({ onCancel, onCreated, onNeedLogin, setError }) {
         ))}
       </div>
       <button onClick={submit} disabled={busy} style={primaryBtn}>{busy ? '正在分辨…' : '提交并分辨'}</button>
-      <button onClick={onCancel} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.06)', marginTop: 8 }}>取消</button>
-      <div style={footNote}>本工具是反思与陪伴，不替代专业心理帮助。若你正经历极端的痛苦或绝望，请联系信任的人或寻求专业支持。</div>
+      <button onClick={onCancel} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.06)', marginTop: 8 }}>{i18nT('取消')}</button>
+      <div style={footNote}>{i18nT('本工具是反思与陪伴，不替代专业心理帮助。若你正经历极端的痛苦或绝望，请联系信任的人或寻求专业支持。')}</div>
     </>
   )
 }
@@ -214,14 +214,14 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
       )}
 
       <div style={{ ...card, background: `linear-gradient(135deg, ${t.color}1f, rgba(255,255,255,0.03))`, borderColor: `${t.color}55` }}>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>我正在等：{c.waiting_for}</div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>{i18nT('我正在等：')}{c.waiting_for}</div>
         <div style={{ fontSize: 20, fontWeight: 700, color: t.color }}>{t.label}</div>
         <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', marginTop: 6, lineHeight: 1.6 }}>{crisis ? t.desc : (a.summary || t.desc)}</div>
       </div>
 
       {/* 分数可视化 */}
       <div style={card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>分辨指标</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>{i18nT('分辨指标')}</div>
         {SCORE_BARS.map(b => {
           const v = Math.round((a[b.key] || 0) * 100)
           return (
@@ -241,7 +241,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
       {/* 分析文本 */}
       {a.analysis && (
         <div style={card}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>温柔的分辨</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>{i18nT('温柔的分辨')}</div>
           {ANALYSIS_FIELDS.map(f => a.analysis[f.key] && (
             <div key={f.key} style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 11, color: '#a78bfa', fontWeight: 700, marginBottom: 3 }}>{f.label}</div>
@@ -254,7 +254,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
       {/* 建议 */}
       {a.guidance && a.guidance.length > 0 && (
         <div style={card}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#5ac8fa', marginBottom: 8 }}>温和、可执行的下一步</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#5ac8fa', marginBottom: 8 }}>{i18nT('温和、可执行的下一步')}</div>
           {a.guidance.map((g, i) => (
             <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: 'rgba(255,255,255,0.76)', lineHeight: 1.65, marginBottom: 6 }}>
               <span style={{ color: '#5ac8fa' }}>{i + 1}.</span><span>{g}</span>
@@ -266,7 +266,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
       {/* 反思问题 */}
       {a.reflection_questions && (
         <div style={card}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>带着这些问题安静片刻</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{i18nT('带着这些问题安静片刻')}</div>
           {a.reflection_questions.map((q, i) => (
             <div key={i} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, marginBottom: 6, fontStyle: 'italic' }}>· {q}</div>
           ))}
@@ -278,7 +278,7 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
         <button onClick={genPractices} disabled={busy} style={primaryBtn}>{busy ? '生成中…' : '生成 7 天等候操练'}</button>
       ) : (
         <div style={{ marginTop: 4 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', margin: '8px 4px' }}>🌱 7 天等候操练</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', margin: '8px 4px' }}>{i18nT('🌱 7 天等候操练')}</div>
           {practices.map(p => <PracticeCard key={p.id} p={p} onSaved={() => reload(c.id)} setError={setError} onNeedLogin={onNeedLogin} />)}
         </div>
       )}
@@ -288,12 +288,12 @@ function DetailView({ bundle, reload, setError, onNeedLogin }) {
 
       {bundle.reflections && bundle.reflections.length > 0 && (
         <div style={{ ...card, marginTop: 12 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>复盘记录</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{i18nT('复盘记录')}</div>
           {bundle.reflections.map(r => (
             <div key={r.id} style={{ borderLeft: '2px solid rgba(255,255,255,0.12)', paddingLeft: 10, marginBottom: 10 }}>
-              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>{(r.created_at || '').slice(0, 16).replace('T', ' ')} · 信靠 {Math.round(r.trust_level)}</div>
+              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>{(r.created_at || '').slice(0, 16).replace('T', ' ')} {i18nT('· 信靠')} {Math.round(r.trust_level)}</div>
               {r.reflection_text && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', marginTop: 3, lineHeight: 1.6 }}>{r.reflection_text}</div>}
-              {r.action_taken && <div style={{ fontSize: 11.5, color: '#5ac8fa', marginTop: 3 }}>行动：{r.action_taken}</div>}
+              {r.action_taken && <div style={{ fontSize: 11.5, color: '#5ac8fa', marginTop: 3 }}>{i18nT('行动：')}{r.action_taken}</div>}
             </div>
           ))}
         </div>
@@ -328,7 +328,7 @@ function PracticeCard({ p, onSaved, setError, onNeedLogin }) {
         <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.74)', lineHeight: 1.7, marginBottom: 8 }}>{p.practice_content}</div>
           <div style={{ fontSize: 12, color: '#a78bfa', fontStyle: 'italic', marginBottom: 8 }}>💭 {p.reflection_prompt}</div>
-          <span style={{ position: 'relative', display: 'block' }}><textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder="写下你的反思…" style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_REFLECT} value={text} onChange={setText} /></span>
+          <span style={{ position: 'relative', display: 'block' }}><textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder={i18nT('写下你的反思…')} style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_REFLECT} value={text} onChange={setText} /></span>
           <button onClick={complete} disabled={busy} style={{ ...primaryBtn, marginTop: 8, padding: 10, fontSize: 13 }}>{busy ? '保存中…' : (p.completed ? '更新反思' : '完成这一天')}</button>
         </div>
       )}
@@ -356,19 +356,19 @@ function ReflectBox({ caseId, onSaved, setError, onNeedLogin }) {
     finally { setBusy(false) }
   }
 
-  if (!open) return <button onClick={() => setOpen(true)} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.06)', marginTop: 12 }}>＋ 记录一次复盘</button>
+  if (!open) return <button onClick={() => setOpen(true)} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.06)', marginTop: 12 }}>{i18nT('＋ 记录一次复盘')}</button>
   return (
     <div style={{ ...card, marginTop: 12 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>今天的等待，状态如何？</div>
-      <span style={{ position: 'relative', display: 'block' }}><textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder="今天等待中发生了什么？我的内心如何？" style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_TODAY} value={text} onChange={setText} /></span>
+      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{i18nT('今天的等待，状态如何？')}</div>
+      <span style={{ position: 'relative', display: 'block' }}><textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder={i18nT('今天等待中发生了什么？我的内心如何？')} style={{ ...input, resize: 'vertical', paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={WP_TODAY} value={text} onChange={setText} /></span>
       {[['焦虑', anx, setAnx], ['盼望', hope, setHope], ['信靠', trust, setTrust]].map(([n, v, set]) => (
         <div key={n} style={{ marginTop: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}><span style={{ color: 'rgba(255,255,255,0.7)' }}>{n}</span><span style={{ color: '#5ac8fa', fontWeight: 700 }}>{v}</span></div>
           <input type="range" min="0" max="10" step="1" value={v} onChange={e => set(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#5ac8fa' }} />
         </div>
       ))}
-      <input value={action} onChange={e => setAction(e.target.value)} placeholder="今天有没有一个忠心的小行动？" style={{ ...input, marginTop: 12 }} />
-      <div style={{ marginTop: 12, fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>此刻我更像——</div>
+      <input value={action} onChange={e => setAction(e.target.value)} placeholder={i18nT('今天有没有一个忠心的小行动？')} style={{ ...input, marginTop: 12 }} />
+      <div style={{ marginTop: 12, fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{i18nT('此刻我更像——')}</div>
       <div style={{ display: 'flex', gap: 8 }}>
         {[['godot', '等戈多', '#ff8787'], ['mixed', '交织', '#ffd43b'], ['god', '等候上帝', '#34c759']].map(([k, l, color]) => (
           <button key={k} onClick={() => setLeaning(k)} style={{ flex: 1, padding: '8px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700, background: leaning === k ? `${color}33` : 'rgba(255,255,255,0.05)', color: leaning === k ? color : 'rgba(255,255,255,0.5)' }}>{l}</button>

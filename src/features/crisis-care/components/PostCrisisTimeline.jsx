@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 import { POST_CRISIS_PHASE_LABELS, POST_CRISIS_TASKS } from '../data/crisisContent'
 import { importCrisisToFormation } from '../lib/formationBridge'
@@ -26,7 +27,7 @@ export default function PostCrisisTimeline({ userId = 'local-user', token, riskT
       const { plan } = await importCrisisToFormation({ userId, token, riskTypes })
       setImported(plan)
     } catch (e) {
-      setError('导入失败，但你随时可以直接去模式库手动开始。')
+      setError(i18nT('导入失败，但你随时可以直接去模式库手动开始。'))
     } finally {
       setImporting(false)
     }
@@ -34,8 +35,8 @@ export default function PostCrisisTimeline({ userId = 'local-user', token, riskT
 
   return (
     <div className="cc-card">
-      <h3>危机后的恢复路径</h3>
-      <p className="cc-muted">危机过去了，先别急着做大改变。先让身体和心慢慢回来。</p>
+      <h3>{i18nT('危机后的恢复路径')}</h3>
+      <p className="cc-muted">{i18nT('危机过去了，先别急着做大改变。先让身体和心慢慢回来。')}</p>
       {PHASES.map((phase) => (
         <div className="cc-phase" key={phase}>
           <h4>{POST_CRISIS_PHASE_LABELS[phase]}</h4>
@@ -52,10 +53,9 @@ export default function PostCrisisTimeline({ userId = 'local-user', token, riskT
       ))}
 
       <div style={{ marginTop: 14, padding: 14, borderRadius: 12, background: 'rgba(52,199,89,0.07)', border: '1px solid rgba(52,199,89,0.22)' }}>
-        <h4 style={{ margin: '0 0 6px' }}>准备好之后，交给「模式库」</h4>
+        <h4 style={{ margin: '0 0 6px' }}>{i18nT('准备好之后，交给「模式库」')}</h4>
         <p className="cc-muted" style={{ margin: '0 0 10px' }}>
-          这不是说你的危机就是某种罪。等你稳定下来，模式库可以陪你慢慢看见更长期的内在模式。
-          我们会为你生成一个 30 天、轻强度的恢复起点——你可以随时修改，也可以先不开始。
+          {i18nT('这不是说你的危机就是某种罪。等你稳定下来，模式库可以陪你慢慢看见更长期的内在模式。 我们会为你生成一个 30 天、轻强度的恢复起点——你可以随时修改，也可以先不开始。')}
         </p>
         {!imported ? (
           <button className="cc-btn full" type="button" onClick={importToLibrary} disabled={importing}>
@@ -64,10 +64,10 @@ export default function PostCrisisTimeline({ userId = 'local-user', token, riskT
         ) : (
           <>
             <p style={{ color: '#34c759', margin: '0 0 8px' }}>
-              已生成「{imported.title}」。你可以在模式库里编辑、更换主题，或随时暂停。
+              {i18nT('已生成「')}{imported.title}{i18nT('」。你可以在模式库里编辑、更换主题，或随时暂停。')}
             </p>
             {onOpenLibrary && (
-              <button className="cc-btn full secondary" type="button" onClick={onOpenLibrary}>打开模式库</button>
+              <button className="cc-btn full secondary" type="button" onClick={onOpenLibrary}>{i18nT('打开模式库')}</button>
             )}
           </>
         )}

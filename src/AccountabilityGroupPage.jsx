@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** AccountabilityGroupPage — 小组监督 (B7)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -36,15 +37,15 @@ export default function AccountabilityGroupPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>👥 小组监督</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>同意制 · 坚固爱与信，不羞辱不比较</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('👥 小组监督')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('同意制 · 坚固爱与信，不羞辱不比较')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
-      {crisis && <div style={{ ...card, background: 'rgba(255,107,107,0.10)' }}><div style={{ fontWeight: 700 }}>💗 {crisis.message}</div><div style={{ fontSize: 12 }}>危机内容不该只在群里流转,请同时寻求牧养/危机陪伴。</div></div>}
+      {crisis && <div style={{ ...card, background: 'rgba(255,107,107,0.10)' }}><div style={{ fontWeight: 700 }}>💗 {crisis.message}</div><div style={{ fontSize: 12 }}>{i18nT('危机内容不该只在群里流转,请同时寻求牧养/危机陪伴。')}</div></div>}
 
       <div style={card}>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input value={name} onChange={e => setName(e.target.value)} placeholder="新建小组名称" style={{ ...fld, marginBottom: 0, flex: 1 }} />
-          <button style={btn} onClick={create}>建群</button>
+          <input value={name} onChange={e => setName(e.target.value)} placeholder={i18nT('新建小组名称')} style={{ ...fld, marginBottom: 0, flex: 1 }} />
+          <button style={btn} onClick={create}>{i18nT('建群')}</button>
         </div>
         {groups.map(g => (
           <div key={g.id} onClick={() => open(g)} style={{ padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
@@ -55,16 +56,16 @@ export default function AccountabilityGroupPage({ user, onBack }) {
 
       {sel && (
         <div style={card}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{sel.name} · 本周打卡</div>
-          <input value={grat} onChange={e => setGrat(e.target.value)} placeholder="本周的恩典" style={fld} />
-          <input value={strug} onChange={e => setStrug(e.target.value)} placeholder="挣扎之处" style={fld} />
-          <input value={pray} onChange={e => setPray(e.target.value)} placeholder="代祷请求" style={fld} />
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{sel.name} {i18nT('· 本周打卡')}</div>
+          <input value={grat} onChange={e => setGrat(e.target.value)} placeholder={i18nT('本周的恩典')} style={fld} />
+          <input value={strug} onChange={e => setStrug(e.target.value)} placeholder={i18nT('挣扎之处')} style={fld} />
+          <input value={pray} onChange={e => setPray(e.target.value)} placeholder={i18nT('代祷请求')} style={fld} />
           <div style={{ display: 'flex', gap: 8 }}>
-            <button style={btn} onClick={checkin}>提交打卡</button>
-            <button style={{ ...btn, background: 'rgba(125,211,252,0.5)' }} onClick={addPrayer}>加到代祷板</button>
+            <button style={btn} onClick={checkin}>{i18nT('提交打卡')}</button>
+            <button style={{ ...btn, background: 'rgba(125,211,252,0.5)' }} onClick={addPrayer}>{i18nT('加到代祷板')}</button>
           </div>
           <div style={{ marginTop: 10 }}>
-            <div style={{ fontSize: 12, color: '#8be9c0' }}>代祷板</div>
+            <div style={{ fontSize: 12, color: '#8be9c0' }}>{i18nT('代祷板')}</div>
             {prayers.map(p => <div key={p.id} style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', padding: '3px 0' }}>· {p.title}（{p.by}）</div>)}
           </div>
         </div>

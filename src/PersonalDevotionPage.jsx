@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * PersonalDevotionPage — 千人千面每日灵修 + 麦琴读经计划
  *
@@ -65,11 +66,11 @@ function ScriptureVerses({ scriptureRef, initialOpen = false }) {
     setLoading(true); setVerses(null); setError(null)
     fetchScripture(scriptureRef)
       .then(d => { if (d.ok && d.verses?.length) setVerses(d); else setError(d.error || '暂无经文') })
-      .catch(() => setError('加载失败'))
+      .catch(() => setError(i18nT('加载失败')))
       .finally(() => setLoading(false))
   }, [scriptureRef])
 
-  if (loading) return <div style={SV.loading}>加载经文中…</div>
+  if (loading) return <div style={SV.loading}>{i18nT('加载经文中…')}</div>
   if (error)   return <div style={SV.loading}>{error}</div>
   if (!verses) return null
 
@@ -80,7 +81,7 @@ function ScriptureVerses({ scriptureRef, initialOpen = false }) {
     <div style={SV.wrapper}>
       {/* ── Toggle header ── */}
       <div style={SV.toggleRow} onClick={() => setOpen(o => !o)}>
-        <span style={SV.refLabel}>📖 {book} {chapter}章 · {list.length}节</span>
+        <span style={SV.refLabel}>📖 {book} {chapter}{i18nT('章 ·')} {list.length}{i18nT('节')}</span>
         {/* TTS — stop propagation so click doesn't toggle accordion */}
         <div onClick={e => e.stopPropagation()}>
           <TTSButton text={ttsAll} />
@@ -208,15 +209,15 @@ function PersonalCard({ user, token }) {
   if (!user) return (
     <div style={{ ...S.section, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 16px', textAlign: 'center', gap: 8 }}>
       <div style={{ fontSize: 32 }}>🌟</div>
-      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.8)' }}>登录后查看个性化灵修</div>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>根据你的灵命状态每天生成专属灵修内容</div>
+      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.8)' }}>{i18nT('登录后查看个性化灵修')}</div>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{i18nT('根据你的灵命状态每天生成专属灵修内容')}</div>
     </div>
   )
 
   if (loading) return (
     <div style={S.section}>
       <div style={{ padding: '32px 16px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-        <div style={{ fontSize: 28, marginBottom: 10 }}>✨</div>正在为你生成今日灵修…
+        <div style={{ fontSize: 28, marginBottom: 10 }}>✨</div>{i18nT('正在为你生成今日灵修…')}
       </div>
     </div>
   )
@@ -224,7 +225,7 @@ function PersonalCard({ user, token }) {
   if (!data) return (
     <div style={S.section}>
       <div style={{ padding: '24px 16px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
-        暂无个性化灵修内容
+        {i18nT('暂无个性化灵修内容')}
       </div>
     </div>
   )
@@ -236,11 +237,11 @@ function PersonalCard({ user, token }) {
       <div style={S.sectionHeader('rgba(90,200,250,0.07)')}>
         <span style={{ fontSize: 18 }}>🌟</span>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>今日个性化灵修</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>聚焦 · {data.theme}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>{i18nT('今日个性化灵修')}</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{i18nT('聚焦 ·')} {data.theme}</div>
         </div>
         <span style={S.stageTag(data.stage)}>{data.stage_icon} {data.stage_label}</span>
-        <TTSFullBar buildText={() => ttsText} label="朗读" />
+        <TTSFullBar buildText={() => ttsText} label={i18nT('朗读')} />
       </div>
 
       <div style={S.sectionBody}>
@@ -251,7 +252,7 @@ function PersonalCard({ user, token }) {
         )}
         {/* Verse */}
         <div style={S.label}>
-          <span>✨ 今日经文</span>
+          <span>{i18nT('✨ 今日经文')}</span>
           <TTSButton text={`${data.verse_ref}——${data.verse_text}`} />
         </div>
         <div style={{ marginBottom: 4, fontSize: 11, color: 'rgba(90,200,250,0.7)', fontWeight: 600 }}>{data.verse_ref}</div>
@@ -261,21 +262,21 @@ function PersonalCard({ user, token }) {
 
         {/* Devotion text */}
         <div style={{ ...S.label, marginTop: 16 }}>
-          <span>📖 灵修默想</span>
+          <span>{i18nT('📖 灵修默想')}</span>
           <TTSButton text={data.devotion_text} />
         </div>
         <div style={S.body}>{data.devotion_text}</div>
 
         {/* Prayer */}
         <div style={{ ...S.label, marginTop: 16 }}>
-          <span>🙏 今日祷告</span>
+          <span>{i18nT('🙏 今日祷告')}</span>
           <TTSButton text={data.prayer_text} />
         </div>
         <div style={S.prayer}>{data.prayer_text}</div>
 
         {/* Stage action */}
         <div style={{ marginTop: 14, padding: '10px 12px', background: 'rgba(255,255,255,0.04)', borderRadius: 10, fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-          💡 <strong style={{ color: 'rgba(255,255,255,0.85)' }}>今日可行一步</strong> — {data.stage_action}
+          💡 <strong style={{ color: 'rgba(255,255,255,0.85)' }}>{i18nT('今日可行一步')}</strong> — {data.stage_action}
         </div>
       </div>
     </div>
@@ -315,17 +316,17 @@ function McCheyneCard() {
       <div style={S.sectionHeader('rgba(52,199,89,0.06)')}>
         <span style={{ fontSize: 18 }}>📖</span>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>麦琴读经计划</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{dayStr} · 麦契尼一年读经计划</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.95)' }}>{i18nT('麦琴读经计划')}</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{dayStr} {i18nT('· 麦契尼一年读经计划')}</div>
         </div>
-        {reading && <TTSFullBar buildText={() => ttsFull} label="朗读" />}
+        {reading && <TTSFullBar buildText={() => ttsFull} label={i18nT('朗读')} />}
       </div>
 
       <div style={S.sectionBody}>
         {reading === undefined ? (
-          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>加载中…</div>
+          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>{i18nT('加载中…')}</div>
         ) : reading === null ? (
-          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>今日读经计划暂无数据</div>
+          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>{i18nT('今日读经计划暂无数据')}</div>
         ) : (
           <>
             {/* Summary chips */}
@@ -369,7 +370,7 @@ function McCheyneCard() {
             })}
 
             <div style={{ marginTop: 4, padding: '7px 12px', background: 'rgba(52,199,89,0.05)', borderRadius: 8, fontSize: 11, color: 'rgba(52,199,89,0.6)', textAlign: 'center' }}>
-              麦契尼一年读经计划 · 每日4章 · 一年读完圣经
+              {i18nT('麦契尼一年读经计划 · 每日4章 · 一年读完圣经')}
             </div>
           </>
         )}

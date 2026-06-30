@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** SabbathRestPage — 安息日与休息操练 (B4)。入口：今日心镜。 */
 import { useState } from 'react'
 import BackButton from './BackButton'
@@ -27,12 +28,12 @@ export default function SabbathRestPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🌙 安息与休息</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>抵抗效率偶像 · 重新安放敬拜、信靠与身体</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🌙 安息与休息')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('抵抗效率偶像 · 重新安放敬拜、信靠与身体')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>休息审计（0–10）</div>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{i18nT('休息审计（0–10）')}</div>
         {FIELDS.map(([k, label]) => (
           <div key={k} style={{ marginBottom: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}><span>{label}</span><span style={{ color: '#8be9c0' }}>{scores[k]}</span></div>
@@ -44,9 +45,9 @@ export default function SabbathRestPage({ user, onBack }) {
 
       {analysis && (
         <div style={card}>
-          {analysis.burnout_risk && <div style={{ color: '#f5c451', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>⚠ 像是 burnout 边缘：先减总负荷。</div>}
-          {analysis.blockers && analysis.blockers.length > 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>阻碍：{analysis.blockers.join('、')}</div>}
-          {analysis.idols && analysis.idols.length > 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>可能的偶像：{analysis.idols.join('、')}</div>}
+          {analysis.burnout_risk && <div style={{ color: '#f5c451', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('⚠ 像是 burnout 边缘：先减总负荷。')}</div>}
+          {analysis.blockers && analysis.blockers.length > 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{i18nT('阻碍：')}{analysis.blockers.join('、')}</div>}
+          {analysis.idols && analysis.idols.length > 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{i18nT('可能的偶像：')}{analysis.idols.join('、')}</div>}
           {(analysis.recommendations || []).map((r, k) => <div key={k} style={{ fontSize: 13, marginBottom: 5 }}>· {r}</div>)}
         </div>
       )}

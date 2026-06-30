@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const DF_JOURNAL = ['今天我感到…', '我心里渴望…', '我在害怕 / 担心…', '我和某人之间…', '神今天提醒我…']
@@ -76,7 +77,7 @@ function StateLadder({ states, current }) {
             }}>{s.order + 1}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, fontWeight: isCur ? 700 : 500, color: isCur ? '#fff' : 'rgba(255,255,255,0.85)' }}>
-                {s.zh} {isCur && <span style={{ fontSize: 10, color: ACCENT, marginLeft: 4 }}>当前</span>}
+                {s.zh} {isCur && <span style={{ fontSize: 10, color: ACCENT, marginLeft: 4 }}>{i18nT('当前')}</span>}
               </div>
               {isCur && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2, lineHeight: 1.5 }}>{s.desc}</div>}
             </div>
@@ -96,7 +97,7 @@ export default function DiscipleFormationView({ user, token }) {
   const [err, setErr] = useState('')
 
   useEffect(() => {
-    fetchDiscipleMeta().then(d => setMeta(d)).catch(() => setErr('加载失败'))
+    fetchDiscipleMeta().then(d => setMeta(d)).catch(() => setErr(i18nT('加载失败')))
     if (token) fetchDiscipleProfile(token).then(d => setProfile(d.profile)).catch(() => {})
   }, [token])
 
@@ -108,8 +109,8 @@ export default function DiscipleFormationView({ user, token }) {
   if (!user) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 10 }}>
       <div style={{ fontSize: 44 }}>🧬</div>
-      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>门徒塑造引擎</div>
-      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>登录后开始你的门徒塑造旅程</div>
+      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>{i18nT('门徒塑造引擎')}</div>
+      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>{i18nT('登录后开始你的门徒塑造旅程')}</div>
     </div>
   )
 
@@ -163,7 +164,7 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
   const dims = p?.dimensions || {}
   const ci = p?.christlikeness_index ?? 0
   const r = report
-  if (!p) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>加载画像中…</div>
+  if (!p) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{i18nT('加载画像中…')}</div>
 
   const hasData = (p.assessment_count || 0) > 0
   return (
@@ -171,11 +172,11 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
       {!hasData && (
         <div style={{ ...card, background: ACCENT_DIM, borderColor: ACCENT, textAlign: 'center' }}>
           <div style={{ fontSize: 30, marginBottom: 6 }}>🧬</div>
-          <div style={{ fontSize: 14, color: '#fff', fontWeight: 600, marginBottom: 4 }}>开始你的门徒塑造</div>
+          <div style={{ fontSize: 14, color: '#fff', fontWeight: 600, marginBottom: 4 }}>{i18nT('开始你的门徒塑造')}</div>
           <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: 12 }}>
-            评估的不是你知道多少，而是你信靠什么、顺服了什么、能否培养下一代门徒。<br />写下今天的反思，引擎会为你画出属灵画像。
+            {i18nT('评估的不是你知道多少，而是你信靠什么、顺服了什么、能否培养下一代门徒。')}<br />{i18nT('写下今天的反思，引擎会为你画出属灵画像。')}
           </div>
-          <button onClick={onReflect} style={primaryBtn}>✍️ 写今日反思</button>
+          <button onClick={onReflect} style={primaryBtn}>{i18nT('✍️ 写今日反思')}</button>
         </div>
       )}
 
@@ -183,12 +184,12 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
       <div style={{ ...card, display: 'flex', gap: 16, alignItems: 'center' }}>
         <div style={{ textAlign: 'center', flexShrink: 0 }}>
           <div style={{ fontSize: 38, fontWeight: 800, color: ciColor(ci), lineHeight: 1 }}>{Math.round(ci)}</div>
-          <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>像基督指数</div>
+          <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>{i18nT('像基督指数')}</div>
         </div>
         <div style={{ flex: 1, borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: 16 }}>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>当前属灵状态</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{i18nT('当前属灵状态')}</div>
           <div style={{ fontSize: 17, fontWeight: 700, color: '#fff', margin: '2px 0' }}>{stateZh(p.spiritual_state)}</div>
-          {p.next_state && <div style={{ fontSize: 11.5, color: ACCENT }}>下一站 → {stateZh(p.next_state)}</div>}
+          {p.next_state && <div style={{ fontSize: 11.5, color: ACCENT }}>{i18nT('下一站 →')} {stateZh(p.next_state)}</div>}
         </div>
       </div>
 
@@ -197,18 +198,18 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
         <div style={card}>
           {(r?.next_step) && (
             <div style={{ marginBottom: 12 }}>
-              <div style={sectionTitle}>🚶 今日顺服行动</div>
+              <div style={sectionTitle}>{i18nT('🚶 今日顺服行动')}</div>
               <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.9)', lineHeight: 1.6 }}>{r.next_step}</div>
             </div>
           )}
           <div style={{ display: 'flex', gap: 10 }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>成长边界</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{i18nT('成长边界')}</div>
               <div style={{ fontSize: 14, fontWeight: 600, color: ACCENT }}>{dimZh(p.growth_edge)}</div>
             </div>
             {p.top_idol && (
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>当前最大偶像</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{i18nT('当前最大偶像')}</div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: '#ff9f0a' }}>{idolZh(p.top_idol)}</div>
               </div>
             )}
@@ -218,25 +219,25 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
 
       {/* 维度 */}
       <div style={card}>
-        <div style={sectionTitle}>🌿 塑造维度</div>
+        <div style={sectionTitle}>{i18nT('🌿 塑造维度')}</div>
         {(meta.dimensions || []).map(d => <DimBar key={d.key} label={d.zh} value={dims[d.key]} />)}
       </div>
 
       {/* 状态阶梯 */}
       <div style={card}>
-        <div style={sectionTitle}>🪜 门徒成长之路</div>
+        <div style={sectionTitle}>{i18nT('🪜 门徒成长之路')}</div>
         <StateLadder states={meta.states} current={p.spiritual_state} />
       </div>
 
       {/* DMI */}
       {p.dmi && (
         <div style={card}>
-          <div style={sectionTitle}>🌳 门徒倍增指数 (DMI)</div>
+          <div style={sectionTitle}>{i18nT('🌳 门徒倍增指数 (DMI)')}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'center' }}>
             <Mini label="DMI" value={Math.round(p.dmi.dmi)} accent />
-            <Mini label="深度" value={p.dmi.depth} />
-            <Mini label="广度" value={p.dmi.breadth} />
-            <Mini label="复制率" value={p.dmi.reproduction_rate} />
+            <Mini label={i18nT('深度')} value={p.dmi.depth} />
+            <Mini label={i18nT('广度')} value={p.dmi.breadth} />
+            <Mini label={i18nT('复制率')} value={p.dmi.reproduction_rate} />
           </div>
         </div>
       )}
@@ -244,9 +245,9 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
       {/* 画像数据来源（整合层：吸收了哪些子系统） */}
       {p.provenance?.length > 0 && (
         <div style={card}>
-          <div style={sectionTitle}>🔗 画像数据来源</div>
+          <div style={sectionTitle}>{i18nT('🔗 画像数据来源')}</div>
           <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>
-            本画像不只看你的反思，还融合了这些子系统的最新信号：
+            {i18nT('本画像不只看你的反思，还融合了这些子系统的最新信号：')}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {p.provenance.map((pr, i) => (
@@ -261,7 +262,7 @@ function Dashboard({ profile, report, meta, dimZh, idolZh, stateZh, onReflect })
       {/* Neo4j 图谱洞察 */}
       {p.graph?.enabled && p.graph.insights?.length > 0 && (
         <div style={card}>
-          <div style={sectionTitle}>🕸 属灵图谱洞察</div>
+          <div style={sectionTitle}>{i18nT('🕸 属灵图谱洞察')}</div>
           {p.graph.insights.map((g, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, padding: '5px 0', color: 'rgba(255,255,255,0.8)' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>{g.label}</span>
@@ -297,27 +298,27 @@ function Review({ token, dimZh, stateZh }) {
             border: '1px solid ' + (kind === k ? ACCENT : 'rgba(255,255,255,0.12)'),
             background: kind === k ? ACCENT_DIM : 'transparent',
             color: kind === k ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: kind === k ? 700 : 400,
-          }}>{lbl}复盘</button>
+          }}>{lbl}{i18nT('复盘')}</button>
         ))}
       </div>
-      {loading && <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>生成中…</div>}
+      {loading && <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{i18nT('生成中…')}</div>}
       {data && !data.has_data && <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, padding: 20, textAlign: 'center', lineHeight: 1.7 }}>{data.message}</div>}
       {data && data.has_data && (
         <div>
           <div style={{ ...card, display: 'flex', gap: 16, alignItems: 'center' }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 30, fontWeight: 800, color: ciColor(data.ci_avg) }}>{Math.round(data.ci_avg)}</div>
-              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.45)' }}>CI 均值</div>
+              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.45)' }}>{i18nT('CI 均值')}</div>
             </div>
             <div style={{ flex: 1, borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: 16 }}>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>近 {data.days} 天 · {data.count} 次反思</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{i18nT('近')} {data.days} {i18nT('天 ·')} {data.count} {i18nT('次反思')}</div>
               <div style={{ fontSize: 13, color: data.ci_trend >= 0 ? '#34c759' : '#ff9f0a', fontWeight: 600, marginTop: 2 }}>
-                趋势 {data.ci_trend >= 0 ? '↑' : '↓'}{Math.abs(data.ci_trend)}
+                {i18nT('趋势')} {data.ci_trend >= 0 ? '↑' : '↓'}{Math.abs(data.ci_trend)}
               </div>
             </div>
           </div>
           <div style={card}>
-            <div style={sectionTitle}>📝 牧养复盘</div>
+            <div style={sectionTitle}>{i18nT('📝 牧养复盘')}</div>
             <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.9)', lineHeight: 1.7, margin: '0 0 10px' }}>{data.summary}</p>
             {data.invitation && <p style={{ fontSize: 13, color: ACCENT, lineHeight: 1.6, margin: '0 0 10px' }}>👣 {data.invitation}</p>}
             {data.scripture?.text && (
@@ -328,16 +329,16 @@ function Review({ token, dimZh, stateZh }) {
           </div>
           <div style={card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5 }}>
-              <div><span style={{ color: 'rgba(255,255,255,0.45)' }}>最稳：</span><span style={{ color: '#34c759' }}>{dimZh(data.strongest)}</span></div>
-              <div><span style={{ color: 'rgba(255,255,255,0.45)' }}>边界：</span><span style={{ color: ACCENT }}>{dimZh(data.weakest)}</span></div>
+              <div><span style={{ color: 'rgba(255,255,255,0.45)' }}>{i18nT('最稳：')}</span><span style={{ color: '#34c759' }}>{dimZh(data.strongest)}</span></div>
+              <div><span style={{ color: 'rgba(255,255,255,0.45)' }}>{i18nT('边界：')}</span><span style={{ color: ACCENT }}>{dimZh(data.weakest)}</span></div>
             </div>
-            {data.next_state && <div style={{ fontSize: 12.5, marginTop: 8, color: 'rgba(255,255,255,0.6)' }}>🦄 状态迁移建议 → <span style={{ color: ACCENT, fontWeight: 600 }}>{stateZh(data.next_state)}</span></div>}
+            {data.next_state && <div style={{ fontSize: 12.5, marginTop: 8, color: 'rgba(255,255,255,0.6)' }}>{i18nT('🦄 状态迁移建议 →')} <span style={{ color: ACCENT, fontWeight: 600 }}>{stateZh(data.next_state)}</span></div>}
           </div>
         </div>
       )}
       {milestones.length > 0 && (
         <div style={card}>
-          <div style={sectionTitle}>🏛 属灵里程碑</div>
+          <div style={sectionTitle}>{i18nT('🏛 属灵里程碑')}</div>
           {milestones.map((m, i) => (
             <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '7px 0', borderBottom: i < milestones.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
               <span style={{ fontSize: 15 }}>{m.kind === 'milestone' ? (m.up ? '🎉' : '🔄') : '🔔'}</span>
@@ -373,7 +374,7 @@ function Reflect({ token, onDone, meta, dimZh, idolZh, stateZh }) {
   const [err, setErr] = useState('')
 
   async function submit() {
-    if (!journal.trim()) { setErr('请至少写下今天的反思'); return }
+    if (!journal.trim()) { setErr(i18nT('请至少写下今天的反思')); return }
     setSubmitting(true); setErr('')
     try {
       const r = await assessDisciple({ journal, scripture, prayer }, token)
@@ -391,7 +392,7 @@ function Reflect({ token, onDone, meta, dimZh, idolZh, stateZh }) {
             <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{stateZh(result.spiritual_state)}</div>
             <div style={{ fontSize: 12, color: ciColor(result.christlikeness_index) }}>CI {Math.round(result.christlikeness_index)}</div>
           </div>
-          {result.source === 'heuristic' && <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>（确定性分析，AI 暂不可用）</div>}
+          {result.source === 'heuristic' && <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)' }}>{i18nT('（确定性分析，AI 暂不可用）')}</div>}
         </div>
         {result.reactions?.length > 0 && (
           <div style={{ ...card, borderColor: 'rgba(255,159,10,0.4)' }}>
@@ -407,7 +408,7 @@ function Reflect({ token, onDone, meta, dimZh, idolZh, stateZh }) {
           </div>
         )}
         <MentorReport m={m} stateZh={stateZh} />
-        <button onClick={() => { setResult(null); setJournal(''); setScripture(''); setPrayer('') }} style={{ ...primaryBtn, width: '100%', marginTop: 4 }}>再写一篇</button>
+        <button onClick={() => { setResult(null); setJournal(''); setScripture(''); setPrayer('') }} style={{ ...primaryBtn, width: '100%', marginTop: 4 }}>{i18nT('再写一篇')}</button>
       </div>
     )
   }
@@ -415,14 +416,14 @@ function Reflect({ token, onDone, meta, dimZh, idolZh, stateZh }) {
   return (
     <div>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 14 }}>
-        诚实地写下今天的处境、情绪与挣扎。引擎会从中辨识你的信念、偶像、顺服与呼召，给出今日的一步顺服。
+        {i18nT('诚实地写下今天的处境、情绪与挣扎。引擎会从中辨识你的信念、偶像、顺服与呼召，给出今日的一步顺服。')}
       </div>
-      <label style={lbl}>今日反思 / 处境 *</label>
-      <span style={{ position: 'relative', display: 'block' }}><textarea value={journal} onChange={e => setJournal(e.target.value)} placeholder="今天发生了什么？我有什么感受、渴望或害怕？我在挣扎什么？" style={{ ...ta, minHeight: 130, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DF_JOURNAL} value={journal} onChange={setJournal} /></span>
-      <label style={lbl}>今日经文（可选）</label>
-      <input value={scripture} onChange={e => setScripture(e.target.value)} placeholder="例：马太福音 6:33" style={inp} />
-      <label style={lbl}>今日祷告（可选）</label>
-      <span style={{ position: 'relative', display: 'block' }}><textarea value={prayer} onChange={e => setPrayer(e.target.value)} placeholder="主啊……" style={{ ...ta, minHeight: 70, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DF_PRAYER} value={prayer} onChange={setPrayer} /></span>
+      <label style={lbl}>{i18nT('今日反思 / 处境 *')}</label>
+      <span style={{ position: 'relative', display: 'block' }}><textarea value={journal} onChange={e => setJournal(e.target.value)} placeholder={i18nT('今天发生了什么？我有什么感受、渴望或害怕？我在挣扎什么？')} style={{ ...ta, minHeight: 130, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DF_JOURNAL} value={journal} onChange={setJournal} /></span>
+      <label style={lbl}>{i18nT('今日经文（可选）')}</label>
+      <input value={scripture} onChange={e => setScripture(e.target.value)} placeholder={i18nT('例：马太福音 6:33')} style={inp} />
+      <label style={lbl}>{i18nT('今日祷告（可选）')}</label>
+      <span style={{ position: 'relative', display: 'block' }}><textarea value={prayer} onChange={e => setPrayer(e.target.value)} placeholder={i18nT('主啊……')} style={{ ...ta, minHeight: 70, paddingRight: 96 }} /><SuggestMenu accent="#a78bfa" top={8} right={8} options={DF_PRAYER} value={prayer} onChange={setPrayer} /></span>
       {err && <div style={{ color: '#ff6b6b', fontSize: 12, marginBottom: 8 }}>{err}</div>}
       <button onClick={submit} disabled={submitting} style={{ ...primaryBtn, width: '100%', opacity: submitting ? 0.6 : 1 }}>
         {submitting ? '引擎分析中…' : '🧬 提交并评估'}
@@ -441,7 +442,7 @@ function MentorReport({ m, stateZh }) {
   ]
   return (
     <div style={card}>
-      <div style={sectionTitle}>🧎 导师之言</div>
+      <div style={sectionTitle}>{i18nT('🧎 导师之言')}</div>
       {rows.filter(r => r[1]).map(([h, t]) => (
         <div key={h} style={{ marginBottom: 11 }}>
           <div style={{ fontSize: 11.5, fontWeight: 600, color: ACCENT, marginBottom: 3 }}>{h}</div>
@@ -450,7 +451,7 @@ function MentorReport({ m, stateZh }) {
       ))}
       {m.next_transition && (
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 4, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          🪜 下一个状态建议：<span style={{ color: ACCENT, fontWeight: 600 }}>{stateZh(m.next_transition)}</span>
+          {i18nT('🪜 下一个状态建议：')}<span style={{ color: ACCENT, fontWeight: 600 }}>{stateZh(m.next_transition)}</span>
         </div>
       )}
     </div>
@@ -464,9 +465,9 @@ function Engines({ report, engineList, idolZh, dimZh, onReflect }) {
     <div style={{ textAlign: 'center', padding: 24 }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>⚙️</div>
       <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.6)', marginBottom: 14, lineHeight: 1.6 }}>
-        完成一次反思评估后，<br />11 个引擎的分析会显示在这里。
+        {i18nT('完成一次反思评估后，')}<br />{i18nT('11 个引擎的分析会显示在这里。')}
       </div>
-      <button onClick={onReflect} style={primaryBtn}>✍️ 去写反思</button>
+      <button onClick={onReflect} style={primaryBtn}>{i18nT('✍️ 去写反思')}</button>
     </div>
   )
   const eng = report.engines || {}
@@ -518,8 +519,8 @@ function EngineDetail({ ek, data, idolZh }) {
           {Object.entries(data.scores).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v]) => (
             <DimBar key={k} label={idolZh(k)} value={v} />
           ))}
-          {data.gospel_remedy && <p style={{ margin: '8px 0 4px', color: '#7ee0a0' }}>💊 福音解药：{data.gospel_remedy}</p>}
-          {data.demolition_plan && <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)' }}>🔨 拆除计划：{data.demolition_plan}</p>}
+          {data.gospel_remedy && <p style={{ margin: '8px 0 4px', color: '#7ee0a0' }}>{i18nT('💊 福音解药：')}{data.gospel_remedy}</p>}
+          {data.demolition_plan && <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)' }}>{i18nT('🔨 拆除计划：')}{data.demolition_plan}</p>}
         </div>
       )}
       {ek === 'character' && data.scores && (
@@ -534,7 +535,7 @@ function EngineDetail({ ek, data, idolZh }) {
         </div>
       )}
       {ek === 'multiplication' && (
-        <p style={{ margin: '4px 0', color: 'rgba(255,255,255,0.6)' }}>深度 {data.depth} · 广度 {data.breadth} · 复制率 {data.reproduction_rate} · 时长 {data.duration_months} 月</p>
+        <p style={{ margin: '4px 0', color: 'rgba(255,255,255,0.6)' }}>{i18nT('深度')} {data.depth} {i18nT('· 广度')} {data.breadth} {i18nT('· 复制率')} {data.reproduction_rate} {i18nT('· 时长')} {data.duration_months} {i18nT('月')}</p>
       )}
     </div>
   )
@@ -568,12 +569,12 @@ function Mentor({ token }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: 320 }}>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
-        门徒塑造导师不为提供信息，而要把你带到基督面前。问祂关于你生命、关系、决定与顺服的问题。
+        {i18nT('门徒塑造导师不为提供信息，而要把你带到基督面前。问祂关于你生命、关系、决定与顺服的问题。')}
       </div>
       <div style={{ flex: 1 }}>
         {msgs.length === 0 && (
           <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, textAlign: 'center', padding: 20 }}>
-            例如：「我在做一个重大决定，怎么分辨是出于信心还是惧怕？」
+            {i18nT('例如：「我在做一个重大决定，怎么分辨是出于信心还是惧怕？」')}
           </div>
         )}
         {msgs.map((m, i) => (
@@ -586,13 +587,13 @@ function Mentor({ token }) {
             }}>{m.text}</div>
           </div>
         ))}
-        {loading && <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, padding: 6 }}>导师默想中…</div>}
+        {loading && <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, padding: 6 }}>{i18nT('导师默想中…')}</div>}
         <div ref={endRef} />
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
         <input value={q} onChange={e => setQ(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
-          placeholder="向导师提问…" style={{ ...inp, marginBottom: 0, flex: 1 }} />
-        <button onClick={send} disabled={loading} style={{ ...primaryBtn, padding: '0 16px' }}>发送</button>
+          placeholder={i18nT('向导师提问…')} style={{ ...inp, marginBottom: 0, flex: 1 }} />
+        <button onClick={send} disabled={loading} style={{ ...primaryBtn, padding: '0 16px' }}>{i18nT('发送')}</button>
       </div>
     </div>
   )
@@ -610,7 +611,7 @@ function Network({ token }) {
   const [adding, setAdding] = useState(false)
   const [err, setErr] = useState('')
 
-  const load = () => fetchDiscipleNetwork(token).then(d => { setNet(d.network); setDmi(d.dmi) }).catch(() => setErr('加载失败'))
+  const load = () => fetchDiscipleNetwork(token).then(d => { setNet(d.network); setDmi(d.dmi) }).catch(() => setErr(i18nT('加载失败')))
   useEffect(() => { if (token) { load(); fetchDiscipleGraph(token).then(setGraph).catch(() => {}) } }, [token])
 
   async function add() {
@@ -630,29 +631,29 @@ function Network({ token }) {
   return (
     <div>
       <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 12 }}>
-        提后 2:2 —— 你从谁领受，又把所领受的交托给谁。成熟的标志是复制：培养能再带门徒的门徒。
+        {i18nT('提后 2:2 —— 你从谁领受，又把所领受的交托给谁。成熟的标志是复制：培养能再带门徒的门徒。')}
       </div>
       {dmi && (
         <div style={card}>
-          <div style={sectionTitle}>🌳 倍增健康度</div>
+          <div style={sectionTitle}>{i18nT('🌳 倍增健康度')}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', textAlign: 'center' }}>
             <Mini label="DMI" value={Math.round(dmi.dmi)} accent />
-            <Mini label="深度" value={net.depth} />
-            <Mini label="直接门徒" value={net.breadth} />
-            <Mini label="第二代" value={net.second_generation} />
+            <Mini label={i18nT('深度')} value={net.depth} />
+            <Mini label={i18nT('直接门徒')} value={net.breadth} />
+            <Mini label={i18nT('第二代')} value={net.second_generation} />
           </div>
         </div>
       )}
 
       <div style={card}>
-        <div style={sectionTitle}>➕ 添加我正在陪伴的人</div>
+        <div style={sectionTitle}>{i18nT('➕ 添加我正在陪伴的人')}</div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-          <input value={name} onChange={e => setName(e.target.value)} placeholder="门徒姓名" style={{ ...inp, marginBottom: 0, flex: 1 }} />
+          <input value={name} onChange={e => setName(e.target.value)} placeholder={i18nT('门徒姓名')} style={{ ...inp, marginBottom: 0, flex: 1 }} />
           <select value={type} onChange={e => setType(e.target.value)} style={{ ...inp, marginBottom: 0, width: 110 }}>
-            <option value="DISCIPLER">我带的门徒</option>
-            <option value="MENTOR">我的导师</option>
-            <option value="PEER">属灵同伴</option>
-            <option value="SPIRITUAL_PARENT">属灵儿女</option>
+            <option value="DISCIPLER">{i18nT('我带的门徒')}</option>
+            <option value="MENTOR">{i18nT('我的导师')}</option>
+            <option value="PEER">{i18nT('属灵同伴')}</option>
+            <option value="SPIRITUAL_PARENT">{i18nT('属灵儿女')}</option>
           </select>
         </div>
         <button onClick={add} disabled={adding} style={{ ...primaryBtn, width: '100%' }}>{adding ? '添加中…' : '添加'}</button>
@@ -661,7 +662,7 @@ function Network({ token }) {
 
       {graph?.enabled && graph.insights?.length > 0 && (
         <div style={card}>
-          <div style={sectionTitle}>🕸 属灵图谱洞察</div>
+          <div style={sectionTitle}>{i18nT('🕸 属灵图谱洞察')}</div>
           {graph.insights.map((g, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, padding: '5px 0', color: 'rgba(255,255,255,0.8)' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>{g.label}</span>
@@ -672,8 +673,8 @@ function Network({ token }) {
       )}
 
       <div style={card}>
-        <div style={sectionTitle}>🤝 我的门徒关系</div>
-        {net.relationships.length === 0 && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.4)' }}>还没有添加门徒关系。</div>}
+        <div style={sectionTitle}>{i18nT('🤝 我的门徒关系')}</div>
+        {net.relationships.length === 0 && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.4)' }}>{i18nT('还没有添加门徒关系。')}</div>}
         {net.relationships.map((r, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: i < net.relationships.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
             <div style={{ width: 34, height: 34, borderRadius: '50%', background: ACCENT_DIM, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>🧑</div>
@@ -692,8 +693,8 @@ function Network({ token }) {
 function History({ token, stateZh, dimZh, idolZh }) {
   const [items, setItems] = useState(null)
   useEffect(() => { if (token) fetchDiscipleHistory(token, 30).then(d => setItems(d.items || [])).catch(() => setItems([])) }, [token])
-  if (!items) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>加载中…</div>
-  if (items.length === 0) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>还没有评估记录。</div>
+  if (!items) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{i18nT('加载中…')}</div>
+  if (items.length === 0) return <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: 20, textAlign: 'center' }}>{i18nT('还没有评估记录。')}</div>
   return (
     <div>
       {items.map((it, i) => (
@@ -705,8 +706,8 @@ function History({ token, stateZh, dimZh, idolZh }) {
           {it.journal && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5, marginBottom: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{it.journal}</div>}
           <div style={{ display: 'flex', gap: 12, fontSize: 11.5, color: 'rgba(255,255,255,0.55)' }}>
             <span>CI {Math.round(it.christlikeness_index || 0)}</span>
-            {it.growth_edge && <span>边界·{dimZh(it.growth_edge)}</span>}
-            {it.top_idol && <span style={{ color: '#ff9f0a' }}>偶像·{idolZh(it.top_idol)}</span>}
+            {it.growth_edge && <span>{i18nT('边界·')}{dimZh(it.growth_edge)}</span>}
+            {it.top_idol && <span style={{ color: '#ff9f0a' }}>{i18nT('偶像·')}{idolZh(it.top_idol)}</span>}
           </div>
           {it.next_step && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 6 }}>🚶 {it.next_step}</div>}
         </div>

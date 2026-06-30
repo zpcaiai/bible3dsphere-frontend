@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import type { BibleMapEventDTO } from '../domain/types'
 import { formatYear } from '../lib/format'
@@ -12,11 +13,11 @@ interface Props {
 export function EventPanel({ events, loading, onSelect, selectedId }: Props) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-      <div className="mb-2 text-xs text-gray-400">当前年份附近事件</div>
+      <div className="mb-2 text-xs text-gray-400">{i18nT('当前年份附近事件')}</div>
       {loading ? (
-        <div className="py-4 text-center text-sm text-gray-500">加载中…</div>
+        <div className="py-4 text-center text-sm text-gray-500">{i18nT('加载中…')}</div>
       ) : events.length === 0 ? (
-        <div className="py-4 text-center text-sm text-gray-500">此年份附近暂无事件</div>
+        <div className="py-4 text-center text-sm text-gray-500">{i18nT('此年份附近暂无事件')}</div>
       ) : (
         <ul className="space-y-1.5">
           {events.map((e) => (

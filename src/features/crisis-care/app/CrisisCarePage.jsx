@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useMemo, useState } from 'react'
 import { MODULE_DISCLAIMER } from '../data/crisisContent'
 import { resolveRegion } from '../data/crisisResources'
@@ -125,7 +126,7 @@ export default function CrisisCarePage({ user, token, initialTab = 'entry', onOp
     <main className="cc-page">
       <p className="cc-disclaimer">{MODULE_DISCLAIMER}</p>
 
-      <nav className="cc-tabs" aria-label="危机守护">
+      <nav className="cc-tabs" aria-label={i18nT('危机守护')}>
         {TABS.map(([id, label]) => (
           <button key={id} type="button" className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>
         ))}
@@ -137,13 +138,13 @@ export default function CrisisCarePage({ user, token, initialTab = 'entry', onOp
 
       {tab === 'stabilize' && (
         <>
-          <div className="cc-card"><h3>跟我一起呼吸</h3><BreathingGuide targetCycles={5} /></div>
-          <div className="cc-card"><h3>5-4-3-2-1 着陆</h3><GroundingExercise /></div>
+          <div className="cc-card"><h3>{i18nT('跟我一起呼吸')}</h3><BreathingGuide targetCycles={5} /></div>
+          <div className="cc-card"><h3>{i18nT('5-4-3-2-1 着陆')}</h3><GroundingExercise /></div>
         </>
       )}
 
       {tab === 'resources' && (
-        <div className="cc-card"><h3>危机热线与紧急资源</h3><CrisisResourcePanel defaultRegion={regionCode} /></div>
+        <div className="cc-card"><h3>{i18nT('危机热线与紧急资源')}</h3><CrisisResourcePanel defaultRegion={regionCode} /></div>
       )}
 
       {tab === 'safetyplan' && (
@@ -155,7 +156,7 @@ export default function CrisisCarePage({ user, token, initialTab = 'entry', onOp
           {emergency && <EmergencyEscalationPanel emergency={emergency} regionCode={regionCode} />}
           {notifyMsg && <p className="cc-toast" style={{ padding: '0 4px' }}>{notifyMsg}</p>}
           <GuardianNetworkManager guardians={guardians} onAdd={handleAddGuardian} onDelete={handleDeleteGuardian} />
-          {!authed && <p className="cc-muted" style={{ padding: '0 4px' }}>未登录时，守护人只保存在本机。登录后会安全地同步。</p>}
+          {!authed && <p className="cc-muted" style={{ padding: '0 4px' }}>{i18nT('未登录时，守护人只保存在本机。登录后会安全地同步。')}</p>}
         </>
       )}
 

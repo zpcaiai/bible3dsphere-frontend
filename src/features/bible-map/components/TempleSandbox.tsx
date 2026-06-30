@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
@@ -95,11 +96,11 @@ export function TempleSandbox({ onBack }: Props) {
     <div className="flex h-screen flex-col">
       <header className="flex items-center justify-between border-b border-white/10 px-4 py-3">
         <div>
-          <h1 className="text-lg font-bold text-white">🏛️ 圣殿山数字孪生沙盘</h1>
-          <p className="text-xs text-gray-400">拖动时间轴，看耶路撒冷圣殿山从禾场到希律圣殿的「平地起高楼」</p>
+          <h1 className="text-lg font-bold text-white">{i18nT('🏛️ 圣殿山数字孪生沙盘')}</h1>
+          <p className="text-xs text-gray-400">{i18nT('拖动时间轴，看耶路撒冷圣殿山从禾场到希律圣殿的「平地起高楼」')}</p>
         </div>
         <button onClick={onBack} className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-200 hover:bg-white/10">
-          ‹ 返回地图
+          {i18nT('‹ 返回地图')}
         </button>
       </header>
 
@@ -108,7 +109,7 @@ export function TempleSandbox({ onBack }: Props) {
           <div ref={containerRef} className="h-full w-full" />
         ) : (
           <div className="flex h-full items-center justify-center p-6 text-center">
-            <p className="text-sm text-gray-300">请配置 NEXT_PUBLIC_MAPBOX_TOKEN 以启用 3D 圣殿沙盘。</p>
+            <p className="text-sm text-gray-300">{i18nT('请配置 NEXT_PUBLIC_MAPBOX_TOKEN 以启用 3D 圣殿沙盘。')}</p>
           </div>
         )}
 
@@ -123,14 +124,14 @@ export function TempleSandbox({ onBack }: Props) {
       {/* 时间轴 */}
       <div className="border-t border-white/10 px-4 py-3">
         <div className="mb-1 flex items-center justify-between">
-          <span className="text-xs text-gray-400">时代</span>
+          <span className="text-xs text-gray-400">{i18nT('时代')}</span>
           <span className="text-sm font-bold text-amber-400">{formatYear(year)}</span>
         </div>
         <input
           type="range" min={YEAR_MIN} max={YEAR_MAX} step={10} value={year}
           onChange={(e) => setYear(Number.parseInt(e.target.value, 10))}
           className="w-full accent-amber-400"
-          aria-label="圣殿时代时间轴"
+          aria-label={i18nT('圣殿时代时间轴')}
         />
         <div className="mt-2 flex flex-wrap gap-2">
           {templeEras.map((e) => (

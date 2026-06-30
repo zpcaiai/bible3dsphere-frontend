@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import BackButton from './BackButton'
 import lazyWithRetry from './lazyWithRetry'
@@ -306,11 +307,11 @@ function AppContent() {
 
   async function doQuery() {
     if (!query.trim()) {
-      setError('请先输入你想倾诉的内容')
+      setError(i18nT('请先输入你想倾诉的内容'))
       return
     }
     setLoading(true)
-    if (window.showToast) window.showToast("🤔 正在思考…", "loading", 30000)
+    if (window.showToast) window.showToast(i18nT('🤔 正在思考…'), "loading", 30000)
     setError('')
     setInstallMessage('')
     setGuidance(null)
@@ -490,7 +491,7 @@ function AppContent() {
   // 使用浏览器原生 TTS（作为 fallback）
   function speakWithNativeTTS(text) {
     if (!window.speechSynthesis) {
-      alert('您的浏览器不支持文字转语音功能')
+      alert(i18nT('您的浏览器不支持文字转语音功能'))
       return
     }
     
@@ -1145,7 +1146,7 @@ function AppContent() {
       pdf.save(filename)
     } catch (err) {
       console.error('PDF generation failed:', err)
-      alert('PDF 生成失败，请重试')
+      alert(i18nT('PDF 生成失败，请重试'))
     }
   }
 
@@ -1334,15 +1335,15 @@ function AppContent() {
             padding: '24px',
           }}>
             <div style={{ fontSize: '20px', fontWeight: 600, color: 'rgba(255,255,255,0.95)', marginBottom: '20px', textAlign: 'center' }}>
-              ✏️ 修改资料
+              {i18nT('✏️ 修改资料')}
             </div>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '6px' }}>昵称</label>
+              <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '6px' }}>{i18nT('昵称')}</label>
               <input
                 type="text"
                 value={editNickname}
                 onChange={(e) => setEditNickname(e.target.value.slice(0, 50))}
-                placeholder="输入昵称"
+                placeholder={i18nT('输入昵称')}
                 style={{
                   width: '100%',
                   padding: '12px',
@@ -1356,7 +1357,7 @@ function AppContent() {
               />
             </div>
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '6px' }}>头像 URL (可选)</label>
+              <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '6px' }}>{i18nT('头像 URL (可选)')}</label>
               <input
                 type="text"
                 value={editAvatar}
@@ -1427,14 +1428,14 @@ function AppContent() {
             </div>
             {/* 我的教会 */}
             <div style={{ marginTop: 16, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '12px 14px' }}>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>⛪ 我的教会</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{i18nT('⛪ 我的教会')}</div>
               {!myChurch ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)' }}>尚未加入教会</span>
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)' }}>{i18nT('尚未加入教会')}</span>
                   <button
                     onClick={() => { setShowEditProfile(false); setMyChurch(null); setChurchSkipped(false) }}
                     style={{ background: '#007aff', border: 'none', borderRadius: 8, padding: '5px 12px', color: '#fff', fontSize: 13, cursor: 'pointer' }}
-                  >加入 / 创建</button>
+                  >{i18nT('加入 / 创建')}</button>
                 </div>
               ) : (
                 <div>
@@ -1443,11 +1444,11 @@ function AppContent() {
                       <span style={{ fontSize: 15, fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>{myChurch.name}</span>
                       <span style={{ marginLeft: 8, fontSize: 12, background: 'rgba(0,122,255,0.15)', border: '1px solid rgba(0,122,255,0.4)', color: '#60a5fa', borderRadius: 6, padding: '1px 7px' }}>{myChurch.role === 'owner' ? '创建者' : myChurch.role === 'admin' ? '管理员' : '成员'}</span>
                     </div>
-                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{myChurch.member_count} 人</span>
+                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{myChurch.member_count} {i18nT('人')}</span>
                   </div>
                   {(myChurch.role === 'owner' || myChurch.role === 'admin') && myChurch.join_code && (
                     <div style={{ marginBottom: 8 }}>
-                      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>邀请码</div>
+                      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{i18nT('邀请码')}</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ fontSize: 17, fontWeight: 800, letterSpacing: 3, color: '#007aff' }}>{myChurch.join_code}</span>
                         <button
@@ -1509,8 +1510,8 @@ function AppContent() {
                 gap: '6px',
               }}
             >
-              🗑️ 回收站
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>30天内可恢复</span>
+              {i18nT('🗑️ 回收站')}
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>{i18nT('30天内可恢复')}</span>
             </button>
           </div>
         </div>
@@ -1522,7 +1523,7 @@ function AppContent() {
         <header className="mobile-topbar">
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <span style={{fontSize: '22px', lineHeight: 1}}>🔮</span>
-            <h1 className="mobile-app-title">属灵星球</h1>
+            <h1 className="mobile-app-title">{i18nT('属灵星球')}</h1>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <LanguageToggle />
@@ -1553,14 +1554,14 @@ function AppContent() {
                     {user.nickname || '弟兄'}
                   </span>
                   {user.lastLoginAt && (
-                    <span style={{fontSize: '10px', color: 'rgba(255,255,255,0.45)'}} title="最近登录时间">
+                    <span style={{fontSize: '10px', color: 'rgba(255,255,255,0.45)'}} title={i18nT('最近登录时间')}>
                       {formatLoginTime(user.lastLoginAt)}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => { setEditNickname(user?.nickname || ''); setEditAvatar(user?.avatar || ''); setShowEditProfile(true) }}
-                  title="修改资料"
+                  title={i18nT('修改资料')}
                   style={{
                     background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
                     borderRadius: '7px', color: 'rgba(255,255,255,0.45)',
@@ -1593,7 +1594,7 @@ function AppContent() {
                   boxShadow: '0 2px 8px rgba(0,122,255,0.3)',
                 }}
               >
-                🔑 登录
+                {i18nT('🔑 登录')}
               </button>
             )}
           </div>
@@ -1677,7 +1678,7 @@ function AppContent() {
                   border: '1px solid rgba(88,86,214,0.3)',
                   padding: '14px 16px',
                 }}>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(180,180,255,0.7)', letterSpacing: '0.06em', marginBottom: '10px' }}>今日灵命快照</div>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(180,180,255,0.7)', letterSpacing: '0.06em', marginBottom: '10px' }}>{i18nT('今日灵命快照')}</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
                     {dailySnapshot.trajectory_label && (
                       <span style={{ fontSize: '12px', background: 'rgba(88,86,214,0.25)', border: '1px solid rgba(88,86,214,0.4)', borderRadius: '20px', padding: '3px 10px', color: '#c4b5fd' }}>
@@ -1691,14 +1692,14 @@ function AppContent() {
                     )}
                     {dailySnapshot.has_devotion_today ? (
                       <span style={{ fontSize: '12px', background: 'rgba(52,199,89,0.18)', border: '1px solid rgba(52,199,89,0.3)', borderRadius: '20px', padding: '3px 10px', color: '#34c759' }}>
-                        📔 今日已灵修
+                        {i18nT('📔 今日已灵修')}
                       </span>
                     ) : (
                       <span
                         style={{ fontSize: '12px', background: 'rgba(255,159,64,0.18)', border: '1px solid rgba(255,159,64,0.3)', borderRadius: '20px', padding: '3px 10px', color: '#ff9f40', cursor: 'pointer' }}
                         onClick={() => handlePanelSwitch('devotion')}
                       >
-                        📔 今日未灵修
+                        {i18nT('📔 今日未灵修')}
                       </span>
                     )}
                     {dailySnapshot.pending_prayers > 0 && (
@@ -1706,7 +1707,7 @@ function AppContent() {
                         style={{ fontSize: '12px', background: 'rgba(255,215,0,0.14)', border: '1px solid rgba(255,215,0,0.3)', borderRadius: '20px', padding: '3px 10px', color: '#ffd700', cursor: 'pointer' }}
                         onClick={() => handlePanelSwitch('prayer')}
                       >
-                        🙏 {dailySnapshot.pending_prayers} 个待代祷
+                        🙏 {dailySnapshot.pending_prayers} {i18nT('个待代祷')}
                       </span>
                     )}
                   </div>
@@ -1739,7 +1740,7 @@ function AppContent() {
                   </div>
                   {/* 灵修勉励语 */}
                   <p style={{ marginTop: '12px', marginBottom: 0, fontSize: '12px', lineHeight: 1.7, color: 'rgba(255,255,255,0.62)' }}>
-                    稳定的灵修生活是基督徒得力的源泉，也是基督徒生命成长的秘诀。祂的儿女蒙恩的方式，就是建立敬虔的灵修习惯并坚持每日操练灵修。坚持长期主义，必做元帅的精兵。每天太阳照常升起，我们也要每天向着天国奔跑，直到太阳不再升起的日子！
+                    {i18nT('稳定的灵修生活是基督徒得力的源泉，也是基督徒生命成长的秘诀。祂的儿女蒙恩的方式，就是建立敬虔的灵修习惯并坚持每日操练灵修。坚持长期主义，必做元帅的精兵。每天太阳照常升起，我们也要每天向着天国奔跑，直到太阳不再升起的日子！')}
                   </p>
                 </section>
               )}
@@ -1752,22 +1753,22 @@ function AppContent() {
                   padding: '14px 16px',
                 }}>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,200,120,0.75)', letterSpacing: '0.06em', marginBottom: '10px' }}>
-                    🌀 近30天情感轨迹
+                    {i18nT('🌀 近30天情感轨迹')}
                   </div>
                   {/* 主导情绪 + 心情 */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
                     {emotionTrajectory.dominant_emotion && (
                       <span style={{ fontSize: '12px', background: 'rgba(255,149,0,0.22)', border: '1px solid rgba(255,149,0,0.4)', borderRadius: '20px', padding: '3px 10px', color: '#ffb347' }}>
-                        💛 主导情绪：{emotionTrajectory.dominant_emotion}
+                        {i18nT('💛 主导情绪：')}{emotionTrajectory.dominant_emotion}
                       </span>
                     )}
                     {emotionTrajectory.dominant_mood && (
                       <span style={{ fontSize: '12px', background: 'rgba(255,45,85,0.15)', border: '1px solid rgba(255,45,85,0.3)', borderRadius: '20px', padding: '3px 10px', color: '#ff6b8a' }}>
-                        🌡 主导心情：{emotionTrajectory.dominant_mood}
+                        {i18nT('🌡 主导心情：')}{emotionTrajectory.dominant_mood}
                       </span>
                     )}
                     <span style={{ fontSize: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', padding: '3px 10px', color: 'rgba(255,255,255,0.5)' }}>
-                      共 {emotionTrajectory.count} 次打卡
+                      {i18nT('共')} {emotionTrajectory.count} {i18nT('次打卡')}
                     </span>
                   </div>
                   {/* 情绪频次迷你条形图 */}
@@ -1808,7 +1809,7 @@ function AppContent() {
 
               <section className="mobile-card glass">
                 <div className="section-title" style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px'}}>
-                  <span>🙏</span><span>倾心吐意</span>
+                  <span>🙏</span><span>{i18nT('倾心吐意')}</span>
                 </div>
                 {/* 微信风格录音浮层 */}
                 {isRecording && (
@@ -1828,7 +1829,7 @@ function AppContent() {
                     pointerEvents: 'none',
                   }}>
                     <div style={{fontSize: '48px', animation: 'pulse 1s ease-in-out infinite'}}>🎙️</div>
-                    <div style={{color: '#fff', fontSize: '15px', fontWeight: 600}}>松开发送</div>
+                    <div style={{color: '#fff', fontSize: '15px', fontWeight: 600}}>{i18nT('松开发送')}</div>
                     <div style={{color: 'rgba(255,255,255,0.65)', fontSize: '13px'}}>{recordingSeconds}s / {maxRecordingSeconds}s</div>
                     <div style={{
                       width: '160px',
@@ -1850,7 +1851,7 @@ function AppContent() {
                 <form className="query-form" onSubmit={handleSubmit}>
                   {/* 快速提示 */}
                   <div style={{margin: '0 0 10px 0'}}>
-                    <div style={{fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px'}}>✨ 你可以这样开始：</div>
+                    <div style={{fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px'}}>{i18nT('✨ 你可以这样开始：')}</div>
                     <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
                       {[
                         '我感到很痛苦，也很想被安慰，但仍然想抓住一点盼望',
@@ -2033,7 +2034,7 @@ function AppContent() {
                         opacity: (!query.trim() || isPolishing || loading) ? 0.5 : 1,
                         transition: 'all 0.2s ease',
                       }}
-                      title="润色文字：使用AI优化表达，使其更流畅、有属灵深度"
+                      title={i18nT('润色文字：使用AI优化表达，使其更流畅、有属灵深度')}
                     >
                       <span>{isPolishing ? '✨' : '✏️'}</span>
                       <span>{isPolishing ? '润色中…' : '润色'}</span>
@@ -2053,7 +2054,7 @@ function AppContent() {
                         flex: 1,
                       }}>
                         <span>⚠️</span>
-                        <span>微信不支持录音，请用 Safari/Chrome 打开</span>
+                        <span>{i18nT('微信不支持录音，请用 Safari/Chrome 打开')}</span>
                       </div>
                     )}
                   </div>
@@ -2127,7 +2128,7 @@ function AppContent() {
                     {/* 从情绪/引导结果中提炼神学问题建议 */}
                     {guidance && !faithQa && (
                       <div style={{ marginBottom: '8px' }}>
-                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>💡 可以这样提问：</div>
+                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>{i18nT('💡 可以这样提问：')}</div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                           {[
                             guidance.core_need ? `面对"${guidance.core_need.slice(0, 20)}"，圣经如何回应？` : null,
@@ -2181,7 +2182,7 @@ function AppContent() {
                       style={{ width: '100%', marginTop: '8px' }}
                       onClick={() => handlePanelSwitch('bible-search')}
                     >
-                      🔍 经文搜索（凭印象找经文）
+                      {i18nT('🔍 经文搜索（凭印象找经文）')}
                     </button>
                     {/* 短视频功能已隐藏 */}
                   </div>
@@ -2194,14 +2195,14 @@ function AppContent() {
                       className={comparisonMode ? 'segment active' : 'segment'}
                       onClick={() => setComparisonMode(true)}
                   >
-                    中英对照
+                    {i18nT('中英对照')}
                   </button>
                   <button
                       type="button"
                       className={!comparisonMode ? 'segment active' : 'segment'}
                       onClick={() => setComparisonMode(false)}
                   >
-                    分语言
+                    {i18nT('分语言')}
                   </button>
                 </div>
               </section>
@@ -2217,7 +2218,7 @@ function AppContent() {
 
                   {/* 整体播放 ── 读出所有当前结果 */}
                   <TTSFullBar
-                    label="整体播放"
+                    label={i18nT('整体播放')}
                     buildText={() => {
                       const parts = []
                       if (guidance?.core_emotions?.length) parts.push('核心情绪：' + guidance.core_emotions.join('、'))
@@ -2251,7 +2252,7 @@ function AppContent() {
                     {/* 1. 核心情绪 */}
                     {guidance?.core_emotions?.length > 0 && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>核心情绪<TTSButton text={guidance.core_emotions.join("、")} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('核心情绪')}<TTSButton text={guidance.core_emotions.join("、")} /></div>
                         <div className="guidance-emotions">
                           {guidance.core_emotions.map((e) => (
                             <span key={e} className="emotion-tag">{e}</span>
@@ -2263,7 +2264,7 @@ function AppContent() {
                     {/* 2. 心理评估 */}
                     {guidance?.psychological_assessment && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>心理评估<TTSButton text={guidance.psychological_assessment} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('心理评估')}<TTSButton text={guidance.psychological_assessment} /></div>
                         <TranslatableParagraph className="result-body-text">{guidance.psychological_assessment}</TranslatableParagraph>
                       </div>
                     )}
@@ -2271,7 +2272,7 @@ function AppContent() {
                     {/* 3. 属灵剖析 (从专属讲道提取) */}
                     {sermon?.spiritual_diagnosis && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>属灵剖析<TTSButton text={sermon.spiritual_diagnosis} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('属灵剖析')}<TTSButton text={sermon.spiritual_diagnosis} /></div>
                         <TranslatableParagraph className="result-body-text">{sermon.spiritual_diagnosis}</TranslatableParagraph>
                       </div>
                     )}
@@ -2279,7 +2280,7 @@ function AppContent() {
                     {/* 4. 核心需要 */}
                     {guidance?.core_need && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>核心需要<TTSButton text={guidance.core_need} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('核心需要')}<TTSButton text={guidance.core_need} /></div>
                         <div className="result-core-need">{guidance.core_need}</div>
                       </div>
                     )}
@@ -2287,7 +2288,7 @@ function AppContent() {
                     {/* 6. 属灵引导 */}
                     {guidance?.spiritual_guidance && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>属灵引导<TTSButton text={guidance.spiritual_guidance} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('属灵引导')}<TTSButton text={guidance.spiritual_guidance} /></div>
                         <div className="result-spiritual-block">
                           <TranslatableParagraph>{guidance.spiritual_guidance}</TranslatableParagraph>
                         </div>
@@ -2297,26 +2298,26 @@ function AppContent() {
                     {/* 7. 圣经榜样 (不含应用) */}
                     {biblicalExample && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>圣经榜样<TTSButton text={[biblicalExample.person,biblicalExample.similar_situation,biblicalExample.biblical_response,biblicalExample.key_verse].filter(Boolean).join("。")} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('圣经榜样')}<TTSButton text={[biblicalExample.person,biblicalExample.similar_situation,biblicalExample.biblical_response,biblicalExample.key_verse].filter(Boolean).join("。")} /></div>
                         <div className="result-person-row">
                           <span className="result-person-name">{biblicalExample.person}</span>
                           {biblicalExample.era && <span className="result-person-era">{biblicalExample.era}</span>}
                         </div>
                         {biblicalExample.similar_situation && (
                           <>
-                            <div className="result-sub-label">相似处境</div>
+                            <div className="result-sub-label">{i18nT('相似处境')}</div>
                             <TranslatableParagraph className="result-body-text">{biblicalExample.similar_situation}</TranslatableParagraph>
                           </>
                         )}
                         {biblicalExample.biblical_response && (
                           <>
-                            <div className="result-sub-label">圣经回应</div>
+                            <div className="result-sub-label">{i18nT('圣经回应')}</div>
                             <TranslatableParagraph className="result-body-text">{biblicalExample.biblical_response}</TranslatableParagraph>
                           </>
                         )}
                         {biblicalExample.key_verse && (
                           <>
-                            <div className="result-sub-label">关键经文</div>
+                            <div className="result-sub-label">{i18nT('关键经文')}</div>
                             <div className="result-spiritual-block">
                               <TranslatableParagraph style={{fontStyle: 'italic', margin: 0}}>{biblicalExample.key_verse}</TranslatableParagraph>
                             </div>
@@ -2328,7 +2329,7 @@ function AppContent() {
                     {/* 8. 历史见证 (从专属讲道提取) */}
                     {sermon?.historical_case && (
                       <div className="result-block">
-                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>历史见证<TTSButton text={[sermon.historical_case.person,sermon.historical_case.story,sermon.historical_case.lesson].filter(Boolean).join("。")} /></div>
+                        <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('历史见证')}<TTSButton text={[sermon.historical_case.person,sermon.historical_case.story,sermon.historical_case.lesson].filter(Boolean).join("。")} /></div>
                         <div className="result-person-row">
                           <span className="result-person-name">{sermon.historical_case.person}</span>
                           {sermon.historical_case.era && <span className="result-person-era">{sermon.historical_case.era}</span>}
@@ -2345,7 +2346,7 @@ function AppContent() {
                     <>
                       <div className="result-block">
                         <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>
-                        专属讲道：{sermon.title}
+                        {i18nT('专属讲道：')}{sermon.title}
                         <TTSButton text={[sermon.title, sermon.theme_verse, sermon.introduction, ...(sermon.sections||[]).map(s=>s.heading+'：'+s.content), sermon.encouragement, sermon.prayer].filter(Boolean).join('\n\n')} />
                       </div>
                         {sermon.theme_verse && (
@@ -2356,7 +2357,7 @@ function AppContent() {
 
                         {sermon.introduction && (
                           <>
-                            <div className="result-sub-label">引言</div>
+                            <div className="result-sub-label">{i18nT('引言')}</div>
                             <TranslatableParagraph className="result-body-text">{sermon.introduction}</TranslatableParagraph>
                           </>
                         )}
@@ -2377,7 +2378,7 @@ function AppContent() {
                         {sermon.application && (
                           <>
                             <div className="result-divider" />
-                            <div className="result-sub-label">属灵操练</div>
+                            <div className="result-sub-label">{i18nT('属灵操练')}</div>
                             <TranslatableParagraph className="result-body-text" style={{whiteSpace: 'pre-line'}}>{Array.isArray(sermon.application) ? sermon.application.join('\n') : sermon.application}</TranslatableParagraph>
                           </>
                         )}
@@ -2385,7 +2386,7 @@ function AppContent() {
                         {sermon.encouragement && (
                           <>
                             <div className="result-divider" />
-                            <div className="result-sub-label">勉励与安慰</div>
+                            <div className="result-sub-label">{i18nT('勉励与安慰')}</div>
                             <TranslatableParagraph className="result-body-text">{sermon.encouragement}</TranslatableParagraph>
                           </>
                         )}
@@ -2393,7 +2394,7 @@ function AppContent() {
                         {sermon.prayer && (
                           <>
                             <div className="result-divider" />
-                            <div className="result-sub-label">祝祷</div>
+                            <div className="result-sub-label">{i18nT('祝祷')}</div>
                             <div className="result-spiritual-block">
                               <TranslatableParagraph style={{margin: 0, whiteSpace: 'pre-line'}}>{sermon.prayer}</TranslatableParagraph>
                             </div>
@@ -2407,11 +2408,11 @@ function AppContent() {
                    {/* 10. 应用建议 (合并 5 & 10) */}
                   {(biblicalExample?.application || guidance?.coping_suggestions?.length > 0) && (
                     <div className="result-block">
-                      <div className="result-block-title">应用建议 (Application from Biblical Example)</div>
+                      <div className="result-block-title">{i18nT('应用建议 (Application from Biblical Example)')}</div>
                       
                       {guidance?.coping_suggestions?.length > 0 && (
                         <div style={{ marginBottom: '12px' }}>
-                          <div className="result-sub-label">日常应对</div>
+                          <div className="result-sub-label">{i18nT('日常应对')}</div>
                           <ul className="guidance-tips" style={{ marginTop: '4px' }}>
                             {guidance.coping_suggestions.map((s, i) => (
                               <li key={i}>{s}</li>
@@ -2422,7 +2423,7 @@ function AppContent() {
 
                       {biblicalExample?.application && (
                         <div>
-                          <div className="result-sub-label">圣经操练</div>
+                          <div className="result-sub-label">{i18nT('圣经操练')}</div>
                           <div className="result-core-need" style={{ marginTop: '4px' }}>{biblicalExample.application}</div>
                         </div>
                       )}
@@ -2432,7 +2433,7 @@ function AppContent() {
                   {/* 11. 结语与盼望 */}
                   {sermon?.conclusion && (
                     <div className="result-block">
-                      <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>结语与盼望<TTSButton text={sermon.conclusion} /></div>
+                      <div className="result-block-title" style={{display:"flex",alignItems:"center",gap:6}}>{i18nT('结语与盼望')}<TTSButton text={sermon.conclusion} /></div>
                       <TranslatableParagraph className="result-body-text">{sermon.conclusion}</TranslatableParagraph>
                     </div>
                   )}
@@ -2440,14 +2441,14 @@ function AppContent() {
                   {/* 12. 默想经文 */}
                   {queryResult && (
                     <div className="result-block">
-                      <div className="result-block-title result-block-title-meditation">默想经文</div>
+                      <div className="result-block-title result-block-title-meditation">{i18nT('默想经文')}</div>
                       {selectedFeature && (
                         <div className="result-feature-pill">
                           {selectedFeature.zh_label || `${selectedFeature.layer}:${selectedFeature.feature_id}`}
                         </div>
                       )}
                       {queryResult.rerank?.enabled && queryResult.rerank?.error && (
-                        <div className="rerank-warning">⚠️ Rerank 降级：{queryResult.rerank.error}</div>
+                        <div className="rerank-warning">{i18nT('⚠️ Rerank 降级：')}{queryResult.rerank.error}</div>
                       )}
                       <div className="verse-list">
                         {verseGroups.flatMap((group) =>
@@ -2474,10 +2475,10 @@ function AppContent() {
                                   animation: 'fadeIn 0.3s ease',
                                 }}>
                                   <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFD700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <span>🙏</span> 经文祷告
+                                    <span>🙏</span> {i18nT('经文祷告')}
                                   </div>
                                   {versePrayerLoading === item.pk_id ? (
-                                    <div style={{ fontSize: '13px', color: '#FFD700', fontWeight: 700, fontStyle: 'italic' }}>✨ 正在生成祷告...</div>
+                                    <div style={{ fontSize: '13px', color: '#FFD700', fontWeight: 700, fontStyle: 'italic' }}>{i18nT('✨ 正在生成祷告...')}</div>
                                   ) : versePrayers[item.pk_id] ? (
                                     <div style={{ fontSize: '13px', color: '#FFD700', fontWeight: 700, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
                                       {versePrayers[item.pk_id]}
@@ -2487,10 +2488,10 @@ function AppContent() {
                                   {/* 默想此经文（展开即自动生成，直接显示） */}
                                   <div style={{ marginTop: '12px', borderTop: '1px solid rgba(99,179,237,0.2)', paddingTop: '10px' }}>
                                     <div style={{ fontSize: '12px', fontWeight: 600, color: '#63b3ed', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                      <span>🤔</span> 默想此经文
+                                      <span>🤔</span> {i18nT('默想此经文')}
                                     </div>
                                     {meditationLoading === item.pk_id ? (
-                                      <div style={{ fontSize: '13px', color: '#63b3ed', fontStyle: 'italic' }}>✨ 正在生成默想...</div>
+                                      <div style={{ fontSize: '13px', color: '#63b3ed', fontStyle: 'italic' }}>{i18nT('✨ 正在生成默想...')}</div>
                                     ) : meditationQuestions[item.pk_id] ? (
                                       <ol style={{ margin: '0', paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         {meditationQuestions[item.pk_id].map((q, qi) => (
@@ -2520,12 +2521,12 @@ function AppContent() {
                     className="export-btn"
                     onClick={saveToDevotionJournal}
                     disabled={savingJournal}
-                    title="存入今日灵修日记"
+                    title={i18nT('存入今日灵修日记')}
                     style={{ color: '#34c759', borderColor: 'rgba(52,199,89,0.4)' }}
                   >
                     📔 {savingJournal ? '保存中...' : '存入灵修'}
                   </button>
-                  <button className="export-btn" onClick={exportVersesToTxt} title="导出TXT">
+                  <button className="export-btn" onClick={exportVersesToTxt} title={i18nT('导出TXT')}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
@@ -2533,16 +2534,16 @@ function AppContent() {
                       <line x1="16" y1="17" x2="8" y2="17"/>
                       <polyline points="10 9 9 9 8 9"/>
                     </svg>
-                    导出TXT
+                    {i18nT('导出TXT')}
                   </button>
-                  <button className="export-btn" onClick={exportVersesToPdf} title="导出PDF">
+                  <button className="export-btn" onClick={exportVersesToPdf} title={i18nT('导出PDF')}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
                       <path d="M9 15l3 3 3-3"/>
                       <path d="M12 18V9"/>
                     </svg>
-                    导出PDF
+                    {i18nT('导出PDF')}
                   </button>
 
                 </div>
@@ -2551,7 +2552,7 @@ function AppContent() {
               {/* 信仰问答结果卡片 */}
               {faithQaError && (
                 <section className="result-unified-card mobile-card guidance-section">
-                  <div className="result-block-title" style={{color: '#ff6b6b'}}>提问失败</div>
+                  <div className="result-block-title" style={{color: '#ff6b6b'}}>{i18nT('提问失败')}</div>
                   <p className="result-body-text" style={{color: '#ff6b6b'}}>{faithQaError}</p>
                 </section>
               )}
@@ -2560,7 +2561,7 @@ function AppContent() {
                   <div style={{color: '#FFD700', fontWeight: 'bold'}}>
 
                     <div className="result-block">
-                      <div className="result-block-title">📖 信仰问答</div>
+                      <div className="result-block-title">{i18nT('📖 信仰问答')}</div>
                       {faithQa.question_summary && (
                         <div className="result-core-need" style={{marginBottom: '4px'}}>{faithQa.question_summary}</div>
                       )}
@@ -2568,21 +2569,21 @@ function AppContent() {
 
                     {faithQa.nature_analysis && (
                       <div className="result-block">
-                        <div className="result-block-title">问题本质分析</div>
+                        <div className="result-block-title">{i18nT('问题本质分析')}</div>
                         <TranslatableParagraph className="result-body-text">{faithQa.nature_analysis}</TranslatableParagraph>
                       </div>
                     )}
 
                     {faithQa.contextual_analysis && (
                       <div className="result-block">
-                        <div className="result-block-title">具体情景分析</div>
+                        <div className="result-block-title">{i18nT('具体情景分析')}</div>
                         <TranslatableParagraph className="result-body-text">{faithQa.contextual_analysis}</TranslatableParagraph>
                       </div>
                     )}
 
                     {faithQa.scriptures?.length > 0 && (
                       <div className="result-block">
-                        <div className="result-block-title">圣经中最适配的经文</div>
+                        <div className="result-block-title">{i18nT('圣经中最适配的经文')}</div>
                         {faithQa.scriptures.map((s, i) => (
                           <div key={i} style={{marginBottom: '12px'}}>
                             <div className="result-sub-label">{s.reference}</div>
@@ -2599,7 +2600,7 @@ function AppContent() {
 
                     {faithQa.right_thinking && (
                       <div className="result-block">
-                        <div className="result-block-title">如何正确思考</div>
+                        <div className="result-block-title">{i18nT('如何正确思考')}</div>
                         <div className="result-spiritual-block">
                           <TranslatableParagraph style={{margin: 0}}>{faithQa.right_thinking}</TranslatableParagraph>
                         </div>
@@ -2608,7 +2609,7 @@ function AppContent() {
 
                     {faithQa.action_steps?.length > 0 && (
                       <div className="result-block">
-                        <div className="result-block-title">建议行动</div>
+                        <div className="result-block-title">{i18nT('建议行动')}</div>
                         <ul className="guidance-tips">
                           {faithQa.action_steps.map((step, i) => (
                             <li key={i}>{step}</li>
@@ -2619,7 +2620,7 @@ function AppContent() {
 
                     {faithQa.prayer_direction && (
                       <div className="result-block">
-                        <div className="result-block-title">祷告方向示范</div>
+                        <div className="result-block-title">{i18nT('祷告方向示范')}</div>
                         <div className="result-spiritual-block">
                           <TranslatableParagraph style={{margin: 0, whiteSpace: 'pre-line'}}>{faithQa.prayer_direction}</TranslatableParagraph>
                         </div>
@@ -2633,7 +2634,7 @@ function AppContent() {
               {historyItems.length > 0 && (
               <section className="mobile-card glass">
                 <div className="section-title" style={{display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px'}}>
-                  <span>🕐</span><span>最近祷告</span>
+                  <span>🕐</span><span>{i18nT('最近祷告')}</span>
                 </div>
                 <div className="history-list">
                   {historyItems.slice(0, 8).map((item, idx) => (
@@ -2662,38 +2663,38 @@ function AppContent() {
                 </div>
               </section> */}
               <section className="mobile-card glass">
-                <div className="section-title">安装到手机</div>
-                <div className="muted">将当前页面添加到主屏幕，获得更接近原生 App 的体验。</div>
+                <div className="section-title">{i18nT('安装到手机')}</div>
+                <div className="muted">{i18nT('将当前页面添加到主屏幕，获得更接近原生 App 的体验。')}</div>
                 {canInstall ? (
-                    <button className="primary-btn install-btn" type="button" onClick={handleInstallApp}>📲 安装</button>
+                    <button className="primary-btn install-btn" type="button" onClick={handleInstallApp}>{i18nT('📲 安装')}</button>
                 ) : null}
                 {!canInstall && showIosInstallHint ? (
-                    <div className="install-hint">iPhone 请在 Safari 中点击"分享" → "添加到主屏幕"。</div>
+                    <div className="install-hint">{i18nT('iPhone 请在 Safari 中点击"分享" → "添加到主屏幕"。')}</div>
                 ) : null}
                 {installMessage ? <div className="install-hint">{installMessage}</div> : null}
                 <div className="quick-action-list" style={{marginTop: '12px'}}>
                   <button className="segment active" type="button"
-                          onClick={(e) => { const c = e.currentTarget.closest('.mobile-app-shell'); (c || window).scrollTo({top: 0, behavior: 'smooth'}) }}>⬆️ 回顶部
+                          onClick={(e) => { const c = e.currentTarget.closest('.mobile-app-shell'); (c || window).scrollTo({top: 0, behavior: 'smooth'}) }}>{i18nT('⬆️ 回顶部')}
                   </button>
                 </div>
               </section>
               <section className="mobile-card glass stats-gradient">
-                <div className="section-title">📊 访问统计</div>
+                <div className="section-title">{i18nT('📊 访问统计')}</div>
                 <div className="stats-cards">
                   <div className="stats-card">
                     <div className="stats-pulse"></div>
                     <div className="stats-icon">👁</div>
                     <div className="stats-value">{visitStats.page_views.toLocaleString()}</div>
-                    <div className="stats-label">总浏览量</div>
+                    <div className="stats-label">{i18nT('总浏览量')}</div>
                   </div>
                   <div className="stats-card">
                     <div className="stats-icon">👤</div>
                     <div className="stats-value">{visitStats.unique_visitors.toLocaleString()}</div>
-                    <div className="stats-label">独立访客</div>
+                    <div className="stats-label">{i18nT('独立访客')}</div>
                   </div>
                 </div>
                 <div className="muted" style={{fontSize: '11px', marginTop: '10px', textAlign: 'center'}}>
-                  实时统计 · 持久化存储
+                  {i18nT('实时统计 · 持久化存储')}
                 </div>
               </section>
             </div>
@@ -2702,16 +2703,16 @@ function AppContent() {
           {/* 站点声明页脚 */}
           <footer style={{ textAlign: 'center', padding: '18px 16px 8px', fontSize: 12,
             color: 'rgba(255,255,255,0.35)', lineHeight: 1.9 }}>
-            <div>属灵星球 · 内容为开发者 Ethan 原创，仅供个人灵修学习，不得用于商业用途</div>
+            <div>{i18nT('属灵星球 · 内容为开发者 Ethan 原创，仅供个人灵修学习，不得用于商业用途')}</div>
             <div>
-              <span onClick={() => setActivePanel('about')} style={{ color: '#5ac8fa', cursor: 'pointer' }}>ℹ️ 关于本站</span>
+              <span onClick={() => setActivePanel('about')} style={{ color: '#5ac8fa', cursor: 'pointer' }}>{i18nT('ℹ️ 关于本站')}</span>
               <span style={{ margin: '0 8px' }}>·</span>
               <a href="mailto:zpchoney@gmail.com" style={{ color: '#5ac8fa', textDecoration: 'none' }}>zpchoney@gmail.com</a>
             </div>
           </footer>
         </main>
 
-        <Suspense fallback={<div className="page-overlay" style={{display:'flex',alignItems:'center',justifyContent:'center'}}><span style={{color:'rgba(255,255,255,0.6)',fontSize:'15px'}}>加载中…</span></div>}>
+        <Suspense fallback={<div className="page-overlay" style={{display:'flex',alignItems:'center',justifyContent:'center'}}><span style={{color:'rgba(255,255,255,0.6)',fontSize:'15px'}}>{i18nT('加载中…')}</span></div>}>
         {/* 代祷墙页面 */}
         {activePanel === 'prayer' && (
           <div className="page-overlay">
@@ -2923,14 +2924,14 @@ function AppContent() {
             <div style={{ maxWidth: 560, margin: '0 auto', padding: '24px 20px calc(env(safe-area-inset-bottom) + 96px)', color: 'rgba(255,255,255,0.88)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
                 <BackButton onClick={() => setActivePanel('sphere')} />
-                <h2 style={{ margin: 0, fontSize: 20 }}>ℹ️ 关于本站</h2>
+                <h2 style={{ margin: 0, fontSize: 20 }}>{i18nT('ℹ️ 关于本站')}</h2>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '18px 16px', lineHeight: 2, fontSize: 14 }}>
-                <p style={{ margin: '0 0 10px' }}>属灵星球（Bible Sphere）由开发者 <strong>Ethan</strong> 独立设计与开发。</p>
-                <p style={{ margin: '0 0 6px' }}>· 网站所有内容均为开发者所创作；</p>
-                <p style={{ margin: '0 0 6px' }}>· 仅供个人灵修与学习使用，<strong>不得用于任何商业用途</strong>；</p>
-                <p style={{ margin: '0 0 6px' }}>· 本站内容的最终解释权归网站开发者 Ethan 所有。</p>
-                <p style={{ margin: '12px 0 0' }}>如有任何问题或建议，欢迎邮件联系：<a href="mailto:zpchoney@gmail.com" style={{ color: '#5ac8fa', textDecoration: 'none' }}>zpchoney@gmail.com</a></p>
+                <p style={{ margin: '0 0 10px' }}>{i18nT('属灵星球（Bible Sphere）由开发者')} <strong>Ethan</strong> {i18nT('独立设计与开发。')}</p>
+                <p style={{ margin: '0 0 6px' }}>{i18nT('· 网站所有内容均为开发者所创作；')}</p>
+                <p style={{ margin: '0 0 6px' }}>{i18nT('· 仅供个人灵修与学习使用，')}<strong>{i18nT('不得用于任何商业用途')}</strong>；</p>
+                <p style={{ margin: '0 0 6px' }}>{i18nT('· 本站内容的最终解释权归网站开发者 Ethan 所有。')}</p>
+                <p style={{ margin: '12px 0 0' }}>{i18nT('如有任何问题或建议，欢迎邮件联系：')}<a href="mailto:zpchoney@gmail.com" style={{ color: '#5ac8fa', textDecoration: 'none' }}>zpchoney@gmail.com</a></p>
               </div>
             </div>
           </div>
@@ -3065,63 +3066,63 @@ function AppContent() {
             onClick={() => setActivePanel('sphere')}
           >
             <span className="mobile-nav-icon">🔮</span>
-            <span className="mobile-nav-label">星球</span>
+            <span className="mobile-nav-label">{i18nT('星球')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'mirror' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('mirror')}
           >
             <span className="mobile-nav-icon">🪞</span>
-            <span className="mobile-nav-label">镜鉴</span>
+            <span className="mobile-nav-label">{i18nT('镜鉴')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'sharewall' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('sharewall')}
           >
             <span className="mobile-nav-icon">🌟</span>
-            <span className="mobile-nav-label">分享</span>
+            <span className="mobile-nav-label">{i18nT('分享')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'journal' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('journal')}
           >
             <span className="mobile-nav-icon">📖</span>
-            <span className="mobile-nav-label">主日</span>
+            <span className="mobile-nav-label">{i18nT('主日')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'evangelism' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('evangelism')}
           >
             <span className="mobile-nav-icon">🌍</span>
-            <span className="mobile-nav-label">宣教</span>
+            <span className="mobile-nav-label">{i18nT('宣教')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'prayer' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('prayer')}
           >
             <span className="mobile-nav-icon">🙏</span>
-            <span className="mobile-nav-label">代祷</span>
+            <span className="mobile-nav-label">{i18nT('代祷')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'devotion' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('devotion')}
           >
             <span className="mobile-nav-icon">📔</span>
-            <span className="mobile-nav-label">灵修</span>
+            <span className="mobile-nav-label">{i18nT('灵修')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'innerlife' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('innerlife')}
           >
             <span className="mobile-nav-icon">⚖️</span>
-            <span className="mobile-nav-label">心迹</span>
+            <span className="mobile-nav-label">{i18nT('心迹')}</span>
           </button>
           <button
             className={`mobile-nav-item ${activePanel === 'communion' ? 'active' : ''}`}
             onClick={() => handlePanelSwitch('communion')}
           >
             <span className="mobile-nav-icon">💬</span>
-            <span className="mobile-nav-label">相通</span>
+            <span className="mobile-nav-label">{i18nT('相通')}</span>
           </button>
         </nav>
 
@@ -3160,7 +3161,7 @@ export default function App() {
   if (/^\/caregiver\/?$/.test(window.location.pathname)) {
     return (
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d1117', color: 'rgba(255,255,255,0.4)' }}>加载中…</div>}>
+        <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d1117', color: 'rgba(255,255,255,0.4)' }}>{i18nT('加载中…')}</div>}>
           <CaregiverConsolePage />
         </Suspense>
       </QueryClientProvider>

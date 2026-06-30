@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { fetchFormationProfile, fetchFormationDimensions, saveReflectionAnswers, fetchReflectionAnswers, createHabitsFromFormationPlan } from './api'
 import { getToken } from './auth'
@@ -137,7 +138,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
         color: 'rgba(255,255,255,0.6)'
       }}>
         <div style={{ fontSize: '32px', marginBottom: '16px' }}>🔮</div>
-        <div>加载人格塑造档案...</div>
+        <div>{i18nT('加载人格塑造档案...')}</div>
       </div>
     )
   }
@@ -315,7 +316,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
   const FormationInsightPanel = () => {
     if (!formationAnalysis) return (
       <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '14px', padding: '20px', marginBottom: '24px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>
-        📋 请先在「反思问题」标签完成问卷，此处将自动生成生命成熟度分析与灵修计划
+        {i18nT('📋 请先在「反思问题」标签完成问卷，此处将自动生成生命成熟度分析与灵修计划')}
       </div>
     )
     const { catScores, maturityPct, maturityStage, topLessons, strongCats, shortPlan, midPlan, dimActions } = formationAnalysis
@@ -327,14 +328,14 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <span style={{ fontSize: '28px' }}>{maturityStage.emoji}</span>
               <div>
-                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', marginBottom: '2px' }}>生命成熟度阶段</div>
+                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', marginBottom: '2px' }}>{i18nT('生命成熟度阶段')}</div>
                 <div style={{ fontSize: '18px', fontWeight: 700, color: maturityStage.color }}>{maturityStage.label}</div>
                 <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>{maturityStage.desc}</div>
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '36px', fontWeight: 800, color: maturityStage.color, lineHeight: 1 }}>{maturityPct}%</div>
-              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>综合得分</div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>{i18nT('综合得分')}</div>
             </div>
           </div>
           {/* 成熟度条 */}
@@ -365,7 +366,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
         {/* 当前生命功课 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
           <div style={{ background: 'rgba(248,113,113,0.08)', borderRadius: '14px', padding: '18px', border: '1px solid rgba(248,113,113,0.25)' }}>
-            <div style={{ fontSize: '13px', color: '#f87171', fontWeight: 700, marginBottom: '10px' }}>🎯 当前生命功课</div>
+            <div style={{ fontSize: '13px', color: '#f87171', fontWeight: 700, marginBottom: '10px' }}>{i18nT('🎯 当前生命功课')}</div>
             {topLessons.map(c => (
               <div key={c.key} style={{ marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
@@ -377,14 +378,14 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             ))}
           </div>
           <div style={{ background: 'rgba(74,222,128,0.08)', borderRadius: '14px', padding: '18px', border: '1px solid rgba(74,222,128,0.25)' }}>
-            <div style={{ fontSize: '13px', color: '#4ade80', fontWeight: 700, marginBottom: '10px' }}>💪 生命强项</div>
+            <div style={{ fontSize: '13px', color: '#4ade80', fontWeight: 700, marginBottom: '10px' }}>{i18nT('💪 生命强项')}</div>
             {strongCats.map(c => (
               <div key={c.key} style={{ marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
                   <span style={{ fontSize: '14px' }}>{c.emoji}</span>
                   <span style={{ fontSize: '13px', color: '#fff', fontWeight: 600 }}>{c.lesson}</span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', paddingLeft: '20px' }}>{c.avg.toFixed(1)} / 10分</div>
+                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', paddingLeft: '20px' }}>{c.avg.toFixed(1)} {i18nT('/ 10分')}</div>
               </div>
             ))}
           </div>
@@ -393,7 +394,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
         {/* 今日可行一步 — 基于属灵维度 */}
         {dimActions && dimActions.length > 0 && (
           <div style={{ background: 'rgba(52,199,89,0.06)', borderRadius: '14px', padding: '18px 20px', marginBottom: '16px', border: '1px solid rgba(52,199,89,0.18)' }}>
-            <div style={{ fontSize: '13px', color: '#34c759', fontWeight: 700, marginBottom: '12px' }}>🌿 今日可行一步 — 成长软肋行动</div>
+            <div style={{ fontSize: '13px', color: '#34c759', fontWeight: 700, marginBottom: '12px' }}>{i18nT('🌿 今日可行一步 — 成长软肋行动')}</div>
             <div style={{ display: 'grid', gap: '10px' }}>
               {dimActions.map((d, i) => (
                 <div key={d.key} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 12px', background: 'rgba(0,0,0,0.18)', borderRadius: '10px', borderLeft: '3px solid rgba(52,199,89,0.4)' }}>
@@ -410,12 +411,12 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
 
         {/* 灵修计划 */}
         <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '14px', padding: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize: '14px', color: '#c4b5fd', fontWeight: 700, marginBottom: '16px' }}>📅 个人灵修操练计划</div>
+          <div style={{ fontSize: '14px', color: '#c4b5fd', fontWeight: 700, marginBottom: '16px' }}>{i18nT('📅 个人灵修操练计划')}</div>
           <div style={{ display: 'grid', gap: '16px' }}>
             {/* 短期 */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '10px', background: 'rgba(96,165,250,0.2)', color: '#60a5fa', fontWeight: 700 }}>短期 · 一个月</span>
+                <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '10px', background: 'rgba(96,165,250,0.2)', color: '#60a5fa', fontWeight: 700 }}>{i18nT('短期 · 一个月')}</span>
               </div>
               <div style={{ display: 'grid', gap: '8px' }}>
                 {shortPlan.map((item, i) => (
@@ -429,7 +430,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             {/* 中期 */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '10px', background: 'rgba(167,139,250,0.2)', color: '#a78bfa', fontWeight: 700 }}>中期 · 3–6个月</span>
+                <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '10px', background: 'rgba(167,139,250,0.2)', color: '#a78bfa', fontWeight: 700 }}>{i18nT('中期 · 3–6个月')}</span>
               </div>
               <div style={{ display: 'grid', gap: '8px' }}>
                 {midPlan.map((item, i) => (
@@ -494,17 +495,17 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
           {/* 同步状态提示 */}
           {syncStatus === 'synced' && (
             <div style={{ marginTop: '10px', padding: '8px 12px', background: 'rgba(34,197,94,0.15)', borderRadius: '8px', color: '#4ade80', fontSize: '12px', textAlign: 'center' }}>
-              ✅ 已成功同步到习惯养成！请在习惯页面查看并执行。
+              {i18nT('✅ 已成功同步到习惯养成！请在习惯页面查看并执行。')}
             </div>
           )}
           {syncStatus === 'error' && (
             <div style={{ marginTop: '10px', padding: '8px 12px', background: 'rgba(239,68,68,0.15)', borderRadius: '8px', color: '#f87171', fontSize: '12px', textAlign: 'center' }}>
-              ⚠️ 同步失败，请检查网络或登录状态后重试。
+              {i18nT('⚠️ 同步失败，请检查网络或登录状态后重试。')}
             </div>
           )}
 
           <div style={{ marginTop: '12px', fontSize: '11px', color: 'rgba(255,255,255,0.3)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
-            💡 计划基于你的反思问卷得分自动生成。每3–6个月重做问卷，计划将随生命成长自动更新。
+            {i18nT('💡 计划基于你的反思问卷得分自动生成。每3–6个月重做问卷，计划将随生命成长自动更新。')}
           </div>
         </div>
       </div>
@@ -529,10 +530,10 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
           <div style={{ fontSize: '48px' }}>🔮</div>
           <div>
             <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#fff' }}>
-              人格塑造
+              {i18nT('人格塑造')}
             </h2>
             <p style={{ margin: '4px 0 0 0', color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
-              性格轨迹分析 · 不是静态分数，而是动态信号
+              {i18nT('性格轨迹分析 · 不是静态分数，而是动态信号')}
             </p>
           </div>
         </div>
@@ -553,11 +554,11 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
               }}>
                 <div style={{ fontSize: '32px', marginBottom: '10px' }}>🌱</div>
                 <div style={{ color: '#c4b5fd', fontWeight: 600, fontSize: '15px', marginBottom: '8px' }}>
-                  尚无人格塑造数据
+                  {i18nT('尚无人格塑造数据')}
                 </div>
                 <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: 1.7 }}>
-                  形成弧线、轨迹方向、主导循环等指标需要通过<strong style={{ color: 'rgba(255,255,255,0.75)' }}>情感打卡</strong>或<strong style={{ color: 'rgba(255,255,255,0.75)' }}>决策分析</strong>积累数据后自动生成。<br/>
-                  每次打卡都会写入一条成长记录，积累足够数据后此处将显示你的性格轨迹。
+                  {i18nT('形成弧线、轨迹方向、主导循环等指标需要通过')}<strong style={{ color: 'rgba(255,255,255,0.75)' }}>{i18nT('情感打卡')}</strong>{i18nT('或')}<strong style={{ color: 'rgba(255,255,255,0.75)' }}>{i18nT('决策分析')}</strong>{i18nT('积累数据后自动生成。')}<br/>
+                  {i18nT('每次打卡都会写入一条成长记录，积累足够数据后此处将显示你的性格轨迹。')}
                 </div>
               </div>
             )
@@ -576,7 +577,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '32px', marginBottom: '8px' }}>{arc.emoji}</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>形成弧线</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>{i18nT('形成弧线')}</div>
                 <div style={{ fontSize: '16px', fontWeight: 600, color: '#fff' }}>{arc.text}</div>
                 <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>{arc.desc}</div>
               </div>
@@ -588,7 +589,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '32px', marginBottom: '8px' }}>{trajectory.emoji}</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>轨迹方向</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>{i18nT('轨迹方向')}</div>
                 <div style={{ fontSize: '16px', fontWeight: 600, color: trajectory.color }}>{trajectory.text}</div>
               </div>
 
@@ -599,7 +600,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '32px', marginBottom: '8px' }}>🔄</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>主导循环</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>{i18nT('主导循环')}</div>
                 <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>
                   {getDominantLoop() === 'none' ? '积累中...' : getDominantLoop()}
                 </div>
@@ -612,7 +613,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '32px', marginBottom: '8px' }}>📊</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>数据点数</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>{i18nT('数据点数')}</div>
                 <div style={{ fontSize: '16px', fontWeight: 600, color: '#fff' }}>
                   {dataPoints}
                 </div>
@@ -672,10 +673,10 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             marginBottom: '24px'
           }}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', color: '#fff' }}>
-              🎯 八维性格轨迹向量
+              {i18nT('🎯 八维性格轨迹向量')}
             </h3>
             <p style={{ margin: '0 0 20px 0', color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
-              这些数值表示行为倾向（0.05-0.95），不是道德评分。0.5是基线，偏离表示倾向性。
+              {i18nT('这些数值表示行为倾向（0.05-0.95），不是道德评分。0.5是基线，偏离表示倾向性。')}
             </p>
 
             <div style={{ 
@@ -770,10 +771,9 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
               <span style={{ fontSize: '20px' }}>⚠️</span>
               <div>
-                <div style={{ fontWeight: 600, color: '#fbbf24', marginBottom: '4px' }}>重要声明</div>
+                <div style={{ fontWeight: 600, color: '#fbbf24', marginBottom: '4px' }}>{i18nT('重要声明')}</div>
                 <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>
-                  人格塑造系统提供的是结构化的反思镜像，而非精神权威。所有洞察都是概率性的。
-                  人类的自由、恩典和奥秘总是超越任何模型所能捕捉的。这不是道德评判，而是轨迹信号。
+                  {i18nT('人格塑造系统提供的是结构化的反思镜像，而非精神权威。所有洞察都是概率性的。 人类的自由、恩典和奥秘总是超越任何模型所能捕捉的。这不是道德评判，而是轨迹信号。')}
                 </div>
               </div>
             </div>
@@ -795,7 +795,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             color: 'rgba(255,255,255,0.7)',
             lineHeight: 1.6
           }}>
-            <strong style={{ color: '#818cf8' }}>📌 维度解读说明：</strong> 所有数值为行为倾向（0.05–0.95），<strong>0.5 是基线</strong>。健康维度越高越好；循环倾向维度越低越健康。变化方向（↗↘）反映近期趋势，不是终身标签。
+            <strong style={{ color: '#818cf8' }}>{i18nT('📌 维度解读说明：')}</strong> {i18nT('所有数值为行为倾向（0.05–0.95），')}<strong>{i18nT('0.5 是基线')}</strong>{i18nT('。健康维度越高越好；循环倾向维度越低越健康。变化方向（↗↘）反映近期趋势，不是终身标签。')}
           </div>
 
           {/* 健康维度组 */}
@@ -805,8 +805,8 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
               marginBottom: '16px'
             }}>
               <span style={{ fontSize: '18px' }}>🌱</span>
-              <h3 style={{ margin: 0, fontSize: '16px', color: '#4ade80', fontWeight: 600 }}>健康成长维度</h3>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: '4px' }}>越高越好</span>
+              <h3 style={{ margin: 0, fontSize: '16px', color: '#4ade80', fontWeight: 600 }}>{i18nT('健康成长维度')}</h3>
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: '4px' }}>{i18nT('越高越好')}</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
               {['humility', 'emotional_stability', 'truth_alignment', 'relational_health', 'resilience', 'spiritual_clarity'].map(key => {
@@ -874,8 +874,8 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
           <div style={{ marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
               <span style={{ fontSize: '18px' }}>⚠️</span>
-              <h3 style={{ margin: 0, fontSize: '16px', color: '#f87171', fontWeight: 600 }}>循环倾向维度</h3>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: '4px' }}>越低越健康</span>
+              <h3 style={{ margin: 0, fontSize: '16px', color: '#f87171', fontWeight: 600 }}>{i18nT('循环倾向维度')}</h3>
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: '4px' }}>{i18nT('越低越健康')}</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
               {['fear_tendency', 'pride_tendency'].map(key => {
@@ -940,7 +940,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             padding: '20px',
             border: '1px solid rgba(139,92,246,0.25)'
           }}>
-            <h4 style={{ margin: '0 0 12px 0', color: '#c4b5fd', fontSize: '15px' }}>� 维度对比分析</h4>
+            <h4 style={{ margin: '0 0 12px 0', color: '#c4b5fd', fontSize: '15px' }}>{i18nT('� 维度对比分析')}</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
               {[
                 { label: '最强维度', value: (() => { const entries = Object.entries(dimensionNames); const best = entries.filter(([k]) => !['fear_tendency','pride_tendency'].includes(k)).sort(([a],[b]) => getDimensionScore(b) - getDimensionScore(a))[0]; return best ? `${best[1]} (${(getDimensionScore(best[0])*100).toFixed(2)}%)` : '—' })(), color: '#4ade80' },
@@ -971,11 +971,11 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             border: '1px solid rgba(139,92,246,0.3)'
           }}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', color: '#fff' }}>
-              🧭 当前轨迹状态
+              {i18nT('🧭 当前轨迹状态')}
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
               <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>形成弧线</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>{i18nT('形成弧线')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontSize: '28px' }}>{arc.emoji}</span>
                   <div>
@@ -985,7 +985,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 </div>
               </div>
               <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>轨迹方向</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>{i18nT('轨迹方向')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontSize: '28px' }}>{trajectory.emoji}</span>
                   <div>
@@ -994,7 +994,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 </div>
               </div>
               <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>主导循环</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>{i18nT('主导循环')}</div>
                 <div style={{ fontSize: '16px', fontWeight: 600, color: getDominantLoop() === 'none' ? 'rgba(255,255,255,0.3)' : '#f6ad55' }}>
                   {getDominantLoop() === 'none' ? '数据积累中...' : getDominantLoop().replace(/_/g, ' ')}
                 </div>
@@ -1010,7 +1010,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             marginBottom: '24px'
           }}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', color: '#fff' }}>
-              🔄 五种行为循环模式
+              {i18nT('🔄 五种行为循环模式')}
             </h3>
 
             <div style={{ display: 'grid', gap: '16px' }}>
@@ -1113,7 +1113,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                   {/* 触发条件与应对 */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                     <div>
-                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>常见触发</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>{i18nT('常见触发')}</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                         {loop.triggers.map((t, i) => (
                           <span key={i} style={{ fontSize: '11px', color: loop.color, background: `${loop.color}15`, padding: '3px 8px', borderRadius: '6px' }}>
@@ -1123,7 +1123,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>应对方向</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>{i18nT('应对方向')}</div>
                       <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>{loop.response}</div>
                     </div>
                   </div>
@@ -1140,12 +1140,12 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             border: '1px dashed rgba(255,255,255,0.15)'
           }}>
             <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', color: 'rgba(255,255,255,0.7)' }}>
-              📝 我的循环觉察记录
+              {i18nT('📝 我的循环觉察记录')}
             </h3>
             <div style={{ textAlign: 'center', padding: '24px', color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>
               <div style={{ marginBottom: '8px' }}>💭</div>
-              <div>循环觉察功能即将上线</div>
-              <div style={{ fontSize: '11px', marginTop: '4px' }}>记录你观察到的循环模式，追踪突破进度</div>
+              <div>{i18nT('循环觉察功能即将上线')}</div>
+              <div style={{ fontSize: '11px', marginTop: '4px' }}>{i18nT('记录你观察到的循环模式，追踪突破进度')}</div>
             </div>
           </div>
         </div>
@@ -1163,21 +1163,21 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <h3 style={{ margin: 0, fontSize: '18px', color: '#fff' }}>
-                💭 灵性塑造反思问卷
+                {i18nT('💭 灵性塑造反思问卷')}
               </h3>
               {saveStatus === 'saved' && (
                 <span style={{ fontSize: '12px', color: '#4ade80', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  ✓ 已保存
+                  {i18nT('✓ 已保存')}
                 </span>
               )}
               {saveStatus === 'error' && (
                 <span style={{ fontSize: '12px', color: '#f87171', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  ✗ 保存失败
+                  {i18nT('✗ 保存失败')}
                 </span>
               )}
             </div>
             <p style={{ margin: '0 0 16px 0', color: 'rgba(255,255,255,0.85)', fontSize: '14px', lineHeight: 1.8 }}>
-              神在你生命中特别要塑造你成为耶稣基督那样慈爱怜悯、柔和谦卑、舍己爱人、俯就卑微的罪人，完全顺服天父的旨意这样的品格。要对付的根源问题，或要学习的功课（如信靠、饶恕、顺服、谦卑等）。透过一套有结构的自省题目，你可以系统地找出重复模式、试炼焦点与盲点，帮助你明白神目前的「功课」是什么。
+              {i18nT('神在你生命中特别要塑造你成为耶稣基督那样慈爱怜悯、柔和谦卑、舍己爱人、俯就卑微的罪人，完全顺服天父的旨意这样的品格。要对付的根源问题，或要学习的功课（如信靠、饶恕、顺服、谦卑等）。透过一套有结构的自省题目，你可以系统地找出重复模式、试炼焦点与盲点，帮助你明白神目前的「功课」是什么。')}
             </p>
 
             {/* 操作指引 */}
@@ -1187,11 +1187,11 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
               padding: '16px 18px',
               marginBottom: '16px'
             }}>
-              <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 600, marginBottom: '10px' }}>🙏 开始前</div>
+              <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 600, marginBottom: '10px' }}>{i18nT('🙏 开始前')}</div>
               <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.7 }}>
-                用祷告开始（诗篇139:23-24），求圣灵光照。
+                {i18nT('用祷告开始（诗篇139:23-24），求圣灵光照。')}
               </div>
-              <div style={{ marginTop: '12px', fontSize: '13px', color: '#a78bfa', fontWeight: 600, marginBottom: '10px' }}>📝 作答原则</div>
+              <div style={{ marginTop: '12px', fontSize: '13px', color: '#a78bfa', fontWeight: 600, marginBottom: '10px' }}>{i18nT('📝 作答原则')}</div>
               <div style={{ display: 'grid', gap: '6px' }}>
                 {[
                   '诚实回答，不急着写「正确答案」。',
@@ -1216,7 +1216,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                 <span style={{ fontSize: '16px' }}>⚠️</span>
-                <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: '13px' }}>重要提醒</span>
+                <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: '13px' }}>{i18nT('重要提醒')}</span>
               </div>
               <div style={{ display: 'grid', gap: '8px' }}>
                 {[
@@ -1241,7 +1241,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
               borderRadius: '12px',
               padding: '16px 18px'
             }}>
-              <div style={{ fontSize: '13px', color: '#60a5fa', fontWeight: 600, marginBottom: '10px' }}>🔍 分析与应用步骤（逻辑归纳）</div>
+              <div style={{ fontSize: '13px', color: '#60a5fa', fontWeight: 600, marginBottom: '10px' }}>{i18nT('🔍 分析与应用步骤（逻辑归纳）')}</div>
               <div style={{ display: 'grid', gap: '8px' }}>
                 {[
                   { n: '1', text: '找出模式：哪些题目你的答案最负面或最常出现同一主题？' },
@@ -1276,7 +1276,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
             borderRadius: '10px',
             marginBottom: '20px'
           }}>
-            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', alignSelf: 'center' }}>标记频率：</span>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', alignSelf: 'center' }}>{i18nT('标记频率：')}</span>
             {FREQUENCY_OPTIONS.map(opt => (
               <div key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: opt.color }} />
@@ -1306,7 +1306,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                   </span>
                 </div>
                 <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginBottom: '18px', paddingLeft: '32px' }}>
-                  可能功课：{cat.lesson}
+                  {i18nT('可能功课：')}{cat.lesson}
                 </div>
 
                 <div style={{ display: 'grid', gap: '14px' }}>
@@ -1420,7 +1420,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                               <div style={{ textAlign: 'right', marginTop: '4px', height: '18px' }}>
                                 {activeOpt && (
                                   <span style={{ fontSize: '12px', color: trackColor, fontWeight: 600, transition: 'color 0.2s' }}>
-                                    {activeOpt.label}　<span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: 400 }}>{sliderVal}分</span>
+                                    {activeOpt.label}　<span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: 400 }}>{sliderVal}{i18nT('分')}</span>
                                   </span>
                                 )}
                               </div>
@@ -1453,8 +1453,8 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                 border: '1px solid rgba(139,92,246,0.25)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <span style={{ color: '#c4b5fd', fontWeight: 600, fontSize: '15px' }}>📋 答题汇总</span>
-                  <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>{answered}/{total} 题</span>
+                  <span style={{ color: '#c4b5fd', fontWeight: 600, fontSize: '15px' }}>{i18nT('📋 答题汇总')}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>{answered}/{total} {i18nT('题')}</span>
                 </div>
                 <div style={{ height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
                   <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #8b5cf6, #3b82f6)', borderRadius: '4px', transition: 'width 0.4s ease' }} />
@@ -1464,7 +1464,7 @@ export default function PersonalityPage({ user, embedded = false, onSyncToHabits
                     <div key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: opt.color }} />
                       <span style={{ color: opt.color, fontWeight: 600, fontSize: '14px' }}>{opt.label}</span>
-                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>{freqCounts[opt.label]} 题</span>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>{freqCounts[opt.label]} {i18nT('题')}</span>
                     </div>
                   ))}
                 </div>

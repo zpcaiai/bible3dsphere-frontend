@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import BackButton from './BackButton'
 import NotesButton from './realtime/NotesButton'
@@ -75,7 +76,7 @@ export default function VoiceRoomPage({ user, token, onBack }) {
     <div style={S.page}>
       <header style={S.header}>
         <BackButton onClick={onBack} size={40} />
-        <span style={S.title}>🎙 语音通话</span>
+        <span style={S.title}>{i18nT('🎙 语音通话')}</span>
         <span style={{ width: 56 }} />
       </header>
 
@@ -133,18 +134,18 @@ function GroupList({ enabled, groups, loading, token, onRefresh, onEnter }) {
     <div style={S.scroll}>
       {!enabled && (
         <div style={S.warnBox}>
-          ⚠️ 语音服务尚未配置。管理员需在后端设置 <code>LIVEKIT_URL / LIVEKIT_API_KEY / LIVEKIT_API_SECRET</code>
-          （免费注册 livekit.cloud 即可）。配置后即可发起 Zoom 级群语音通话。
+          {i18nT('⚠️ 语音服务尚未配置。管理员需在后端设置')} <code>LIVEKIT_URL / LIVEKIT_API_KEY / LIVEKIT_API_SECRET</code>
+          {i18nT('（免费注册 livekit.cloud 即可）。配置后即可发起 Zoom 级群语音通话。')}
         </div>
       )}
 
       {/* 建群 / 加群 */}
       <section style={S.card}>
-        <div style={S.cardTitle}>发起 / 加入</div>
+        <div style={S.cardTitle}>{i18nT('发起 / 加入')}</div>
         <div style={S.row}>
           <input
             style={S.input} value={newName} maxLength={40}
-            placeholder="群名称，如「周三晚祷告会」"
+            placeholder={i18nT('群名称，如「周三晚祷告会」')}
             onChange={e => setNewName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && doCreate()}
           />
@@ -155,7 +156,7 @@ function GroupList({ enabled, groups, loading, token, onRefresh, onEnter }) {
         <div style={S.row}>
           <input
             style={{ ...S.input, letterSpacing: 2, textTransform: 'uppercase' }}
-            value={code} maxLength={12} placeholder="输入邀请码加入他人的群"
+            value={code} maxLength={12} placeholder={i18nT('输入邀请码加入他人的群')}
             onChange={e => setCode(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && doJoin()}
           />
@@ -166,25 +167,25 @@ function GroupList({ enabled, groups, loading, token, onRefresh, onEnter }) {
       </section>
 
       {/* 我的群 */}
-      <div style={S.sectionLabel}>我的语音群</div>
+      <div style={S.sectionLabel}>{i18nT('我的语音群')}</div>
       {loading ? (
-        <div style={S.muted}>加载中…</div>
+        <div style={S.muted}>{i18nT('加载中…')}</div>
       ) : groups.length === 0 ? (
-        <div style={S.empty}>还没有语音群。建一个群，把邀请码发给弟兄姐妹，一起开声祷告。</div>
+        <div style={S.empty}>{i18nT('还没有语音群。建一个群，把邀请码发给弟兄姐妹，一起开声祷告。')}</div>
       ) : (
         groups.map(g => (
           <div key={g.id} style={S.groupRow}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={S.groupName}>
-                {g.name} {g.is_owner && <span style={S.ownerTag}>群主</span>}
+                {g.name} {g.is_owner && <span style={S.ownerTag}>{i18nT('群主')}</span>}
               </div>
               <div style={S.groupMeta}>
-                {g.member_count}/{g.max_members} 人 · 邀请码{' '}
+                {g.member_count}/{g.max_members} {i18nT('人 · 邀请码')}{' '}
                 <span style={S.codeChip} onClick={() => copyCode(g.join_code)}>{g.join_code} 📋</span>
               </div>
             </div>
             <button style={S.callBtn} onClick={() => onEnter(g)} disabled={!enabled}>
-              📞 进入
+              {i18nT('📞 进入')}
             </button>
           </div>
         ))
@@ -512,9 +513,9 @@ function CallScreen({ group, user, token, onLeave }) {
       <div style={S.callHead}>
         <div style={S.callName}>{group.name}</div>
         <div style={S.callStatus}>
-          {status === 'connecting' && <span style={{ color: '#f0ad4e' }}>● 连接中…</span>}
-          {status === 'live' && reconnecting && <span style={{ color: '#f0ad4e' }}>● 网络波动，正在重连…</span>}
-          {status === 'live' && !reconnecting && <span style={{ color: ACCENT }}>● 通话中 · {participants.length} 人在线</span>}
+          {status === 'connecting' && <span style={{ color: '#f0ad4e' }}>{i18nT('● 连接中…')}</span>}
+          {status === 'live' && reconnecting && <span style={{ color: '#f0ad4e' }}>{i18nT('● 网络波动，正在重连…')}</span>}
+          {status === 'live' && !reconnecting && <span style={{ color: ACCENT }}>{i18nT('● 通话中 ·')} {participants.length} {i18nT('人在线')}</span>}
           {status === 'error' && <span style={{ color: '#ff6b6b' }}>● {errMsg || '连接失败'}</span>}
         </div>
         {status === 'live' && (
@@ -528,11 +529,11 @@ function CallScreen({ group, user, token, onLeave }) {
         )}
         <div style={S.e2eeBar}>
           {encrypted ? (
-            <span style={{ color: ACCENT }}>🔒 端到端加密已开 · 服务器也听不到
-              <b onClick={openKey} style={S.e2eeAction}>更改口令</b></span>
+            <span style={{ color: ACCENT }}>{i18nT('🔒 端到端加密已开 · 服务器也听不到')}
+              <b onClick={openKey} style={S.e2eeAction}>{i18nT('更改口令')}</b></span>
           ) : (
-            <span style={{ color: 'rgba(255,255,255,0.5)' }}>🔓 仅链路加密（服务器可解）·
-              <b onClick={openKey} style={{ ...S.e2eeAction, color: '#f0ad4e' }}>设置加密口令</b></span>
+            <span style={{ color: 'rgba(255,255,255,0.5)' }}>{i18nT('🔓 仅链路加密（服务器可解）·')}
+              <b onClick={openKey} style={{ ...S.e2eeAction, color: '#f0ad4e' }}>{i18nT('设置加密口令')}</b></span>
           )}
         </div>
       </div>
@@ -540,21 +541,20 @@ function CallScreen({ group, user, token, onLeave }) {
       {keyPanel && (
         <div style={S.keyOverlay} onClick={() => setKeyPanel(false)}>
           <div style={S.keyCard} onClick={e => e.stopPropagation()}>
-            <div style={S.keyTitle}>🔐 端到端加密口令</div>
+            <div style={S.keyTitle}>{i18nT('🔐 端到端加密口令')}</div>
             <div style={S.keyHint}>
-              群内所有人填 <b>同一个口令</b> 才能互相听见。口令只存在你本机、由本地派生密钥，
-              <b>绝不上送服务器</b>——LiveKit 与后端都拿到的是密文。请通过当面/Signal 等
-              安全渠道私下约定，不要发在本群邀请码或微信里。
+              {i18nT('群内所有人填')} <b>{i18nT('同一个口令')}</b> {i18nT('才能互相听见。口令只存在你本机、由本地派生密钥，')}
+              <b>{i18nT('绝不上送服务器')}</b>{i18nT('——LiveKit 与后端都拿到的是密文。请通过当面/Signal 等 安全渠道私下约定，不要发在本群邀请码或微信里。')}
             </div>
             <input
               style={S.keyInput} value={keyDraft} type="text" autoFocus
-              placeholder="输入共享口令（留空=关闭加密）"
+              placeholder={i18nT('输入共享口令（留空=关闭加密）')}
               onChange={e => setKeyDraft(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && saveKey()}
             />
             <div style={S.keyBtns}>
-              <button style={S.ghostBtn} onClick={() => setKeyPanel(false)}>取消</button>
-              <button style={S.primaryBtn} onClick={saveKey}>保存并重连</button>
+              <button style={S.ghostBtn} onClick={() => setKeyPanel(false)}>{i18nT('取消')}</button>
+              <button style={S.primaryBtn} onClick={saveKey}>{i18nT('保存并重连')}</button>
             </div>
           </div>
         </div>
@@ -567,7 +567,7 @@ function CallScreen({ group, user, token, onLeave }) {
             {sharer && (
               <div style={S.shareStage}>
                 <VideoTile track={sharer.screenTrack} style={{ objectFit: 'contain' }} />
-                <div style={S.shareName}>🖥 {sharer.name} 正在共享屏幕</div>
+                <div style={S.shareName}>🖥 {sharer.name} {i18nT('正在共享屏幕')}</div>
               </div>
             )}
             <div style={S.tiles}>
@@ -589,13 +589,13 @@ function CallScreen({ group, user, token, onLeave }) {
                         {p.muted ? '🔇' : (p.speaking ? '🔊' : '🎙')}
                       </div>
                       <div style={S.tileName}>{p.name}</div>
-                      {p.muted && <div style={S.mutedTag}>已静音</div>}
+                      {p.muted && <div style={S.mutedTag}>{i18nT('已静音')}</div>}
                     </>
                   )}
                 </div>
               ))}
               {status === 'live' && participants.length === 1 && !sharer && (
-                <div style={S.waitHint}>等待其他人加入…把邀请码 <b>{group.join_code}</b> 发给他们</div>
+                <div style={S.waitHint}>{i18nT('等待其他人加入…把邀请码')} <b>{group.join_code}</b> {i18nT('发给他们')}</div>
               )}
             </div>
           </>
@@ -616,11 +616,11 @@ function CallScreen({ group, user, token, onLeave }) {
           <div style={{ fontSize: 'calc(1.5vw + 1.4vh)' }}>🖥</div>
         </button>
         <button onClick={toggleDenoise} style={{ ...S.ctrlBtn, background: denoise ? 'rgba(52,199,89,0.25)' : 'rgba(255,255,255,0.1)' }}
-          disabled={status !== 'live' || hifi} title="AI 降噪（背景噪声抑制）">
+          disabled={status !== 'live' || hifi} title={i18nT('AI 降噪（背景噪声抑制）')}>
           <div style={{ fontSize: 'calc(1.5vw + 1.4vh)' }}>✨</div>
         </button>
         <button onClick={toggleHifi} style={{ ...S.ctrlBtn, background: hifi ? 'rgba(255,193,7,0.30)' : 'rgba(255,255,255,0.1)' }}
-          disabled={status !== 'live'} title="原声·高保真（诗歌/乐器，立体声高码率）">
+          disabled={status !== 'live'} title={i18nT('原声·高保真（诗歌/乐器，立体声高码率）')}>
           <div style={{ fontSize: 'calc(1.5vw + 1.4vh)' }}>🎵</div>
         </button>
         <NotesButton disabled={status !== 'live'} style={S.ctrlBtn}

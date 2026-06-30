@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * LectioPage — 圣经默想 Lectio Divina（读经 → 默想 → 祷告 → 默观 → 顺服）
  *
@@ -72,7 +73,7 @@ export default function LectioPage({ user, onBack }) {
 
   async function finish() {
     const t = getToken(); if (!t || !session) return
-    if (!text.trim()) { setError('需要一个具体的顺服行动才能完成'); return }
+    if (!text.trim()) { setError(i18nT('需要一个具体的顺服行动才能完成')); return }
     setBusy(true); setError('')
     try {
       const r = await completeLectioSession(session.id, { obedience_action: text, grace_received: grace }, t)
@@ -82,15 +83,15 @@ export default function LectioPage({ user, onBack }) {
 
   const wrap = { maxWidth: 640, margin: '0 auto', padding: 16, color: '#fff' }
 
-  if (loading) return <div style={wrap}><BackButton onClick={onBack} />加载中…</div>
+  if (loading) return <div style={wrap}><BackButton onClick={onBack} />{i18nT('加载中…')}</div>
 
   const meta = STAGE_META[stage]
 
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>📖 圣经默想 · Lectio Divina</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>读经 · 默想 · 祷告 · 默观 · 一个微顺服</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('📖 圣经默想 · Lectio Divina')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('读经 · 默想 · 祷告 · 默观 · 一个微顺服')}</div>
 
       {error && <div style={{ ...card, borderColor: 'rgba(255,107,107,0.4)', color: '#ffb4b4' }}>{error}</div>}
 
@@ -125,13 +126,13 @@ export default function LectioPage({ user, onBack }) {
           <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>{meta.icon} {meta.title}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>{guidance || meta.ph}</div>
           {stage === 'read' && (
-            <input value={keywords} onChange={e => setKeywords(e.target.value)} placeholder="触动你的字 / 词（用逗号分隔）"
+            <input value={keywords} onChange={e => setKeywords(e.target.value)} placeholder={i18nT('触动你的字 / 词（用逗号分隔）')}
               style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }} />
           )}
           <textarea value={text} onChange={e => setText(e.target.value)} placeholder={meta.ph} rows={4}
             style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', resize: 'vertical' }} />
           {stage === 'obey' && (
-            <input value={grace} onChange={e => setGrace(e.target.value)} placeholder="今天领受到的恩典（可选）"
+            <input value={grace} onChange={e => setGrace(e.target.value)} placeholder={i18nT('今天领受到的恩典（可选）')}
               style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }} />
           )}
           {stage === 'obey'
@@ -143,12 +144,12 @@ export default function LectioPage({ user, onBack }) {
       {/* 完成 */}
       {stage === 'completed' && session && (
         <div style={card}>
-          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>🌱 愿这段话今天与你同行</div>
-          <div style={{ fontSize: 13, marginBottom: 6 }}><b>经文：</b>{session.passage_ref}</div>
-          {session.obedience_action && <div style={{ fontSize: 13, marginBottom: 6 }}><b>今日顺服：</b>{session.obedience_action}</div>}
-          {session.grace_received && <div style={{ fontSize: 13, marginBottom: 6 }}><b>领受的恩典：</b>{session.grace_received}</div>}
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>完成度 {session.completion_score}%</div>
-          <button style={{ ...btn, marginTop: 12 }} onClick={onBack}>返回</button>
+          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{i18nT('🌱 愿这段话今天与你同行')}</div>
+          <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('经文：')}</b>{session.passage_ref}</div>
+          {session.obedience_action && <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('今日顺服：')}</b>{session.obedience_action}</div>}
+          {session.grace_received && <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('领受的恩典：')}</b>{session.grace_received}</div>}
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{i18nT('完成度')} {session.completion_score}%</div>
+          <button style={{ ...btn, marginTop: 12 }} onClick={onBack}>{i18nT('返回')}</button>
         </div>
       )}
     </div>

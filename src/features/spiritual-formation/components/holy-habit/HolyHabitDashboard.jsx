@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { fastingPractices, holyHabitTemplates, restPractices, ruleDomains, ruleTemplates } from '../../data/holyHabitSeed'
 import {
@@ -101,7 +102,7 @@ export function RuleOfLifeBuilder({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Rule of Life Builder / 生活规则构建器</h2><p>A trellis for love across prayer, Scripture, work, rest, body, money, relationships, speech, technology, service, mission, learning, solitude, and community.</p></div>
+      <div className="sf-section-heading"><h2>{T('生活规则构建器', 'Rule of Life Builder')}</h2><p>A trellis for love across prayer, Scripture, work, rest, body, money, relationships, speech, technology, service, mission, learning, solitude, and community.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Create from template</h3>
@@ -166,7 +167,7 @@ export function HolyHabitPlanner({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Holy Habit Planner / 圣洁习惯计划</h2><p>Daily, weekly, and monthly practices with grace, review, and adjustment.</p></div>
+      <div className="sf-section-heading"><h2>{T('圣洁习惯计划', 'Holy Habit Planner')}</h2><p>Daily, weekly, and monthly practices with grace, review, and adjustment.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Recommend habits</h3>
@@ -238,7 +239,7 @@ export function SabbathPlanner({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Sabbath & Rest Formation / 安息与休息操练</h2><p>Resist productivity idols and restore worship, trust, body, and delight.</p></div>
+      <div className="sf-section-heading"><h2>{T('安息与休息操练', 'Sabbath & Rest Formation')}</h2><p>Resist productivity idols and restore worship, trust, body, and delight.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Rest audit</h3>
@@ -319,7 +320,7 @@ export function FastingSimplicityPlanner({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Fasting & Simplicity / 禁食与简朴操练</h2><p>Train desire toward dependence, freedom, generosity, and love. Never practice unsafe fasting.</p></div>
+      <div className="sf-section-heading"><h2>{T('禁食与简朴操练', 'Fasting & Simplicity')}</h2><p>Train desire toward dependence, freedom, generosity, and love. Never practice unsafe fasting.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Choose fast</h3>
@@ -359,7 +360,7 @@ export default function HolyHabitDashboard({ userId = 'local-user' }) {
   return (
     <section className="sf-module">
       <div className="sf-section-heading">
-        <h2>Rule of Life & Holy Habit Engine / 生活规则与圣洁习惯引擎</h2>
+        <h2>{T('生活规则与圣洁习惯引擎', 'Rule of Life & Holy Habit Engine')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <MiniTabs active={tab} onChange={setTab} />

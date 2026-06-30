@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useState } from 'react'
 import { crisisApi } from '../lib/api'
 
@@ -38,17 +39,17 @@ export default function CaregiverInbox({ heading = '分享给我的人' }) {
     <div>
       <div className="cc-card">
         <h3>{heading}</h3>
-        <p className="cc-muted">只读，且按对方设置的范围。每次查看都会让对方看到。请用于陪伴，而非审判。</p>
-        {loaded && incoming.length === 0 && <p className="cc-muted">目前没有人分享给你。</p>}
+        <p className="cc-muted">{i18nT('只读，且按对方设置的范围。每次查看都会让对方看到。请用于陪伴，而非审判。')}</p>
+        {loaded && incoming.length === 0 && <p className="cc-muted">{i18nT('目前没有人分享给你。')}</p>}
         {incoming.map((s) => (
           <div className="cc-resource" key={s.id}>
             <div>
               <div style={{ fontWeight: 600 }}>{s.sharerEmail}</div>
-              <div className="meta">范围：{(s.scope || []).map((x) => SCOPE_LABEL[x] || x).join('、')}</div>
+              <div className="meta">{i18nT('范围：')}{(s.scope || []).map((x) => SCOPE_LABEL[x] || x).join('、')}</div>
             </div>
             <div style={{ display: 'flex', gap: 6, flex: '0 0 auto' }}>
-              {telHref(s.contactPhone) && <a className="cc-call" href={telHref(s.contactPhone)}>回拨</a>}
-              <button className="cc-btn secondary" type="button" onClick={() => view(s.id)}>查看</button>
+              {telHref(s.contactPhone) && <a className="cc-call" href={telHref(s.contactPhone)}>{i18nT('回拨')}</a>}
+              <button className="cc-btn secondary" type="button" onClick={() => view(s.id)}>{i18nT('查看')}</button>
             </div>
           </div>
         ))}
@@ -56,21 +57,21 @@ export default function CaregiverInbox({ heading = '分享给我的人' }) {
 
       {viewing && (
         <div className="cc-card">
-          <h3>只读摘要 · {viewing.sharerEmail}</h3>
+          <h3>{i18nT('只读摘要 ·')} {viewing.sharerEmail}</h3>
           {viewing.latestStatus
-            ? <p>当前状态：<span className={`cc-badge ${LEVEL_BADGE[viewing.latestStatus.riskLevel]}`}>{LEVEL_ZH[viewing.latestStatus.riskLevel]}</span> <span className="cc-muted">（{viewing.latestStatus.at}）</span></p>
-            : ((viewing.scope || []).includes('status') && <p className="cc-muted">暂无状态记录。</p>)}
+            ? <p>{i18nT('当前状态：')}<span className={`cc-badge ${LEVEL_BADGE[viewing.latestStatus.riskLevel]}`}>{LEVEL_ZH[viewing.latestStatus.riskLevel]}</span> <span className="cc-muted">（{viewing.latestStatus.at}）</span></p>
+            : ((viewing.scope || []).includes('status') && <p className="cc-muted">{i18nT('暂无状态记录。')}</p>)}
           {viewing.safetyPlan && (
             <>
-              <h4>安全计划（只读）</h4>
-              {(viewing.safetyPlan.safePeople || []).length > 0 && <p>安全联系人：{viewing.safetyPlan.safePeople.join('、')}</p>}
-              {(viewing.safetyPlan.warningSigns || []).length > 0 && <p className="cc-muted">警讯：{viewing.safetyPlan.warningSigns.join('、')}</p>}
-              {(viewing.safetyPlan.internalCopingStrategies || []).length > 0 && <p className="cc-muted">应对：{viewing.safetyPlan.internalCopingStrategies.join('、')}</p>}
+              <h4>{i18nT('安全计划（只读）')}</h4>
+              {(viewing.safetyPlan.safePeople || []).length > 0 && <p>{i18nT('安全联系人：')}{viewing.safetyPlan.safePeople.join('、')}</p>}
+              {(viewing.safetyPlan.warningSigns || []).length > 0 && <p className="cc-muted">{i18nT('警讯：')}{viewing.safetyPlan.warningSigns.join('、')}</p>}
+              {(viewing.safetyPlan.internalCopingStrategies || []).length > 0 && <p className="cc-muted">{i18nT('应对：')}{viewing.safetyPlan.internalCopingStrategies.join('、')}</p>}
             </>
           )}
           {Array.isArray(viewing.recentEvents) && viewing.recentEvents.length > 0 && (
             <>
-              <h4>近期事件</h4>
+              <h4>{i18nT('近期事件')}</h4>
               {viewing.recentEvents.map((ev) => (
                 <p key={ev.id} className="cc-muted">{ev.createdAt} · <span className={`cc-badge ${LEVEL_BADGE[ev.riskLevel]}`}>{LEVEL_ZH[ev.riskLevel]}</span></p>
               ))}
@@ -79,12 +80,12 @@ export default function CaregiverInbox({ heading = '分享给我的人' }) {
 
           {telHref(viewing.contactPhone) && (
             <div style={{ marginTop: 12 }}>
-              <a className="cc-btn full" style={{ display: 'flex', justifyContent: 'center', textDecoration: 'none' }} href={telHref(viewing.contactPhone)}>📞 一键回拨 {viewing.contactPhone}</a>
+              <a className="cc-btn full" style={{ display: 'flex', justifyContent: 'center', textDecoration: 'none' }} href={telHref(viewing.contactPhone)}>{i18nT('📞 一键回拨')} {viewing.contactPhone}</a>
             </div>
           )}
 
-          <p className="cc-muted" style={{ marginTop: 10 }}>请用这些信息温柔地陪伴、联系当事人，而不是审判。必要时协助连接专业资源。</p>
-          <button className="cc-btn ghost" type="button" onClick={() => setViewing(null)}>关闭</button>
+          <p className="cc-muted" style={{ marginTop: 10 }}>{i18nT('请用这些信息温柔地陪伴、联系当事人，而不是审判。必要时协助连接专业资源。')}</p>
+          <button className="cc-btn ghost" type="button" onClick={() => setViewing(null)}>{i18nT('关闭')}</button>
         </div>
       )}
       {err && <p className="cc-toast" style={{ color: '#ff9f8a', padding: '0 4px' }}>{err}</p>}

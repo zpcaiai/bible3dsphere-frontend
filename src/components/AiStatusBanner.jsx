@@ -1,3 +1,4 @@
+import { t as i18nT } from '../i18n/runtime'
 import { useState, useEffect } from 'react'
 import { API_BASE } from '../api'
 
@@ -20,10 +21,10 @@ export default function AiStatusBanner() {
       background: 'rgba(255,159,10,0.96)', color: '#1a1200', padding: '8px 14px',
       fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px',
       justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
-      <span>⚠️ AI 服务暂时维护中，经文匹配与牧养内容质量可能暂时下降，请稍后再试。</span>
+      <span>{i18nT('⚠️ AI 服务暂时维护中，经文匹配与牧养内容质量可能暂时下降，请稍后再试。')}</span>
       <button type="button" onClick={() => setDismissed(true)}
         style={{ background: 'rgba(0,0,0,0.18)', border: 'none', borderRadius: '6px',
-          color: '#1a1200', padding: '3px 10px', cursor: 'pointer', fontSize: '12px' }}>知道了</button>
+          color: '#1a1200', padding: '3px 10px', cursor: 'pointer', fontSize: '12px' }}>{i18nT('知道了')}</button>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 
 /**
@@ -48,7 +49,7 @@ export default function BreathingGuide({ targetCycles = 5 }) {
           {running ? '暂停' : '继续'}
         </button>
         <button className="cc-btn ghost" type="button" onClick={() => { setCycles(0); setPhaseIdx(0); setRunning(true) }}>
-          重新开始
+          {i18nT('重新开始')}
         </button>
       </div>
     </div>

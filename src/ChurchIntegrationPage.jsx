@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** ChurchIntegrationPage — 教会生活整合 (B7)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -29,20 +30,20 @@ export default function ChurchIntegrationPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>⛪ 教会生活整合</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>渐进、具身、智慧 · 教会创伤先医治再慢重返</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('⛪ 教会生活整合')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('渐进、具身、智慧 · 教会创伤先医治再慢重返')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
-      {care && <div style={{ ...card, background: 'rgba(255,107,107,0.10)' }}><div style={{ fontWeight: 700 }}>💗 {care.message}</div><div style={{ fontSize: 12 }}>先做安全重返计划与界限,可结合「医治旅程」。</div></div>}
+      {care && <div style={{ ...card, background: 'rgba(255,107,107,0.10)' }}><div style={{ fontWeight: 700 }}>💗 {care.message}</div><div style={{ fontSize: 12 }}>{i18nT('先做安全重返计划与界限,可结合「医治旅程」。')}</div></div>}
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>我的连接状态{conn ? `（当前：${conn.connection_status}）` : ''}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('我的连接状态')}{conn ? `（当前：${conn.connection_status}）` : ''}</div>
         <select value={status} onChange={e => setStatus(e.target.value)} style={fld}>
           {STATUS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
         </select>
-        <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="备注（若有教会经历的伤害也可写下）" style={{ ...fld, resize: 'vertical' }} />
+        <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder={i18nT('备注（若有教会经历的伤害也可写下）')} style={{ ...fld, resize: 'vertical' }} />
         <div style={{ display: 'flex', gap: 8 }}>
-          <button style={btn} onClick={save}>保存</button>
-          <button style={{ ...btn, background: 'rgba(52,199,89,0.6)' }} onClick={recommend}>推荐下一步</button>
+          <button style={btn} onClick={save}>{i18nT('保存')}</button>
+          <button style={{ ...btn, background: 'rgba(52,199,89,0.6)' }} onClick={recommend}>{i18nT('推荐下一步')}</button>
         </div>
       </div>
 

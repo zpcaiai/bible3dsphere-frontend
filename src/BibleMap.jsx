@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 // BibleMap.jsx — 可复用圣经地图引擎（自包含 SVG，离线可用，适配 PWA）
 // 统一数据 schema 见 data/bibleMapsData.js。一个引擎驱动全部地图。
 // 扩展：地点插图（MapScenes）、AI 讲解（fetchFaithQA）、人物卡片闭环（config.profile）。
@@ -369,7 +370,7 @@ export default function BibleMap({ config, onBack }) {
           </button>
         )}
         {!isTimeline && progress > 0 && (
-          <button className="biblemap-chip" onClick={() => { setPlaying(false); setProgress(0) }}>↺ 重置</button>
+          <button className="biblemap-chip" onClick={() => { setPlaying(false); setProgress(0) }}>{i18nT('↺ 重置')}</button>
         )}
       </div>
 
@@ -386,12 +387,12 @@ export default function BibleMap({ config, onBack }) {
             {profileLayer.bio && <p className="biblemap-profile-bio">{profileLayer.bio}</p>}
             {Array.isArray(profileLayer.epistles) && profileLayer.epistles.length > 0 && (
               <div className="biblemap-profile-epistles">
-                ✉ 相关书信：{profileLayer.epistles.map((e, i) => <span key={i} className="ep">{e}</span>)}
+                {i18nT('✉ 相关书信：')}{profileLayer.epistles.map((e, i) => <span key={i} className="ep">{e}</span>)}
               </div>
             )}
             <AIExplain compact
               question={`请用简洁、温暖、适合查经班的话，介绍圣经人物「${profileLayer.label}」的生平、属灵意义与主要经历，并给出一句默想或祷告方向。`}
-              label="✦ 请 AI 讲解这位人物" />
+              label={i18nT('✦ 请 AI 讲解这位人物')} />
           </div>
         </div>
       )}
@@ -505,7 +506,7 @@ export default function BibleMap({ config, onBack }) {
             </div>
             <div className="biblemap-detail-meta">
               {selected.year != null && <span>🗓 {yearLabel(selected.year)}</span>}
-              {selected.age != null && <span>👤 亚伯拉罕 {selected.age} 岁</span>}
+              {selected.age != null && <span>{i18nT('👤 亚伯拉罕')} {selected.age} {i18nT('岁')}</span>}
               {selected.scriptureRef && <span>📖 {selected.scriptureRef}</span>}
               {selected.confidence && (
                 <span style={{ color: (CONFIDENCE[selected.confidence] || {}).color }}>
@@ -513,8 +514,8 @@ export default function BibleMap({ config, onBack }) {
                 </span>
               )}
             </div>
-            {selected.altar && <div className="biblemap-altar">⛪ 在此筑坛：{selected.altar}</div>}
-            {selected.promise && <div className="biblemap-promise">✝ 神的应许：{selected.promise}</div>}
+            {selected.altar && <div className="biblemap-altar">{i18nT('⛪ 在此筑坛：')}{selected.altar}</div>}
+            {selected.promise && <div className="biblemap-promise">{i18nT('✝ 神的应许：')}{selected.promise}</div>}
             {selected.note && <p className="biblemap-note">{selected.note}</p>}
             <div className="biblemap-events">
               {(selected.events || []).map((ev, i) => (
@@ -526,12 +527,12 @@ export default function BibleMap({ config, onBack }) {
                 </div>
               ))}
               {(!selected.events || selected.events.length === 0) && (
-                <p className="biblemap-note dim">途经此地。</p>
+                <p className="biblemap-note dim">{i18nT('途经此地。')}</p>
               )}
             </div>
             <AIExplain
               question={`请用简洁、温暖、适合主日学的话，讲解圣经地点「${selected.name_zh}（${selected.name_en}）」的历史背景与属灵意义${selected.scriptureRef ? `（相关经文：${selected.scriptureRef}）` : ''}，并给出一句默想或祷告方向。`}
-              label="✦ AI 讲解这个地点" />
+              label={i18nT('✦ AI 讲解这个地点')} />
           </div>
         )}
       </div>
@@ -540,7 +541,7 @@ export default function BibleMap({ config, onBack }) {
         {Object.entries(CONFIDENCE).map(([k, v]) => (
           <span key={k}><i style={{ background: v.color }} />{v.label}</span>
         ))}
-        <span className="hint">点击地标看经文与插图 · ✦ 可让 AI 现场讲解 · ⛪ 表示筑坛/圣所</span>
+        <span className="hint">{i18nT('点击地标看经文与插图 · ✦ 可让 AI 现场讲解 · ⛪ 表示筑坛/圣所')}</span>
       </div>
     </div>
   )

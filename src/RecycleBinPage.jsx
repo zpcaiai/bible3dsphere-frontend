@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
 import { fetchRecycleBin, restoreRecycleItem } from './api'
@@ -71,9 +72,9 @@ export default function RecycleBinPage({ onBack }) {
         borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}>
         <BackButton onClick={onBack} />
-        <span style={{ fontSize: '17px', fontWeight: 600 }}>🗑️ 回收站</span>
+        <span style={{ fontSize: '17px', fontWeight: 600 }}>{i18nT('🗑️ 回收站')}</span>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginLeft: 'auto' }}>
-          删除后30天自动清除
+          {i18nT('删除后30天自动清除')}
         </span>
       </div>
 
@@ -81,7 +82,7 @@ export default function RecycleBinPage({ onBack }) {
       <div style={{ padding: '12px 16px' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.5)' }}>
-            加载中...
+            {i18nT('加载中...')}
           </div>
         )}
 
@@ -97,8 +98,8 @@ export default function RecycleBinPage({ onBack }) {
             color: 'rgba(255,255,255,0.4)',
           }}>
             <div style={{ fontSize: '48px', marginBottom: '12px' }}>🗑️</div>
-            <div style={{ fontSize: '15px' }}>回收站为空</div>
-            <div style={{ fontSize: '12px', marginTop: '8px' }}>删除的内容会在这里保留30天</div>
+            <div style={{ fontSize: '15px' }}>{i18nT('回收站为空')}</div>
+            <div style={{ fontSize: '12px', marginTop: '8px' }}>{i18nT('删除的内容会在这里保留30天')}</div>
           </div>
         )}
 

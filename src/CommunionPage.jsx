@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 // 圣徒相通 (Communion) — 好友 + 1对1聊天 (QQ式)。
 // 实时连接与来电弹窗由全局 realtimeStore / RealtimeRoot 负责（App 顶层挂载），
 // 本页只订阅消息流处理好友/聊天，并通过 store 发起 1对1 语音通话。
@@ -100,7 +101,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
         break
       }
       case 'error':
-        if (msg.code === 'not_friends') showToast('仅好友之间可以聊天')
+        if (msg.code === 'not_friends') showToast(i18nT('仅好友之间可以聊天'))
         break
       default:
         break
@@ -129,11 +130,11 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
     } catch (e) { showToast(e.message || '添加失败') }
   }
   async function onAccept(email) {
-    try { await acceptFriend(email); showToast('已添加好友'); loadFriends() }
+    try { await acceptFriend(email); showToast(i18nT('已添加好友')); loadFriends() }
     catch (e) { showToast(e.message) }
   }
   async function onRemove(email) {
-    if (!window.confirm('确定删除该好友？')) return
+    if (!window.confirm(i18nT('确定删除该好友？'))) return
     try { await removeFriend(email); if (activePeer?.email === email) setActivePeer(null); loadFriends() }
     catch (e) { showToast(e.message) }
   }
@@ -152,7 +153,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
     const body = draft.trim()
     if (!body || !activePeer) return
     const ok = realtimeStore.send({ type: 'chat', to: activePeer.email, body, client_id: 'c-' + Date.now() })
-    if (!ok) { showToast('连接断开，正在重连…'); return }
+    if (!ok) { showToast(i18nT('连接断开，正在重连…')); return }
     setDraft('')
   }
   function onDraftChange(v) {
@@ -164,7 +165,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
   }
   function openGroupVoice() {
     if (typeof onOpenVoice === 'function') onOpenVoice()
-    else showToast('语音通话请前往「语音通话」页')
+    else showToast(i18nT('语音通话请前往「语音通话」页'))
   }
 
   // ---------------- Render ----------------
@@ -173,7 +174,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
       <header className="communion-header glass">
         <BackButton onClick={onBack} />
         <div className="communion-title">
-          圣徒相通
+          {i18nT('圣徒相通')}
           <span className={`communion-conn ${connected ? 'on' : 'off'}`}>
             {connected ? '● 在线' : '○ 连接中'}
           </span>
@@ -188,26 +189,26 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
               value={addEmail}
               onChange={(e) => setAddEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onAddFriend()}
-              placeholder="输入好友邮箱添加"
+              placeholder={i18nT('输入好友邮箱添加')}
             />
-            <button onClick={onAddFriend}>添加</button>
+            <button onClick={onAddFriend}>{i18nT('添加')}</button>
           </div>
 
           {incoming.length > 0 && (
             <div className="communion-incoming">
-              <div className="communion-section-title">好友请求</div>
+              <div className="communion-section-title">{i18nT('好友请求')}</div>
               {incoming.map((r) => (
                 <div key={r.email} className="communion-req">
                   <span>{shortName(r.email, r.nickname)}</span>
-                  <button onClick={() => onAccept(r.email)}>接受</button>
+                  <button onClick={() => onAccept(r.email)}>{i18nT('接受')}</button>
                 </div>
               ))}
             </div>
           )}
 
-          <div className="communion-section-title">好友 ({friends.length})</div>
+          <div className="communion-section-title">{i18nT('好友 (')}{friends.length})</div>
           <div className="communion-friends">
-            {friends.length === 0 && <div className="communion-empty">还没有好友，添加邮箱开始相通</div>}
+            {friends.length === 0 && <div className="communion-empty">{i18nT('还没有好友，添加邮箱开始相通')}</div>}
             {friends.map((f) => {
               const online = isOnline(f.email)
               return (
@@ -226,7 +227,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                     <div className="communion-flast">{f.last_message || (online ? '在线' : '离线')}</div>
                   </div>
                   {f.unread > 0 && <span className="communion-badge">{f.unread}</span>}
-                  <button className="communion-call-btn" title="语音通话"
+                  <button className="communion-call-btn" title={i18nT('语音通话')}
                     onClick={(e) => { e.stopPropagation(); dial(f) }}>📞</button>
                 </div>
               )
@@ -238,8 +239,8 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
           {!activePeer ? (
             <div className="communion-placeholder">
               <div style={{ fontSize: 40 }}>🕊️</div>
-              <p>选择一位弟兄姊妹开始聊天</p>
-              <button className="communion-head-call" onClick={openGroupVoice}>🎙 多人语音通话</button>
+              <p>{i18nT('选择一位弟兄姊妹开始聊天')}</p>
+              <button className="communion-head-call" onClick={openGroupVoice}>{i18nT('🎙 多人语音通话')}</button>
             </div>
           ) : (
             <>
@@ -249,7 +250,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                   {shortName(activePeer.email, activePeer.nickname)}
                   <span className={`communion-dot ${isOnline(activePeer.email) ? 'online' : ''}`} />
                 </div>
-                <button className="communion-head-call" onClick={() => dial(activePeer)}>📞 语音通话</button>
+                <button className="communion-head-call" onClick={() => dial(activePeer)}>{i18nT('📞 语音通话')}</button>
               </div>
 
               <div className="communion-messages">
@@ -259,7 +260,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                     <div className="communion-msg-time">{timeLabel(m.created_at)}</div>
                   </div>
                 ))}
-                {typingFrom && <div className="communion-typing">对方正在输入…</div>}
+                {typingFrom && <div className="communion-typing">{i18nT('对方正在输入…')}</div>}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -268,10 +269,10 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
                   value={draft}
                   onChange={(e) => onDraftChange(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat() } }}
-                  placeholder="输入消息，Enter 发送"
+                  placeholder={i18nT('输入消息，Enter 发送')}
                   rows={1}
                 />
-                <button onClick={sendChat} disabled={!draft.trim()}>发送</button>
+                <button onClick={sendChat} disabled={!draft.trim()}>{i18nT('发送')}</button>
               </div>
             </>
           )}

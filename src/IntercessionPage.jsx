@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** IntercessionPage — 代祷名单 / 代祷追踪 (B2)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -35,30 +36,30 @@ export default function IntercessionPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🙏 代祷名单</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>持续为人代求 · 把结果交托给神 · 默认私密</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🙏 代祷名单')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('持续为人代求 · 把结果交托给神 · 默认私密')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
-        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="新的代祷事项（如：为母亲的健康）" style={fld} />
+        <input value={title} onChange={e => setTitle(e.target.value)} placeholder={i18nT('新的代祷事项（如：为母亲的健康）')} style={fld} />
         <div style={{ display: 'flex', gap: 8 }}>
           <select value={urgency} onChange={e => setUrgency(e.target.value)} style={{ ...fld, marginBottom: 0, flex: 1 }}>
             {URG.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button style={btn} disabled={busy} onClick={add}>添加</button>
+          <button style={btn} disabled={busy} onClick={add}>{i18nT('添加')}</button>
         </div>
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>今日建议代祷（{today.length}）</div>
-        {today.length === 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>暂无。添加一个代祷事项开始。</div>}
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('今日建议代祷（')}{today.length}）</div>
+        {today.length === 0 && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>{i18nT('暂无。添加一个代祷事项开始。')}</div>}
         {today.map(r => (
           <div key={r.id} style={{ padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ fontSize: 14, fontWeight: 600 }}>{r.title} {r.urgency === 'urgent' ? '🔴' : r.urgency === 'high' ? '🟠' : ''}</div>
             {r.prayer_direction && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', margin: '2px 0 6px' }}>{r.prayer_direction}</div>}
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ ...btn, padding: '5px 10px', fontSize: 12 }} onClick={() => prayed(r.id)}>已祷告</button>
-              <button style={{ ...btn, padding: '5px 10px', fontSize: 12, background: 'rgba(52,199,89,0.5)' }} onClick={() => answered(r.id)}>蒙应允</button>
+              <button style={{ ...btn, padding: '5px 10px', fontSize: 12 }} onClick={() => prayed(r.id)}>{i18nT('已祷告')}</button>
+              <button style={{ ...btn, padding: '5px 10px', fontSize: 12, background: 'rgba(52,199,89,0.5)' }} onClick={() => answered(r.id)}>{i18nT('蒙应允')}</button>
             </div>
           </div>
         ))}

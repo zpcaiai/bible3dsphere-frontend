@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 import jsPDF from 'jspdf'
@@ -110,14 +111,14 @@ function JournalCard({ journal, onOpen, onEdit, onDelete }) {
         <div className="dj-card-date">{formatDate(journal.date)}</div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {mood && <span className="dj-card-mood">{mood.emoji} {mood.label}</span>}
-          <button onClick={e => { e.stopPropagation(); onEdit(journal) }} title="编辑" style={btnStyle}>✏️</button>
-          <button onClick={e => { e.stopPropagation(); onDelete(journal) }} title="删除" style={delBtnStyle}>🗑️</button>
+          <button onClick={e => { e.stopPropagation(); onEdit(journal) }} title={i18nT('编辑')} style={btnStyle}>✏️</button>
+          <button onClick={e => { e.stopPropagation(); onDelete(journal) }} title={i18nT('删除')} style={delBtnStyle}>🗑️</button>
         </div>
       </div>
       {journal.title && <div className="dj-card-title">{journal.title}</div>}
       <div className="dj-card-preview" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', WebkitLineClamp: 'none', maxHeight: 'none', overflow: 'visible' }}>{preview}</div>
       <div className="dj-card-footer">
-        <span className="dj-card-time">更新于 {timeAgo(journal.updated_at)}</span>
+        <span className="dj-card-time">{i18nT('更新于')} {timeAgo(journal.updated_at)}</span>
       </div>
     </div>
   )
@@ -185,7 +186,7 @@ function JournalEditor({ initial, token, onSaved, onCancel }) {
       <div className="dj-editor-body">
         {/* Date picker */}
         <div className="dj-field">
-          <label className="dj-field-label">📅 日期</label>
+          <label className="dj-field-label">{i18nT('📅 日期')}</label>
           <input
             type="date"
             className="dj-date-input"
@@ -196,11 +197,11 @@ function JournalEditor({ initial, token, onSaved, onCancel }) {
 
         {/* Title */}
         <div className="dj-field">
-          <label className="dj-field-label">✏️ 标题（选填）</label>
+          <label className="dj-field-label">{i18nT('✏️ 标题（选填）')}</label>
           <input
             type="text"
             className="dj-text-input"
-            placeholder="今天的主题是…"
+            placeholder={i18nT('今天的主题是…')}
             value={form.title || ''}
             onChange={e => set('title', e.target.value)}
             maxLength={200}
@@ -209,7 +210,7 @@ function JournalEditor({ initial, token, onSaved, onCancel }) {
 
         {/* Mood */}
         <div className="dj-field">
-          <label className="dj-field-label">💝 今日心情</label>
+          <label className="dj-field-label">{i18nT('💝 今日心情')}</label>
           <div className="dj-mood-grid">
             {MOODS.map(m => (
               <button
@@ -383,7 +384,7 @@ async function exportJournalToPdf(journal) {
     }
     const title = (journal.title || journal.scripture || '灵修日记').replace(/[\\/:*?"<>|]/g, '').slice(0, 20)
     pdf.save(`${title}_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert('PDF 生成失败，请重试') }
+  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
   finally { document.body.removeChild(el) }
 }
 
@@ -423,13 +424,13 @@ function JournalDetail({ journal, onEdit, onBack }) {
         {sections.length === 0 && (
           <div className="dj-empty" style={{ marginTop: 40 }}>
             <div className="dj-empty-icon">📝</div>
-            <div>这篇日记还没有内容</div>
-            <button className="primary-btn" style={{ maxWidth: 160, marginTop: 16 }} onClick={onEdit}>✏️ 填写</button>
+            <div>{i18nT('这篇日记还没有内容')}</div>
+            <button className="primary-btn" style={{ maxWidth: 160, marginTop: 16 }} onClick={onEdit}>{i18nT('✏️ 填写')}</button>
           </div>
         )}
 
         <div className="dj-detail-footer">
-          最后更新于 {timeAgo(journal.updated_at)}
+          {i18nT('最后更新于')} {timeAgo(journal.updated_at)}
         </div>
       </div>
     </div>
@@ -501,7 +502,7 @@ async function exportAllJournalsToPdf(journals) {
       pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
     }
     pdf.save(`灵修日记汇总_${new Date().toISOString().slice(0,10)}.pdf`)
-  } catch(err) { console.error('PDF生成失败', err); alert('PDF 生成失败，请重试') }
+  } catch(err) { console.error('PDF生成失败', err); alert(i18nT('PDF 生成失败，请重试')) }
   finally { document.body.removeChild(el) }
 }
 
@@ -627,14 +628,14 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
             </svg>
           </button>
           <div className="dj-header-center">
-            <div className="dj-page-title">📔 灵修日记</div>
+            <div className="dj-page-title">{i18nT('📔 灵修日记')}</div>
           </div>
           <div style={{ width: 32 }} />
         </header>
         <div className="dj-empty" style={{ flex: 1 }}>
           <div className="dj-empty-icon">🔒</div>
-          <div className="dj-empty-title">请先登录</div>
-          <div className="dj-empty-sub">灵修日记需要登录后才能使用</div>
+          <div className="dj-empty-title">{i18nT('请先登录')}</div>
+          <div className="dj-empty-sub">{i18nT('灵修日记需要登录后才能使用')}</div>
         </div>
       </div>
     )
@@ -644,13 +645,13 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
   const deleteDialog = deleteTarget && (
     <div className="dj-overlay" onClick={() => setDeleteTarget(null)}>
       <div className="dj-dialog glass" onClick={e => e.stopPropagation()}>
-        <div className="dj-dialog-title" style={{ textAlign: 'center', fontSize: '18px' }}>⚠️ 确定要删除这条日记吗？</div>
+        <div className="dj-dialog-title" style={{ textAlign: 'center', fontSize: '18px' }}>{i18nT('⚠️ 确定要删除这条日记吗？')}</div>
         <div className="dj-dialog-body" style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)' }}>
-          删除 <strong>{formatDate(deleteTarget.date)}</strong> 的日记<br />
-          删除后无法恢复，请谨慎操作
+          {i18nT('删除')} <strong>{formatDate(deleteTarget.date)}</strong> {i18nT('的日记')}<br />
+          {i18nT('删除后无法恢复，请谨慎操作')}
         </div>
         <div className="dj-dialog-actions">
-          <button className="pw-cancel-btn" onClick={() => setDeleteTarget(null)}>取消</button>
+          <button className="pw-cancel-btn" onClick={() => setDeleteTarget(null)}>{i18nT('取消')}</button>
           <button
             className="dj-del-confirm-btn"
             disabled={deleting}
@@ -708,10 +709,10 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
           </svg>
         </button>
         <div className="dj-header-center">
-          <div className="dj-page-title">📔 灵修日记</div>
+          <div className="dj-page-title">{i18nT('📔 灵修日记')}</div>
           <div className="dj-page-sub">{total > 0 ? `共 ${total} 篇` : '每日与神同行'}</div>
         </div>
-        <button className="pw-compose-btn" onClick={openNew} title="新建">
+        <button className="pw-compose-btn" onClick={openNew} title={i18nT('新建')}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
@@ -725,15 +726,15 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
         {loading ? (
           <div className="pw-loading">
             <div className="pw-loading-dots"><span /><span /><span /></div>
-            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 12 }}>加载中…</div>
+            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginTop: 12 }}>{i18nT('加载中…')}</div>
           </div>
         ) : journals.length === 0 ? (
           <div className="dj-empty">
             <div className="dj-empty-icon">📔</div>
-            <div className="dj-empty-title">还没有日记</div>
-            <div className="dj-empty-sub">每天与神同行，记录灵命成长</div>
+            <div className="dj-empty-title">{i18nT('还没有日记')}</div>
+            <div className="dj-empty-sub">{i18nT('每天与神同行，记录灵命成长')}</div>
             <button className="primary-btn" style={{ maxWidth: 200, marginTop: 20 }} onClick={openNew}>
-              ✏️ 开始写
+              {i18nT('✏️ 开始写')}
             </button>
           </div>
         ) : (
@@ -742,7 +743,7 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
             {!journals.find(j => j.date === today()) && (
               <button className="dj-today-btn glass" onClick={openNew}>
                 <span className="dj-today-icon">✨</span>
-                <span className="dj-today-text">记录今天的灵修 — {formatDate(today())}</span>
+                <span className="dj-today-text">{i18nT('记录今天的灵修 —')} {formatDate(today())}</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
@@ -761,11 +762,11 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
 
             {journals.length < total && (
               <button className="pw-load-more" onClick={() => load(false)}>
-                ⬇️ 加载更多 ({total - journals.length})
+                {i18nT('⬇️ 加载更多 (')}{total - journals.length})
               </button>
             )}
 
-            <div className="pw-footer-tip">诗篇 119:105 · 你的话是我脚前的灯，是我路上的光</div>
+            <div className="pw-footer-tip">{i18nT('诗篇 119:105 · 你的话是我脚前的灯，是我路上的光')}</div>
           </>
         )}
       </div>
@@ -773,7 +774,7 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
       {/* Export Bar */}
       {!loading && journals.length > 0 && (
         <div className="sj-export-bar">
-          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllJournalsToTxt(journals), "导出 TXT 中…", "✅ TXT 已导出")} title="导出TXT">
+          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllJournalsToTxt(journals), "导出 TXT 中…", "✅ TXT 已导出")} title={i18nT('导出TXT')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -783,7 +784,7 @@ export default function DevotionJournalPage({ user, token, onBack, contained = f
             </svg>
             TXT
           </button>
-          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllJournalsToPdf(journals), "生成 PDF 中…", "✅ PDF 已导出")} title="导出PDF">
+          <button className="sj-export-btn-bottom" onClick={e => window.busyBtn(e, () => exportAllJournalsToPdf(journals), "生成 PDF 中…", "✅ PDF 已导出")} title={i18nT('导出PDF')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>

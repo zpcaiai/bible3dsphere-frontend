@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useState, useCallback, useEffect } from 'react'
 import BackButton from './BackButton'
 import { API_BASE } from './api'
@@ -193,19 +194,19 @@ export default function DatingPriorityPage({ onBack }) {
       <div style={pageStyle}>
         <header style={headerStyle}>
           <BackButton onClick={onBack} />
-          <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>交友原则排序</h1>
+          <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>{i18nT('交友原则排序')}</h1>
         </header>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', gap: '24px' }}>
           <div style={{ fontSize: '48px' }}>💒</div>
           <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', textAlign: 'center', maxWidth: '300px', lineHeight: 1.6 }}>
-            请选择你的视角：<br/>点选顺序即为你的优先级排序
+            {i18nT('请选择你的视角：')}<br/>{i18nT('点选顺序即为你的优先级排序')}
           </p>
           <div style={{ display: 'flex', gap: '12px', width: '100%', maxWidth: '320px' }}>
             <button onClick={() => changePerspective('dx')} style={perspBtn(false)}>
-              🙋‍♂️ 弟兄对姐妹
+              {i18nT('🙋‍♂️ 弟兄对姐妹')}
             </button>
             <button onClick={() => changePerspective('zm')} style={perspBtn(false)}>
-              🙋‍♀️ 姐妹对弟兄
+              {i18nT('🙋‍♀️ 姐妹对弟兄')}
             </button>
           </div>
         </div>
@@ -217,20 +218,20 @@ export default function DatingPriorityPage({ onBack }) {
     <div style={pageStyle}>
       <header style={headerStyle}>
         <BackButton onClick={onBack} />
-        <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0, flex: 1 }}>交友原则排序</h1>
+        <h1 style={{ fontSize: '18px', fontWeight: 600, margin: 0, flex: 1 }}>{i18nT('交友原则排序')}</h1>
         <button onClick={resetAll} style={{
           background: 'rgba(255,59,48,0.15)', border: 'none', color: '#ff6b6b',
           fontSize: '13px', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
-        }}>🔄 重置</button>
+        }}>{i18nT('🔄 重置')}</button>
       </header>
 
       {/* Perspective toggle */}
       <div style={{ padding: '12px 20px', display: 'flex', gap: '8px' }}>
         <button onClick={() => changePerspective('dx')} style={perspBtn(perspective === 'dx')}>
-          🙋‍♂️ 弟兄→姐妹
+          {i18nT('🙋‍♂️ 弟兄→姐妹')}
         </button>
         <button onClick={() => changePerspective('zm')} style={perspBtn(perspective === 'zm')}>
-          🙋‍♀️ 姐妹→弟兄
+          {i18nT('🙋‍♀️ 姐妹→弟兄')}
         </button>
       </div>
 
@@ -238,9 +239,9 @@ export default function DatingPriorityPage({ onBack }) {
         {/* 关注点 */}
         <div style={sectionTitle}>
           <span>💚</span>
-          <span>关注点</span>
+          <span>{i18nT('关注点')}</span>
           <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>
-            (已选 {focusOrder.length}/{focusList.length})
+            {i18nT('(已选')} {focusOrder.length}/{focusList.length})
           </span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -263,9 +264,9 @@ export default function DatingPriorityPage({ onBack }) {
         {/* 阻力点 */}
         <div style={sectionTitle}>
           <span>🚫</span>
-          <span>阻力点</span>
+          <span>{i18nT('阻力点')}</span>
           <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>
-            (已选 {blockOrder.length}/{blockList.length})
+            {i18nT('(已选')} {blockOrder.length}/{blockList.length})
           </span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -289,11 +290,11 @@ export default function DatingPriorityPage({ onBack }) {
         {(focusOrder.length > 0 || blockOrder.length > 0) && (
           <div style={{ marginTop: '28px', padding: '16px', borderRadius: '14px', background: 'rgba(79,172,254,0.06)', border: '1px solid rgba(79,172,254,0.15)' }}>
             <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: '#4facfe' }}>
-              📋 你的优先级排序
+              {i18nT('📋 你的优先级排序')}
             </div>
             {focusOrder.length > 0 && (
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>💚 关注点排序：</div>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>{i18nT('💚 关注点排序：')}</div>
                 {focusOrder.map((item, i) => (
                   <div key={item} style={{ fontSize: '14px', padding: '4px 0', color: '#e6e6e6' }}>
                     <span style={{ color: '#4facfe', fontWeight: 600, marginRight: '8px' }}>{i + 1}.</span>{item}
@@ -303,7 +304,7 @@ export default function DatingPriorityPage({ onBack }) {
             )}
             {blockOrder.length > 0 && (
               <div>
-                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>🚫 阻力点排序：</div>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>{i18nT('🚫 阻力点排序：')}</div>
                 {blockOrder.map((item, i) => (
                   <div key={item} style={{ fontSize: '14px', padding: '4px 0', color: '#e6e6e6' }}>
                     <span style={{ color: '#ff6b6b', fontWeight: 600, marginRight: '8px' }}>{i + 1}.</span>{item}
@@ -327,7 +328,7 @@ export default function DatingPriorityPage({ onBack }) {
               </button>
             ) : (
               <div style={{ marginTop: '16px', textAlign: 'center', color: '#51cf66', fontSize: '14px', fontWeight: 600 }}>
-                ✅ 已提交！感谢你的参与
+                {i18nT('✅ 已提交！感谢你的参与')}
               </div>
             )}
           </div>
@@ -353,26 +354,26 @@ export default function DatingPriorityPage({ onBack }) {
         {showStats && (
           <div style={{ marginTop: '16px', padding: '16px', borderRadius: '14px', background: 'rgba(81,207,102,0.06)', border: '1px solid rgba(81,207,102,0.15)' }}>
             <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: '#51cf66' }}>
-              📊 群体排序统计 ({perspective === 'dx' ? '弟兄→姐妹' : '姐妹→弟兄'})
+              {i18nT('📊 群体排序统计 (')}{perspective === 'dx' ? '弟兄→姐妹' : '姐妹→弟兄'})
             </div>
             {statsLoading ? (
-              <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '20px' }}>加载中...</div>
+              <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '20px' }}>{i18nT('加载中...')}</div>
             ) : !stats || stats.total === 0 ? (
-              <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '20px' }}>暂无数据，等待更多人参与</div>
+              <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '20px' }}>{i18nT('暂无数据，等待更多人参与')}</div>
             ) : (
               <>
                 <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '12px' }}>
-                  共 {stats.total} 人参与
+                  {i18nT('共')} {stats.total} {i18nT('人参与')}
                 </div>
                 {stats.focus_stats.length > 0 && (
                   <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>💚 关注点（按平均排序）：</div>
+                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>{i18nT('💚 关注点（按平均排序）：')}</div>
                     {stats.focus_stats.map((s, i) => (
                       <div key={s.item} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', fontSize: '13px' }}>
                         <span style={{ color: '#4facfe', fontWeight: 700, minWidth: '24px' }}>{i + 1}.</span>
                         <span style={{ flex: 1, color: '#e6e6e6' }}>{s.item}</span>
                         <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px' }}>
-                          均{s.avg_rank} | {s.selection_rate}%选
+                          {i18nT('均')}{s.avg_rank} | {s.selection_rate}{i18nT('%选')}
                         </span>
                       </div>
                     ))}
@@ -380,13 +381,13 @@ export default function DatingPriorityPage({ onBack }) {
                 )}
                 {stats.block_stats.length > 0 && (
                   <div>
-                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>🚫 阻力点（按平均排序）：</div>
+                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>{i18nT('🚫 阻力点（按平均排序）：')}</div>
                     {stats.block_stats.map((s, i) => (
                       <div key={s.item} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', fontSize: '13px' }}>
                         <span style={{ color: '#ff6b6b', fontWeight: 700, minWidth: '24px' }}>{i + 1}.</span>
                         <span style={{ flex: 1, color: '#e6e6e6' }}>{s.item}</span>
                         <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px' }}>
-                          均{s.avg_rank} | {s.selection_rate}%选
+                          {i18nT('均')}{s.avg_rank} | {s.selection_rate}{i18nT('%选')}
                         </span>
                       </div>
                     ))}

@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useState } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const CHK_PRAYER_OPTS = ['为家人的健康与平安', '为工作 / 学业', '为一个还未信主的朋友', '为教会与牧者', '为我正在做的决定', '为我心里的挣扎与软弱', '为国家 / 世界的需要']
@@ -194,14 +195,14 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
   return (
     <div className="checkin-page">
       <header className="checkin-header">
-        <button className="checkin-back-btn" onClick={onBack} aria-label="返回">
+        <button className="checkin-back-btn" onClick={onBack} aria-label={i18nT('返回')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <div className="checkin-header-center">
           <div className="checkin-greeting">
-            你好，{user?.nickname || '弟兄姊妹'} 👋
+            {i18nT('你好，')}{user?.nickname || '弟兄姊妹'} 👋
           </div>
           <div className="checkin-date">{today}</div>
         </div>
@@ -211,14 +212,14 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
       {submitted ? (
         <div className="checkin-submitted">
           <div className="checkin-submitted-icon">🙏</div>
-          <div className="checkin-submitted-title">已提交打卡</div>
-          <div className="checkin-submitted-sub">愿神的平安与你同在</div>
+          <div className="checkin-submitted-title">{i18nT('已提交打卡')}</div>
+          <div className="checkin-submitted-sub">{i18nT('愿神的平安与你同在')}</div>
           <button
             className="checkin-submit-btn"
             style={{ marginTop: 28 }}
             onClick={() => setSubmitted(false)}
           >
-            🔄 再次打卡
+            {i18nT('🔄 再次打卡')}
           </button>
         </div>
       ) : (
@@ -226,40 +227,40 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 只读：情绪球选中情绪 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">🔮 当前情绪</div>
+            <div className="checkin-section-title">{i18nT('🔮 当前情绪')}</div>
             <div className="checkin-readonly-row">
-              <span className="checkin-readonly-label">情绪标签</span>
+              <span className="checkin-readonly-label">{i18nT('情绪标签')}</span>
               <span className="checkin-readonly-value">
-                {emotionLabel || <span className="checkin-empty">（未选择）</span>}
+                {emotionLabel || <span className="checkin-empty">{i18nT('（未选择）')}</span>}
               </span>
             </div>
             <div className="checkin-readonly-row">
-              <span className="checkin-readonly-label">描述状态</span>
+              <span className="checkin-readonly-label">{i18nT('描述状态')}</span>
               <span className="checkin-readonly-value checkin-readonly-query">
-                {emotionQuery?.trim() || <span className="checkin-empty">（未填写）</span>}
+                {emotionQuery?.trim() || <span className="checkin-empty">{i18nT('（未填写）')}</span>}
               </span>
             </div>
           </section>
 
           {/* 场景分类 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">📍 当前处境</div>
+            <div className="checkin-section-title">{i18nT('📍 当前处境')}</div>
             <div className="checkin-select-group">
               <div className="checkin-select-wrap">
-                <label className="checkin-select-label">一级分类</label>
+                <label className="checkin-select-label">{i18nT('一级分类')}</label>
                 <select
                   className="checkin-select"
                   value={selectedCategory}
                   onChange={e => { setSelectedCategory(e.target.value); setSelectedScenario('') }}
                 >
-                  <option value="">请选择分类…</option>
+                  <option value="">{i18nT('请选择分类…')}</option>
                   {SCENARIO_DATA.map(d => (
                     <option key={d.category} value={d.category}>{d.category}</option>
                   ))}
                 </select>
               </div>
               <div className="checkin-select-wrap">
-                <label className="checkin-select-label">具体场景</label>
+                <label className="checkin-select-label">{i18nT('具体场景')}</label>
                 <select
                   className="checkin-select"
                   value={selectedScenario}
@@ -275,7 +276,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
             </div>
             {currentDrivers ? (
               <div className="checkin-drivers-row">
-                <span className="checkin-drivers-label">核心驱动</span>
+                <span className="checkin-drivers-label">{i18nT('核心驱动')}</span>
                 <span className="checkin-drivers-value">{currentDrivers}</span>
               </div>
             ) : null}
@@ -283,16 +284,16 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 驱动机制 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">⚙️ 行为驱动</div>
+            <div className="checkin-section-title">{i18nT('⚙️ 行为驱动')}</div>
             <div className="checkin-select-group">
               <div className="checkin-select-wrap">
-                <label className="checkin-select-label">驱动类型</label>
+                <label className="checkin-select-label">{i18nT('驱动类型')}</label>
                 <select
                   className="checkin-select"
                   value={selectedDriverCat}
                   onChange={e => { setSelectedDriverCat(e.target.value); setSelectedDriverOption('') }}
                 >
-                  <option value="">请选择驱动类型…</option>
+                  <option value="">{i18nT('请选择驱动类型…')}</option>
                   {DRIVER_DATA.map(d => (
                     <option key={d.category} value={d.category}>
                       {d.icon} {d.category}（{d.tag}）
@@ -301,7 +302,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
                 </select>
               </div>
               <div className="checkin-select-wrap">
-                <label className="checkin-select-label">具体表现</label>
+                <label className="checkin-select-label">{i18nT('具体表现')}</label>
                 <select
                   className="checkin-select"
                   value={selectedDriverOption}
@@ -325,7 +326,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 今日心情 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">😌 今日心情</div>
+            <div className="checkin-section-title">{i18nT('😌 今日心情')}</div>
             <div className="checkin-chip-row">
               {MOOD_OPTIONS.map(opt => (
                 <button
@@ -342,7 +343,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 睡眠状况 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">🌙 昨夜睡眠</div>
+            <div className="checkin-section-title">{i18nT('🌙 昨夜睡眠')}</div>
             <div className="checkin-chip-row">
               {SLEEP_OPTIONS.map(opt => (
                 <button
@@ -359,7 +360,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 精力状态 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">⚡ 精力状态</div>
+            <div className="checkin-section-title">{i18nT('⚡ 精力状态')}</div>
             <div className="checkin-chip-row">
               {ENERGY_OPTIONS.map(opt => (
                 <button
@@ -376,12 +377,12 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 代祷事项 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">🙏 代祷事项</div>
+            <div className="checkin-section-title">{i18nT('🙏 代祷事项')}</div>
             <span style={{ position: 'relative', display: 'block' }}>
             <textarea
               className="checkin-textarea"
               style={{ paddingRight: 92 }}
-              placeholder="今天有什么想交托给神的..."
+              placeholder={i18nT('今天有什么想交托给神的...')}
               value={prayerRequest}
               onChange={e => setPrayerRequest(e.target.value)}
               rows={3}
@@ -392,12 +393,12 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
 
           {/* 今日感恩 */}
           <section className="checkin-section glass">
-            <div className="checkin-section-title">✨ 今日感恩</div>
+            <div className="checkin-section-title">{i18nT('✨ 今日感恩')}</div>
             <span style={{ position: 'relative', display: 'block' }}>
             <textarea
               className="checkin-textarea"
               style={{ paddingRight: 92 }}
-              placeholder="今天感恩的一件事..."
+              placeholder={i18nT('今天感恩的一件事...')}
               value={gratitude}
               onChange={e => setGratitude(e.target.value)}
               rows={2}
@@ -410,7 +411,7 @@ export default function CheckInPage({ user, emotionLabel, emotionQuery, token, o
             className="checkin-submit-btn"
             type="submit"
           >
-            ✅ 提交打卡
+            {i18nT('✅ 提交打卡')}
           </button>
         </form>
       )}

@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { fruitDimensions, temptationTypes, vices, virtues } from '../../data/virtueViceSeed'
 import {
@@ -90,7 +91,7 @@ export function VirtueDashboard({ userId, focuses, logs, onSaveFocus, onSaveLog 
   const virtueReflection = activeFocus ? generateVirtueReflection(userId, activeFocus, logs) : null
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Virtue Formation / 德性塑造</h2><p>Grace-driven focus, practices, logs, and reflection.</p></div>
+      <div className="sf-section-heading"><h2>{T('德性塑造', 'Virtue Formation')}</h2><p>Grace-driven focus, practices, logs, and reflection.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Recommend Virtues</h3>
@@ -151,7 +152,7 @@ export function VicePatternAnalyzer({ userId, observations, patterns, onSaveObse
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Vice Pattern Detection / 罪性模式识别</h2><p>Notice possible recurring patterns without shame or identity labels.</p></div>
+      <div className="sf-section-heading"><h2>{T('罪性模式识别', 'Vice Pattern Detection')}</h2><p>Notice possible recurring patterns without shame or identity labels.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Situation<textarea value={text} onChange={(event) => setText(event.target.value)} /></label>
         <button className="sf-primary" type="button" onClick={analyze}>Analyze Pattern</button>
@@ -219,7 +220,7 @@ export function TemptationResistancePlan({ userId, plans, checkins, onSavePlan, 
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Temptation Resistance / 试探抵抗</h2><p>Temptation is not identity. Choose escape, replacement, and support early.</p></div>
+      <div className="sf-section-heading"><h2>{T('试探抵抗', 'Temptation Resistance')}</h2><p>Temptation is not identity. Choose escape, replacement, and support early.</p></div>
       <div className="sf-home-grid">
         <article className="sf-card sf-flow-card">
           <h3>Create Plan</h3>
@@ -272,7 +273,7 @@ export function FruitOfSpiritTracker({ userId, assessments, feedbackRequests, on
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Fruit of the Spirit Tracker / 圣灵果子追踪</h2><p>Humble long-term indicators, not spiritual ranking.</p></div>
+      <div className="sf-section-heading"><h2>{T('圣灵果子追踪', 'Fruit of the Spirit Tracker')}</h2><p>Humble long-term indicators, not spiritual ranking.</p></div>
       <article className="sf-card sf-flow-card">
         <h3>Self Assessment</h3>
         <div className="sf-home-grid">{fruitDimensions.map((dimension) => <label key={dimension.key}>{dimension.displayName}: {scores[dimension.key]}<input type="range" min="1" max="10" value={scores[dimension.key]} onChange={(event) => setScores({ ...scores, [dimension.key]: Number(event.target.value) })} /></label>)}</div>
@@ -308,7 +309,7 @@ export default function VirtueViceDashboard({ userId }) {
 
   return (
     <section className="sf-section virtue-vice">
-      <div className="sf-section-heading"><h2>Virtue & Vice Formation OS / 德性与罪性塑造系统</h2><p>{MODULE_DISCLAIMER}</p></div>
+      <div className="sf-section-heading"><h2>{T('德性与罪性塑造系统', 'Virtue & Vice Formation OS')}</h2><p>{MODULE_DISCLAIMER}</p></div>
       <MiniTabs active={tab} onChange={setTab} />
       {tab === 'dashboard' && (
         <>

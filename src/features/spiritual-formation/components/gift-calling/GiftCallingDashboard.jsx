@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useMemo, useState } from 'react'
 import { callingDomains, giftAssessmentItems, giftCallingMinistryAreas, ministryOpportunityTemplates, missionDomains, spiritualGiftDefinitions } from '../../data/giftCallingSeed'
 import {
@@ -71,7 +72,7 @@ export function GiftCallingOverview({ userId, data }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Gift, Calling & Mission OS / 恩赐、呼召与使命系统</h2>
+        <h2>{T('恩赐、呼召与使命系统', 'Gift, Calling & Mission OS')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <article className="sf-card sf-flow-card">
@@ -144,7 +145,7 @@ export function SpiritualGiftsAssessment({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Spiritual Gifts Assessment / 属灵恩赐评估</h2><p>Gifts are possible evidence to test in love, character, service, fruit, and community confirmation.</p></div>
+      <div className="sf-section-heading"><h2>{T('属灵恩赐评估', 'Spiritual Gifts Assessment')}</h2><p>Gifts are possible evidence to test in love, character, service, fruit, and community confirmation.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Assessment context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createAssessment}>Complete Gift Assessment</button><button type="button" onClick={addFeedbackAndRegenerate}>Add Mentor Feedback</button></div>
@@ -206,7 +207,7 @@ export function CallingDiscernmentWizard({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Calling Discernment / 呼召分辨</h2><p>Calling is clarified through faithful experiments, fruit, community confirmation, and wisdom.</p></div>
+      <div className="sf-section-heading"><h2>{T('呼召分辨', 'Calling Discernment')}</h2><p>Calling is clarified through faithful experiments, fruit, community confirmation, and wisdom.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Discernment question<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createSessionAndPattern}>Analyze Calling Pattern</button><button type="button" onClick={createExperimentFlow}>Create Calling Experiment</button><button type="button" onClick={reviewExperimentFlow}>Review Calling Experiment</button></div>
@@ -263,7 +264,7 @@ export function MinistryMatchPanel({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Ministry Match / 服事匹配</h2><p>Matching uses gifts, calling, maturity, capacity, church need, and safety boundaries.</p></div>
+      <div className="sf-section-heading"><h2>{T('服事匹配', 'Ministry Match')}</h2><p>Matching uses gifts, calling, maturity, capacity, church need, and safety boundaries.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Burnout level <input type="range" min="1" max="10" value={burnout} onChange={(event) => setBurnout(Number(event.target.value))} /><span>{burnout}</span></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createCapacityAndMatches}>Generate Ministry Matches</button><button type="button" onClick={createOpportunityAndTrial}>Create Service Trial</button><button type="button" onClick={reviewTrialFlow}>Review Service Trial</button></div>
@@ -324,7 +325,7 @@ export function MissionLifeDesigner({ userId, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Mission Life Design / 使命生活设计</h2><p>Whole-life stewardship includes vocation, family, church, money, time, skills, neighbor love, and rest.</p></div>
+      <div className="sf-section-heading"><h2>{T('使命生活设计', 'Mission Life Design')}</h2><p>Whole-life stewardship includes vocation, family, church, money, time, skills, neighbor love, and rest.</p></div>
       <article className="sf-card sf-flow-card">
         <div className="sf-form-grid">
           <label>Life season<select value={lifeSeason} onChange={(event) => setLifeSeason(event.target.value)}>{['student', 'single_worker', 'married', 'parent', 'caregiver', 'ministry_worker', 'entrepreneur', 'academic', 'retired', 'transition', 'suffering', 'rebuilding', 'custom'].map((item) => <option key={item} value={item}>{item}</option>)}</select></label>

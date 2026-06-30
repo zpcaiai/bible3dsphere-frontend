@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../i18n/runtime'
 import './bible-map.css'
 import { useState } from 'react'
 import { BibleMapClient } from './components/BibleMapClient'
@@ -40,8 +41,8 @@ export default function BibleAtlasPage({ onBack }: Props) {
             </button>
           )}
           <div>
-            <h1 className="text-lg font-bold text-white">圣经地图集 · Bible Atlas</h1>
-            <p className="text-xs text-gray-400">十二支派 · 士师 · 列国兴衰 · 先知预言 · 帝国扩张 · 基甸战役</p>
+            <h1 className="text-lg font-bold text-white">{i18nT('圣经地图集 · Bible Atlas')}</h1>
+            <p className="text-xs text-gray-400">{i18nT('十二支派 · 士师 · 列国兴衰 · 先知预言 · 帝国扩张 · 基甸战役')}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -49,13 +50,13 @@ export default function BibleAtlasPage({ onBack }: Props) {
             onClick={() => setView('section')}
             className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-sm text-amber-300 hover:bg-amber-400/20"
           >
-            📐 所罗门圣殿剖面
+            {i18nT('📐 所罗门圣殿剖面')}
           </button>
           <button
             onClick={() => setView('temple')}
             className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-sm text-amber-300 hover:bg-amber-400/20"
           >
-            🏛️ 3D 圣殿沙盘
+            {i18nT('🏛️ 3D 圣殿沙盘')}
           </button>
         </div>
       </header>

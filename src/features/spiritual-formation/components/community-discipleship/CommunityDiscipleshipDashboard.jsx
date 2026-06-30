@@ -1,3 +1,4 @@
+import { T } from '../../lib/localize'
 import { useEffect, useMemo, useState } from 'react'
 import { accountabilityGroupTemplates, churchRhythmTemplates, discipleshipStages, ministryAreas } from '../../data/communityDiscipleshipSeed'
 import {
@@ -76,7 +77,7 @@ export function CommunityOverview({ userId, data }) {
   return (
     <section className="sf-section">
       <div className="sf-section-heading">
-        <h2>Community, Accountability & Discipleship OS / 群体、监督与门徒训练系统</h2>
+        <h2>{T('群体、监督与门徒训练系统', 'Community, Accountability & Discipleship OS')}</h2>
         <p>{MODULE_DISCLAIMER}</p>
       </div>
       <article className="sf-card sf-flow-card">
@@ -181,7 +182,7 @@ export function DiscipleshipPathwayPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Discipleship Pathway / 门训路径</h2><p>Stages are pastoral aids, not spiritual identity labels.</p></div>
+      <div className="sf-section-heading"><h2>{T('门训路径', 'Discipleship Pathway')}</h2><p>Stages are pastoral aids, not spiritual identity labels.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Spiritual context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
         <label>Starting stage<select value={stageKey} onChange={(event) => setStageKey(event.target.value)}>{discipleshipStages.map((stage) => <option key={stage.key} value={stage.key}>{stage.displayName}</option>)}</select></label>
@@ -283,7 +284,7 @@ export function AccountabilityGroupPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Accountability Group / 监督同行</h2><p>Consent-based, role-aware, redacted, and free from public shaming or coerced confession.</p></div>
+      <div className="sf-section-heading"><h2>{T('监督同行', 'Accountability Group')}</h2><p>Consent-based, role-aware, redacted, and free from public shaming or coerced confession.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Group type<select value={groupType} onChange={(event) => setGroupType(event.target.value)}>{accountabilityGroupTemplates.map((template) => <option key={template.key} value={template.key}>{template.title}</option>)}</select></label>
         <label>Check-in context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
@@ -380,7 +381,7 @@ export function MentorCoachingPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Mentor Coaching / 导师陪跑</h2><p>Mentoring supports discernment and action without control, surveillance, or hidden authority.</p></div>
+      <div className="sf-section-heading"><h2>{T('导师陪跑', 'Mentor Coaching')}</h2><p>Mentoring supports discernment and action without control, surveillance, or hidden authority.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Mentor context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
         <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createRelationship}>Create Mentor Relationship</button><button type="button" onClick={createSession}>Create Mentor Session</button><button type="button" onClick={addObservationAndPlan}>Add Observation and Action Plan</button><button type="button" onClick={createReview}>Generate Mentor Review</button></div>
@@ -473,7 +474,7 @@ export function ChurchIntegrationPanel({ userId, token, data, onRefresh }) {
 
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Church Integration / 教会生活整合</h2><p>Embodied church life is gradual and wise; church hurt routes to healing and safe re-entry first.</p></div>
+      <div className="sf-section-heading"><h2>{T('教会生活整合', 'Church Integration')}</h2><p>Embodied church life is gradual and wise; church hurt routes to healing and safe re-entry first.</p></div>
       <article className="sf-card sf-flow-card">
         <label>Church context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
         <div className="sf-form-grid">

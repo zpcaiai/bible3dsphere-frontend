@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** PracticingPresencePage — 操练与神同在 (B2)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -39,28 +40,28 @@ export default function PracticingPresencePage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🌿 操练与神同在</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>30–60 秒，短而频地回到神面前 · 不是打卡</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🌿 操练与神同在')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('30–60 秒，短而频地回到神面前 · 不是打卡')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       {checkin ? (
         <div style={card}>
           <div style={{ fontWeight: 700, marginBottom: 6 }}>{checkin.practice.title}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>{checkin.practice.description}</div>
-          <input value={prayer} onChange={e => setPrayer(e.target.value)} placeholder="一句短祷（可选）" style={fld} />
-          <button style={btn} disabled={busy} onClick={done}>完成</button>
+          <input value={prayer} onChange={e => setPrayer(e.target.value)} placeholder={i18nT('一句短祷（可选）')} style={fld} />
+          <button style={btn} disabled={busy} onClick={done}>{i18nT('完成')}</button>
         </div>
       ) : (
         <div style={card}>
           <div style={{ display: 'flex', gap: 8 }}>
-            <input value={context} onChange={e => setContext(e.target.value)} placeholder="此刻的情境/情绪（如：工作焦虑、通勤、疲惫）" style={{ ...fld, marginBottom: 0, flex: 1 }} />
-            <button style={btn} disabled={busy} onClick={recommend}>推荐</button>
+            <input value={context} onChange={e => setContext(e.target.value)} placeholder={i18nT('此刻的情境/情绪（如：工作焦虑、通勤、疲惫）')} style={{ ...fld, marginBottom: 0, flex: 1 }} />
+            <button style={btn} disabled={busy} onClick={recommend}>{i18nT('推荐')}</button>
           </div>
           {recs.map(p => (
             <div key={p.practice_key} style={{ padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               <div style={{ fontSize: 14, fontWeight: 600 }}>{p.title}</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '2px 0 6px' }}>{p.description}</div>
-              <button style={{ ...btn, padding: '5px 12px', fontSize: 12 }} onClick={() => start(p)}>开始（{p.duration_seconds}s）</button>
+              <button style={{ ...btn, padding: '5px 12px', fontSize: 12 }} onClick={() => start(p)}>{i18nT('开始（')}{p.duration_seconds}s）</button>
             </div>
           ))}
         </div>

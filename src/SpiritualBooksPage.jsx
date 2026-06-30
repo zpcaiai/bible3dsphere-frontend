@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * SpiritualBooksPage — 属灵书籍 书库
  *
@@ -77,7 +78,7 @@ function PdfBookReader({ book, onBack }) {
               ))}
             </div>
           )}
-          <TTSFullBar buildText={() => `${cur?.title || book.title}。${cur?.text || ''}`} label="全文朗读" />
+          <TTSFullBar buildText={() => `${cur?.title || book.title}。${cur?.text || ''}`} label={i18nT('全文朗读')} />
           <div style={S.chapTitle}>{cur?.title}</div>
           <div style={S.bodyText}>{cur?.text}</div>
         </div>
@@ -87,12 +88,12 @@ function PdfBookReader({ book, onBack }) {
           <iframe title={book.title} src={book.pdf}
             style={{ width: '100%', height: '78vh', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, background: '#fff' }} />
           <div style={{ textAlign: 'center', marginTop: 10 }}>
-            <a href={book.pdf} target="_blank" rel="noopener noreferrer" style={S.pdfBtnWide}>在新窗口打开 / 下载 PDF</a>
+            <a href={book.pdf} target="_blank" rel="noopener noreferrer" style={S.pdfBtnWide}>{i18nT('在新窗口打开 / 下载 PDF')}</a>
           </div>
         </div>
       ) : (
         <div style={{ padding: 40, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
-          这本书的内容还未添加。把 PDF 放到 <code>public/book/</code> 并在 BOOKS 里配置即可。
+          {i18nT('这本书的内容还未添加。把 PDF 放到')} <code>public/book/</code> {i18nT('并在 BOOKS 里配置即可。')}
         </div>
       )}
     </div>
@@ -255,21 +256,21 @@ function EpubReader({ book, onBack }) {
       {status === 'error' ? (
         <div style={{ padding: 32, textAlign: 'center', color: 'rgba(255,255,255,0.6)', lineHeight: 1.9 }}>
           <div style={{ fontSize: 40, marginBottom: 10 }}>📕</div>
-          <div style={{ fontWeight: 600, color: '#fff', marginBottom: 8 }}>暂时无法加载《{book.title}》</div>
+          <div style={{ fontWeight: 600, color: '#fff', marginBottom: 8 }}>{i18nT('暂时无法加载《')}{book.title}》</div>
           <div style={{ fontSize: 13 }}>
-            已尝试加载：<br /><code style={{ wordBreak: 'break-all' }}>{srcUrl || book.epub}</code>
+            {i18nT('已尝试加载：')}<br /><code style={{ wordBreak: 'break-all' }}>{srcUrl || book.epub}</code>
           </div>
           <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.45)', marginTop: 10 }}>
-            请确认该 EPUB 已上传到 <code>cdn.holiness.uk/ebook/</code>，且 CDN 已开启跨域访问（CORS）。
+            {i18nT('请确认该 EPUB 已上传到')} <code>cdn.holiness.uk/ebook/</code>{i18nT('，且 CDN 已开启跨域访问（CORS）。')}
           </div>
-          <button onClick={onBack} style={{ ...S.pdfBtnWide, marginTop: 18 }}>‹ 返回书库</button>
+          <button onClick={onBack} style={{ ...S.pdfBtnWide, marginTop: 18 }}>{i18nT('‹ 返回书库')}</button>
         </div>
       ) : (
         <>
           <div style={{ flex: 1, minHeight: 0, position: 'relative', margin: '0 6px' }} onTouchStart={onAreaTouchStart} onTouchEnd={onAreaTouchEnd}>
             <div ref={viewerRef} style={{ position: 'absolute', inset: 0 }} />
             {status === 'loading' && (
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.5)' }}>载入中…</div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('载入中…')}</div>
             )}
           </div>
           {/* 进度滚动条：拖动按百分比跳转 */}
@@ -280,7 +281,7 @@ function EpubReader({ book, onBack }) {
               disabled={!locReady}
               onChange={(e) => seekTo(parseFloat(e.target.value))}
               style={{ width: '100%', accentColor: '#5ac8fa', opacity: locReady ? 1 : 0.4 }}
-              aria-label="阅读进度"
+              aria-label={i18nT('阅读进度')}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
               <span>{progress}%</span>
@@ -288,8 +289,8 @@ function EpubReader({ book, onBack }) {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, padding: '10px 16px 16px', flexShrink: 0 }}>
-            <button onClick={prev} style={S.navBtn}>‹ 上一页</button>
-            <button onClick={next} style={S.navBtn}>下一页 ›</button>
+            <button onClick={prev} style={S.navBtn}>{i18nT('‹ 上一页')}</button>
+            <button onClick={next} style={S.navBtn}>{i18nT('下一页 ›')}</button>
           </div>
         </>
       )}
@@ -331,7 +332,7 @@ export default function SpiritualBooksPage({ onBack }) {
   }, [])
 
   const saveMark = (bookId, patch) => {
-    if (!token) { window.showToast && window.showToast('登录后可标记想读/已读和评分', 'info'); return }
+    if (!token) { window.showToast && window.showToast(i18nT('登录后可标记想读/已读和评分'), 'info'); return }
     const cur = marks[bookId] || {}
     const next = {
       status: patch.status !== undefined ? patch.status : (cur.status || ''),
@@ -351,7 +352,7 @@ export default function SpiritualBooksPage({ onBack }) {
     if (navigator.share) { navigator.share(data).catch(() => {}) }
     else if (navigator.clipboard) {
       navigator.clipboard.writeText(`${data.text} ${url}`)
-      window.showToast && window.showToast('分享链接已复制', 'success')
+      window.showToast && window.showToast(i18nT('分享链接已复制'), 'success')
     }
   }
 
@@ -372,8 +373,8 @@ export default function SpiritualBooksPage({ onBack }) {
       <header style={S.header}>
         {onBack && <BackButton onClick={onBack} />}
         <div style={{ flex: 1 }}>
-          <div style={S.hTitle}>📚 属灵书籍</div>
-          <div style={S.hSub}>点开一本书，阅读全文并可语音朗读</div>
+          <div style={S.hTitle}>{i18nT('📚 属灵书籍')}</div>
+          <div style={S.hSub}>{i18nT('点开一本书，阅读全文并可语音朗读')}</div>
         </div>
       </header>
 
@@ -390,8 +391,8 @@ export default function SpiritualBooksPage({ onBack }) {
               <div style={S.cardAuthor}>{b.author}</div>
               {b.blurb && <div style={S.cardBlurb}>{b.blurb}</div>}
               <div style={S.cardCta}>
-                <span style={{ color: b.color }}>📖 阅读</span>
-                <span style={{ color: b.color }}>🔊 朗读</span>
+                <span style={{ color: b.color }}>{i18nT('📖 阅读')}</span>
+                <span style={{ color: b.color }}>{i18nT('🔊 朗读')}</span>
                 {b.pdf && <span style={{ color: 'rgba(255,255,255,0.45)' }}>📄 PDF</span>}
               </div>
               {/* 评分 / 想读 / 已读 / 分享 */}
@@ -406,17 +407,17 @@ export default function SpiritualBooksPage({ onBack }) {
                   ))}
                 </span>
                 {stats[b.id]?.rating_count > 0 && (
-                  <span style={MARK_S.stat}>{stats[b.id].avg_rating}分·{stats[b.id].rating_count}人</span>
+                  <span style={MARK_S.stat}>{stats[b.id].avg_rating}{i18nT('分·')}{stats[b.id].rating_count}{i18nT('人')}</span>
                 )}
                 <span onClick={() => saveMark(b.id, { status: marks[b.id]?.status === 'want' ? '' : 'want' })}
                   style={{ ...MARK_S.btn, ...(marks[b.id]?.status === 'want' ? MARK_S.on : {}) }}>
-                  🔖 想读{stats[b.id]?.want ? ` ${stats[b.id].want}` : ''}
+                  {i18nT('🔖 想读')}{stats[b.id]?.want ? ` ${stats[b.id].want}` : ''}
                 </span>
                 <span onClick={() => saveMark(b.id, { status: marks[b.id]?.status === 'read' ? '' : 'read' })}
                   style={{ ...MARK_S.btn, ...(marks[b.id]?.status === 'read' ? MARK_S.on : {}) }}>
-                  ✅ 已读{stats[b.id]?.read_cnt ? ` ${stats[b.id].read_cnt}` : ''}
+                  {i18nT('✅ 已读')}{stats[b.id]?.read_cnt ? ` ${stats[b.id].read_cnt}` : ''}
                 </span>
-                <span onClick={() => shareBook(b)} style={MARK_S.btn}>↗ 分享</span>
+                <span onClick={() => shareBook(b)} style={MARK_S.btn}>{i18nT('↗ 分享')}</span>
               </div>
             </div>
           </div>
@@ -424,7 +425,7 @@ export default function SpiritualBooksPage({ onBack }) {
       </div>
 
       <div style={S.note}>
-        想加新书？把 PDF 放进 <code>emotion-sphere-ui/public/book/</code>，在 <code>SpiritualBooksPage.jsx</code> 的 BOOKS 里加一条即可（可只放 PDF，也可附文字以支持语音朗读）。
+        {i18nT('想加新书？把 PDF 放进')} <code>emotion-sphere-ui/public/book/</code>{i18nT('，在')} <code>SpiritualBooksPage.jsx</code> {i18nT('的 BOOKS 里加一条即可（可只放 PDF，也可附文字以支持语音朗读）。')}
       </div>
     </div>
   )

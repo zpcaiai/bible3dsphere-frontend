@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * MemoryVersePage — 背经（SM-2 间隔重复）
  * 灵修 tab 子页。复习 / 我的 / 添加。
@@ -68,11 +69,11 @@ export default function MemoryVersePage({ user }) {
     <div style={{ padding: '14px 16px 90px', maxWidth: 640, margin: '0 auto', color: '#fff' }}>
       {/* 背经里程碑 */}
       {milestones && (
-        <div style={{ ...card, background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(90,200,250,0.06))', borderColor: 'rgba(167,139,250,0.3)' }} role="region" aria-label="背经里程碑">
+        <div style={{ ...card, background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(90,200,250,0.06))', borderColor: 'rgba(167,139,250,0.3)' }} role="region" aria-label={i18nT('背经里程碑')}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-            <span style={{ fontSize: 13.5, fontWeight: 700 }}>🏅 背经里程碑</span>
+            <span style={{ fontSize: 13.5, fontWeight: 700 }}>{i18nT('🏅 背经里程碑')}</span>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
-              已背诵 <strong style={{ color: '#a78bfa' }}>{milestones.memorized || 0}</strong> 节 · 熟记 <strong style={{ color: '#34c759' }}>{milestones.mastered || 0}</strong> 节
+              {i18nT('已背诵')} <strong style={{ color: '#a78bfa' }}>{milestones.memorized || 0}</strong> {i18nT('节 · 熟记')} <strong style={{ color: '#34c759' }}>{milestones.mastered || 0}</strong> {i18nT('节')}
             </span>
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -84,19 +85,19 @@ export default function MemoryVersePage({ user }) {
                 color: m.achieved ? '#a78bfa' : 'rgba(255,255,255,0.35)', fontWeight: m.achieved ? 700 : 400,
               }}>
                 <span style={{ display: 'block', fontSize: 13 }}>{m.achieved ? '✓' : '🔒'}</span>
-                {m.title} · {m.count}节
+                {m.title} · {m.count}{i18nT('节')}
               </span>
             ))}
           </div>
           {milestones.next_target && nextGap > 0 && (
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 10 }}>
-              距离下一里程碑还差 <strong style={{ color: '#5ac8fa' }}>{nextGap}</strong> 节
+              {i18nT('距离下一里程碑还差')} <strong style={{ color: '#5ac8fa' }}>{nextGap}</strong> {i18nT('节')}
             </div>
           )}
           {lastAchieved?.blessing && (
             <div style={{ marginTop: 10, borderLeft: '3px solid rgba(167,139,250,0.6)', paddingLeft: 10, fontSize: 12.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, fontStyle: 'italic' }}>
               「{lastAchieved.blessing}」
-              <span style={{ fontStyle: 'normal', color: '#a78bfa' }}> —— {lastAchieved.title}的祝福</span>
+              <span style={{ fontStyle: 'normal', color: '#a78bfa' }}> —— {lastAchieved.title}{i18nT('的祝福')}</span>
             </div>
           )}
         </div>
@@ -113,17 +114,17 @@ export default function MemoryVersePage({ user }) {
         due.length === 0 ? (
           <div style={{ ...card, textAlign: 'center', padding: '32px 16px' }}>
             <div style={{ fontSize: 26, marginBottom: 8 }}>🎉</div>
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>今天的背诵都复习完了</div>
-            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>愿这些话语住在你心里。明天会有新的卡片到期。</div>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>{i18nT('今天的背诵都复习完了')}</div>
+            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{i18nT('愿这些话语住在你心里。明天会有新的卡片到期。')}</div>
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 8, textAlign: 'center' }}>还剩 {due.length} 张 · 先回想，再翻看</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 8, textAlign: 'center' }}>{i18nT('还剩')} {due.length} {i18nT('张 · 先回想，再翻看')}</div>
             <div style={{ ...card, minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: '28px 18px' }}>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#a78bfa', marginBottom: 14 }}>{due[idx]?.reference}</div>
               {revealed
                 ? <div style={{ fontSize: 15, lineHeight: 1.9, color: 'rgba(255,255,255,0.92)' }}>{due[idx]?.verse_text}</div>
-                : <button onClick={() => setRevealed(true)} style={{ alignSelf: 'center', padding: '10px 22px', borderRadius: 20, border: '1px solid rgba(167,139,250,0.4)', background: 'rgba(167,139,250,0.12)', color: '#a78bfa', fontSize: 14, cursor: 'pointer' }}>先在心里背一遍，再点开</button>}
+                : <button onClick={() => setRevealed(true)} style={{ alignSelf: 'center', padding: '10px 22px', borderRadius: 20, border: '1px solid rgba(167,139,250,0.4)', background: 'rgba(167,139,250,0.12)', color: '#a78bfa', fontSize: 14, cursor: 'pointer' }}>{i18nT('先在心里背一遍，再点开')}</button>}
             </div>
             {revealed && (
               <div style={{ display: 'flex', gap: 8 }}>
@@ -138,29 +139,29 @@ export default function MemoryVersePage({ user }) {
 
       {tab === 'list' && (
         list.length === 0
-          ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>还没有背诵卡片，去「添加」开始吧</div>
+          ? <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('还没有背诵卡片，去「添加」开始吧')}</div>
           : list.map(c => (
             <div key={c.id} style={card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                 <span style={{ fontSize: 13.5, fontWeight: 700, color: '#a78bfa' }}>{c.reference}</span>
-                <button onClick={() => del(c.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,135,135,0.6)', fontSize: 12, cursor: 'pointer', flexShrink: 0 }}>删除</button>
+                <button onClick={() => del(c.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,135,135,0.6)', fontSize: 12, cursor: 'pointer', flexShrink: 0 }}>{i18nT('删除')}</button>
               </div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 1.7, marginTop: 6 }}>{c.verse_text}</div>
-              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)', marginTop: 6 }}>下次复习 {c.due_date} · 已复习 {c.repetitions} 次</div>
+              <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.35)', marginTop: 6 }}>{i18nT('下次复习')} {c.due_date} {i18nT('· 已复习')} {c.repetitions} {i18nT('次')}</div>
             </div>
           ))
       )}
 
       {tab === 'add' && (
         <div style={card}>
-          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>经节出处</label>
-          <input value={ref} onChange={e => setRef(e.target.value)} placeholder="如：腓立比书 4:6-7" style={inp} />
-          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '14px 0 6px' }}>经文</label>
+          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 6 }}>{i18nT('经节出处')}</label>
+          <input value={ref} onChange={e => setRef(e.target.value)} placeholder={i18nT('如：腓立比书 4:6-7')} style={inp} />
+          <label style={{ display: 'block', fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '14px 0 6px' }}>{i18nT('经文')}</label>
           <span style={{ position: 'relative', display: 'block' }}>
-          <textarea value={text} onChange={e => setText(e.target.value)} rows={4} placeholder="把要背诵的经文抄在这里…" style={{ ...inp, resize: 'vertical', paddingRight: 96 }} />
+          <textarea value={text} onChange={e => setText(e.target.value)} rows={4} placeholder={i18nT('把要背诵的经文抄在这里…')} style={{ ...inp, resize: 'vertical', paddingRight: 96 }} />
           <SuggestMenu top={8} right={8} options={MV_OPTS} value={text} onChange={setText} />
           </span>
-          <button onClick={add} disabled={busy} style={{ width: '100%', marginTop: 14, padding: 13, borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #8b5cf6, #5ac8fa)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>加入背诵</button>
+          <button onClick={add} disabled={busy} style={{ width: '100%', marginTop: 14, padding: 13, borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #8b5cf6, #5ac8fa)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>{i18nT('加入背诵')}</button>
           {msg && <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: msg.startsWith('✓') ? '#34c759' : '#ffd43b' }}>{msg}</div>}
         </div>
       )}

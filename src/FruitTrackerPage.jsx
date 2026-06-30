@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** FruitTrackerPage — 圣灵果子追踪 (B3)。入口：今日心镜。 */
 import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
@@ -34,8 +35,8 @@ export default function FruitTrackerPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🍇 圣灵果子追踪</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>这是反思镜子，不是属灵成绩，也不与人比较（加 5:22-23）</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🍇 圣灵果子追踪')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('这是反思镜子，不是属灵成绩，也不与人比较（加 5:22-23）')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
       <div style={card}>
@@ -53,7 +54,7 @@ export default function FruitTrackerPage({ user, onBack }) {
 
       {insights && (
         <div style={card}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>温柔的观察</div>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{i18nT('温柔的观察')}</div>
           {insights.map((i, k) => <div key={k} style={{ fontSize: 13, color: 'rgba(255,255,255,0.78)', marginBottom: 6 }}>· {i}</div>)}
         </div>
       )}

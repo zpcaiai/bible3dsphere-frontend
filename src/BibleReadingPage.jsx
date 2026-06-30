@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * BibleReadingPage — 圣经通读 · 在线和合本
  *
@@ -258,7 +259,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
   async function handleMark() {
     if (!user || marking || isDone || marked) return
     setMarking(true)
-    if (window.showToast) window.showToast("保存中…", "loading")
+    if (window.showToast) window.showToast(i18nT('保存中…'), "loading")
     try {
       await onMark(book.name, chapter, highlight)
       setMarked(true)
@@ -270,7 +271,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
     setStudyLoading(true)
     setStudyErr('')
     setStudy(null)
-    if (window.showToast) window.showToast("📖 正在生成查经材料…", "loading", 60000)
+    if (window.showToast) window.showToast(i18nT('📖 正在生成查经材料…'), "loading", 60000)
     setOpenSections({ summary: true })
     setTimeout(() => studyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
     try {
@@ -313,7 +314,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
       <div style={S.header}>
         <BackButton onClick={onBack} />
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{book.name} · 第{chapter}章</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{book.name} {i18nT('· 第')}{chapter}{i18nT('章')}</div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
             {isDone || marked ? '✅ 已读' : `第 ${chapter}/${book.chapters} 章`}
           </div>
@@ -348,12 +349,12 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
         <div ref={topRef} />
 
         {!verses && !loadErr && (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(90,200,250,0.5)', fontSize: 14 }}>经文加载中…</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(90,200,250,0.5)', fontSize: 14 }}>{i18nT('经文加载中…')}</div>
         )}
         {loadErr && (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
             <div style={{ color: 'rgba(255,100,100,0.7)', marginBottom: 16 }}>{loadErr}</div>
-            <button onClick={load} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'rgba(0,122,255,0.4)', color: '#fff', cursor: 'pointer' }}>重试</button>
+            <button onClick={load} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'rgba(0,122,255,0.4)', color: '#fff', cursor: 'pointer' }}>{i18nT('重试')}</button>
           </div>
         )}
 
@@ -362,7 +363,7 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
             {/* Chapter title + TTS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <div style={{ fontSize: 12, color: 'rgba(90,200,250,0.6)', fontWeight: 600, letterSpacing: '0.05em' }}>
-                {book.name} {chapter}章 · 共{verses.length}节
+                {book.name} {chapter}{i18nT('章 · 共')}{verses.length}{i18nT('节')}
               </div>
               <TTSButton
                 text={`${book.name}第${chapter}章。\n` + verses.map(v => `第${v.verse}节。${v.text}`).join('\n')}
@@ -385,14 +386,14 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
               {studyLoading && (
                 <div style={{ padding: '28px 0', textAlign: 'center', color: 'rgba(255,200,50,0.6)', fontSize: 14 }}>
                   <div style={{ fontSize: 24, marginBottom: 10 }}>📖</div>
-                  正在生成查经材料，请稍候…<br />
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 6, display: 'block' }}>通常需要 15-30 秒</span>
+                  {i18nT('正在生成查经材料，请稍候…')}<br />
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 6, display: 'block' }}>{i18nT('通常需要 15-30 秒')}</span>
                 </div>
               )}
               {studyErr && (
                 <div style={{ padding: '14px 16px', borderRadius: 10, background: 'rgba(255,59,48,0.1)', border: '1px solid rgba(255,59,48,0.25)', color: '#ff6b6b', fontSize: 13, marginBottom: 8 }}>
                   {studyErr}
-                  <button onClick={handleGenerateStudy} style={{ marginLeft: 12, background: 'none', border: 'none', color: '#5ac8fa', cursor: 'pointer', fontSize: 13 }}>重试</button>
+                  <button onClick={handleGenerateStudy} style={{ marginLeft: 12, background: 'none', border: 'none', color: '#5ac8fa', cursor: 'pointer', fontSize: 13 }}>{i18nT('重试')}</button>
                 </div>
               )}
               {study && (() => {
@@ -420,13 +421,13 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                         <span style={{ fontSize: 18 }}>📖</span>
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: '#ffd60a' }}>查经 — {book.name} 第{chapter}章</div>
-                          <div style={{ fontSize: 11, color: 'rgba(255,200,50,0.55)', marginTop: 2 }}>逐节精解 · 神学主题 · 祷告引导</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#ffd60a' }}>{i18nT('查经 —')} {book.name} {i18nT('第')}{chapter}{i18nT('章')}</div>
+                          <div style={{ fontSize: 11, color: 'rgba(255,200,50,0.55)', marginTop: 2 }}>{i18nT('逐节精解 · 神学主题 · 祷告引导')}</div>
                         </div>
                       </div>
                       {/* 全篇朗读 */}
                       <TTSFullBar
-                        label="全篇朗读"
+                        label={i18nT('全篇朗读')}
                         buildText={() => {
                           const parts = []
                           const KEYS = ['overview','summary','context','structure','key_words','cross_refs','theology','echoes','application','practice','prayer']
@@ -509,13 +510,13 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
                                         <div style={{ padding: '10px 12px', fontSize: 13, color: 'rgba(255,255,255,0.82)', lineHeight: 1.85, whiteSpace: 'pre-wrap' }}>{comment}</div>
                                         {wordNote && (
                                           <div style={{ margin: '0 12px 10px', padding: '8px 12px', borderRadius: 8, background: 'rgba(88,86,214,0.12)', border: '1px solid rgba(88,86,214,0.25)' }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(180,170,255,0.7)', letterSpacing: '0.06em' }}>🔑 原文词语　</span>
+                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(180,170,255,0.7)', letterSpacing: '0.06em' }}>{i18nT('🔑 原文词语')}　</span>
                                             <span style={{ fontSize: 12, color: 'rgba(200,190,255,0.9)', lineHeight: 1.75 }}>{wordNote}</span>
                                           </div>
                                         )}
                                         {applyNote && (
                                           <div style={{ margin: '0 12px 12px', padding: '7px 12px', borderRadius: 8, background: 'rgba(52,199,89,0.08)', border: '1px solid rgba(52,199,89,0.2)' }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(100,220,120,0.7)', letterSpacing: '0.06em' }}>💚 应用提示　</span>
+                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(100,220,120,0.7)', letterSpacing: '0.06em' }}>{i18nT('💚 应用提示')}　</span>
                                             <span style={{ fontSize: 12, color: 'rgba(160,240,180,0.9)', lineHeight: 1.7 }}>{applyNote}</span>
                                           </div>
                                         )}
@@ -554,15 +555,15 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
               <div style={{ marginTop: 28, padding: '16px', background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
                 {isDone || marked ? (
                   <div style={{ textAlign: 'center', color: 'rgba(52,199,89,0.8)', fontSize: 14, padding: '8px 0' }}>
-                    ✅ 已标记为已读
+                    {i18nT('✅ 已标记为已读')}
                   </div>
                 ) : (
                   <>
-                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>读完了？记录一句遇见神的话：</div>
+                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>{i18nT('读完了？记录一句遇见神的话：')}</div>
                     <input
                       value={highlight}
                       onChange={e => setHighlight(e.target.value)}
-                      placeholder="可选：摘录一节经文或灵感（可留空）"
+                      placeholder={i18nT('可选：摘录一节经文或灵感（可留空）')}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: '#fff', fontSize: 13, outline: 'none', boxSizing: 'border-box', marginBottom: 12 }}
                     />
                     <button onClick={handleMark} disabled={marking}
@@ -578,12 +579,12 @@ function ChapterReader({ book, chapter, doneChapters, onMark, onBack, onNav, use
             <div style={{ display: 'flex', gap: 10, marginTop: 16, marginBottom: 20 }}>
               {hasPrev && (
                 <button onClick={prev} style={{ flex: 1, padding: '11px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer' }}>
-                  ← 上一章
+                  {i18nT('← 上一章')}
                 </button>
               )}
               {hasNext && (
                 <button onClick={next} style={{ flex: 1, padding: '11px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer' }}>
-                  下一章 →
+                  {i18nT('下一章 →')}
                 </button>
               )}
             </div>
@@ -663,11 +664,11 @@ export default function BibleReadingPage({ user, token, onBack }) {
           </div>
           {view === 'books' ? (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
-              {totalDone} / {TOTAL_CHAPTERS} 章 · {pct}% 已读完
+              {totalDone} / {TOTAL_CHAPTERS} {i18nT('章 ·')} {pct}{i18nT('% 已读完')}
             </div>
           ) : selectedBook ? (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>
-              {(progress.by_book[selectedBook.name] || []).length} / {selectedBook.chapters} 章已读
+              {(progress.by_book[selectedBook.name] || []).length} / {selectedBook.chapters} {i18nT('章已读')}
             </div>
           ) : null}
         </div>
@@ -676,7 +677,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
       {/* Completed book toast */}
       {completedBook && (
         <div style={{ background: 'linear-gradient(135deg,#ffd700,#ff9500)', padding: '10px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#000', flexShrink: 0 }}>
-          🎉 你读完了整卷《{completedBook}》！
+          {i18nT('🎉 你读完了整卷《')}{completedBook}》！
         </div>
       )}
 
@@ -689,7 +690,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
           <div style={{ flex: 1 }} />
           {user && (
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', alignSelf: 'center' }}>
-              全本 {pct}% ✓
+              {i18nT('全本')} {pct}% ✓
             </div>
           )}
         </div>
@@ -708,7 +709,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
         )}
 
         {loadingProgress ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>加载中…</div>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>{i18nT('加载中…')}</div>
         ) : view === 'books' ? (
           // ── Book list ─────────────────────────────────────────────────────
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(128px, 1fr))', gap: 8 }}>
@@ -726,7 +727,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
                   <div style={{ height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 5 }}>
                     <div style={{ height: '100%', width: `${bPct}%`, background: complete ? '#007aff' : '#5856d6', borderRadius: 2 }} />
                   </div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>{done}/{book.chapters} 章</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>{done}/{book.chapters} {i18nT('章')}</div>
                 </div>
               )
             })}
@@ -735,7 +736,7 @@ export default function BibleReadingPage({ user, token, onBack }) {
           // ── Chapter grid ──────────────────────────────────────────────────
           <div>
             <div style={{ marginBottom: 16, fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
-              点击章节数字可阅读全章经文
+              {i18nT('点击章节数字可阅读全章经文')}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', gap: 8 }}>
               {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map(ch => {
@@ -753,10 +754,10 @@ export default function BibleReadingPage({ user, token, onBack }) {
             {/* Legend */}
             <div style={{ marginTop: 18, display: 'flex', gap: 16, fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 16, height: 16, background: 'linear-gradient(135deg,#007aff,#5856d6)', borderRadius: 4, display: 'inline-block' }} />已读
+                <span style={{ width: 16, height: 16, background: 'linear-gradient(135deg,#007aff,#5856d6)', borderRadius: 4, display: 'inline-block' }} />{i18nT('已读')}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 16, height: 16, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 4, display: 'inline-block' }} />未读
+                <span style={{ width: 16, height: 16, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 4, display: 'inline-block' }} />{i18nT('未读')}
               </span>
             </div>
           </div>

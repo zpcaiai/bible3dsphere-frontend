@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * SpiritualCheckupPage — 属灵低潮体检（钟马田《属灵低潮》）
  * 「不要听自己，要向自己传讲福音。」入口：今日心镜卡片。
@@ -36,8 +37,8 @@ export default function SpiritualCheckupPage({ user, onBack, onNeedLogin }) {
     <div style={{ width: '100%', height: '100%', background: '#000', color: '#fff', overflowY: 'auto', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(28,28,30,0.92)', position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(10px)' }}>
         <BackButton onClick={result ? () => setResult(null) : onBack} />
-        <div><div style={{ fontSize: 17, fontWeight: 600 }}>属灵低潮体检</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>钟马田 · 属灵医生</div></div>
+        <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('属灵低潮体检')}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{i18nT('钟马田 · 属灵医生')}</div></div>
       </div>
 
       <div style={{ padding: '14px 16px 100px', maxWidth: 660, margin: '0 auto' }}>
@@ -47,10 +48,9 @@ export default function SpiritualCheckupPage({ user, onBack, onNeedLogin }) {
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(218,119,242,0.10), rgba(90,200,250,0.06))' }}>
               <div style={{ fontSize: 13.5, lineHeight: 1.85, color: 'rgba(255,255,255,0.85)' }}>
-                「我们大部分的不快乐，是因为<strong style={{ color: '#da77f2' }}>听自己说话</strong>，
-                而不是<strong style={{ color: '#34c759' }}>向自己传讲福音</strong>。」—— 钟马田
+                {i18nT('「我们大部分的不快乐，是因为')}<strong style={{ color: '#da77f2' }}>{i18nT('听自己说话')}</strong>{i18nT('， 而不是')}<strong style={{ color: '#34c759' }}>{i18nT('向自己传讲福音')}</strong>{i18nT('。」—— 钟马田')}
               </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>诚实地为最近的状态打分（0 = 没有，10 = 很强）。</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{i18nT('诚实地为最近的状态打分（0 = 没有，10 = 很强）。')}</div>
             </div>
             {SYMPTOMS.map(s => (
               <div key={s.key} style={card}>
@@ -68,7 +68,7 @@ export default function SpiritualCheckupPage({ user, onBack, onNeedLogin }) {
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(218,119,242,0.12), rgba(52,199,89,0.08))' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>低潮指数</span>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{i18nT('低潮指数')}</span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: result.level === '高' ? '#ff8787' : result.level === '中' ? '#ffd43b' : '#34c759' }}>{Math.round((result.index || 0) * 100)} · {result.level}</span>
               </div>
               <div style={{ fontSize: 13.5, lineHeight: 1.85, color: 'rgba(255,255,255,0.88)' }}>{result.summary}</div>
@@ -76,7 +76,7 @@ export default function SpiritualCheckupPage({ user, onBack, onNeedLogin }) {
 
             {result.preach && (
               <div style={{ ...card, borderColor: 'rgba(52,199,89,0.35)', background: 'rgba(52,199,89,0.06)' }}>
-                <div style={{ fontSize: 11, color: '#34c759', fontWeight: 700, marginBottom: 6 }}>🔊 向自己传讲</div>
+                <div style={{ fontSize: 11, color: '#34c759', fontWeight: 700, marginBottom: 6 }}>{i18nT('🔊 向自己传讲')}</div>
                 <div style={{ fontSize: 14.5, lineHeight: 1.8, color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>{result.preach}</div>
               </div>
             )}
@@ -97,7 +97,7 @@ export default function SpiritualCheckupPage({ user, onBack, onNeedLogin }) {
                 )}
               </div>
             ))}
-            <button onClick={() => setResult(null)} style={{ width: '100%', padding: 13, borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>再做一次</button>
+            <button onClick={() => setResult(null)} style={{ width: '100%', padding: 13, borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{i18nT('再做一次')}</button>
           </>
         )}
       </div>

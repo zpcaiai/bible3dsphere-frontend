@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import BackButton from './BackButton'
 import jsPDF from 'jspdf'
@@ -157,7 +158,7 @@ async function exportSelectedToPdf(note) {
     }
     const title = (note.scripture || '灵修分享').replace(/[\\/:*?"<>|]/g, '').slice(0, 20)
     pdf.save(`${title}_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert('PDF 生成失败，请重试') }
+  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
   finally { document.body.removeChild(el) }
 }
 
@@ -343,7 +344,7 @@ function FaithDocumentView() {
       ))}
 
       <div style={{ textAlign: 'center', fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 8 }}>
-        属灵星球 · 持守古道 · 传扬真道
+        {i18nT('属灵星球 · 持守古道 · 传扬真道')}
       </div>
     </div>
   )
@@ -375,7 +376,7 @@ function NoteDetailOverlay({ note, onClose, onUnshare, onAmen, token }) {
   }
 
   async function handleUnshare() {
-    if (!window.confirm('确定要从分享墙撤回这篇内容吗？')) return
+    if (!window.confirm(i18nT('确定要从分享墙撤回这篇内容吗？'))) return
     onUnshare(note.id)
     onClose()
   }
@@ -402,7 +403,7 @@ function NoteDetailOverlay({ note, onClose, onUnshare, onAmen, token }) {
             fontSize: 13, cursor: 'pointer', fontWeight: amenByMe ? 600 : 400,
           }}
         >
-          🙌 阿们 {amenCount > 0 && <span style={{ fontWeight: 700 }}>{amenCount}</span>}
+          {i18nT('🙌 阿们')} {amenCount > 0 && <span style={{ fontWeight: 700 }}>{amenCount}</span>}
         </button>
       </div>
 
@@ -450,7 +451,7 @@ function NoteDetailOverlay({ note, onClose, onUnshare, onAmen, token }) {
               onClick={handleUnshare}
               style={{ width: '100%', padding: '11px', marginBottom: 6, background: 'rgba(255,59,48,0.12)', border: '1px solid rgba(255,59,48,0.35)', borderRadius: 10, color: '#ff6b6b', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
-              ↩️ 从分享墙撤回
+              {i18nT('↩️ 从分享墙撤回')}
             </button>
           )}
           <button
@@ -489,7 +490,7 @@ function SundaySchoolView() {
   useEffect(() => {
     fetchSundaySchoolVideos()
       .then(d => setVideos(d.videos || []))
-      .catch(() => setErr('视频加载失败，请稍后重试'))
+      .catch(() => setErr(i18nT('视频加载失败，请稍后重试')))
   }, [])
 
   if (err) return (
@@ -500,16 +501,16 @@ function SundaySchoolView() {
 
   if (!videos) return (
     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>
-      加载中…
+      {i18nT('加载中…')}
     </div>
   )
 
   if (videos.length === 0) return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 12 }}>
       <div style={{ fontSize: 44 }}>🎬</div>
-      <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>暂无主日学视频</div>
+      <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>{i18nT('暂无主日学视频')}</div>
       <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textAlign: 'center', lineHeight: 1.7 }}>
-        视频上传到 cdn.holiness.uk/videos/ 后将自动显示
+        {i18nT('视频上传到 cdn.holiness.uk/videos/ 后将自动显示')}
       </div>
     </div>
   )
@@ -671,9 +672,9 @@ export default function ShareWallPage({ user, onBack }) {
     return (
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#1a1a2e,#16213e)' }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🌟</div>
-        <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', marginBottom: 8 }}>分享墙</div>
-        <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 24 }}>登录后查看分享墙内容</div>
-        <button onClick={onBack} style={{ padding: '10px 24px', background: 'rgba(0,122,255,0.3)', border: '1px solid rgba(0,122,255,0.5)', borderRadius: 8, color: '#5ac8fa', fontSize: 14, cursor: 'pointer' }}>← 返回</button>
+        <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.9)', marginBottom: 8 }}>{i18nT('分享墙')}</div>
+        <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 24 }}>{i18nT('登录后查看分享墙内容')}</div>
+        <button onClick={onBack} style={{ padding: '10px 24px', background: 'rgba(0,122,255,0.3)', border: '1px solid rgba(0,122,255,0.5)', borderRadius: 8, color: '#5ac8fa', fontSize: 14, cursor: 'pointer' }}>{i18nT('← 返回')}</button>
       </div>
     )
   }
@@ -696,16 +697,16 @@ export default function ShareWallPage({ user, onBack }) {
         <div style={{ padding: '12px 18px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
           <BackButton onClick={onBack} />
           <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: 17, fontWeight: 600, color: 'rgba(255,255,255,0.95)' }}>🌟 分享墙</div>
+            <div style={{ fontSize: 17, fontWeight: 600, color: 'rgba(255,255,255,0.95)' }}>{i18nT('🌟 分享墙')}</div>
             {faithTab === 'share' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{total > 0 ? `${total} 篇分享` : ''}</div>}
-            {faithTab === 'sunday' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>主日学视频</div>}
-            {faithTab === 'testimony' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>述说祂的作为</div>}
+            {faithTab === 'sunday' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{i18nT('主日学视频')}</div>}
+            {faithTab === 'testimony' && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{i18nT('述说祂的作为')}</div>}
           </div>
           {faithTab === 'share' ? (
             <button
               onClick={() => loadNotes(1)}
               style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: 8, fontSize: 16 }}
-              title="刷新"
+              title={i18nT('刷新')}
             >↻</button>
           ) : <div style={{ width: 36 }} />}
         </div>
@@ -750,12 +751,12 @@ export default function ShareWallPage({ user, onBack }) {
         <div style={indicatorStyle}>{indicatorText}</div>
 
         {loading && notes.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.4)' }}>加载中...</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.4)' }}>{i18nT('加载中...')}</div>
         ) : notes.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.4)' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>📝</div>
-            <div style={{ fontSize: 15 }}>暂无分享</div>
-            <div style={{ fontSize: 13, marginTop: 8, opacity: 0.6 }}>在日记页面分享你的灵修心得</div>
+            <div style={{ fontSize: 15 }}>{i18nT('暂无分享')}</div>
+            <div style={{ fontSize: 13, marginTop: 8, opacity: 0.6 }}>{i18nT('在日记页面分享你的灵修心得')}</div>
           </div>
         ) : (
           <>

@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 'use client'
 import { useState } from 'react'
 import type { BibleMapSelection } from '../domain/types'
@@ -40,7 +41,7 @@ export function AICommentaryPanel({ selection }: Props) {
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-base">🤖</span>
-          <h3 className="text-sm font-bold text-indigo-200">AI 讲解</h3>
+          <h3 className="text-sm font-bold text-indigo-200">{i18nT('AI 讲解')}</h3>
         </div>
         {name && (
           <button
@@ -55,7 +56,7 @@ export function AICommentaryPanel({ selection }: Props) {
       </div>
       {!name ? (
         <p className="text-sm leading-relaxed text-gray-400">
-          选择一个支派、帝国、预言、战役或事件，点「生成讲解」从历史背景、地理意义、属灵意义与现代应用四个维度获取讲解。
+          {i18nT('选择一个支派、帝国、预言、战役或事件，点「生成讲解」从历史背景、地理意义、属灵意义与现代应用四个维度获取讲解。')}
         </p>
       ) : text ? (
         <>
@@ -64,7 +65,7 @@ export function AICommentaryPanel({ selection }: Props) {
         </>
       ) : (
         <p className="text-sm leading-relaxed text-gray-300">
-          关于「{name}」，点击「✨ 生成讲解」从历史背景、地理意义、属灵意义和现代应用四个维度获取解释。
+          {i18nT('关于「')}{name}{i18nT('」，点击「✨ 生成讲解」从历史背景、地理意义、属灵意义和现代应用四个维度获取解释。')}
         </p>
       )}
     </div>

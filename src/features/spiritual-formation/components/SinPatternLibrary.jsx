@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 import { sinPatterns } from '../data/sinPatterns'
 import { T, localizePattern } from '../lib/localize'
@@ -93,8 +94,8 @@ export default function SinPatternLibrary({ variant = 'full' }) {
           color: '#ffd699',
           lineHeight: '1.5'
         }}>
-          <b>💡 恩典省察提示：</b>
-          认罪的终点绝非自我定罪或陷入羞耻，而是将隐藏的幽暗带入神的光中，重新投入救主随时的恩典与饶恕之中。
+          <b>{i18nT('💡 恩典省察提示：')}</b>
+          {i18nT('认罪的终点绝非自我定罪或陷入羞耻，而是将隐藏的幽暗带入神的光中，重新投入救主随时的恩典与饶恕之中。')}
         </div>
       </div>
 
@@ -114,7 +115,7 @@ export default function SinPatternLibrary({ variant = 'full' }) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜索名称、核心谎言、症状或经文..."
+            placeholder={i18nT('搜索名称、核心谎言、症状或经文...')}
             style={{
               width: '100%',
               background: 'rgba(255,255,255,0.05)',
@@ -208,7 +209,7 @@ export default function SinPatternLibrary({ variant = 'full' }) {
           border: '1px dashed rgba(255,255,255,0.08)'
         }}>
           <div style={{ fontSize: '32px', marginBottom: '8px' }}>🌾</div>
-          <div style={{ fontSize: '13px' }}>没有找到符合条件的罪之模式，换个词试试？</div>
+          <div style={{ fontSize: '13px' }}>{i18nT('没有找到符合条件的罪之模式，换个词试试？')}</div>
         </div>
       ) : (
         <div className="sf-pattern-grid sf-pattern-library-grid">

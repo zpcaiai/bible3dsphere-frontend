@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * AgentChatPage — 双属灵 Agent 对话（司布真牧养 / 钟马田诊断）
  * 今日心镜 overlay。
@@ -45,7 +46,7 @@ export default function AgentChatPage({ onBack, onNeedLogin }) {
     <div style={{ width: '100%', height: '100%', background: '#000', color: '#fff', display: 'flex', flexDirection: 'column', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(28,28,30,0.92)', flexShrink: 0 }}>
         <BackButton onClick={onBack} />
-        <div><div style={{ fontSize: 17, fontWeight: 600 }}>属灵牧者</div>
+        <div><div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('属灵牧者')}</div>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{agentMeta.icon} {agentMeta.name} · {agentMeta.role}</div></div>
       </div>
 
@@ -57,7 +58,7 @@ export default function AgentChatPage({ onBack, onNeedLogin }) {
 
       {!configured && (
         <div style={{ margin: '0 16px 8px', padding: 12, borderRadius: 10, background: 'rgba(255,212,59,0.08)', border: '1px solid rgba(255,212,59,0.25)', fontSize: 12, color: '#ffd43b', lineHeight: 1.6 }}>
-          AI 牧者暂未配置（需服务器设置 LLM 密钥）。福音诊断室 / 属灵低潮体检等结构化功能无需联网即可使用。
+          {i18nT('AI 牧者暂未配置（需服务器设置 LLM 密钥）。福音诊断室 / 属灵低潮体检等结构化功能无需联网即可使用。')}
         </div>
       )}
 
@@ -70,14 +71,14 @@ export default function AgentChatPage({ onBack, onNeedLogin }) {
               color: 'rgba(255,255,255,0.9)', whiteSpace: 'pre-wrap' }}>{m.content}</div>
           </div>
         ))}
-        {busy && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', paddingLeft: 4 }}>{agentMeta.name}正在回应…</div>}
+        {busy && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', paddingLeft: 4 }}>{agentMeta.name}{i18nT('正在回应…')}</div>}
         <div ref={endRef} />
       </div>
 
       <div style={{ display: 'flex', gap: 8, padding: '10px 16px', borderTop: '1px solid rgba(255,255,255,0.1)', background: 'rgba(28,28,30,0.92)', flexShrink: 0 }}>
         <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()} placeholder={`对${agentMeta.name}说…`}
           style={{ flex: 1, padding: '11px 14px', borderRadius: 22, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', fontSize: 14 }} />
-        <button onClick={send} disabled={busy} style={{ width: 64, borderRadius: 22, border: 'none', background: `linear-gradient(135deg, ${agentMeta.color}, #5ac8fa)`, color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>发送</button>
+        <button onClick={send} disabled={busy} style={{ width: 64, borderRadius: 22, border: 'none', background: `linear-gradient(135deg, ${agentMeta.color}, #5ac8fa)`, color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{i18nT('发送')}</button>
       </div>
     </div>
   )

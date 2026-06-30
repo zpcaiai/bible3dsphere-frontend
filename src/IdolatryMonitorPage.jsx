@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * IdolatryMonitorPage — 偶像监测 / 依附强度指数 (Attachment Intensity Index)
  *
@@ -84,7 +85,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
     const token = getToken()
     if (!token) { onNeedLogin && onNeedLogin(); return }
     const list = Object.entries(ratings).map(([type, v]) => ({ target_type: type, ...v }))
-    if (list.length === 0) { setError('请至少选择一项来省察'); return }
+    if (list.length === 0) { setError(i18nT('请至少选择一项来省察')); return }
     setLoading(true); setError('')
     try {
       const r = await assessIdolatry({ ratings: list, use_signals: true }, token)
@@ -110,8 +111,8 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <BackButton onClick={onBack} />
           <div>
-            <div style={{ fontSize: 17, fontWeight: 600 }}>偶像监测</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>依附强度指数 · Attachment Intensity</div>
+            <div style={{ fontSize: 17, fontWeight: 600 }}>{i18nT('偶像监测')}</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>{i18nT('依附强度指数 · Attachment Intensity')}</div>
           </div>
         </div>
         <button onClick={view === 'history' ? () => setView('intro') : openHistory} style={pill}>
@@ -125,15 +126,14 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
         {view === 'intro' && (
           <>
             <div style={{ ...card, background: 'linear-gradient(135deg, rgba(139,92,246,0.14), rgba(236,72,153,0.10))', borderColor: 'rgba(139,92,246,0.2)' }}>
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>🧭 看见内心的中心</div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{i18nT('🧭 看见内心的中心')}</div>
               <div style={{ fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.78)' }}>
-                这不是要判断「你在拜偶像」。它只温柔地观测：有什么东西，正在悄悄取代神，
-                成为你安全感、价值感、盼望、身份与顺服的中心。看见它，是恢复自由的第一步。
+                {i18nT('这不是要判断「你在拜偶像」。它只温柔地观测：有什么东西，正在悄悄取代神， 成为你安全感、价值感、盼望、身份与顺服的中心。看见它，是恢复自由的第一步。')}
               </div>
             </div>
 
             <div style={{ ...card }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>先安静下来，问自己：</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 10 }}>{i18nT('先安静下来，问自己：')}</div>
               {CORE_QUESTIONS.map((q, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: 'rgba(255,255,255,0.66)', lineHeight: 1.6, marginBottom: 6 }}>
                   <span style={{ color: 'rgba(139,92,246,0.8)' }}>{i + 1}.</span><span>{q}</span>
@@ -143,7 +143,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
 
             {suggested.length > 0 && (
               <div style={{ ...card, borderColor: 'rgba(255,212,59,0.25)' }}>
-                <div style={{ fontSize: 12, color: '#ffd43b', fontWeight: 700, marginBottom: 6 }}>✦ 根据你近期的状态，或许值得先省察：</div>
+                <div style={{ fontSize: 12, color: '#ffd43b', fontWeight: 700, marginBottom: 6 }}>{i18nT('✦ 根据你近期的状态，或许值得先省察：')}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {suggested.map(t => IDOL_MAP[t] && (
                     <span key={t} onClick={() => toggleIdol(t)} style={{ padding: '4px 10px', borderRadius: 14, background: 'rgba(255,212,59,0.14)', color: '#ffd43b', fontSize: 12, cursor: 'pointer' }}>
@@ -154,7 +154,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
               </div>
             )}
 
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', margin: '4px 4px 10px' }}>选择 1–7 个目标，温柔地为它打分</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', margin: '4px 4px 10px' }}>{i18nT('选择 1–7 个目标，温柔地为它打分')}</div>
             {IDOLS.map(idol => {
               const active = !!ratings[idol.type]
               const open = expanded === idol.type
@@ -166,7 +166,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
                       <div style={{ fontSize: 14, fontWeight: 600 }}>{idol.name}</div>
                       <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{idol.mani}</div>
                     </div>
-                    {active && <span style={{ fontSize: 11, color: '#a78bfa' }}>已选 {open ? '▲' : '▼'}</span>}
+                    {active && <span style={{ fontSize: 11, color: '#a78bfa' }}>{i18nT('已选')} {open ? '▲' : '▼'}</span>}
                     {!active && <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.3)' }}>+</span>}
                   </div>
                   {open && active && (
@@ -174,7 +174,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
                       <input
                         value={ratings[idol.type].target_name}
                         onChange={e => setDim(idol.type, 'target_name', e.target.value)}
-                        placeholder="具体指什么？(可选，如「升职」「某个人」)"
+                        placeholder={i18nT('具体指什么？(可选，如「升职」「某个人」)')}
                         style={input}
                       />
                       {DIMS.map(d => (
@@ -189,7 +189,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
                             style={{ width: '100%', accentColor: '#a78bfa' }} />
                         </div>
                       ))}
-                      <button onClick={() => removeIdol(idol.type)} style={{ marginTop: 10, background: 'none', border: 'none', color: 'rgba(255,135,135,0.7)', fontSize: 12, cursor: 'pointer' }}>移除这一项</button>
+                      <button onClick={() => removeIdol(idol.type)} style={{ marginTop: 10, background: 'none', border: 'none', color: 'rgba(255,135,135,0.7)', fontSize: 12, cursor: 'pointer' }}>{i18nT('移除这一项')}</button>
                     </div>
                   )}
                 </div>
@@ -199,7 +199,7 @@ export default function IdolatryMonitorPage({ user, onBack, onNeedLogin }) {
             <button onClick={submit} disabled={loading} style={primaryBtn}>
               {loading ? '正在省察…' : `完成省察 (${Object.keys(ratings).length})`}
             </button>
-            <div style={footNote}>本工具旨在辅助属灵辨识与自我省察，不构成定罪、心理诊断或属灵权威指导。</div>
+            <div style={footNote}>{i18nT('本工具旨在辅助属灵辨识与自我省察，不构成定罪、心理诊断或属灵权威指导。')}</div>
           </>
         )}
 
@@ -219,7 +219,7 @@ function ResultView({ result, onAgain }) {
   return (
     <>
       <div style={{ ...card, background: 'linear-gradient(135deg, rgba(52,199,89,0.10), rgba(90,200,250,0.08))' }}>
-        <div style={{ fontSize: 12, color: 'rgba(52,199,89,0.8)', fontWeight: 700, marginBottom: 8 }}>✦ 整体观察</div>
+        <div style={{ fontSize: 12, color: 'rgba(52,199,89,0.8)', fontWeight: 700, marginBottom: 8 }}>{i18nT('✦ 整体观察')}</div>
         <div style={{ fontSize: 13.5, lineHeight: 1.75, color: 'rgba(255,255,255,0.85)' }}>{result.summary}</div>
       </div>
 
@@ -227,7 +227,7 @@ function ResultView({ result, onAgain }) {
         <PatternCard key={i} p={p} />
       ))}
 
-      <button onClick={onAgain} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.08)' }}>再做一次省察</button>
+      <button onClick={onAgain} style={{ ...primaryBtn, background: 'rgba(255,255,255,0.08)' }}>{i18nT('再做一次省察')}</button>
     </>
   )
 }
@@ -247,7 +247,7 @@ function PatternCard({ p }) {
 
       {/* AII bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', width: 64, flexShrink: 0 }}>依附强度</span>
+        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', width: 64, flexShrink: 0 }}>{i18nT('依附强度')}</span>
         <div style={{ flex: 1, height: 8, background: 'rgba(255,255,255,0.08)', borderRadius: 4, overflow: 'hidden' }}>
           <div style={{ width: `${pct}%`, height: '100%', background: r.color, borderRadius: 4, transition: 'width .6s' }} />
         </div>
@@ -259,7 +259,7 @@ function PatternCard({ p }) {
       {/* Graph chain */}
       {p.graph?.chain && (
         <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>🔗 依附回路</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>{i18nT('🔗 依附回路')}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4 }}>
             {p.graph.chain.map((n, idx) => (
               <span key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -279,7 +279,7 @@ function PatternCard({ p }) {
       {/* Suggestions */}
       {p.suggestions && (
         <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>建议</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>{i18nT('建议')}</div>
           {p.suggestions.map((s, idx) => (
             <div key={idx} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: 'rgba(255,255,255,0.74)', lineHeight: 1.6, marginBottom: 5 }}>
               <span style={{ color: '#5ac8fa' }}>{idx + 1}.</span><span>{s}</span>
@@ -299,8 +299,8 @@ function PatternCard({ p }) {
 }
 
 function HistoryView({ sessions, loading }) {
-  if (loading) return <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>加载中…</div>
-  if (!sessions || sessions.length === 0) return <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>还没有省察记录</div>
+  if (loading) return <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('加载中…')}</div>
+  if (!sessions || sessions.length === 0) return <div style={{ ...card, textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>{i18nT('还没有省察记录')}</div>
   return sessions.map(s => {
     const r = RISK[s.risk_level] || RISK.low
     const name = IDOL_MAP[s.top_target]?.name || '—'

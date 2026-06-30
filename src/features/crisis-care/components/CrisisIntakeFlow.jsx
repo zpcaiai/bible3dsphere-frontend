@@ -1,3 +1,4 @@
+import { t as i18nT } from '../../../i18n/runtime'
 import { useState } from 'react'
 import { crisisApi } from '../lib/api'
 import { triageClient } from '../lib/triage'
@@ -52,13 +53,13 @@ export default function CrisisIntakeFlow({ regionCode = 'TW', onNavigate, canNot
   return (
     <div>
       <div className="cc-card">
-        <h3>此刻发生了什么？</h3>
-        <p className="cc-muted">可以只写几个字。你不需要解释清楚所有事情。</p>
+        <h3>{i18nT('此刻发生了什么？')}</h3>
+        <p className="cc-muted">{i18nT('可以只写几个字。你不需要解释清楚所有事情。')}</p>
         <textarea
           className="cc-input"
           rows={3}
           value={text}
-          placeholder="例如：我撑不下去了 / 我好想消失 / 我快控制不住了…"
+          placeholder={i18nT('例如：我撑不下去了 / 我好想消失 / 我快控制不住了…')}
           onChange={(e) => setText(e.target.value)}
         />
         <button className="cc-btn full danger" type="button" onClick={run} disabled={busy} style={{ marginTop: 10 }}>
@@ -94,13 +95,13 @@ export default function CrisisIntakeFlow({ regionCode = 'TW', onNavigate, canNot
                 onStabilize={() => setShowStabilize(true)}
                 onSafetyPlan={() => onNavigate && onNavigate('safetyplan')}
               />
-              {resBlock && <div className="cc-card"><h3>随时可以拨打</h3><CrisisResourcePanel block={resBlock} defaultRegion={regionCode} compact /></div>}
+              {resBlock && <div className="cc-card"><h3>{i18nT('随时可以拨打')}</h3><CrisisResourcePanel block={resBlock} defaultRegion={regionCode} compact /></div>}
             </>
           )}
 
           {(level === 'yellow' || level === 'green') && (
             <div className="cc-card">
-              <p>你现在更需要哪一种？</p>
+              <p>{i18nT('你现在更需要哪一种？')}</p>
               <div className="cc-pill-row">
                 {QUICK.map(([key, label]) => (
                   <button key={key} className="cc-pill" type="button" onClick={() => (key === 'stabilize' ? setShowStabilize(true) : onNavigate && onNavigate(key))}>{label}</button>
@@ -110,13 +111,13 @@ export default function CrisisIntakeFlow({ regionCode = 'TW', onNavigate, canNot
           )}
 
           {showStabilize && (
-            <div className="cc-card"><h3>跟我一起呼吸</h3><BreathingGuide targetCycles={5} /></div>
+            <div className="cc-card"><h3>{i18nT('跟我一起呼吸')}</h3><BreathingGuide targetCycles={5} /></div>
           )}
         </>
       )}
 
       <div className="cc-card">
-        <p className="cc-muted">或者直接选一个你现在需要的：</p>
+        <p className="cc-muted">{i18nT('或者直接选一个你现在需要的：')}</p>
         <div className="cc-pill-row">
           {QUICK.map(([key, label]) => (
             <button key={key} className="cc-pill" type="button" onClick={() => (key === 'stabilize' ? setShowStabilize(true) : onNavigate && onNavigate(key))}>{label}</button>

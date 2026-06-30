@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { SuggestMenu } from './components/SuggestField'
 const MIRROR_OPTS = ['当面对试探时，我要警醒祷告，远离罪', '当害怕时，我要先求问神，再行动', '我要在一件具体的事上顺服神', '我要为某个人 / 某件事持续祷告', '我要放下骄傲，谦卑倚靠神', '我要在软弱中支取主的恩典']
@@ -291,7 +292,7 @@ function ScriptureChip({ scripture: refStr, color = '#5ac8fa', bg = 'rgba(0,122,
               <a href={toWdBibleUrl(refStr)} target="_blank" rel="noopener noreferrer"
                 style={{ display: 'block', marginTop: 6, fontSize: 11,
                   color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>
-                新标点和合本 · 在 wd.bible 查看 ↗
+                {i18nT('新标点和合本 · 在 wd.bible 查看 ↗')}
               </a>
             </>
           ) : (
@@ -388,7 +389,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
   }
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} aria-label="返回" title="返回" style={{
+      <button onClick={onBack} aria-label={i18nT('返回')} title={i18nT('返回')} style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
         color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
         justifyContent: 'center', cursor: 'pointer', marginBottom: 24
@@ -425,7 +426,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 1. 人物简介 */}
       <div style={sectionStyle}>
         <div style={{ ...sectionTitle, display: 'flex', alignItems: 'center', gap: 6 }}>
-          📖 <AutoText>人物简介</AutoText> <_TTSBtn text={`人物简介：${char.summary}`} />
+          📖 <AutoText>{i18nT('人物简介')}</AutoText> <_TTSBtn text={`人物简介：${char.summary}`} />
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, lineHeight: 1.7 }}>{char.summary}</div>
       </div>
@@ -433,7 +434,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 2. 信靠神的核心见证 */}
       {char.witness && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #ffd60a', background: 'rgba(255,214,10,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>⭐ <AutoText>信靠神的核心见证</AutoText> <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
+          <div style={{ ...sectionTitle, color: '#ffd60a', display: 'flex', alignItems: 'center', gap: 6 }}>⭐ <AutoText>{i18nT('信靠神的核心见证')}</AutoText> <_TTSBtn text={`信靠神的核心见证：${char.witness}`} /></div>
           <CollapsibleText text={char.witness} limit={100} color="rgba(255,255,255,0.82)" />
         </div>
       )}
@@ -442,7 +443,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {char.typology && (
         <div style={{ ...sectionStyle, background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)' }}>
           <div style={{ ...sectionTitle, color: '#e8b04b', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            ✝️ <AutoText>基督预表</AutoText>
+            ✝️ <AutoText>{i18nT('基督预表')}</AutoText>
             <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20,
               background: (TYPO_COLOR[char.typology.level] || '#888') + '26',
               color: TYPO_COLOR[char.typology.level] || '#aaa',
@@ -479,7 +480,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 三一真神的作为（按位格分组；此条不列效法点）*/}
       {Array.isArray(char.works) && char.works.length > 0 && (
         <div style={{ ...sectionStyle, borderLeft: '3px solid #c084fc', background: 'rgba(192,132,252,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>✨ <AutoText>三一真神的作为</AutoText> <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#c084fc', display: 'flex', alignItems: 'center', gap: 6 }}>✨ <AutoText>{i18nT('三一真神的作为')}</AutoText> <_TTSBtn text={char.works.map(g => `${g.group}。${g.items.join('。')}`).join('。')} /></div>
           {char.works.map((g, gi) => (
             <div key={gi} style={{ marginBottom: gi < char.works.length - 1 ? 16 : 0 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#c084fc', margin: '4px 0 8px' }}><AutoText>{g.group}</AutoText></div>
@@ -499,7 +500,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 3. 可效法的点 */}
       {char.follow && char.follow.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>✅ <AutoText>可效法的点</AutoText> <_TTSBtn text={char.follow?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#34c759', display: 'flex', alignItems: 'center', gap: 6 }}>✅ <AutoText>{i18nT('可效法的点')}</AutoText> <_TTSBtn text={char.follow?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.follow.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[i]
@@ -523,7 +524,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 4. 需要警戒的点 */}
       {char.caution && char.caution.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(255,59,48,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>⚠️ <AutoText>需要警戒的点</AutoText> <_TTSBtn text={char.caution?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: 6 }}>⚠️ <AutoText>{i18nT('需要警戒的点')}</AutoText> <_TTSBtn text={char.caution?.join('。')} /></div>
           <ul style={{ margin: 0, padding: '0 0 0 4px', listStyle: 'none' }}>
             {char.caution.map((item, i) => {
               const refForItem = char.scriptures && char.scriptures[(char.follow?.length || 0) + i]
@@ -547,7 +548,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 5. 今日实际应用 */}
       {char.applications && char.applications.length > 0 && (
         <div style={{ ...sectionStyle, background: 'rgba(90,200,250,0.06)' }}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>🌱 <AutoText>今日实际应用</AutoText> <_TTSBtn text={char.applications?.join('。')} /></div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa', display: 'flex', alignItems: 'center', gap: 6 }}>🌱 <AutoText>{i18nT('今日实际应用')}</AutoText> <_TTSBtn text={char.applications?.join('。')} /></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {char.applications.map((app, i) => (
               <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
@@ -564,7 +565,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 6. 相关经文 */}
       {char.scriptures && char.scriptures.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>📜 <AutoText>相关经文（点击展开和合本）</AutoText></div>
+          <div style={{ ...sectionTitle, color: '#5ac8fa' }}>📜 <AutoText>{i18nT('相关经文（点击展开和合本）')}</AutoText></div>
           <ScriptureChipList refs={char.scriptures} />
         </div>
       )}
@@ -572,7 +573,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       {/* 生平活动轨迹地图 */}
       {journey && journey.stops && journey.stops.length > 0 && (
         <div style={sectionStyle}>
-          <div style={{ ...sectionTitle, color: '#e8b04b' }}>🗺️ <AutoText>生平活动轨迹</AutoText></div>
+          <div style={{ ...sectionTitle, color: '#e8b04b' }}>🗺️ <AutoText>{i18nT('生平活动轨迹')}</AutoText></div>
           <button onClick={() => setShowMap(true)}
             style={{ width: '100%', padding: '13px 12px', background: 'rgba(232,176,75,0.13)',
               border: '1px solid rgba(232,176,75,0.42)', borderRadius: 10, color: '#e8b04b',
@@ -591,7 +592,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
 
       {/* 7. 祷告指引 */}
       <div style={{ ...sectionStyle, background: 'rgba(0,122,255,0.06)' }}>
-        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>🙏 <AutoText>祷告指引</AutoText> <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
+        <div style={{ ...sectionTitle, color: '#007aff', display: 'flex', alignItems: 'center', gap: 6 }}>🙏 <AutoText>{i18nT('祷告指引')}</AutoText> <_TTSBtn text={`祷告指引：${char.prayer}`} /></div>
         <div style={{ ...quoteStyle, borderLeftColor: '#007aff', background: 'rgba(0,122,255,0.05)',
           padding: '12px 14px', borderRadius: '0 8px 8px 0' }}>
           {char.prayer}
@@ -600,7 +601,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
 
       {/* 8. 立志输入框 */}
       <div style={{ ...sectionStyle, background: 'rgba(52,199,89,0.05)', border: '1px solid rgba(52,199,89,0.2)' }}>
-        <div style={{ ...sectionTitle, color: '#34c759' }}>✍️ <AutoText>我的立志</AutoText></div>
+        <div style={{ ...sectionTitle, color: '#34c759' }}>✍️ <AutoText>{i18nT('我的立志')}</AutoText></div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>
           {L === 'en'
             ? (char.type === '警戒' ? `Take ${dispName(char)} as a warning — today I resolve to:`
@@ -625,7 +626,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
         <SuggestMenu accent="#34c759" top={8} right={8} options={MIRROR_OPTS} value={commitment} onChange={setCommitment} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, gap: 8, alignItems: 'center' }}>
-          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}><AutoText>✅ 已存入灵修日记</AutoText></span>}
+          {commitmentSaved && <span style={{ fontSize: 12, color: '#34c759' }}><AutoText>{i18nT('✅ 已存入灵修日记')}</AutoText></span>}
           {user ? (
             <button
               onClick={handleSaveCommitment}
@@ -636,10 +637,10 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
                 padding: '7px 16px', cursor: 'pointer',
               }}
             >
-              {savingCommitment ? <AutoText>保存中...</AutoText> : <AutoText>📔 存入灵修日记</AutoText>}
+              {savingCommitment ? <AutoText>{i18nT('保存中...')}</AutoText> : <AutoText>{i18nT('📔 存入灵修日记')}</AutoText>}
             </button>
           ) : (
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}><AutoText>登录后可保存立志</AutoText></span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}><AutoText>{i18nT('登录后可保存立志')}</AutoText></span>
           )}
         </div>
       </div>
@@ -665,7 +666,7 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
   const themeChars = characters.filter(c => theme.characterIds.includes(c.id))
   return (
     <div style={{ padding: '0 0 40px' }}>
-      <button onClick={onBack} aria-label="返回" title="返回" style={{
+      <button onClick={onBack} aria-label={i18nT('返回')} title={i18nT('返回')} style={{
         background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
         color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
         justifyContent: 'center', cursor: 'pointer', marginBottom: 24
@@ -683,19 +684,19 @@ function ThemeDetail({ theme, characters, onBack, onCharClick }) {
         </div>
       </div>
 
-      <Section title="导言"><AutoText>{theme.intro}</AutoText></Section>
+      <Section title={i18nT('导言')}><AutoText>{theme.intro}</AutoText></Section>
 
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}><AutoText>相关人物</AutoText></div>
+        <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 12 }}><AutoText>{i18nT('相关人物')}</AutoText></div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 12 }}>
           {themeChars.map(c => <CharacterCard key={c.id} char={c} onClick={onCharClick} />)}
         </div>
       </div>
 
-      <Section title="📌 主题总结"><AutoText>{theme.summary}</AutoText></Section>
+      <Section title={i18nT('📌 主题总结')}><AutoText>{theme.summary}</AutoText></Section>
 
       <div style={sectionStyle}>
-        <div style={sectionTitle}>🔑 <AutoText>如何应用</AutoText></div>
+        <div style={sectionTitle}>🔑 <AutoText>{i18nT('如何应用')}</AutoText></div>
         {theme.howToApply.map((step, i) => (
           <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
             <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#007aff',
@@ -866,7 +867,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView,
     return (
       <div style={{ padding: '20px 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <button onClick={() => setView('list')} aria-label="返回" title="返回" style={{
+          <button onClick={() => setView('list')} aria-label={i18nT('返回')} title={i18nT('返回')} style={{
             background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 8,
             color: '#fff', width: 40, height: 40, display: 'inline-flex', alignItems: 'center',
             justifyContent: 'center', cursor: 'pointer'
@@ -875,7 +876,7 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView,
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </button>
-          <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}><AutoText>主题合集</AutoText></h2>
+          <h2 style={{ margin: 0, fontSize: 20, color: '#fff' }}><AutoText>{i18nT('主题合集')}</AutoText></h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 14 }}>
           {MIRROR_THEMES.map(t => (
@@ -922,14 +923,14 @@ export default function MirrorPage({ user, token, guidance, onBack, initialView,
         }}>{sidebarOpen ? (L === 'en' ? '◀ Filters' : '◀ 筛选') : <span style={{ writingMode: 'vertical-rl', letterSpacing: 2, fontSize: 12 }}>{L === 'en' ? 'Filters' : '筛选'}</span>}</button>
         {sidebarOpen && (
           <>
-            <FilterGroup label="时代" value={filterEra} options={ERAS} onChange={setFilterEra} />
-            <FilterGroup label="身份" value={filterRole} options={ROLES} onChange={v => { setFilterRole(v); setFilterKingdom('全部') }} />
+            <FilterGroup label={i18nT('时代')} value={filterEra} options={ERAS} onChange={setFilterEra} />
+            <FilterGroup label={i18nT('身份')} value={filterRole} options={ROLES} onChange={v => { setFilterRole(v); setFilterKingdom('全部') }} />
             {filterRole === '君王' && (
-              <FilterGroup label="王国" value={filterKingdom} options={KINGDOMS} onChange={setFilterKingdom} />
+              <FilterGroup label={i18nT('王国')} value={filterKingdom} options={KINGDOMS} onChange={setFilterKingdom} />
             )}
-            <FilterGroup label="类型" value={filterType} options={TYPES} onChange={setFilterType} />
-            <FilterGroup label="预表强度" value={filterTypo} options={TYPO_FILTER} onChange={setFilterTypo} />
-            <FilterGroup label="预表母题/类别 · 基督是" value={filterMotif} options={MOTIF_FILTER} onChange={setFilterMotif} />
+            <FilterGroup label={i18nT('类型')} value={filterType} options={TYPES} onChange={setFilterType} />
+            <FilterGroup label={i18nT('预表强度')} value={filterTypo} options={TYPO_FILTER} onChange={setFilterTypo} />
+            <FilterGroup label={i18nT('预表母题/类别 · 基督是')} value={filterMotif} options={MOTIF_FILTER} onChange={setFilterMotif} />
             <button onClick={() => { setFilterEra('全部'); setFilterRole('全部'); setFilterType('全部'); setFilterTypo('全部'); setFilterMotif('全部'); setFilterKingdom('全部'); setSearch('') }}
               style={{ width: '100%', marginTop: 8, padding: '6px 8px', borderRadius: 8, border: 'none',
                 background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 12,

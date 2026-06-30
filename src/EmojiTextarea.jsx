@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useRef, useState } from 'react'
 
 const EMOJI_GROUPS = [
@@ -74,7 +75,7 @@ export default function EmojiTextarea({ value, onChange, rows, placeholder, styl
           lineHeight: 1,
           color: 'rgba(255,255,255,0.7)',
         }}
-        title="插入表情"
+        title={i18nT('插入表情')}
       >
         😊
       </button>

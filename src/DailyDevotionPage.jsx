@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * DailyDevotionPage — 晨恩日新 灵修日历
  *
@@ -231,11 +232,11 @@ function ScriptureVerses({ scriptureRef }) {
         if (d.ok && d.verses?.length) setVerses(d)
         else setError(d.error || '暂无经文')
       })
-      .catch(() => setError('加载失败'))
+      .catch(() => setError(i18nT('加载失败')))
       .finally(() => setLoading(false))
   }, [scriptureRef])
 
-  if (loading) return <div style={SV.loading}>加载经文中…</div>
+  if (loading) return <div style={SV.loading}>{i18nT('加载经文中…')}</div>
   if (error) return <div style={SV.loading}>{error}</div>
   if (!verses) return null
 
@@ -245,7 +246,7 @@ function ScriptureVerses({ scriptureRef }) {
   return (
     <div style={SV.wrapper}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-        <div style={SV.refLabel}>{book} {chapter}章 · 共{list.length}节</div>
+        <div style={SV.refLabel}>{book} {chapter}{i18nT('章 · 共')}{list.length}{i18nT('节')}</div>
         <div style={{ flex: 1 }} />
         <TTSButton text={ttsAll} />
       </div>
@@ -306,7 +307,7 @@ export default function DailyDevotionPage({ onBack }) {
       <div style={S.page}>
         <div style={{ ...S.emptyState, paddingTop: 80 }}>
           <div style={{ fontSize: 28, marginBottom: 12 }}>📖</div>
-          加载灵修内容…
+          {i18nT('加载灵修内容…')}
         </div>
       </div>
     )
@@ -317,7 +318,7 @@ export default function DailyDevotionPage({ onBack }) {
       <div style={S.page}>
         <div style={S.emptyState}>
           <div style={{ fontSize: 28, marginBottom: 12 }}>😔</div>
-          灵修内容暂时无法加载
+          {i18nT('灵修内容暂时无法加载')}
         </div>
       </div>
     )
@@ -331,8 +332,8 @@ export default function DailyDevotionPage({ onBack }) {
           <BackButton onClick={onBack} />
         )}
         <div style={S.titleBlock}>
-          <div style={S.titleMain}>晨恩日新</div>
-          <div style={S.titleSub}>保罗·区普 · 福音灵修日引 · 365天</div>
+          <div style={S.titleMain}>{i18nT('晨恩日新')}</div>
+          <div style={S.titleSub}>{i18nT('保罗·区普 · 福音灵修日引 · 365天')}</div>
         </div>
         <div style={{ fontSize: 11, color: 'rgba(52,199,89,0.8)', fontWeight: 600 }}>
           {MONTH_LABELS[viewMonth-1]}
@@ -381,13 +382,13 @@ export default function DailyDevotionPage({ onBack }) {
         <div style={S.card}>
           <div style={S.cardHeader}>
             <div style={S.cardDate}>
-              {MONTH_LABELS[devotion.month - 1]} · 第 {devotion.day} 日
+              {MONTH_LABELS[devotion.month - 1]} {i18nT('· 第')} {devotion.day} {i18nT('日')}
             </div>
 
             {/* 整体朗读 */}
             <TTSFullBar
               buildText={() => buildTTSText(devotion)}
-              label="整体朗读"
+              label={i18nT('整体朗读')}
             />
           </div>
 
@@ -397,7 +398,7 @@ export default function DailyDevotionPage({ onBack }) {
             {devotion.quote && (
               <>
                 <div style={S.sectionLabel}>
-                  <span>✨ 今日金句</span>
+                  <span>{i18nT('✨ 今日金句')}</span>
                   <TTSButton text={devotion.quote} />
                 </div>
                 <div style={S.quoteBox}>{devotion.quote}</div>
@@ -408,7 +409,7 @@ export default function DailyDevotionPage({ onBack }) {
             {devotion.body && (
               <>
                 <div style={{ ...S.sectionLabel, marginTop: 18 }}>
-                  <span>📖 灵修正文</span>
+                  <span>{i18nT('📖 灵修正文')}</span>
                   <TTSButton text={devotion.body} />
                 </div>
                 <div style={S.bodyText}>{devotion.body}</div>
@@ -419,7 +420,7 @@ export default function DailyDevotionPage({ onBack }) {
             {devotion.scripture && (
               <>
                 <div style={{ ...S.sectionLabel, marginTop: 18 }}>
-                  <span>📜 更多信息与勉励</span>
+                  <span>{i18nT('📜 更多信息与勉励')}</span>
                 </div>
                 <div style={{ ...S.scriptureBox, paddingBottom: 4 }}>
                   <div style={{ fontSize: 12, color: 'rgba(90,200,250,0.7)', marginBottom: 6, fontStyle: 'italic' }}>

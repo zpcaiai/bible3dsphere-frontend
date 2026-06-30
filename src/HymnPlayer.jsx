@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchFaithQA } from './api'
 
@@ -213,7 +214,7 @@ function ScorePlaceholder({ title }) {
           <line x1={x + 5.5} y1={58 - (i % 4) * 12} x2={x + 5.5} y2={58 - (i % 4) * 12 - 24} stroke="rgba(255,215,0,0.85)" strokeWidth="1.4" />
         </g>
       ))}
-      <text x="160" y="98" textAnchor="middle" className="hymn-score-svg-hint">曲谱占位 · 放入 public/hymns 后自动替换</text>
+      <text x="160" y="98" textAnchor="middle" className="hymn-score-svg-hint">{i18nT('曲谱占位 · 放入 public/hymns 后自动替换')}</text>
     </svg>
   )
 }
@@ -349,7 +350,7 @@ export default function HymnPlayer() {
   return (
     <div className="hymn-page">
       {/* 诗歌选择 */}
-      <div className="hymn-chips" role="tablist" aria-label="圣诗选择">
+      <div className="hymn-chips" role="tablist" aria-label={i18nT('圣诗选择')}>
         {HYMNS.map((h, i) => (
           <button
             key={h.id}
@@ -377,9 +378,9 @@ export default function HymnPlayer() {
               if (navigator.share) { navigator.share(data).catch(() => {}) }
               else if (navigator.clipboard) {
                 navigator.clipboard.writeText(`${data.text} ${url}`)
-                if (window.showToast) window.showToast('分享链接已复制', 'success')
+                if (window.showToast) window.showToast(i18nT('分享链接已复制'), 'success')
               }
-            }}>↗ 分享</button>
+            }}>{i18nT('↗ 分享')}</button>
         </div>
         <div className="hymn-meta-en">{hymn.en}</div>
         <div className="hymn-meta-author">{hymn.author}</div>
@@ -402,7 +403,7 @@ export default function HymnPlayer() {
       </div>
 
       {/* 播放器 */}
-      <div className="hymn-player" role="group" aria-label="播放控制" onKeyDown={onPlayerKey}>
+      <div className="hymn-player" role="group" aria-label={i18nT('播放控制')} onKeyDown={onPlayerKey}>
         <audio
           ref={audioRef}
           src={hymnAudioUrl(hymn)}
@@ -414,7 +415,7 @@ export default function HymnPlayer() {
           onError={() => setAudioErr(true)}
           preload="metadata"
         />
-        <button className="hymn-nav-btn" onClick={goPrev} aria-label="上一首">
+        <button className="hymn-nav-btn" onClick={goPrev} aria-label={i18nT('上一首')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 6h2v12H7zm3.5 6l8.5 6V6z" /></svg>
         </button>
         <button className="hymn-play-btn" onClick={togglePlay} disabled={audioErr} aria-label={playing ? '暂停' : '播放'}>
@@ -424,7 +425,7 @@ export default function HymnPlayer() {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
           )}
         </button>
-        <button className="hymn-nav-btn" onClick={goNext} aria-label="下一首">
+        <button className="hymn-nav-btn" onClick={goNext} aria-label={i18nT('下一首')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 6h2v12h-2zM5 6l8.5 6L5 18z" /></svg>
         </button>
         <span className="hymn-time">{fmtTime(cur)}</span>
@@ -434,14 +435,14 @@ export default function HymnPlayer() {
           value={pct}
           onChange={seek}
           disabled={audioErr}
-          aria-label="播放进度"
+          aria-label={i18nT('播放进度')}
           aria-valuetext={`${fmtTime(cur)} / ${fmtTime(dur)}`}
           style={{ '--pct': `${pct}%` }}
         />
         <span className="hymn-time">{fmtTime(dur)}</span>
       </div>
       {audioErr && (
-        <div className="hymn-audio-hint">🎵 音频待添加：把文件放到 <code>public/hymns/{hymn.id}.mp3</code></div>
+        <div className="hymn-audio-hint">{i18nT('🎵 音频待添加：把文件放到')} <code>public/hymns/{hymn.id}.mp3</code></div>
       )}
 
       {/* 跟唱：KTV 逐字高亮，跟随音频进度 */}
@@ -468,7 +469,7 @@ export default function HymnPlayer() {
       )}
 
       {/* 完整歌词 */}
-      <div className="hymn-lyrics-label">完整歌词</div>
+      <div className="hymn-lyrics-label">{i18nT('完整歌词')}</div>
       <div className="hymn-lyrics">
         {hymn.lyrics.map((stanza, i) => (
           <div className="hymn-stanza" key={i}>
@@ -490,26 +491,25 @@ export default function HymnPlayer() {
               aria-expanded={transcendOpen}
             >
               <span className="hymn-transcend-btn-icon">✨</span>
-              <span className="hymn-transcend-btn-label">灵性超越</span>
-              <span className="hymn-transcend-btn-sub">从软弱迈向诗歌的属灵境界</span>
+              <span className="hymn-transcend-btn-label">{i18nT('灵性超越')}</span>
+              <span className="hymn-transcend-btn-sub">{i18nT('从软弱迈向诗歌的属灵境界')}</span>
               <span className="hymn-transcend-btn-arrow">{transcendOpen ? '▴' : '▾'}</span>
             </button>
 
             {transcendOpen && (
               <div className="hymn-transcend-body">
                 <p className="hymn-transcend-intro">
-                  《{hymn.title}》唱出的，是一种经过操练才能进入的属灵境界。若你此刻正软弱、挣扎、信心不足，也不要灰心——
-                  靠着加给你力量的主，借着操练信心与忍耐，你同样有盼望一步步走进这首诗歌所描绘的光景。
+                  《{hymn.title}{i18nT('》唱出的，是一种经过操练才能进入的属灵境界。若你此刻正软弱、挣扎、信心不足，也不要灰心—— 靠着加给你力量的主，借着操练信心与忍耐，你同样有盼望一步步走进这首诗歌所描绘的光景。')}
                 </p>
 
                 {transcendLoading && (
-                  <div className="hymn-transcend-loading">✨ 正在为你预备灵性超越的路径，请稍候…</div>
+                  <div className="hymn-transcend-loading">{i18nT('✨ 正在为你预备灵性超越的路径，请稍候…')}</div>
                 )}
 
                 {transcendError && !transcendLoading && (
                   <div className="hymn-transcend-error">
-                    <span>路径生成失败：{transcendError}</span>
-                    <button type="button" className="hymn-transcend-retry" onClick={fetchTranscend}>重试</button>
+                    <span>{i18nT('路径生成失败：')}{transcendError}</span>
+                    <button type="button" className="hymn-transcend-retry" onClick={fetchTranscend}>{i18nT('重试')}</button>
                   </div>
                 )}
 
@@ -521,21 +521,21 @@ export default function HymnPlayer() {
 
                     {td.nature_analysis && (
                       <section className="hymn-transcend-section">
-                        <h4>属灵剖析</h4>
+                        <h4>{i18nT('属灵剖析')}</h4>
                         <p>{td.nature_analysis}</p>
                       </section>
                     )}
 
                     {td.contextual_analysis && (
                       <section className="hymn-transcend-section">
-                        <h4>从软弱看见盼望</h4>
+                        <h4>{i18nT('从软弱看见盼望')}</h4>
                         <p>{td.contextual_analysis}</p>
                       </section>
                     )}
 
                     {Array.isArray(td.scriptures) && td.scriptures.length > 0 && (
                       <section className="hymn-transcend-section">
-                        <h4>同行的经文</h4>
+                        <h4>{i18nT('同行的经文')}</h4>
                         {td.scriptures.map((sc, i) => (
                           <div className="hymn-transcend-verse" key={i}>
                             <div className="hymn-transcend-verse-ref">{sc.reference}</div>
@@ -548,14 +548,14 @@ export default function HymnPlayer() {
 
                     {td.right_thinking && (
                       <section className="hymn-transcend-section">
-                        <h4>真理的眼光</h4>
+                        <h4>{i18nT('真理的眼光')}</h4>
                         <p>{td.right_thinking}</p>
                       </section>
                     )}
 
                     {Array.isArray(td.action_steps) && td.action_steps.length > 0 && (
                       <section className="hymn-transcend-section">
-                        <h4>操练路径</h4>
+                        <h4>{i18nT('操练路径')}</h4>
                         <ol className="hymn-transcend-steps">
                           {td.action_steps.map((step, i) => (
                             <li key={i}>{step}</li>
@@ -566,7 +566,7 @@ export default function HymnPlayer() {
 
                     {td.prayer_direction && (
                       <section className="hymn-transcend-section hymn-transcend-prayer">
-                        <h4>鼓励与祷告</h4>
+                        <h4>{i18nT('鼓励与祷告')}</h4>
                         <p>{td.prayer_direction}</p>
                       </section>
                     )}

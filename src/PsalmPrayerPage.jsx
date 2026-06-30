@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /**
  * PsalmPrayerPage — 诗篇祷告 Psalm Prayer
  *
@@ -87,8 +88,8 @@ export default function PsalmPrayerPage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🎵 诗篇祷告 · Psalm Prayer</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>在神面前诚实，又被经文重新定位 · 哀歌不必假装坚强</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🎵 诗篇祷告 · Psalm Prayer')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('在神面前诚实，又被经文重新定位 · 哀歌不必假装坚强')}</div>
 
       {error && <div style={{ ...card, borderColor: 'rgba(255,107,107,0.4)', color: '#ffb4b4' }}>{error}</div>}
       {crisis && (
@@ -102,14 +103,14 @@ export default function PsalmPrayerPage({ user, onBack }) {
       {!session && (
         <div style={card}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-            <input value={emotion} onChange={e => setEmotion(e.target.value)} placeholder="此刻的情绪 / 需要（如：焦虑、愧疚、感恩…）"
+            <input value={emotion} onChange={e => setEmotion(e.target.value)} placeholder={i18nT('此刻的情绪 / 需要（如：焦虑、愧疚、感恩…）')}
               style={{ flex: 1, padding: 10, borderRadius: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }} />
-            <button style={{ ...btn, width: 'auto', padding: '10px 16px' }} disabled={busy} onClick={recommend}>推荐</button>
+            <button style={{ ...btn, width: 'auto', padding: '10px 16px' }} disabled={busy} onClick={recommend}>{i18nT('推荐')}</button>
           </div>
           <select value={picked?.psalm_number || ''} onChange={e => setPicked(psalms.find(p => p.psalm_number === Number(e.target.value)) || null)}
             style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }}>
-            <option value="">选择一篇诗篇…</option>
-            {psalms.map(p => <option key={p.psalm_number} value={p.psalm_number}>诗篇 {p.psalm_number} · {p.title}</option>)}
+            <option value="">{i18nT('选择一篇诗篇…')}</option>
+            {psalms.map(p => <option key={p.psalm_number} value={p.psalm_number}>{i18nT('诗篇')} {p.psalm_number} · {p.title}</option>)}
           </select>
           {picked && (
             <div style={{ marginBottom: 10 }}>
@@ -132,10 +133,10 @@ export default function PsalmPrayerPage({ user, onBack }) {
       {/* 动作流程 */}
       {session && movement && movement !== 'completed' && !done && (
         <div style={card}>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>诗篇 {session.psalm_number} · {session.mode}</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{i18nT('诗篇')} {session.psalm_number} · {session.mode}</div>
           <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{MOVE_TITLE[movement] || movement}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>{guidance}</div>
-          <textarea value={text} onChange={e => setText(e.target.value)} rows={4} placeholder="在神面前诚实地写下…"
+          <textarea value={text} onChange={e => setText(e.target.value)} rows={4} placeholder={i18nT('在神面前诚实地写下…')}
             style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', resize: 'vertical' }} />
           <button style={btn} disabled={busy} onClick={next}>{busy ? '…' : '下一步 ›'}</button>
         </div>
@@ -144,11 +145,11 @@ export default function PsalmPrayerPage({ user, onBack }) {
       {/* 完成表单（最后一步：顺服或安息） */}
       {session && movement === 'completed' && !done && (
         <div style={card}>
-          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>🌱 顺服或安息一步</div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>这篇祷告带你走向的一个具体顺服，或一句你愿安息于其中的真理。</div>
-          <input value={verse} onChange={e => setVerse(e.target.value)} placeholder="今天抓住的一节经文（可选）"
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{i18nT('🌱 顺服或安息一步')}</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 10 }}>{i18nT('这篇祷告带你走向的一个具体顺服，或一句你愿安息于其中的真理。')}</div>
+          <input value={verse} onChange={e => setVerse(e.target.value)} placeholder={i18nT('今天抓住的一节经文（可选）')}
             style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 8, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }} />
-          <textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder="一个微小的顺服，或一句安息的话…"
+          <textarea value={text} onChange={e => setText(e.target.value)} rows={3} placeholder={i18nT('一个微小的顺服，或一句安息的话…')}
             style={{ width: '100%', padding: 10, borderRadius: 10, marginBottom: 10, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', resize: 'vertical' }} />
           <button style={btn} disabled={busy} onClick={finish}>{busy ? '…' : '完成诗篇祷告'}</button>
         </div>
@@ -157,11 +158,11 @@ export default function PsalmPrayerPage({ user, onBack }) {
       {/* 完成 */}
       {done && session && (
         <div style={card}>
-          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>🕊 愿这篇诗与你同行</div>
-          <div style={{ fontSize: 13, marginBottom: 6 }}><b>诗篇：</b>{session.psalm_number}</div>
-          {session.key_verse && <div style={{ fontSize: 13, marginBottom: 6 }}><b>抓住的话：</b>{session.key_verse}</div>}
-          {session.obedience_or_rest_step && <div style={{ fontSize: 13, marginBottom: 6 }}><b>顺服 / 安息：</b>{session.obedience_or_rest_step}</div>}
-          <button style={{ ...btn, marginTop: 12 }} onClick={onBack}>返回</button>
+          <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 8 }}>{i18nT('🕊 愿这篇诗与你同行')}</div>
+          <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('诗篇：')}</b>{session.psalm_number}</div>
+          {session.key_verse && <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('抓住的话：')}</b>{session.key_verse}</div>}
+          {session.obedience_or_rest_step && <div style={{ fontSize: 13, marginBottom: 6 }}><b>{i18nT('顺服 / 安息：')}</b>{session.obedience_or_rest_step}</div>}
+          <button style={{ ...btn, marginTop: 12 }} onClick={onBack}>{i18nT('返回')}</button>
         </div>
       )}
     </div>

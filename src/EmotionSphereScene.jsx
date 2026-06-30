@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 import { Component, useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
@@ -42,7 +43,7 @@ class SceneErrorBoundary extends Component {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <span style={{ fontSize: 13, color: 'rgba(255,150,150,0.8)', fontWeight: 600 }}>
-              ⚠️ 3D 星球暂时无法渲染
+              {i18nT('⚠️ 3D 星球暂时无法渲染')}
             </span>
             <button
               onClick={this.handleRetry}
@@ -52,11 +53,11 @@ class SceneErrorBoundary extends Component {
                 borderRadius: 20, color: 'rgba(255,255,255,0.7)', cursor: 'pointer',
               }}
             >
-              重试 3D
+              {i18nT('重试 3D')}
             </button>
           </div>
           {/* 2D 情感节点列表降级视图 */}
-          <div style={{ fontSize: 12, color: 'rgba(180,180,255,0.6)', marginBottom: 10 }}>以下是情感节点列表（2D 降级模式）：</div>
+          <div style={{ fontSize: 12, color: 'rgba(180,180,255,0.6)', marginBottom: 10 }}>{i18nT('以下是情感节点列表（2D 降级模式）：')}</div>
           <div style={{
             display: 'flex', flexWrap: 'wrap', gap: '6px',
             maxHeight: 200, overflowY: 'auto',
@@ -284,12 +285,12 @@ function VersePopover3D({
           </span>
         </div>
         {isLoading && (
-          <div className="vp-loading">沈思中…</div>
+          <div className="vp-loading">{i18nT('沈思中…')}</div>
         )}
 
         {!isLoading && sphereGuidance && (
           <div className="vp-section">
-            <div className="vp-section-title">灵魂处境</div>
+            <div className="vp-section-title">{i18nT('灵魂处境')}</div>
             {sphereGuidance.core_emotions?.length > 0 && (
               <div className="vp-emotion-tags">
                 {sphereGuidance.core_emotions.map((e) => (
@@ -317,7 +318,7 @@ function VersePopover3D({
         {!isLoading && sphereBiblicalExample && (
           <div className="vp-section">
             <div className="vp-divider" />
-            <div className="vp-section-title">圣经榜样</div>
+            <div className="vp-section-title">{i18nT('圣经榜样')}</div>
             <div className="vp-person-row">
               <strong>{sphereBiblicalExample.person}</strong>
               {sphereBiblicalExample.era && <span className="vp-era">{sphereBiblicalExample.era}</span>}
@@ -336,7 +337,7 @@ function VersePopover3D({
         {!isLoading && verses.length > 0 && (
           <div className="vp-section">
             <div className="vp-divider" />
-            <div className="vp-section-title vp-section-title-meditation">默想经文</div>
+            <div className="vp-section-title vp-section-title-meditation">{i18nT('默想经文')}</div>
             <div className="vp-verses">
               {verses.map((v, vi) => (
                 <div key={v.pk_id ?? vi} className="vp-verse-wrapper">
@@ -352,9 +353,9 @@ function VersePopover3D({
                   </div>
                   {expandedVerseId === v.pk_id && (
                     <div className="vp-prayer-block">
-                      <div className="vp-prayer-label">🙏 经文祷告</div>
+                      <div className="vp-prayer-label">{i18nT('🙏 经文祷告')}</div>
                       {versePrayerLoading === v.pk_id ? (
-                        <div className="vp-prayer-loading">✨ 正在生成祷告...</div>
+                        <div className="vp-prayer-loading">{i18nT('✨ 正在生成祷告...')}</div>
                       ) : versePrayers?.[v.pk_id] ? (
                         <TranslatableParagraph className="vp-prayer-text">{versePrayers[v.pk_id]}</TranslatableParagraph>
                       ) : null}
