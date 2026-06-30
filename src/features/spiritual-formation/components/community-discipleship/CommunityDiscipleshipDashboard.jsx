@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { accountabilityGroupTemplates, churchRhythmTemplates, discipleshipStages, ministryAreas } from '../../data/communityDiscipleshipSeed'
 import {
   addAccountabilityResponse,
@@ -31,6 +31,7 @@ import {
   updateDiscipleshipStep,
 } from '../../lib/communityDiscipleshipEngine'
 import { COMMUNITY_DISCIPLESHIP_STORAGE_KEYS as KEYS, loadCommunityDiscipleshipData, saveCommunityEntry } from '../../lib/communityDiscipleshipStorage'
+import { communityDiscipleshipApi, hydrateCommunityDiscipleshipRemote } from '../../lib/communityDiscipleshipApi'
 import { MODULE_DISCLAIMER } from '../../lib/pastoralSafety'
 
 function MiniTabs({ active, onChange }) {
@@ -109,7 +110,7 @@ export function CommunityOverview({ userId, data }) {
   )
 }
 
-export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
+export function DiscipleshipPathwayPanel({ userId, token, data, onRefresh }) {
   const [context, setContext] = useState('I want concrete growth in prayer, Scripture, community, and service.')
   const [stageKey, setStageKey] = useState('practicing_disciple')
   const [notice, setNotice] = useState('')
@@ -140,6 +141,24 @@ export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
     ])
     setNotice(assessment.riskFlags.length ? 'Pathway saved with care routing flag. Pause ordinary formation for safe support.' : 'Discipleship pathway created.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createAssessment(token, {
+        self_report_stage_key: stageKey,
+        scripture_practice_level: assessment.scripturePracticeLevel,
+        prayer_practice_level: assessment.prayerPracticeLevel,
+        community_level: assessment.communityLevel,
+        service_level: assessment.serviceLevel,
+        notes: context,
+      }).then(() => communityDiscipleshipApi.createPath(token, {
+        current_stage_key: stageKey,
+        target_stage_key: path.targetStageKey,
+        duration_days: path.durationDays,
+        auto_steps: true,
+      })).then(() => {
+        setNotice('Discipleship pathway created and synced to backend.')
+        return hydrateCommunityDiscipleshipRemote(userId, token)
+      }).then(onRefresh).catch(() => setNotice('Discipleship pathway saved locally; backend sync failed.'))
+    }
   }
 
   function completeNextStep() {
@@ -148,6 +167,7 @@ export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.discipleshipSteps, updateDiscipleshipStep(next, { status: 'completed', completionNotes: 'Completed with grace, not performance pressure.' }))
     setNotice('One discipleship step marked complete.')
     onRefresh()
+    if (token) void communityDiscipleshipApi.completeStep(token, next.id).then(() => setNotice('One discipleship step marked complete and synced.')).catch(() => setNotice('Step saved locally; backend sync failed.'))
   }
 
   function createReview() {
@@ -156,6 +176,7 @@ export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.discipleshipReviews, review)
     setNotice(review.summary)
     onRefresh()
+    if (token) void communityDiscipleshipApi.createPathReview(token, activePath.id).then(() => setNotice(`${review.summary} Backend review synced.`)).catch(() => setNotice(`${review.summary} Backend sync failed.`))
   }
 
   return (
@@ -184,7 +205,7 @@ export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
+export function AccountabilityGroupPanel({ userId, token, data, onRefresh }) {
   const [groupType, setGroupType] = useState('weekly_triads')
   const [context, setContext] = useState('I need a weekly check-in with prayer, encouragement, and clear consent.')
   const [notice, setNotice] = useState('')
@@ -203,6 +224,17 @@ export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.accountabilityGroups, created.group], [KEYS.accountabilityMembers, created.member]])
     setNotice('Accountability group created with consent and confidentiality defaults.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createGroup(token, {
+        name: created.group.name,
+        description: created.group.description || context,
+        group_type: groupType,
+      }).then((remote) => {
+        if (remote?.group_id) saveCommunityEntry(KEYS.accountabilityGroups, { ...created.group, id: remote.group_id })
+        setNotice('Accountability group created and synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Accountability group saved locally; backend sync failed.'))
+    }
   }
 
   function createGoalAndCheckin() {
@@ -212,6 +244,19 @@ export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.accountabilityGoals, goal], [KEYS.accountabilityCheckins, result.checkin]])
     setNotice(result.routed ? 'Check-in saved with care route flag.' : 'Accountability goal and check-in created.')
     onRefresh()
+    if (token) {
+      void (async () => {
+        const remoteGroup = group?.id ? { group_id: group.id } : await communityDiscipleshipApi.createGroup(token, {
+          name: activeGroup.name,
+          description: activeGroup.description || context,
+          group_type: groupType,
+        })
+        const groupId = remoteGroup.group_id || activeGroup.id
+        await communityDiscipleshipApi.createGoal(token, groupId, { title: goal.title, description: goal.description, goal_type: goal.goalType || 'prayer' })
+        await communityDiscipleshipApi.createCheckin(token, groupId, { struggle: context, prayer_request: 'Please pray for humility and steady practice.', support_needed: true })
+        setNotice('Accountability goal and check-in synced to backend.')
+      })().catch(() => setNotice('Goal/check-in saved locally; backend sync failed.'))
+    }
   }
 
   function respondAndPray() {
@@ -222,6 +267,9 @@ export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.accountabilityCheckins, checkin], [KEYS.accountabilityResponses, response], [KEYS.groupPrayerRequests, prayer]])
     setNotice('Response and prayer request saved.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createPrayer(token, activeGroup.id, { title: prayer.title, request_text: prayer.requestText || context }).then(() => setNotice('Prayer request synced to backend.')).catch(() => setNotice('Prayer request saved locally; backend sync failed.'))
+    }
   }
 
   function createReview() {
@@ -230,6 +278,7 @@ export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.groupReviews, review)
     setNotice(review.summary)
     onRefresh()
+    if (token) void communityDiscipleshipApi.createGroupReview(token, activeGroup.id).then(() => setNotice(`${review.summary} Backend review synced.`)).catch(() => setNotice(`${review.summary} Backend sync failed.`))
   }
 
   return (
@@ -255,7 +304,7 @@ export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function MentorCoachingPanel({ userId, data, onRefresh }) {
+export function MentorCoachingPanel({ userId, token, data, onRefresh }) {
   const [context, setContext] = useState('I want a mentor conversation about prayer, calling, and ordinary faithfulness.')
   const [notice, setNotice] = useState('')
   const relationship = getFirst(data.mentorRelationships)
@@ -274,6 +323,18 @@ export function MentorCoachingPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.mentorRelationships, created)
     setNotice('Mentor relationship created with permission scope.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createMentorRelationship(token, {
+        counterpart_email: 'mentor-demo@example.com',
+        my_role: 'mentee',
+        relationship_type: 'mentor',
+        permission_scope: created.permissionScope || 'session_only',
+      }).then((remote) => {
+        if (remote?.relationship) saveCommunityEntry(KEYS.mentorRelationships, { ...created, id: remote.relationship.id, mentorEmail: remote.relationship.mentor_email })
+        setNotice('Mentor relationship created and synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Mentor relationship saved locally; backend sync failed.'))
+    }
   }
 
   function createSession() {
@@ -282,6 +343,15 @@ export function MentorCoachingPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.mentorSessions, result.session)
     setNotice(result.recommendation.routed ? 'Mentor session saved with care route flag.' : 'Mentor session created.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createMentorSession(token, rel.id, {
+        session_type: result.session.sessionType || 'discipleship_review',
+        agenda: result.session.agenda || [],
+        summary: context,
+        action_items: result.session.actionItems || [],
+        status: result.session.status || 'planned',
+      }).then(() => setNotice('Mentor session synced to backend.')).catch(() => setNotice('Mentor session saved locally; backend sync failed.'))
+    }
   }
 
   function addObservationAndPlan() {
@@ -291,6 +361,12 @@ export function MentorCoachingPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.mentorObservations, observation], [KEYS.mentorActionPlans, plan]])
     setNotice('Mentor observation and action plan saved.')
     onRefresh()
+    if (token) {
+      void Promise.all([
+        communityDiscipleshipApi.createMentorObservation(token, rel.id, { title: observation.title, description: observation.evidence?.join('; ') || '', recommended_next_step: plan.title }),
+        communityDiscipleshipApi.createMentorPlan(token, rel.id, { title: plan.title, description: plan.description || '', actions: plan.actions || [] }),
+      ]).then(() => setNotice('Mentor observation and action plan synced to backend.')).catch(() => setNotice('Mentor artifacts saved locally; backend sync failed.'))
+    }
   }
 
   function createReview() {
@@ -299,6 +375,7 @@ export function MentorCoachingPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.mentorReviews, review)
     setNotice(review.summary)
     onRefresh()
+    if (token) void communityDiscipleshipApi.createMentorReview(token, rel.id).then(() => setNotice(`${review.summary} Backend review synced.`)).catch(() => setNotice(`${review.summary} Backend sync failed.`))
   }
 
   return (
@@ -323,7 +400,7 @@ export function MentorCoachingPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
+export function ChurchIntegrationPanel({ userId, token, data, onRefresh }) {
   const [context, setContext] = useState('I am exploring a safe local church and one low-pressure serving step.')
   const [templateKey, setTemplateKey] = useState('lord_day_worship')
   const [ministryArea, setMinistryArea] = useState('hospitality')
@@ -339,6 +416,13 @@ export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.churchProfiles, createdProfile], [KEYS.churchConnections, createdConnection]])
     setNotice('Church profile and connection created.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createChurchProfile(token, { name: createdProfile.name, location_text: createdProfile.locationText || 'Near me' }).then((remote) => communityDiscipleshipApi.createChurchConnection(token, {
+        church_profile_id: remote.church_profile_id,
+        connection_status: 'exploring',
+        notes: context,
+      })).then(() => setNotice('Church profile and connection synced to backend.')).catch(() => setNotice('Church connection saved locally; backend sync failed.'))
+    }
   }
 
   function createRhythmAndCheckin() {
@@ -348,6 +432,18 @@ export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.churchConnections, activeConnection], [KEYS.churchRhythms, createdRhythm], [KEYS.churchCheckins, checkin]])
     setNotice('Church rhythm and check-in created.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createChurchRhythm(token, {
+        rhythm_type: createdRhythm.rhythmType || 'worship',
+        title: createdRhythm.title,
+        frequency_type: createdRhythm.frequencyType || 'weekly',
+      }).then((remote) => communityDiscipleshipApi.createChurchCheckin(token, {
+        rhythm_id: remote.rhythm_id,
+        checkin_type: createdRhythm.rhythmType || 'worship',
+        attended: true,
+        reflection: context,
+      })).then(() => setNotice('Church rhythm and check-in synced to backend.')).catch(() => setNotice('Church rhythm saved locally; backend sync failed.'))
+    }
   }
 
   function createMinistryMatchFlow() {
@@ -363,6 +459,16 @@ export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
     saveCommunityEntry(KEYS.churchReentryPlans, plan)
     setNotice('Church re-entry plan created with safety boundaries.')
     onRefresh()
+    if (token) {
+      void communityDiscipleshipApi.createChurchReentryPlan(token, {
+        reason_for_reentry: plan.reasonForReentry || 'church_hurt',
+        safety_concerns: plan.safetyConcerns || [],
+        desired_church_traits: plan.desiredChurchTraits || [],
+        boundaries_needed: plan.boundariesNeeded || [],
+        first_steps: plan.firstSteps || [],
+        support_person_needed: true,
+      }).then(() => setNotice('Church re-entry plan synced to backend.')).catch(() => setNotice('Church re-entry plan saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -393,20 +499,30 @@ export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
   )
 }
 
-export default function CommunityDiscipleshipDashboard({ userId }) {
+export default function CommunityDiscipleshipDashboard({ userId, token }) {
   const [tab, setTab] = useState('dashboard')
   const [refreshKey, setRefreshKey] = useState(0)
   const data = useMemo(() => loadCommunityDiscipleshipData(userId), [userId, refreshKey])
   const refresh = () => setRefreshKey((value) => value + 1)
 
+  useEffect(() => {
+    let alive = true
+    if (token) {
+      void hydrateCommunityDiscipleshipRemote(userId, token).then((result) => {
+        if (alive && result.hydrated) refresh()
+      })
+    }
+    return () => { alive = false }
+  }, [userId, token])
+
   return (
     <>
       <MiniTabs active={tab} onChange={setTab} />
       {tab === 'dashboard' && <CommunityOverview userId={userId} data={data} />}
-      {tab === 'pathway' && <DiscipleshipPathwayPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'accountability' && <AccountabilityGroupPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'mentor' && <MentorCoachingPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'church' && <ChurchIntegrationPanel userId={userId} data={data} onRefresh={refresh} />}
+      {tab === 'pathway' && <DiscipleshipPathwayPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'accountability' && <AccountabilityGroupPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'mentor' && <MentorCoachingPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'church' && <ChurchIntegrationPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
     </>
   )
 }

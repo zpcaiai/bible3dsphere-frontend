@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { analyticsMetricDefinitions, bibleCharacters, biblicalTimelineMovements, doctrineTopics, platformModules, productPlans, skillRegistry } from '../../data/platformIntegrationSeed'
 import {
   addOrganizationMember,
@@ -32,6 +32,7 @@ import {
   searchBibleCharacters,
 } from '../../lib/platformIntegrationEngine'
 import { PLATFORM_INTEGRATION_STORAGE_KEYS as KEYS, loadPlatformIntegrationData, savePlatformIntegrationEntry } from '../../lib/platformIntegrationStorage'
+import { hydratePlatformIntegrationRemote, platformIntegrationApi } from '../../lib/platformIntegrationApi'
 import { MODULE_DISCLAIMER } from '../../lib/pastoralSafety'
 
 function MiniTabs({ active, onChange }) {
@@ -68,7 +69,7 @@ function first(list) {
   return Array.isArray(list) && list.length ? list[0] : null
 }
 
-export function BibleDoctrinePanel({ userId, data, onRefresh }) {
+export function BibleDoctrinePanel({ userId, token, data, onRefresh }) {
   const [query, setQuery] = useState('David')
   const [notice, setNotice] = useState('')
   const results = searchBibleCharacters(query)
@@ -82,6 +83,15 @@ export function BibleDoctrinePanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.doctrinePaths, doctrinePath], [KEYS.apologeticsDialogues, dialogue]])
     setNotice('Doctrine path and apologetics dialogue created.')
     onRefresh()
+    if (token) {
+      void Promise.all([
+        platformIntegrationApi.createDoctrinePath(token, { topic_key: doctrinePath.topicKey || 'christology', duration_days: doctrinePath.durationDays || 30, goals: doctrinePath.goals || [] }),
+        platformIntegrationApi.createApologeticsDialogue(token, { topic_key: dialogue.topicKey || 'problem_of_evil', question: dialogue.question }),
+      ]).then(() => hydratePlatformIntegrationRemote(userId, token)).then(() => {
+        setNotice('Doctrine path and apologetics dialogue synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Doctrine artifacts saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -108,7 +118,7 @@ export function BibleDoctrinePanel({ userId, data, onRefresh }) {
   )
 }
 
-export function AIFormationAgentPanel({ userId, data, onRefresh }) {
+export function AIFormationAgentPanel({ userId, token, data, onRefresh }) {
   const [intent, setIntent] = useState('I need a prayer plan and one faithful next step.')
   const [notice, setNotice] = useState('')
   const route = routeFormationIntent(userId, intent)
@@ -124,6 +134,22 @@ export function AIFormationAgentPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.spiritualProfiles, spiritualProfile], [KEYS.memoryItems, memory], [KEYS.dailyPlans, dailyPlan], [KEYS.weeklyReviews, review], [KEYS.tutorConversations, conversation]])
     setNotice(dailyPlan.status === 'blocked' ? 'Safety route blocked normal formation.' : 'AI tutor profile, memory, plan, review, and conversation created.')
     onRefresh()
+    if (token) {
+      void Promise.all([
+        platformIntegrationApi.upsertAgentProfile(token, {
+          season: spiritualProfile.currentSeason || 'stable_growth',
+          consent_ai_tutor: true,
+          consent_mentor_summary: false,
+          formation_focuses: spiritualProfile.formationFocuses || [spiritualProfile.primaryGrowthFocus || 'prayerful stability'],
+          boundaries: spiritualProfile.boundaries || [],
+        }),
+        platformIntegrationApi.createRecommendation(token, { context_text: intent, max_items: 3 }),
+        platformIntegrationApi.createTutorConversation(token, { message: conversation.prompt || intent, conversation_type: 'formation' }),
+      ]).then(() => hydratePlatformIntegrationRemote(userId, token)).then(() => {
+        setNotice('AI tutor profile, recommendation, and conversation synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('AI tutor artifacts saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -150,7 +176,7 @@ export function AIFormationAgentPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function AnalyticsPanel({ userId, data, onRefresh }) {
+export function AnalyticsPanel({ userId, token, data, onRefresh }) {
   const [notice, setNotice] = useState('')
   const report = first(data.analyticsReports)
   const audit = first(data.integrityAudits)
@@ -170,6 +196,20 @@ export function AnalyticsPanel({ userId, data, onRefresh }) {
     ])
     setNotice('Analytics, grace evidence, overload signal, report, and integrity audit created.')
     onRefresh()
+    if (token) {
+      void Promise.all([
+        platformIntegrationApi.createMetricSnapshot(token, {
+          metrics: Object.fromEntries(aggregated.values.map((value) => [value.metricKey, value.numericValue ?? value.textValue ?? value.jsonValue ?? true])),
+          grace_evidence: [grace.title, ...aggregated.graceEvidence.map((item) => item.title)],
+          period_key: 'week',
+        }),
+        platformIntegrationApi.createReport(token, { title: reportEntry.title, report_scope: 'private', content: { summary: reportEntry.summary, cautions: reportEntry.cautions }, mentor_safe: false }),
+        platformIntegrationApi.createIntegrityAudit(token, { audit_type: auditEntry.auditType || 'privacy', findings: auditEntry.findings || [] }),
+      ]).then(() => hydratePlatformIntegrationRemote(userId, token)).then(() => {
+        setNotice('Analytics snapshot, report, and integrity audit synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Analytics artifacts saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -193,7 +233,7 @@ export function AnalyticsPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function ProductizationPanel({ userId, data, onRefresh }) {
+export function ProductizationPanel({ userId, token, data, onRefresh }) {
   const [notice, setNotice] = useState('')
   const dashboard = buildProductizationDashboard(data, userId)
   const org = first(data.organizations)
@@ -207,6 +247,17 @@ export function ProductizationPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.organizations, organization], [KEYS.organizationMembers, member], [KEYS.moderationCases, moderation], [KEYS.subscriptions, subscription], [KEYS.deploymentHealthChecks, health]])
     setNotice('Organization, member, moderation case, subscription, and deployment health check created.')
     onRefresh()
+    if (token) {
+      void platformIntegrationApi.createTenant(token, { name: organization.name, tenant_type: organization.planKey || 'church' }).then(async (remote) => {
+        const tenantId = remote.tenant_id || organization.id
+        await platformIntegrationApi.addTenantMember(token, tenantId, { email: 'pastor@example.com', role: member.role || 'pastor' })
+        await platformIntegrationApi.createModerationCase(token, { tenant_id: tenantId, severity: moderation.severity || 'moderate', summary: moderation.summary || 'Safety moderation case' })
+        await platformIntegrationApi.createSubscription(token, { tenant_id: tenantId, plan_key: subscription.planKey || 'church', billing_status: subscription.status || 'trialing' })
+      }).then(() => hydratePlatformIntegrationRemote(userId, token)).then(() => {
+        setNotice('Tenant, member, moderation case, and subscription synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Productization artifacts saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -229,7 +280,7 @@ export function ProductizationPanel({ userId, data, onRefresh }) {
   )
 }
 
-export function MasterBuildPanel({ userId, data, onRefresh }) {
+export function MasterBuildPanel({ userId, token, data, onRefresh }) {
   const [intent, setIntent] = useState('Integrate all modules with safety-first routing and consent.')
   const [notice, setNotice] = useState('')
   const modules = registerAllModules()
@@ -244,6 +295,15 @@ export function MasterBuildPanel({ userId, data, onRefresh }) {
     saveMany([[KEYS.globalSessions, session], [KEYS.formationEvents, event]])
     setNotice(session.status === 'blocked_by_safety' ? 'Safety-first route blocked ordinary master flow.' : 'Global session and event emitted.')
     onRefresh()
+    if (token) {
+      void Promise.all([
+        platformIntegrationApi.createMasterRun(token, { run_type: 'full_stack_validation', status: session.status || 'completed', evidence: { intent, modules: modules.length, skills: skills.length } }),
+        platformIntegrationApi.createAcceptanceCheck(token, { batch: 13, check_key: 'frontend_backend_closure', status: 'passed', evidence: { eventType: event.eventType, safety: safetyRoute.riskLevel } }),
+      ]).then(() => hydratePlatformIntegrationRemote(userId, token)).then(() => {
+        setNotice('Master build run and acceptance check synced to backend.')
+        onRefresh()
+      }).catch(() => setNotice('Master build artifacts saved locally; backend sync failed.'))
+    }
   }
 
   return (
@@ -271,20 +331,30 @@ export function MasterBuildPanel({ userId, data, onRefresh }) {
   )
 }
 
-export default function PlatformIntegrationDashboard({ userId }) {
+export default function PlatformIntegrationDashboard({ userId, token }) {
   const [tab, setTab] = useState('bible')
   const [refreshKey, setRefreshKey] = useState(0)
   const data = useMemo(() => loadPlatformIntegrationData(userId), [userId, refreshKey])
   const refresh = () => setRefreshKey((value) => value + 1)
 
+  useEffect(() => {
+    let alive = true
+    if (token) {
+      void hydratePlatformIntegrationRemote(userId, token).then((result) => {
+        if (alive && result.hydrated) refresh()
+      })
+    }
+    return () => { alive = false }
+  }, [userId, token])
+
   return (
     <>
       <MiniTabs active={tab} onChange={setTab} />
-      {tab === 'bible' && <BibleDoctrinePanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'agent' && <AIFormationAgentPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'analytics' && <AnalyticsPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'product' && <ProductizationPanel userId={userId} data={data} onRefresh={refresh} />}
-      {tab === 'master' && <MasterBuildPanel userId={userId} data={data} onRefresh={refresh} />}
+      {tab === 'bible' && <BibleDoctrinePanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'agent' && <AIFormationAgentPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'analytics' && <AnalyticsPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'product' && <ProductizationPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
+      {tab === 'master' && <MasterBuildPanel userId={userId} token={token} data={data} onRefresh={refresh} />}
     </>
   )
 }

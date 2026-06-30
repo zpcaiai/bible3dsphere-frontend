@@ -269,9 +269,9 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
       {tab === 'rule-of-life' && <HolyHabitDashboard userId={userId} />}
       {tab === 'worldview-formation' && <WorldviewFormationDashboard userId={userId} />}
       {tab === 'suffering-care' && <SufferingCareDashboard userId={userId} />}
-      {tab === 'community-discipleship' && <CommunityDiscipleshipDashboard userId={userId} />}
+      {tab === 'community-discipleship' && <CommunityDiscipleshipDashboard userId={userId} token={token} />}
       {tab === 'gift-calling' && <GiftCallingDashboard userId={userId} />}
-      {tab === 'platform-integration' && <PlatformIntegrationDashboard userId={userId} />}
+      {tab === 'platform-integration' && <PlatformIntegrationDashboard userId={userId} token={token} />}
       {tab === 'library' && <SinPatternLibrary />}
       {tab === 'stronghold' && <StrongholdPage userId={userId} token={token} />}
       {tab === 'holy-life' && <HolyLifeEngine userId={userId} token={token} initialTodayLog={data.holyLifeDayLogs?.find((entry) => entry.date === todayKey())} history={data.holyLifeDayLogs || []} summaryStats={data.holyLifeSummary} onSave={(entry) => saveAndRefresh(saveHolyLifeDayLog, createHolyLifeDayLogRemote, entry)} />}

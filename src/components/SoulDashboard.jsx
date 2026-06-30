@@ -19,6 +19,10 @@ import LectioPage from '../LectioPage'
 import PsalmPrayerPage from '../PsalmPrayerPage'
 import MissionLifePage from '../MissionLifePage'
 import PracticingPresencePage from '../PracticingPresencePage'
+import FastingSimplicityPage from '../FastingSimplicityPage'
+import SabbathRestPage from '../SabbathRestPage'
+import FruitTrackerPage from '../FruitTrackerPage'
+import TemptationResistancePage from '../TemptationResistancePage'
 import IntercessionPage from '../IntercessionPage'
 import PrayerRulePage from '../PrayerRulePage'
 import ReminderSettings from '../ReminderSettings'
@@ -415,6 +419,58 @@ export default function SoulDashboard({ user }) {
         </div>
       </button>
 
+      {/* ── 试探抵抗 ── */}
+      <button onClick={() => setOverlay('temptation')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(255,107,107,0.16), rgba(245,181,63,0.10))', border: '1px solid rgba(255,107,107,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🛡</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>试探抵抗</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>试探不是身份 · 选下一个忠心小步</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
+      {/* ── 圣灵果子追踪 ── */}
+      <button onClick={() => setOverlay('fruit')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(52,199,89,0.16), rgba(125,211,252,0.10))', border: '1px solid rgba(52,199,89,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🍇</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>圣灵果子追踪</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>反思镜子，不是属灵成绩</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
+      {/* ── 安息与休息 ── */}
+      <button onClick={() => setOverlay('sabbath')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(125,211,252,0.16), rgba(52,199,89,0.10))', border: '1px solid rgba(125,211,252,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🌙</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>安息与休息</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>抵抗效率偶像 · 恢复敬拜与信靠</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
+      {/* ── 禁食与简朴 ── */}
+      <button onClick={() => setOverlay('fasting')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(245,181,63,0.16), rgba(52,199,89,0.10))', border: '1px solid rgba(245,181,63,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🍃</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>禁食与简朴</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>训练欲望 · 慷慨与自由 · 安全第一</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
       {/* ── 圣经默想 Lectio Divina ── */}
       <button onClick={() => setOverlay('lectio')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
         background: 'linear-gradient(135deg, rgba(52,199,89,0.16), rgba(90,200,250,0.10))', border: '1px solid rgba(52,199,89,0.25)', color: '#fff' }}>
@@ -580,6 +636,10 @@ export default function SoulDashboard({ user }) {
           {overlay === 'psalm' && <PsalmPrayerPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'mission-life' && <MissionLifePage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'presence' && <PracticingPresencePage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'fasting' && <FastingSimplicityPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'sabbath' && <SabbathRestPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'fruit' && <FruitTrackerPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'temptation' && <TemptationResistancePage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'intercession' && <IntercessionPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'prayer-rule' && <PrayerRulePage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'reminder' && <ReminderSettings onBack={() => setOverlay(null)} />}

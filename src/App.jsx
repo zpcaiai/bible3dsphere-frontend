@@ -155,6 +155,7 @@ function AppContent() {
   const _mirrorRestore = (navRestore && (navRestore.panel === 'mirror' || navRestore.panel === 'mirror-graph')) ? navRestore.mirror : null
   const [pendingPanel, setPendingPanel] = useState(null)
   const [loginMessage, setLoginMessage] = useState('')
+  const [formationInitialTab, setFormationInitialTab] = useState('home')
   const [gardenClickCount, setGardenClickCount] = useState(0)
   const [sermonClickCount, setSermonClickCount] = useState(0)
   const [includeBiblicalExample, setIncludeBiblicalExample] = useState(true)
@@ -1218,6 +1219,17 @@ function AppContent() {
   useEffect(() => {
     try {
       const sp = new URLSearchParams(window.location.search)
+      const panel = sp.get('panel')
+      if (panel === 'spiritual-formation') {
+        const formationTab = sp.get('formationTab')
+        if (formationTab) setFormationInitialTab(formationTab)
+        sp.delete('panel')
+        sp.delete('formationTab')
+        const nextSearch = sp.toString()
+        window.history.replaceState({}, '', `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`)
+        setTimeout(() => setActivePanel(panel), 60)
+        return
+      }
       const share = sp.get('share')
       if (!share) return
       const [kind, id] = share.split(':')
@@ -3012,6 +3024,7 @@ function AppContent() {
               <SpiritualFormationPage
                 user={user}
                 token={getToken()}
+                initialTab={formationInitialTab}
                 onBack={() => setActivePanel('sphere')}
               />
             </Suspense>
