@@ -1,0 +1,5 @@
+# Keep local-only / sensitive files out of the static deployment.
+.env*
+.DS_Store
+.gitignore
+.vercel
