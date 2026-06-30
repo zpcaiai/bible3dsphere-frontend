@@ -103,10 +103,16 @@
 .sf-pattern-grid,
 .sf-fruit-grid,
 .sf-review-grid,
-.sf-map-grid {
+.sf-map-grid,
+.sf-scripture-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 12px;
+}
+
+.sf-scripture-grid {
+  grid-template-columns: 1fr;
+  margin: 14px 0;
 }
 
 .sf-library-section {
@@ -163,6 +169,12 @@
 .sf-card h4 {
   margin: 0 0 10px;
   letter-spacing: 0;
+}
+
+.sf-scripture-text {
+  margin-top: 12px !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  font-size: 16px;
 }
 
 .sf-card ul,
@@ -286,7 +298,8 @@
 
 .sf-form-grid label,
 .sf-create-plan label,
-.sf-step-list label {
+.sf-step-list label,
+.sf-flow-card label {
   display: grid;
   gap: 7px;
   color: rgba(255, 255, 255, 0.82);
@@ -301,7 +314,10 @@
 .sf-create-plan select,
 .sf-step-list input,
 .sf-step-list select,
-.sf-step-list textarea {
+.sf-step-list textarea,
+.sf-flow-card input,
+.sf-flow-card select,
+.sf-flow-card textarea {
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 8px;
@@ -312,9 +328,15 @@
 }
 
 .sf-form-grid textarea,
-.sf-step-list textarea {
+.sf-step-list textarea,
+.sf-flow-card textarea {
   min-height: 92px;
   resize: vertical;
+}
+
+.sf-flow-card input[type="range"] {
+  padding: 0;
+  accent-color: #34c759;
 }
 
 .sf-choice-block {
@@ -357,6 +379,72 @@
   gap: 12px;
 }
 
+.sf-flow-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.sf-stage-pills {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.sf-stage-pills span {
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.sf-stage-pills span.active {
+  background: rgba(52, 199, 89, 0.18);
+  color: #8effae;
+  font-weight: 850;
+}
+
+.sf-summary-card dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.sf-summary-card dt {
+  color: #8effae;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.sf-summary-card dd {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.sf-insight-row {
+  display: grid;
+  gap: 5px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sf-insight-row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.sf-insight-row p {
+  margin: 0;
+}
+
+.sf-insight-row span {
+  color: rgba(190, 236, 255, 0.78);
+  font-size: 12px;
+}
+
 .sf-step-list span {
   color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
@@ -395,6 +483,7 @@
 .sf-plan-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 

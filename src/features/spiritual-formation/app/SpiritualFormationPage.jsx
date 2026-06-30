@@ -34,16 +34,34 @@ import FruitTree from '../components/FruitTree'
 import GraceRecoveryFlow from '../components/GraceRecoveryFlow'
 import HolyLifeEngine from '../components/HolyLifeEngine'
 import HorariumEngine from '../components/HorariumEngine'
+import CommunityDiscipleshipDashboard from '../components/community-discipleship/CommunityDiscipleshipDashboard'
+import GiftCallingDashboard from '../components/gift-calling/GiftCallingDashboard'
+import HolyHabitDashboard from '../components/holy-habit/HolyHabitDashboard'
 import NewCreationMap from '../components/NewCreationMap'
+import PrayerCommunionDashboard from '../components/prayer-communion/PrayerCommunionDashboard'
+import PlatformIntegrationDashboard from '../components/platform-integration/PlatformIntegrationDashboard'
+import ScriptureFormationDashboard from '../components/scripture-formation/ScriptureFormationDashboard'
 import SinPatternLibrary from '../components/SinPatternLibrary'
 import StrongholdPage from '../components/StrongholdPage'
+import SufferingCareDashboard from '../components/suffering-care/SufferingCareDashboard'
 import ThoughtCaptiveFlow from '../components/ThoughtCaptiveFlow'
 import TransformationPlanDashboard from '../components/TransformationPlanDashboard'
+import VirtueViceDashboard from '../components/virtue-vice/VirtueViceDashboard'
+import WorldviewFormationDashboard from '../components/worldview/WorldviewFormationDashboard'
 import WeeklyReviewPanel from '../components/WeeklyReviewPanel'
 import './spiritual-formation.css'
 
 const TABS = [
   ['home', '首页'],
+  ['scripture-formation', '圣经默想'],
+  ['prayer-communion', '祷告相交'],
+  ['virtue-vice', '德性罪性'],
+  ['rule-of-life', '生活规则'],
+  ['worldview-formation', '世界观塑造'],
+  ['suffering-care', '苦难医治'],
+  ['community-discipleship', '群体门训'],
+  ['gift-calling', '恩赐呼召'],
+  ['platform-integration', '知识智能企业'],
   ['library', '罪模式库'],
   ['stronghold', '自高之事'],
   ['holy-life', '圣洁生活'],
@@ -169,6 +187,15 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
           <div className="sf-action-grid">
             {[
               ['daily', 'Start Daily Scan', 'Name emotion, trigger, lie, confession, and obedience.'],
+              ['scripture-formation', 'Scripture Meditation OS', 'Lectio Divina, Scripture memory, daily examen, confession, and repentance.'],
+              ['prayer-communion', 'Prayer & Communion OS', 'Daily prayer rhythm, intercession, Psalm prayer, and practicing presence.'],
+              ['virtue-vice', 'Virtue & Vice Formation OS', 'Cultivate virtues, discern vice patterns, resist temptation, and track Spirit fruit.'],
+              ['rule-of-life', 'Rule of Life & Holy Habit Engine', 'Build a gentle rule, plan holy habits, practice Sabbath, fasting, and simplicity.'],
+              ['worldview-formation', 'Worldview Formation OS Expansion', 'Diagnose beliefs, map idols, reframe through the gospel, and discern decisions with wisdom.'],
+              ['suffering-care', 'Suffering, Crisis & Healing Formation OS', 'Process suffering, triage crisis, build healing journeys, and coordinate pastoral care.'],
+              ['community-discipleship', 'Community, Accountability & Discipleship OS', 'Build discipleship pathways, accountability groups, mentor coaching, and church life rhythms.'],
+              ['gift-calling', 'Gift, Calling & Mission OS', 'Discern possible gifts, calling patterns, ministry fit, and whole-life mission with guardrails.'],
+              ['platform-integration', 'Bible, AI Tutor, Analytics, Productization & Master Build OS', 'Run Batches 9-13: Bible doctrine, AI tutor, analytics, multi-tenant productization, and full integration roadmap.'],
               ['holy-life', 'Holy Life Engine', 'Practice consecration, purpose, presence, speech, charity, examen, and eternal perspective.'],
               ['horarium', 'Horarium 定时祷告', 'Pray the fixed hours — praise, humility, love, resignation, confession, eternity.'],
               ['thought', 'Take a Thought Captive', 'Catch a thought and answer it with gospel truth.'],
@@ -219,6 +246,15 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
         </section>
       )}
 
+      {tab === 'scripture-formation' && <ScriptureFormationDashboard userId={userId} />}
+      {tab === 'prayer-communion' && <PrayerCommunionDashboard userId={userId} />}
+      {tab === 'virtue-vice' && <VirtueViceDashboard userId={userId} />}
+      {tab === 'rule-of-life' && <HolyHabitDashboard userId={userId} />}
+      {tab === 'worldview-formation' && <WorldviewFormationDashboard userId={userId} />}
+      {tab === 'suffering-care' && <SufferingCareDashboard userId={userId} />}
+      {tab === 'community-discipleship' && <CommunityDiscipleshipDashboard userId={userId} />}
+      {tab === 'gift-calling' && <GiftCallingDashboard userId={userId} />}
+      {tab === 'platform-integration' && <PlatformIntegrationDashboard userId={userId} />}
       {tab === 'library' && <SinPatternLibrary />}
       {tab === 'stronghold' && <StrongholdPage userId={userId} token={token} />}
       {tab === 'holy-life' && <HolyLifeEngine userId={userId} token={token} initialTodayLog={data.holyLifeDayLogs?.find((entry) => entry.date === todayKey())} history={data.holyLifeDayLogs || []} summaryStats={data.holyLifeSummary} onSave={(entry) => saveAndRefresh(saveHolyLifeDayLog, createHolyLifeDayLogRemote, entry)} />}

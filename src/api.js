@@ -2246,3 +2246,156 @@ export function clearSwrCache() {
   _swrMem.clear(); _swrInflight.clear()
   try { Object.keys(localStorage).filter(k => k.startsWith('swr:')).forEach(k => localStorage.removeItem(k)) } catch { /* ignore */ }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lectio Divina 圣经默想 / Scripture meditation
+// ─────────────────────────────────────────────────────────────────────────────
+const lectioHeaders = (token, json = false) => ({
+  ...(json ? { 'Content-Type': 'application/json' } : {}),
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+})
+
+export async function fetchLectioPassages(token) {
+  const res = await fetch(`${API_BASE}/lectio/passages`, { headers: lectioHeaders(token) })
+  if (!res.ok) throw new Error('加载经文库失败')
+  return res.json()
+}
+
+export async function fetchDailyLectio(token) {
+  const res = await fetch(`${API_BASE}/lectio/passages/daily`, { headers: lectioHeaders(token) })
+  if (!res.ok) throw new Error('加载今日经文失败')
+  return res.json()
+}
+
+export async function createLectioSession(passageId, token) {
+  const res = await fetch(`${API_BASE}/lectio/sessions`, {
+    method: 'POST', headers: lectioHeaders(token, true),
+    body: JSON.stringify({ passage_id: passageId || '' }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '开始默想失败')
+  return data
+}
+
+export async function submitLectioStage(sid, payload, token) {
+  const res = await fetch(`${API_BASE}/lectio/sessions/${sid}/stage`, {
+    method: 'POST', headers: lectioHeaders(token, true), body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '保存失败')
+  return data
+}
+
+export async function completeLectioSession(sid, payload, token) {
+  const res = await fetch(`${API_BASE}/lectio/sessions/${sid}/complete`, {
+    method: 'POST', headers: lectioHeaders(token, true), body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '完成失败')
+  return data
+}
+
+export async function fetchLectioHistory(token, limit = 30) {
+  const res = await fetch(`${API_BASE}/lectio/history?limit=${limit}`, { headers: lectioHeaders(token) })
+  if (!res.ok) throw new Error('加载历史失败')
+  return res.json()
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Psalm Prayer 诗篇祷告 / pray through the Psalms
+// ─────────────────────────────────────────────────────────────────────────────
+const psalmHeaders = (token, json = false) => ({
+  ...(json ? { 'Content-Type': 'application/json' } : {}),
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+})
+
+export async function fetchPsalms(token) {
+  const res = await fetch(`${API_BASE}/psalm/psalms`, { headers: psalmHeaders(token) })
+  if (!res.ok) throw new Error('加载诗篇库失败')
+  return res.json()
+}
+
+export async function recommendPsalms(payload, token) {
+  const res = await fetch(`${API_BASE}/psalm/recommend`, {
+    method: 'POST', headers: psalmHeaders(token, true), body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('推荐失败')
+  return res.json()
+}
+
+export async function createPsalmSession(payload, token) {
+  const res = await fetch(`${API_BASE}/psalm/sessions`, {
+    method: 'POST', headers: psalmHeaders(token, true), body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '开始祷告失败')
+  return data
+}
+
+export async function submitPsalmMovement(sid, payload, token) {
+  const res = await fetch(`${API_BASE}/psalm/sessions/${sid}/movement`, {
+    method: 'POST', headers: psalmHeaders(token, true), body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '保存失败')
+  return data
+}
+
+export async function completePsalmSession(sid, payload, token) {
+  const res = await fetch(`${API_BASE}/psalm/sessions/${sid}/complete`, {
+    method: 'POST', headers: psalmHeaders(token, true), body: JSON.stringify(payload),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || '完成失败')
+  return data
+}
+
+export async function fetchPsalmHistory(token, limit = 30) {
+  const res = await fetch(`${API_BASE}/psalm/history?limit=${limit}`, { headers: psalmHeaders(token) })
+  if (!res.ok) throw new Error('加载历史失败')
+  return res.json()
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mission Life Design 使命生活设计
+// ─────────────────────────────────────────────────────────────────────────────
+const missionHeaders = (token, json = false) => ({
+  ...(json ? { 'Content-Type': 'application/json' } : {}),
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+})
+export async function fetchMissionDomains(token) {
+  const res = await fetch(`${API_BASE}/mission-life/domains`, { headers: missionHeaders(token) })
+  if (!res.ok) throw new Error('加载使命领域失败'); return res.json()
+}
+export async function designMissionLife(payload, token) {
+  const res = await fetch(`${API_BASE}/mission-life/design`, { method: 'POST', headers: missionHeaders(token, true), body: JSON.stringify(payload) })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '生成失败'); return d
+}
+export async function createMissionProfile(payload, token) {
+  const res = await fetch(`${API_BASE}/mission-life/profiles`, { method: 'POST', headers: missionHeaders(token, true), body: JSON.stringify(payload) })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '创建失败'); return d
+}
+export async function fetchLatestMissionProfile(token) {
+  const res = await fetch(`${API_BASE}/mission-life/profiles/latest`, { headers: missionHeaders(token) })
+  if (!res.ok) throw new Error('加载画像失败'); return res.json()
+}
+export async function addMissionCommitment(pid, payload, token) {
+  const res = await fetch(`${API_BASE}/mission-life/profiles/${pid}/commitments`, { method: 'POST', headers: missionHeaders(token, true), body: JSON.stringify(payload) })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '添加失败'); return d
+}
+export async function fetchMissionCommitments(token) {
+  const res = await fetch(`${API_BASE}/mission-life/commitments`, { headers: missionHeaders(token) })
+  if (!res.ok) throw new Error('加载承诺失败'); return res.json()
+}
+export async function createMissionProject(payload, token) {
+  const res = await fetch(`${API_BASE}/mission-life/projects`, { method: 'POST', headers: missionHeaders(token, true), body: JSON.stringify(payload) })
+  const d = await res.json().catch(() => ({})); if (!res.ok) throw new Error(d.detail || '创建失败'); return d
+}
+export async function fetchMissionProjects(token) {
+  const res = await fetch(`${API_BASE}/mission-life/projects`, { headers: missionHeaders(token) })
+  if (!res.ok) throw new Error('加载项目失败'); return res.json()
+}
+export async function fetchMissionReview(token) {
+  const res = await fetch(`${API_BASE}/mission-life/review`, { headers: missionHeaders(token) })
+  if (!res.ok) throw new Error('加载回顾失败'); return res.json()
+}

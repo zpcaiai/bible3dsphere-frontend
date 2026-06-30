@@ -1,0 +1,412 @@
+import { useMemo, useState } from 'react'
+import { accountabilityGroupTemplates, churchRhythmTemplates, discipleshipStages, ministryAreas } from '../../data/communityDiscipleshipSeed'
+import {
+  addAccountabilityResponse,
+  addMentorObservation,
+  buildCommunityDashboard,
+  createAccountabilityCheckin,
+  createAccountabilityGoal,
+  createAccountabilityGroup,
+  createChurchCheckin,
+  createChurchConnection,
+  createChurchProfile,
+  createChurchReentryPlan,
+  createChurchRhythm,
+  createDiscipleshipAssessment,
+  createDiscipleshipPath,
+  createGroupPrayerRequest,
+  createMentorActionPlan,
+  createMentorRelationship,
+  createMentorSession,
+  createMinistryOpportunity,
+  generateDiscipleshipReview,
+  generateGroupReview,
+  generateMentorReview,
+  generateMinistryMatch,
+  orchestrateCommunityIntent,
+  recommendChurchIntegration,
+  recommendDiscipleshipPathway,
+  recommendMentorQuestions,
+  recommendMentorSession,
+  updateDiscipleshipStep,
+} from '../../lib/communityDiscipleshipEngine'
+import { COMMUNITY_DISCIPLESHIP_STORAGE_KEYS as KEYS, loadCommunityDiscipleshipData, saveCommunityEntry } from '../../lib/communityDiscipleshipStorage'
+import { MODULE_DISCLAIMER } from '../../lib/pastoralSafety'
+
+function MiniTabs({ active, onChange }) {
+  const tabs = [
+    ['dashboard', 'Dashboard'],
+    ['pathway', 'Pathway'],
+    ['accountability', 'Accountability'],
+    ['mentor', 'Mentor'],
+    ['church', 'Church'],
+  ]
+  return <nav className="sf-tabs" aria-label="Community discipleship sections">{tabs.map(([id, label]) => <button key={id} className={active === id ? 'active' : ''} type="button" onClick={() => onChange(id)}>{label}</button>)}</nav>
+}
+
+function Notice({ text }) {
+  if (!text) return null
+  const warning = /crisis|unsafe|abuse|coerc|route|care|danger|伤害|危机|不安全/.test(text)
+  return <p className={warning ? 'sf-warning' : 'sf-success'}>{text}</p>
+}
+
+function SummaryCard({ title, items }) {
+  return (
+    <article className="sf-card sf-summary-card">
+      <h3>{title}</h3>
+      <dl>{items.filter((item) => item.value !== undefined && item.value !== null && item.value !== '').map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{Array.isArray(item.value) ? item.value.join(', ') : item.value}</dd></div>)}</dl>
+    </article>
+  )
+}
+
+function saveMany(entries) {
+  entries.filter(Boolean).forEach(([key, entry]) => saveCommunityEntry(key, entry))
+}
+
+function getFirst(list) {
+  return Array.isArray(list) && list.length ? list[0] : null
+}
+
+export function CommunityOverview({ userId, data }) {
+  const [intent, setIntent] = useState('I need an accountability partner and wise church integration.')
+  const dashboard = useMemo(() => buildCommunityDashboard({ ...data, userId }), [data, userId])
+  const route = orchestrateCommunityIntent(userId, intent)
+
+  return (
+    <section className="sf-section">
+      <div className="sf-section-heading">
+        <h2>Community, Accountability & Discipleship OS / 群体、监督与门徒训练系统</h2>
+        <p>{MODULE_DISCLAIMER}</p>
+      </div>
+      <article className="sf-card sf-flow-card">
+        <label>Community intent<textarea value={intent} onChange={(event) => setIntent(event.target.value)} /></label>
+        <div className="sf-card-head"><h3>Recommended route</h3><span className="sf-status">{route.route}</span></div>
+        <p>{route.message}</p>
+        <p className="sf-muted">{route.nextEndpoint}</p>
+      </article>
+      <div className="sf-home-grid">
+        <SummaryCard title="Today" items={[
+          { label: 'Active pathway', value: dashboard.today.activeDiscipleshipPath?.title || 'None yet' },
+          { label: 'Steps due', value: String(dashboard.today.discipleshipStepsDue.length) },
+          { label: 'Groups', value: String(dashboard.today.accountabilityGroups.length) },
+          { label: 'Mentor sessions due', value: String(dashboard.today.mentorSessionsDue.length) },
+          { label: 'Church rhythms due', value: String(dashboard.today.churchLifeRhythmsDue.length) },
+          { label: 'Urgent flags', value: dashboard.today.urgentFlags.length ? dashboard.today.urgentFlags : 'none' },
+        ]} />
+        <SummaryCard title="Weekly Summary" items={[
+          { label: 'Steps completed', value: String(dashboard.weeklySummary.discipleshipStepsCompleted) },
+          { label: 'Group check-ins', value: String(dashboard.weeklySummary.accountabilityCheckinsCreated) },
+          { label: 'Prayer requests', value: String(dashboard.weeklySummary.groupPrayersAdded) },
+          { label: 'Mentor sessions', value: String(dashboard.weeklySummary.mentorSessionsCompleted) },
+          { label: 'Church check-ins', value: String(dashboard.weeklySummary.churchCheckinsCompleted) },
+        ]} />
+        <article className="sf-card">
+          <h3>Community insights</h3>
+          {dashboard.communityInsights.length ? dashboard.communityInsights.map((insight) => <div className="sf-insight-row" key={insight.type}><b>{insight.summary}</b><p>{insight.recommendedNextAction}</p><span>{insight.type}</span></div>) : <p className="sf-empty">No insights yet. Create one pathway or safe group connection.</p>}
+        </article>
+      </div>
+    </section>
+  )
+}
+
+export function DiscipleshipPathwayPanel({ userId, data, onRefresh }) {
+  const [context, setContext] = useState('I want concrete growth in prayer, Scripture, community, and service.')
+  const [stageKey, setStageKey] = useState('practicing_disciple')
+  const [notice, setNotice] = useState('')
+  const activePath = getFirst(data.discipleshipPaths)
+  const pathSteps = activePath ? data.discipleshipSteps.filter((step) => step.pathId === activePath.id).sort((a, b) => a.sortOrder - b.sortOrder) : []
+  const recommendation = recommendDiscipleshipPathway(userId, null, context)
+
+  function createPathway() {
+    const assessment = createDiscipleshipAssessment(userId, {
+      spiritualHistorySummary: context,
+      selfReportStageKey: stageKey,
+      scripturePracticeLevel: stageKey === 'new_believer' ? 3 : 6,
+      prayerPracticeLevel: stageKey === 'new_believer' ? 3 : 6,
+      communityLevel: 4,
+      serviceLevel: stageKey === 'new_believer' ? 1 : 5,
+      doctrineFoundationLevel: 4,
+      characterGrowthLevel: 5,
+    })
+    const { path, steps } = createDiscipleshipPath(userId, {
+      title: '90-day discipleship pathway',
+      currentStageKey: stageKey,
+      primaryGrowthFocuses: recommendation.recommendation?.growthFocuses,
+    })
+    saveMany([
+      [KEYS.assessments, assessment],
+      [KEYS.discipleshipPaths, path],
+      ...steps.map((step) => [KEYS.discipleshipSteps, step]),
+    ])
+    setNotice(assessment.riskFlags.length ? 'Pathway saved with care routing flag. Pause ordinary formation for safe support.' : 'Discipleship pathway created.')
+    onRefresh()
+  }
+
+  function completeNextStep() {
+    const next = pathSteps.find((step) => step.status !== 'completed')
+    if (!next) return
+    saveCommunityEntry(KEYS.discipleshipSteps, updateDiscipleshipStep(next, { status: 'completed', completionNotes: 'Completed with grace, not performance pressure.' }))
+    setNotice('One discipleship step marked complete.')
+    onRefresh()
+  }
+
+  function createReview() {
+    if (!activePath) return
+    const review = generateDiscipleshipReview(userId, activePath, pathSteps)
+    saveCommunityEntry(KEYS.discipleshipReviews, review)
+    setNotice(review.summary)
+    onRefresh()
+  }
+
+  return (
+    <section className="sf-section">
+      <div className="sf-section-heading"><h2>Discipleship Pathway / 门训路径</h2><p>Stages are pastoral aids, not spiritual identity labels.</p></div>
+      <article className="sf-card sf-flow-card">
+        <label>Spiritual context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
+        <label>Starting stage<select value={stageKey} onChange={(event) => setStageKey(event.target.value)}>{discipleshipStages.map((stage) => <option key={stage.key} value={stage.key}>{stage.displayName}</option>)}</select></label>
+        <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createPathway}>Create Discipleship Pathway</button><button type="button" onClick={completeNextStep}>Complete Next Step</button><button type="button" onClick={createReview}>Generate Pathway Review</button></div>
+      </article>
+      <div className="sf-home-grid">
+        <SummaryCard title="Recommendation" items={[
+          { label: 'Route', value: recommendation.routed ? recommendation.recommendation.route : 'discipleship_pathway' },
+          { label: 'Assessed stage', value: recommendation.recommendation?.assessedStage },
+          { label: 'Target stage', value: recommendation.recommendation?.targetStage },
+          { label: 'Focuses', value: recommendation.recommendation?.growthFocuses },
+        ]} />
+        <article className="sf-card">
+          <h3>Active pathway</h3>
+          {activePath ? <><p><b>{activePath.title}</b></p><p>{activePath.currentStageKey} to {activePath.targetStageKey}</p><ul>{pathSteps.map((step) => <li key={step.id}>{step.stepTitle} · {step.status}</li>)}</ul></> : <p className="sf-empty">No active pathway yet.</p>}
+        </article>
+        <article className="sf-card"><h3>Stage map</h3><div className="sf-stage-pills">{discipleshipStages.map((stage) => <span className={stage.key === stageKey ? 'active' : ''} key={stage.key}>{stage.key}</span>)}</div></article>
+      </div>
+      <Notice text={notice} />
+    </section>
+  )
+}
+
+export function AccountabilityGroupPanel({ userId, data, onRefresh }) {
+  const [groupType, setGroupType] = useState('weekly_triads')
+  const [context, setContext] = useState('I need a weekly check-in with prayer, encouragement, and clear consent.')
+  const [notice, setNotice] = useState('')
+  const group = getFirst(data.accountabilityGroups)
+  const latestCheckin = getFirst(data.accountabilityCheckins)
+
+  function ensureGroup() {
+    if (group) return group
+    const created = createAccountabilityGroup(userId, { groupType, name: 'Grace-shaped weekly triad' })
+    saveMany([[KEYS.accountabilityGroups, created.group], [KEYS.accountabilityMembers, created.member]])
+    return created.group
+  }
+
+  function createGroup() {
+    const created = createAccountabilityGroup(userId, { groupType, name: 'Grace-shaped weekly triad' })
+    saveMany([[KEYS.accountabilityGroups, created.group], [KEYS.accountabilityMembers, created.member]])
+    setNotice('Accountability group created with consent and confidentiality defaults.')
+    onRefresh()
+  }
+
+  function createGoalAndCheckin() {
+    const activeGroup = ensureGroup()
+    const goal = createAccountabilityGoal(userId, activeGroup, { title: 'Weekly honest check-in', description: context })
+    const result = createAccountabilityCheckin(userId, activeGroup, { struggle: context, prayerRequest: 'Please pray for humility and steady practice.', supportNeeded: true })
+    saveMany([[KEYS.accountabilityGoals, goal], [KEYS.accountabilityCheckins, result.checkin]])
+    setNotice(result.routed ? 'Check-in saved with care route flag.' : 'Accountability goal and check-in created.')
+    onRefresh()
+  }
+
+  function respondAndPray() {
+    const activeGroup = ensureGroup()
+    const checkin = latestCheckin || createAccountabilityCheckin(userId, activeGroup, { struggle: context }).checkin
+    const response = addAccountabilityResponse(userId, checkin, { responseText: 'I hear you. I will pray and follow up without pressure.' })
+    const prayer = createGroupPrayerRequest(userId, activeGroup, { title: 'Grace for honest obedience', requestText: context })
+    saveMany([[KEYS.accountabilityCheckins, checkin], [KEYS.accountabilityResponses, response], [KEYS.groupPrayerRequests, prayer]])
+    setNotice('Response and prayer request saved.')
+    onRefresh()
+  }
+
+  function createReview() {
+    const activeGroup = ensureGroup()
+    const review = generateGroupReview(userId, activeGroup, data.accountabilityCheckins, data.groupPrayerRequests)
+    saveCommunityEntry(KEYS.groupReviews, review)
+    setNotice(review.summary)
+    onRefresh()
+  }
+
+  return (
+    <section className="sf-section">
+      <div className="sf-section-heading"><h2>Accountability Group / 监督同行</h2><p>Consent-based, role-aware, redacted, and free from public shaming or coerced confession.</p></div>
+      <article className="sf-card sf-flow-card">
+        <label>Group type<select value={groupType} onChange={(event) => setGroupType(event.target.value)}>{accountabilityGroupTemplates.map((template) => <option key={template.key} value={template.key}>{template.title}</option>)}</select></label>
+        <label>Check-in context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
+        <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createGroup}>Create Accountability Group</button><button type="button" onClick={createGoalAndCheckin}>Create Goal and Check-In</button><button type="button" onClick={respondAndPray}>Add Response and Prayer</button><button type="button" onClick={createReview}>Generate Group Review</button></div>
+      </article>
+      <div className="sf-home-grid">
+        <SummaryCard title="Group state" items={[
+          { label: 'Groups', value: String(data.accountabilityGroups.length) },
+          { label: 'Goals', value: String(data.accountabilityGoals.length) },
+          { label: 'Check-ins', value: String(data.accountabilityCheckins.length) },
+          { label: 'Responses', value: String(data.accountabilityResponses.length) },
+          { label: 'Prayer requests', value: String(data.groupPrayerRequests.length) },
+        ]} />
+        <article className="sf-card"><h3>Confidentiality rule</h3><p>{group?.confidentialityCommitment || 'Members choose what to share; crisis or abuse routes to care, not gossip.'}</p></article>
+      </div>
+      <Notice text={notice} />
+    </section>
+  )
+}
+
+export function MentorCoachingPanel({ userId, data, onRefresh }) {
+  const [context, setContext] = useState('I want a mentor conversation about prayer, calling, and ordinary faithfulness.')
+  const [notice, setNotice] = useState('')
+  const relationship = getFirst(data.mentorRelationships)
+  const recommendation = relationship ? recommendMentorSession(userId, relationship, context) : null
+  const questions = recommendMentorQuestions().slice(0, 6)
+
+  function ensureRelationship() {
+    if (relationship) return relationship
+    const created = createMentorRelationship(userId, 'mentor-demo', { goals: ['grow in prayer', 'discern calling', 'practice humility'] })
+    saveCommunityEntry(KEYS.mentorRelationships, created)
+    return created
+  }
+
+  function createRelationship() {
+    const created = createMentorRelationship(userId, 'mentor-demo', { goals: ['grow in prayer', 'discern calling', 'practice humility'] })
+    saveCommunityEntry(KEYS.mentorRelationships, created)
+    setNotice('Mentor relationship created with permission scope.')
+    onRefresh()
+  }
+
+  function createSession() {
+    const rel = ensureRelationship()
+    const result = createMentorSession(userId, rel, { context, status: 'planned' })
+    saveCommunityEntry(KEYS.mentorSessions, result.session)
+    setNotice(result.recommendation.routed ? 'Mentor session saved with care route flag.' : 'Mentor session created.')
+    onRefresh()
+  }
+
+  function addObservationAndPlan() {
+    const rel = ensureRelationship()
+    const observation = addMentorObservation('mentor-demo', rel, { title: 'Steady desire for prayer', evidence: ['asked for help', 'named next step'] })
+    const plan = createMentorActionPlan('mentor-demo', rel, { title: 'Two-week prayer follow-up', actions: ['pray morning prayer three times', 'send one honest check-in'] })
+    saveMany([[KEYS.mentorObservations, observation], [KEYS.mentorActionPlans, plan]])
+    setNotice('Mentor observation and action plan saved.')
+    onRefresh()
+  }
+
+  function createReview() {
+    const rel = ensureRelationship()
+    const review = generateMentorReview('mentor-demo', rel, data.mentorSessions, data.mentorObservations, data.mentorActionPlans)
+    saveCommunityEntry(KEYS.mentorReviews, review)
+    setNotice(review.summary)
+    onRefresh()
+  }
+
+  return (
+    <section className="sf-section">
+      <div className="sf-section-heading"><h2>Mentor Coaching / 导师陪跑</h2><p>Mentoring supports discernment and action without control, surveillance, or hidden authority.</p></div>
+      <article className="sf-card sf-flow-card">
+        <label>Mentor context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
+        <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createRelationship}>Create Mentor Relationship</button><button type="button" onClick={createSession}>Create Mentor Session</button><button type="button" onClick={addObservationAndPlan}>Add Observation and Action Plan</button><button type="button" onClick={createReview}>Generate Mentor Review</button></div>
+      </article>
+      <div className="sf-home-grid">
+        <SummaryCard title="Mentor state" items={[
+          { label: 'Relationships', value: String(data.mentorRelationships.length) },
+          { label: 'Sessions', value: String(data.mentorSessions.length) },
+          { label: 'Observations', value: String(data.mentorObservations.length) },
+          { label: 'Action plans', value: String(data.mentorActionPlans.length) },
+        ]} />
+        <article className="sf-card"><h3>Suggested agenda</h3>{recommendation ? <ul>{recommendation.suggestedAgenda.map((item) => <li key={item}>{item}</li>)}</ul> : <p className="sf-empty">Create a relationship to see agenda.</p>}</article>
+        <article className="sf-card"><h3>Question library</h3><ul>{questions.map((question) => <li key={question.id}>{question.questionText}</li>)}</ul></article>
+      </div>
+      <Notice text={notice} />
+    </section>
+  )
+}
+
+export function ChurchIntegrationPanel({ userId, data, onRefresh }) {
+  const [context, setContext] = useState('I am exploring a safe local church and one low-pressure serving step.')
+  const [templateKey, setTemplateKey] = useState('lord_day_worship')
+  const [ministryArea, setMinistryArea] = useState('hospitality')
+  const [notice, setNotice] = useState('')
+  const profile = getFirst(data.churchProfiles)
+  const connection = getFirst(data.churchConnections)
+  const rhythm = getFirst(data.churchRhythms)
+  const recommendation = recommendChurchIntegration(userId, context, connection)
+
+  function createConnection() {
+    const createdProfile = createChurchProfile(userId, { name: 'Local Church', locationText: 'Near me' })
+    const createdConnection = createChurchConnection(userId, { churchProfileId: createdProfile.id, connectionStatus: 'exploring', notes: context })
+    saveMany([[KEYS.churchProfiles, createdProfile], [KEYS.churchConnections, createdConnection]])
+    setNotice('Church profile and connection created.')
+    onRefresh()
+  }
+
+  function createRhythmAndCheckin() {
+    const activeConnection = connection || createChurchConnection(userId, { connectionStatus: 'exploring', notes: context })
+    const createdRhythm = createChurchRhythm(userId, { churchConnectionId: activeConnection.id, templateKey })
+    const checkin = createChurchCheckin(userId, createdRhythm, { reflection: context })
+    saveMany([[KEYS.churchConnections, activeConnection], [KEYS.churchRhythms, createdRhythm], [KEYS.churchCheckins, checkin]])
+    setNotice('Church rhythm and check-in created.')
+    onRefresh()
+  }
+
+  function createMinistryMatchFlow() {
+    const opportunity = createMinistryOpportunity(userId, { churchProfileId: profile?.id || null, ministryArea, title: `${ministryArea} service opportunity` })
+    const match = generateMinistryMatch(userId, opportunity, { context })
+    saveMany([[KEYS.ministryOpportunities, opportunity], [KEYS.ministryMatches, match]])
+    setNotice('Ministry opportunity and match saved.')
+    onRefresh()
+  }
+
+  function createReentryPlan() {
+    const plan = createChurchReentryPlan(userId, { reasonText: context })
+    saveCommunityEntry(KEYS.churchReentryPlans, plan)
+    setNotice('Church re-entry plan created with safety boundaries.')
+    onRefresh()
+  }
+
+  return (
+    <section className="sf-section">
+      <div className="sf-section-heading"><h2>Church Integration / 教会生活整合</h2><p>Embodied church life is gradual and wise; church hurt routes to healing and safe re-entry first.</p></div>
+      <article className="sf-card sf-flow-card">
+        <label>Church context<textarea value={context} onChange={(event) => setContext(event.target.value)} /></label>
+        <div className="sf-form-grid">
+          <label>Church rhythm<select value={templateKey} onChange={(event) => setTemplateKey(event.target.value)}>{churchRhythmTemplates.map((template) => <option key={template.key} value={template.key}>{template.title}</option>)}</select></label>
+          <label>Ministry area<select value={ministryArea} onChange={(event) => setMinistryArea(event.target.value)}>{ministryAreas.map((area) => <option key={area} value={area}>{area}</option>)}</select></label>
+        </div>
+        <div className="sf-plan-actions"><button className="sf-primary" type="button" onClick={createConnection}>Create Church Connection</button><button type="button" onClick={createRhythmAndCheckin}>Create Rhythm and Check-In</button><button type="button" onClick={createMinistryMatchFlow}>Create Ministry Match</button><button type="button" onClick={createReentryPlan}>Create Re-Entry Plan</button></div>
+      </article>
+      <div className="sf-home-grid">
+        <SummaryCard title="Church state" items={[
+          { label: 'Profiles', value: String(data.churchProfiles.length) },
+          { label: 'Connections', value: String(data.churchConnections.length) },
+          { label: 'Rhythms', value: String(data.churchRhythms.length) },
+          { label: 'Check-ins', value: String(data.churchCheckins.length) },
+          { label: 'Ministry matches', value: String(data.ministryMatches.length) },
+          { label: 'Re-entry plans', value: String(data.churchReentryPlans.length) },
+        ]} />
+        <article className="sf-card"><div className="sf-card-head"><h3>Integration recommendation</h3><span className="sf-status">{recommendation.route}</span></div><p>{recommendation.message}</p><ul>{recommendation.steps.map((step) => <li key={step}>{step}</li>)}</ul></article>
+        <article className="sf-card"><h3>Active rhythm</h3>{rhythm ? <p>{rhythm.title} · {rhythm.frequencyType}</p> : <p className="sf-empty">No church rhythm yet.</p>}</article>
+      </div>
+      <Notice text={notice} />
+    </section>
+  )
+}
+
+export default function CommunityDiscipleshipDashboard({ userId }) {
+  const [tab, setTab] = useState('dashboard')
+  const [refreshKey, setRefreshKey] = useState(0)
+  const data = useMemo(() => loadCommunityDiscipleshipData(userId), [userId, refreshKey])
+  const refresh = () => setRefreshKey((value) => value + 1)
+
+  return (
+    <>
+      <MiniTabs active={tab} onChange={setTab} />
+      {tab === 'dashboard' && <CommunityOverview userId={userId} data={data} />}
+      {tab === 'pathway' && <DiscipleshipPathwayPanel userId={userId} data={data} onRefresh={refresh} />}
+      {tab === 'accountability' && <AccountabilityGroupPanel userId={userId} data={data} onRefresh={refresh} />}
+      {tab === 'mentor' && <MentorCoachingPanel userId={userId} data={data} onRefresh={refresh} />}
+      {tab === 'church' && <ChurchIntegrationPanel userId={userId} data={data} onRefresh={refresh} />}
+    </>
+  )
+}

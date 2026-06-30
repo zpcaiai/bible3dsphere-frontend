@@ -15,6 +15,9 @@ import { getToken } from '../auth'
 import IdolatryMonitorPage from '../IdolatryMonitorPage'
 import WaitingPathPage from '../WaitingPathPage'
 import ExamenPage from '../ExamenPage'
+import LectioPage from '../LectioPage'
+import PsalmPrayerPage from '../PsalmPrayerPage'
+import MissionLifePage from '../MissionLifePage'
 import ReminderSettings from '../ReminderSettings'
 import PracticeHubPage from '../PracticeHubPage'
 import PlanetHome from '../PlanetHome'
@@ -344,6 +347,45 @@ export default function SoulDashboard({ user }) {
         </div>
       </div>
 
+      {/* ── 使命生活 Mission Life ── */}
+      <button onClick={() => setOverlay('mission-life')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(52,199,89,0.16), rgba(245,181,63,0.10))', border: '1px solid rgba(52,199,89,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🌍</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>使命生活 · 把信仰活进日常</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>职业 · 家庭 · 邻舍 · 金钱 · 安息为证</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
+      {/* ── 诗篇祷告 Psalm Prayer ── */}
+      <button onClick={() => setOverlay('psalm')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(125,211,252,0.16), rgba(139,92,246,0.10))', border: '1px solid rgba(125,211,252,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🎵</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>诗篇祷告 · 用诗篇向神倾诉</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>哀歌 · 赞美 · 认罪 · 信靠 · 诚实不假装</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
+      {/* ── 圣经默想 Lectio Divina ── */}
+      <button onClick={() => setOverlay('lectio')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(52,199,89,0.16), rgba(90,200,250,0.10))', border: '1px solid rgba(52,199,89,0.25)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>📖</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>圣经默想 · 慢读神的话</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>读经 · 默想 · 祷告 · 默观 · 一个微顺服</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
       {/* ── 今日省察 Examen ── */}
       <button onClick={() => setOverlay('examen')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
         background: 'linear-gradient(135deg, rgba(139,92,246,0.16), rgba(90,200,250,0.10))', border: '1px solid rgba(139,92,246,0.25)', color: '#fff' }}>
@@ -492,6 +534,9 @@ export default function SoulDashboard({ user }) {
           {overlay === 'idolatry' && <IdolatryMonitorPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'waiting' && <WaitingPathPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'examen' && <ExamenPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'lectio' && <LectioPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'psalm' && <PsalmPrayerPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'mission-life' && <MissionLifePage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'reminder' && <ReminderSettings onBack={() => setOverlay(null)} />}
           {overlay === 'hub' && <PracticeHubPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'gospel' && <GospelDiagnosticPage user={user} onBack={() => setOverlay(null)} />}
