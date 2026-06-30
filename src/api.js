@@ -2508,3 +2508,12 @@ export const communityApi = {
   doctrineRecommend: (b, t) => _fPost('/doctrine/recommend', b, t),
   doctrineProgress: (b, t) => _fPost('/doctrine/progress', b, t),
 }
+
+// ── AI Formation Agent 统一层 (B10) ──
+export const agentApi = {
+  dashboard: (t) => _fGet('/formation-agent/dashboard', t),
+  route: (b, t) => _fPost('/formation-agent/route', b, t),
+  dailyPlan: (b, t) => _fPost('/formation-agent/daily-plan', b, t),
+  todayPlan: (t) => _fGet('/formation-agent/daily-plan/today', t),
+  recommendations: (t) => _fGet('/formation-agent/recommendations', t),
+}

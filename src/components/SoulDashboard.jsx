@@ -20,6 +20,7 @@ import PsalmPrayerPage from '../PsalmPrayerPage'
 import MissionLifePage from '../MissionLifePage'
 import PracticingPresencePage from '../PracticingPresencePage'
 import FastingSimplicityPage from '../FastingSimplicityPage'
+import FormationAgentDashboard from '../FormationAgentDashboard'
 import DoctrineLearningPage from '../DoctrineLearningPage'
 import ChurchIntegrationPage from '../ChurchIntegrationPage'
 import DiscipleshipPathwayPage from '../DiscipleshipPathwayPage'
@@ -541,6 +542,19 @@ export default function SoulDashboard({ user }) {
         </div>
       </button>
 
+      {/* ── 今日成长统一面板 ── */}
+      <button onClick={() => setOverlay('formation-home')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
+        background: 'linear-gradient(135deg, rgba(139,92,246,0.22), rgba(245,181,63,0.14))', border: '1px solid rgba(139,92,246,0.35)', color: '#fff' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 24 }}>🧭</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>今日成长 · 统一面板</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>快照 · 计划 · 推荐 · 说出需要,带你到对的操练</div>
+          </div>
+          <span style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)' }}>›</span>
+        </div>
+      </button>
+
       {/* ── 圣经默想 Lectio Divina ── */}
       <button onClick={() => setOverlay('lectio')} style={{ display: 'block', width: 'calc(100% - 32px)', textAlign: 'left', cursor: 'pointer', margin: '0 16px 12px', borderRadius: 14, padding: '14px 16px',
         background: 'linear-gradient(135deg, rgba(52,199,89,0.16), rgba(90,200,250,0.10))', border: '1px solid rgba(52,199,89,0.25)', color: '#fff' }}>
@@ -702,6 +716,7 @@ export default function SoulDashboard({ user }) {
           {overlay === 'idolatry' && <IdolatryMonitorPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'waiting' && <WaitingPathPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'examen' && <ExamenPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'formation-home' && <FormationAgentDashboard user={user} go={(t) => setOverlay(t)} onBack={() => setOverlay(null)} />}
           {overlay === 'lectio' && <LectioPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'psalm' && <PsalmPrayerPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'mission-life' && <MissionLifePage user={user} onBack={() => setOverlay(null)} />}
@@ -726,6 +741,7 @@ export default function SoulDashboard({ user }) {
           {overlay === 'discern' && <DecisionDiscernmentPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'fuel' && <FuelLibraryPage onClose={() => setOverlay(null)} />}
           {overlay === 'agent' && <AgentChatPage onBack={() => setOverlay(null)} />}
+          {overlay === 'formation-home' && <FormationAgentDashboard user={user} onBack={() => setOverlay(null)} go={setOverlay} />}
           {overlay === 'checkup' && <SpiritualCheckupPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'holy-life' && <SpiritualFormationPage user={user} token={getToken()} initialTab="holy-life" onBack={() => setOverlay(null)} />}
           {overlay === 'spiritual-formation' && <SpiritualFormationPage user={user} token={getToken()} onBack={() => setOverlay(null)} />}
