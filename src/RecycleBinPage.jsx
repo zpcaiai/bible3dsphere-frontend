@@ -49,7 +49,7 @@ export default function RecycleBinPage({ onBack }) {
       await restoreRecycleItem(item.type, item.id, token)
       setItems(prev => prev.filter(i => !(i.type === item.type && i.id === item.id)))
     } catch (e) {
-      alert('恢复失败: ' + e.message)
+      (window.showToast || window.alert)('恢复失败: ' + e.message, 'error')
     } finally {
       setRestoringId(null)
     }

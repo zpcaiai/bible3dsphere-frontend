@@ -1,0 +1,12 @@
+dist
+node_modules
+public
+coverage
+package-lock.json
+# 生成/超大数据文件——不参与格式化
+src/mirrorData.js
+src/i18n/auto-en.js
+src/i18n/translations.js
+*.min.js
+vite.config.js.timestamp-*.mjs
+vitest.config.js.timestamp-*.mjs

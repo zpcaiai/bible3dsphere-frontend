@@ -813,7 +813,7 @@ export default function DecisionSupportPage({ user, onBack, embedded = false, on
       await pollForAnalysis(result.id)
       
     } catch (err) {
-      alert(err.message)
+      (window.showToast || window.alert)(err.message, 'error')
     } finally {
       setLoading(false)
     }

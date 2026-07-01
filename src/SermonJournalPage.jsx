@@ -155,7 +155,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
       const res = await toggleShareSermonJournal(journal.id, token)
       setJournals(prev => prev.map(j => j.id === journal.id ? { ...j, shared: res.shared } : j))
     } catch (err) {
-      alert(err.message || '操作失败，请重试')
+      (window.showToast || window.alert)(err.message || '操作失败，请重试', 'error')
     }
   }
 
@@ -214,7 +214,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
       }
     } catch (e) {
       console.error('Failed to create journal:', e)
-      alert('创建失败: ' + e.message)
+      (window.showToast || window.alert)('创建失败: ' + e.message, 'error')
     }
   }
 
@@ -291,7 +291,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
     } catch (e) {
       console.error('Failed to save:', e)
       setSaveStatus('')
-      alert('保存失败: ' + e.message)
+      (window.showToast || window.alert)('保存失败: ' + e.message, 'error')
     }
   }
 
@@ -423,7 +423,7 @@ export default function SermonJournalPage({ user, token, onBack }) {
         pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
       }
       pdf.save(filename)
-    } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
+    } catch (err) { console.error('PDF generation failed:', err); (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error') }
     finally { document.body.removeChild(el) }
   }
 

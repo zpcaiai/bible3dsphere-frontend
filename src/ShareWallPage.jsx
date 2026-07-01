@@ -158,7 +158,7 @@ async function exportSelectedToPdf(note) {
     }
     const title = (note.scripture || '灵修分享').replace(/[\\/:*?"<>|]/g, '').slice(0, 20)
     pdf.save(`${title}_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
+  } catch (err) { console.error('PDF generation failed:', err); (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error') }
   finally { document.body.removeChild(el) }
 }
 
@@ -660,7 +660,7 @@ export default function ShareWallPage({ user, onBack }) {
       setNotes(prev => prev.filter(n => n.id !== noteId))
       setTotal(t => Math.max(0, t - 1))
     } catch (err) {
-      alert(err.message || '操作失败')
+      (window.showToast || window.alert)(err.message || '操作失败', 'error')
     }
   }
 

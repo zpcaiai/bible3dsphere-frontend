@@ -491,7 +491,7 @@ function AppContent() {
   // 使用浏览器原生 TTS（作为 fallback）
   function speakWithNativeTTS(text) {
     if (!window.speechSynthesis) {
-      alert(i18nT('您的浏览器不支持文字转语音功能'))
+      (window.showToast || window.alert)(i18nT('您的浏览器不支持文字转语音功能'), 'error')
       return
     }
     
@@ -1146,7 +1146,7 @@ function AppContent() {
       pdf.save(filename)
     } catch (err) {
       console.error('PDF generation failed:', err)
-      alert(i18nT('PDF 生成失败，请重试'))
+      (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error')
     }
   }
 
@@ -1405,7 +1405,7 @@ function AppContent() {
                     setUser(updatedUser)
                     setShowEditProfile(false)
                   } catch (e) {
-                    alert('保存失败: ' + e.message)
+                    (window.showToast || window.alert)('保存失败: ' + e.message, 'error')
                   } finally {
                     setEditProfileLoading(false)
                   }

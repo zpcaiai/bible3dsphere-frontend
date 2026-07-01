@@ -143,7 +143,7 @@ async function exportAllPrayersToPdf(items) {
       pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
     }
     pdf.save(`代祷墙_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
+  } catch (err) { console.error('PDF generation failed:', err); (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error') }
   finally { document.body.removeChild(el) }
 }
 

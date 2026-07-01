@@ -382,7 +382,7 @@ function CharacterDetail({ char: _rawChar, onBack, user, token }) {
       setTimeout(() => setCommitmentSaved(false), 3000)
       setCommitment('')
     } catch (err) {
-      alert(`保存失败：${err.message}`)
+      (window.showToast || window.alert)(`保存失败：${err.message}`, 'error')
     } finally {
       setSavingCommitment(false)
     }

@@ -179,7 +179,7 @@ export default function CommunityPage({ user, token, onBack }) {
       await deleteCommunityPost(post.id, token)
       setPosts(prev => prev.filter(p => p.id !== post.id))
       setTotal(t => Math.max(0, t - 1))
-    } catch (e) { alert(e.message) }
+    } catch (e) { (window.showToast || window.alert)(e.message, 'error') }
   }
 
   function bumpComment(postId, delta) {

@@ -12,3 +12,12 @@ dist/
 # vite transient config bundles
 vite.config.js.timestamp-*.mjs
 vitest.config.js.timestamp-*.mjs
+
+# 临时文件 / 构建日志 / 误入文件（追加）
+*.log
+coverage/
+.DS_Store
+.fuse_hidden*
+__cap_*.txt
+src/_bm_dump.mjs
+src/_permtest.tmp

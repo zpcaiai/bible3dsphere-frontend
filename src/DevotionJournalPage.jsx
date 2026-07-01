@@ -384,7 +384,7 @@ async function exportJournalToPdf(journal) {
     }
     const title = (journal.title || journal.scripture || '灵修日记').replace(/[\\/:*?"<>|]/g, '').slice(0, 20)
     pdf.save(`${title}_${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}.pdf`)
-  } catch (err) { console.error('PDF generation failed:', err); alert(i18nT('PDF 生成失败，请重试')) }
+  } catch (err) { console.error('PDF generation failed:', err); (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error') }
   finally { document.body.removeChild(el) }
 }
 
@@ -502,7 +502,7 @@ async function exportAllJournalsToPdf(journals) {
       pdf.text('https://holiness.uk/', PW / 2, PH - 4, { align: 'center' })
     }
     pdf.save(`灵修日记汇总_${new Date().toISOString().slice(0,10)}.pdf`)
-  } catch(err) { console.error('PDF生成失败', err); alert(i18nT('PDF 生成失败，请重试')) }
+  } catch(err) { console.error('PDF生成失败', err); (window.showToast || window.alert)(i18nT('PDF 生成失败，请重试'), 'error') }
   finally { document.body.removeChild(el) }
 }
 

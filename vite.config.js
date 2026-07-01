@@ -28,6 +28,12 @@ function precacheManifestPlugin() {
 export default defineConfig({
   envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
   plugins: [react(), precacheManifestPlugin()],
+  // 生产构建：移除噪声调试日志（保留 console.warn/error）与 debugger 语句；
+  // pure 仅在压缩阶段（build）生效，开发环境日志不受影响。
+  esbuild: {
+    pure: ['console.log', 'console.info', 'console.debug'],
+    drop: ['debugger'],
+  },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],

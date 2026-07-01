@@ -5247,3 +5247,46 @@ canvas {
 .jeru-locdetail p{margin:4px 0 0;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.8)}
 .jeru-locdetail .x{position:absolute;top:8px;right:10px;width:26px;height:26px;border-radius:8px;cursor:pointer;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:15px;line-height:1}
 .jeru-foot{flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom) + 14px);font-size:11px;color:rgba(255,255,255,.42);line-height:1.6;border-top:1px solid rgba(255,255,255,.06)}
+
+
+/* ============================================================
+   无障碍与动效安全增强 (a11y & motion-safety) — 追加，不改动既有规则
+   ============================================================ */
+
+/* 键盘导航可见焦点环（仅键盘触发，不影响鼠标点击视觉）
+   更具体的组件级 :focus-visible 规则（如 .hymn-*）仍会因优先级覆盖此基线 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 尊重系统「减弱动态效果」偏好：为对动效敏感的用户关闭 CSS 过渡/动画
+   注意：仅影响 CSS 动画，WebGL/Three.js 的场景动画需在 JS 中另行处理 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 屏幕阅读器专用文本工具类（视觉隐藏但可被辅助技术读取） */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
