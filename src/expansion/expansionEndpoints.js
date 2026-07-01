@@ -13,17 +13,24 @@ function headers(json, token) {
   if (t) o.Authorization = `Bearer ${t}`
   return o
 }
+async function _read(r, failMsg) {
+  const raw = await r.text().catch(() => '')
+  let d = null
+  try { d = raw ? JSON.parse(raw) : null } catch { d = null }
+  if (!r.ok) {
+    if (r.status === 401) throw new Error('请先登录后再使用此功能。')
+    throw new Error((d && (d.detail || d.message)) || `${failMsg}（HTTP ${r.status}）`)
+  }
+  if (d == null || typeof d !== 'object') throw new Error('后端接口暂不可用：服务端可能尚未部署或未启动（返回了非 JSON）。')
+  return d
+}
 async function GET(path, token) {
   const r = await fetch(`${API_BASE}${path}`, { headers: headers(false, token) })
-  const d = await r.json().catch(() => ({}))
-  if (!r.ok) throw new Error(d.detail || '加载失败')
-  return d
+  return _read(r, '加载失败')
 }
 async function POST(path, body, token) {
   const r = await fetch(`${API_BASE}${path}`, { method: 'POST', headers: headers(true, token), body: JSON.stringify(body || {}) })
-  const d = await r.json().catch(() => ({}))
-  if (!r.ok) throw new Error(d.detail || '提交失败')
-  return d
+  return _read(r, '提交失败')
 }
 
 // ── 1) 哀歌 lament（Vroegop 四步） ──
