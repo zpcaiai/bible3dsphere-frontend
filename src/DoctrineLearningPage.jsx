@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import BackButton from './BackButton'
 import { communityApi } from './api'
 import { getToken } from './auth'
+import CreedCatechismGalaxy from './features/spiritual-formation/components/creed-catechism/CreedCatechismGalaxy'
 
 const card = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: 14, marginBottom: 12 }
 const btn = { cursor: 'pointer', borderRadius: 10, padding: '8px 12px', border: 'none', color: '#fff', fontWeight: 700, background: 'linear-gradient(135deg, rgba(139,92,246,0.85), rgba(52,199,89,0.6))' }
@@ -38,12 +39,24 @@ export default function DoctrineLearningPage({ user, onBack }) {
   )
 
   const wrap = { maxWidth: 640, margin: '0 auto', padding: 16, color: '#fff' }
+  if (open === '__creed') {
+    return (
+      <div style={wrap}>
+        <BackButton onClick={() => setOpen(null)} />
+        <CreedCatechismGalaxy userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} />
+      </div>
+    )
+  }
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
       <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('📚 教义学习')}</h2>
       <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>{i18nT('区分经文/教义/传统/应用 · 连接到成长操练')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
+      <div style={card}>
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 1.7, marginBottom: 10 }}>{i18nT('用信经与教理问答把教义连接到经文、操练与祷告。')}</div>
+        <button style={btn} onClick={() => setOpen('__creed')}>{i18nT('进入信经问答星系')}</button>
+      </div>
 
       <div style={card}>
         <div style={{ display: 'flex', gap: 8 }}>

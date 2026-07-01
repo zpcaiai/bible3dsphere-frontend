@@ -7,29 +7,35 @@ import BackButton from './BackButton'
  */
 const CONTINENTS = [
   {
+    icon: '⛪', name: '健康教会九标志', en: 'Church Health · 9Marks', color: '#8b5cf6',
+    q: '我是否越来越委身、被门训、在肢体中成长？',
+    by: '9Marks · 归回本地教会的成长生态',
+    chips: [['九标志概览', 'nine-marks'], ['圣礼年历', 'sacrament-calendar'], ['本地教会', 'church-life'], ['门训路径', 'disciple-path'], ['福音诊断室', 'gospel']],
+  },
+  {
     icon: '🧭', name: '认识自己', en: 'Self Discovery', color: '#da77f2',
     q: '我为什么软弱、焦虑、重复跌倒？',
     by: '钟马田 · 看见真实的自己',
-    chips: [['偶像监测', 'idolatry'], ['低潮体检', 'checkup'], ['今日省察', 'examen']],
+    chips: [['爱之秩序', 'ordo-amoris'], ['偶像监测', 'idolatry'], ['低潮体检', 'checkup'], ['今日省察', 'examen']],
   },
   {
     icon: '✝️', name: '回到福音', en: 'Gospel Center', color: '#ffd43b',
     q: '我的伤口，福音如何回应？',
     by: '从情绪挖到不信，再挖回基督',
-    chips: [['福音诊断室', 'gospel'], ['决策辨识', 'discern'], ['属灵牧者对话', 'agent']],
+    chips: [['福音诊断室', 'gospel'], ['信经星系', 'creed-catechism'], ['决策辨识', 'discern'], ['属灵牧者对话', 'agent']],
   },
   {
     icon: '🌅', name: '与神同行', en: 'Walk With God', color: '#34c759',
     q: '今天如何亲近基督？',
     by: '司布真 · 看见荣耀的基督',
-    chips: [['灵修操练', 'hub'], ['养料库', 'fuel']],
+    chips: [['灵修操练', 'hub'], ['规则辨识', 'rule-discernment'], ['养料库', 'fuel']],
     note: '清晨甘露 · 读经计划 · 背经，都在底部「灵修」里',
   },
   {
     icon: '🕯️', name: '等候上帝', en: 'Waiting for God', color: '#5ac8fa',
     q: '我在等什么？神在等待中塑造我什么？',
     by: '从等待戈多，到等候上帝',
-    chips: [['等候之路', 'waiting']],
+    chips: [['等候之路', 'waiting'], ['十架哀歌', 'cross-lament-hope']],
   },
   {
     icon: '🗺️', name: '天路客', en: 'Pilgrim Journey', color: '#51cf66',

@@ -1,0 +1,116 @@
+// expansionEndpoints.js — 内容与神学扩充：全部 12 模块的 api.js 风格调用（content-theology-expansion）
+//
+// 供并行进程/任意前端直接 import 使用；风格对齐既有 src/api.js 的 submitCheckup（Bearer token）。
+// token 省略时回退到 ../auth 的 getToken()。所有端点见 docs/EXPANSION_API.md。
+import { getToken } from '../auth'
+
+const API_BASE = (import.meta.env.VITE_API_BASE?.trim()) || '/api'
+
+function headers(json, token) {
+  const t = token ?? ((typeof getToken === 'function') ? getToken() : null)
+  const o = {}
+  if (json) o['Content-Type'] = 'application/json'
+  if (t) o.Authorization = `Bearer ${t}`
+  return o
+}
+async function GET(path, token) {
+  const r = await fetch(`${API_BASE}${path}`, { headers: headers(false, token) })
+  const d = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(d.detail || '加载失败')
+  return d
+}
+async function POST(path, body, token) {
+  const r = await fetch(`${API_BASE}${path}`, { method: 'POST', headers: headers(true, token), body: JSON.stringify(body || {}) })
+  const d = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(d.detail || '提交失败')
+  return d
+}
+
+// ── 1) 哀歌 lament（Vroegop 四步） ──
+export const lamentMeta = (token) => GET('/lament/meta', token)
+export const lamentCompose = (text, situation, token) => POST('/lament/compose', { text, situation, use_ai: true }, token)
+export const lamentHistory = (token, limit = 20) => GET(`/lament/history?limit=${limit}`, token)
+export const lamentLatest = (token) => GET('/lament/latest', token)
+
+// ── 2) 情感真伪辨 affections（爱德华兹） ──
+export const affectionsMeta = (token) => GET('/affections/meta', token)
+export const affectionsAssess = (ratings, text, token) => POST('/affections/assess', { ratings, text, use_ai: true }, token)
+export const affectionsHistory = (token, limit = 20) => GET(`/affections/history?limit=${limit}`, token)
+export const affectionsLatest = (token) => GET('/affections/latest', token)
+
+// ── 3) 失序之爱→重排 ordo（奥古斯丁；注意 /api/ordo，非既有 /api/ordo-amoris 星图） ──
+export const ordoMeta = (token) => GET('/ordo/meta', token)
+export const ordoAnalyze = (loves, text, token) => POST('/ordo/analyze', { loves, text, use_ai: true }, token)
+export const ordoHistory = (token, limit = 20) => GET(`/ordo/history?limit=${limit}`, token)
+export const ordoLatest = (token) => GET('/ordo/latest', token)
+
+// ── 4) 温柔谦卑 tender（Ortlund，抗羞耻） ──
+export const tenderMeta = (token) => GET('/tender/meta', token)
+export const tenderComfort = (text, token) => POST('/tender/comfort', { text, use_ai: true }, token)
+export const tenderHistory = (token, limit = 20) => GET(`/tender/history?limit=${limit}`, token)
+export const tenderLatest = (token) => GET('/tender/latest', token)
+
+// ── 5) 文化礼仪→反礼仪 liturgy（J.K.A.Smith） ──
+export const liturgyMeta = (token) => GET('/liturgy/meta', token)
+export const liturgyAnalyze = (habit, token) => POST('/liturgy/analyze', { habit, use_ai: true }, token)
+export const liturgyHistory = (token, limit = 20) => GET(`/liturgy/history?limit=${limit}`, token)
+export const liturgyLatest = (token) => GET('/liturgy/latest', token)
+
+// ── 6) 诸灵分辨·安慰/枯竭 spirits（依纳爵） ──
+export const spiritsMeta = (token) => GET('/spirits/meta', token)
+export const spiritsDiscern = (text, token) => POST('/spirits/discern', { text, use_ai: true }, token)
+export const spiritsHistory = (token, limit = 20) => GET(`/spirits/history?limit=${limit}`, token)
+export const spiritsLatest = (token) => GET('/spirits/latest', token)
+
+// ── 7) 与基督联合 union ──
+export const unionMeta = (token) => GET('/union/meta', token)
+export const unionAssess = (struggle, token) => POST('/union/assess', { struggle, use_ai: true }, token)
+export const unionHistory = (token, limit = 20) => GET(`/union/history?limit=${limit}`, token)
+export const unionLatest = (token) => GET('/union/latest', token)
+
+// ── 8) 以神为乐 delight（派博·基督徒享乐主义） ──
+export const delightMeta = (token) => GET('/delight/meta', token)
+export const delightReframe = (duty, token) => POST('/delight/reframe', { duty, use_ai: true }, token)
+export const delightHistory = (token, limit = 20) => GET(`/delight/history?limit=${limit}`, token)
+export const delightLatest = (token) => GET('/delight/latest', token)
+
+// ── 9) 情感健康属灵 eh（Scazzero） ──
+export const ehMeta = (token) => GET('/eh/meta', token)
+export const ehAssess = (ratings, text, token) => POST('/eh/assess', { ratings, text, use_ai: true }, token)
+export const ehHistory = (token, limit = 20) => GET(`/eh/history?limit=${limit}`, token)
+export const ehLatest = (token) => GET('/eh/latest', token)
+
+// ── 10) 基督徒知足 contentment（伯罗斯） ──
+export const contentmentMeta = (token) => GET('/contentment/meta', token)
+export const contentmentAnalyze = (lack, token) => POST('/contentment/analyze', { lack, use_ai: true }, token)
+export const contentmentHistory = (token, limit = 20) => GET(`/contentment/history?limit=${limit}`, token)
+export const contentmentLatest = (token) => GET('/contentment/latest', token)
+
+// ── 11) 认识神·属性默想 knowgod（巴刻/陶恕/里夫斯） ──
+export const knowgodMeta = (token) => GET('/knowgod/meta', token)
+export const knowgodMeditate = ({ need, attribute } = {}, token) => POST('/knowgod/meditate', { need, attribute, use_ai: true }, token)
+export const knowgodHistory = (token, limit = 20) => GET(`/knowgod/history?limit=${limit}`, token)
+export const knowgodLatest = (token) => GET('/knowgod/latest', token)
+
+// ── 12) 推荐书目 + 圣诗 resources ──
+export const resourceMeta = (token) => GET('/resources/meta', token)
+export const resourceBooks = (continent, token) => GET(`/resources/books${continent ? `?continent=${encodeURIComponent(continent)}` : ''}`, token)
+export const resourceHymns = (token) => GET('/resources/hymns', token)
+export const resourceBookmark = (slug, kind, token) => POST('/resources/bookmark', { slug, kind: kind || 'book' }, token)
+export const resourceBookmarks = (token) => GET('/resources/bookmarks', token)
+
+// 便捷映射：featureKey → { prefix, action, meta, run } —— 供动态调用。
+export const EXPANSION_MODULES = {
+  lament: { prefix: 'lament', action: 'compose', meta: lamentMeta, run: lamentCompose },
+  affections: { prefix: 'affections', action: 'assess', meta: affectionsMeta, run: affectionsAssess },
+  ordo: { prefix: 'ordo', action: 'analyze', meta: ordoMeta, run: ordoAnalyze },
+  tender: { prefix: 'tender', action: 'comfort', meta: tenderMeta, run: tenderComfort },
+  liturgy: { prefix: 'liturgy', action: 'analyze', meta: liturgyMeta, run: liturgyAnalyze },
+  spirits: { prefix: 'spirits', action: 'discern', meta: spiritsMeta, run: spiritsDiscern },
+  union: { prefix: 'union', action: 'assess', meta: unionMeta, run: unionAssess },
+  delight: { prefix: 'delight', action: 'reframe', meta: delightMeta, run: delightReframe },
+  eh: { prefix: 'eh', action: 'assess', meta: ehMeta, run: ehAssess },
+  contentment: { prefix: 'contentment', action: 'analyze', meta: contentmentMeta, run: contentmentAnalyze },
+  knowgod: { prefix: 'knowgod', action: 'meditate', meta: knowgodMeta, run: knowgodMeditate },
+  resources: { prefix: 'resources', action: null, meta: resourceMeta, run: null },
+}

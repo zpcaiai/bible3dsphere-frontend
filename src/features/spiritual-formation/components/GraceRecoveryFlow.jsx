@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { sinPatternMap, sinPatterns } from '../data/sinPatterns'
 import SuggestField, { SuggestMenu } from '../../../components/SuggestField'
 import { getPastoralSafetyMessage, GRACE_RECOVERY_STATEMENT } from '../lib/pastoralSafety'
+import GraceIdentityCard from './grace-identity/GraceIdentityCard'
 
 function uid() {
   return `recovery_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 }
 
-export default function GraceRecoveryFlow({ userId, onSave }) {
+export default function GraceRecoveryFlow({ userId, onSave, token }) {
   const [form, setForm] = useState({ whatHappened: '', sinPattern: '', confession: '', repairAction: '', boundaryAction: '', accountabilityAction: '', nextObedienceStep: '', recurringBondage: false, mentionsSevereDistress: false })
   const [saved, setSaved] = useState(false)
   const gp = form.sinPattern ? sinPatternMap[form.sinPattern] : null
@@ -42,6 +43,7 @@ export default function GraceRecoveryFlow({ userId, onSave }) {
   return (
     <section className="sf-section sf-recovery">
       <div className="sf-section-heading"><h2>Grace Recovery</h2><p>Do not hide. Do not self-justify. Do not despair. Come to Christ honestly.</p></div>
+      <GraceIdentityCard compact inputText={form.whatHappened || '我又失败了，所以我想躲起来'} token={token} />
       <div className="sf-form-grid">
         <label>What happened?<span style={{ position: 'relative', display: 'block' }}><textarea style={{ paddingRight: 96 }} value={form.whatHappened} onChange={(e) => update('whatHappened', e.target.value)} /><SuggestMenu accent="#8c8cff" options={WHAT_OPTS} value={form.whatHappened} onChange={(v) => update('whatHappened', v)} /></span></label>
         <label>Name the pattern if possible<select value={form.sinPattern} onChange={(e) => update('sinPattern', e.target.value)}><option value="">Not sure yet</option>{sinPatterns.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>

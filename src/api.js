@@ -2509,6 +2509,32 @@ export const communityApi = {
   doctrineProgress: (b, t) => _fPost('/doctrine/progress', b, t),
 }
 
+// ── 属灵塑造扩展 6 模块 (爱之秩序 / 恩典身份 / 信经问答 / 生命规则+辨识 / 十架哀歌 / 圣礼年历) ──
+export const formationExtApi = {
+  // 爱之秩序星图
+  ordoRecord: (b, t) => _fPost('/ordo-amoris/record', b, t),
+  ordoHistory: (t, limit = 20) => _fGet(`/ordo-amoris/history?limit=${limit}`, t),
+  // 与基督联合 / 恩典身份
+  graceLog: (b, t) => _fPost('/grace-identity/log', b, t),
+  graceHistory: (t, limit = 20) => _fGet(`/grace-identity/history?limit=${limit}`, t),
+  // 信经与教理问答
+  creedState: (t) => _fGet('/creed-catechism/state', t),
+  creedComplete: (b, t) => _fPost('/creed-catechism/complete', b, t),
+  creedUncomplete: (b, t) => _fPost('/creed-catechism/uncomplete', b, t),
+  // 生命规则 + 依纳爵辨识
+  ruleSave: (b, t) => _fPost('/rule-discernment/rule', b, t),
+  ruleLatest: (t) => _fGet('/rule-discernment/rule/latest', t),
+  discernmentSave: (b, t) => _fPost('/rule-discernment/discernment', b, t),
+  discernmentHistory: (t, limit = 20) => _fGet(`/rule-discernment/discernment/history?limit=${limit}`, t),
+  // 十架 · 哀歌 · 盼望
+  lamentSave: (b, t) => _fPost('/cross-lament-hope/lament', b, t),
+  lamentHistory: (t, limit = 20) => _fGet(`/cross-lament-hope/history?limit=${limit}`, t),
+  // 圣礼与教会年历
+  sacramentCurrent: (t) => _fGet('/sacrament-calendar/current', t),
+  lordDaySave: (b, t) => _fPost('/sacrament-calendar/lord-day', b, t),
+  lordDayHistory: (t, limit = 20) => _fGet(`/sacrament-calendar/lord-day/history?limit=${limit}`, t),
+}
+
 // ── AI Formation Agent 统一层 (B10) ──
 export const agentApi = {
   dashboard: (t) => _fGet('/formation-agent/dashboard', t),
@@ -2598,4 +2624,34 @@ export const platformApi = {
   suspendOrg: (id, b, t) => _fPost(`/platform/orgs/${id}/suspend`, b, t),
   reactivateOrg: (id, b, t) => _fPost(`/platform/orgs/${id}/reactivate`, b, t),
   modLog: (t) => _fGet('/platform/moderation/log', t),
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Church Health OS · 健康教会九标志 (9Marks 教会健康生态层)
+// ─────────────────────────────────────────────────────────────────────────────
+async function _fPut(path, body, token) {
+  const r = await fetch(`${API_BASE}${path}`, { method: 'PUT', headers: _fH(token, true), body: JSON.stringify(body || {}) })
+  const d = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(d.detail || '操作失败')
+  return d
+}
+
+export const churchHealthApi = {
+  meta: (t) => _fGet('/church-health/meta', t),
+  marks: (t) => _fGet('/church-health/marks', t),
+  overview: (t) => _fGet('/church-health/dashboard/overview', t),
+  computeSnapshot: (t) => _fPost('/church-health/snapshots/compute', {}, t),
+  snapshots: (t) => _fGet('/church-health/snapshots/me', t),
+  getMembership: (t) => _fGet('/church-health/membership/me', t),
+  saveMembership: (b, t) => _fPut('/church-health/membership', b, t),
+  createSermon: (b, t) => _fPost('/church-health/sermons', b, t),
+  listSermons: (t) => _fGet('/church-health/sermons/me', t),
+  formSermon: (b, t) => _fPost('/church-health/sermons/form', b, t),
+  assessGospel: (b, t) => _fPost('/church-health/gospel/assess', b, t),
+  listGospel: (t) => _fGet('/church-health/gospel/me', t),
+  createRepentance: (b, t) => _fPost('/church-health/repentance', b, t),
+  listRepentance: (t) => _fGet('/church-health/repentance/me', t),
+  createDiscipleship: (b, t) => _fPost('/church-health/discipleship', b, t),
+  listDiscipleship: (t) => _fGet('/church-health/discipleship/me', t),
+  careSignals: (t) => _fGet('/church-health/care-signals', t),
 }

@@ -37,10 +37,16 @@ import HolyLifeEngine from '../components/HolyLifeEngine'
 import HorariumEngine from '../components/HorariumEngine'
 import CommunityDiscipleshipDashboard from '../components/community-discipleship/CommunityDiscipleshipDashboard'
 import GiftCallingDashboard from '../components/gift-calling/GiftCallingDashboard'
+import GraceIdentityCard from '../components/grace-identity/GraceIdentityCard'
 import HolyHabitDashboard from '../components/holy-habit/HolyHabitDashboard'
 import NewCreationMap from '../components/NewCreationMap'
+import OrdoAmorisDashboard from '../components/ordo-amoris/OrdoAmorisDashboard'
 import PrayerCommunionDashboard from '../components/prayer-communion/PrayerCommunionDashboard'
 import PlatformIntegrationDashboard from '../components/platform-integration/PlatformIntegrationDashboard'
+import CreedCatechismGalaxy from '../components/creed-catechism/CreedCatechismGalaxy'
+import CrossLamentHopeDashboard from '../components/cross-lament-hope/CrossLamentHopeDashboard'
+import RuleDiscernmentDashboard from '../components/rule-discernment/RuleDiscernmentDashboard'
+import SacramentCalendarOrbit from '../components/sacrament-calendar/SacramentCalendarOrbit'
 import ScriptureFormationDashboard from '../components/scripture-formation/ScriptureFormationDashboard'
 import SinPatternLibrary from '../components/SinPatternLibrary'
 import StrongholdPage from '../components/StrongholdPage'
@@ -55,12 +61,17 @@ import './spiritual-formation.css'
 const TABS = [
   ['home', '首页'],
   ['scripture-formation', '圣经默想'],
+  ['ordo-amoris', '爱之秩序'],
+  ['creed-catechism', '信经问答'],
   ['prayer-communion', '祷告相交'],
   ['virtue-vice', '德性罪性'],
   ['rule-of-life', '生活规则'],
+  ['rule-discernment', '规则辨识'],
   ['worldview-formation', '世界观塑造'],
   ['suffering-care', '苦难医治'],
+  ['cross-lament-hope', '十架哀歌'],
   ['community-discipleship', '群体门训'],
+  ['sacrament-calendar', '圣礼年历'],
   ['gift-calling', '恩赐呼召'],
   ['platform-integration', '知识智能企业'],
   ['library', '罪模式库'],
@@ -201,16 +212,22 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
             <h2>Return to Christ, then walk in concrete obedience.</h2>
             <p>{MODULE_DISCLAIMER}</p>
           </div>
+          <GraceIdentityCard compact inputText="我必须表现好才被爱" token={token} />
           <div className="sf-action-grid">
             {[
               ['daily', 'Start Daily Scan', 'Name emotion, trigger, lie, confession, and obedience.'],
               ['scripture-formation', 'Scripture Meditation OS', 'Lectio Divina, Scripture memory, daily examen, confession, and repentance.'],
+              ['ordo-amoris', 'Ordo Amoris Map', 'Discern disordered loves, false promises, and gospel reordering without shame.'],
+              ['creed-catechism', 'Creed & Catechism Galaxy', 'Daily doctrine as Scripture, practice, prayer, and worship-shaped formation.'],
               ['prayer-communion', 'Prayer & Communion OS', 'Daily prayer rhythm, intercession, Psalm prayer, and practicing presence.'],
               ['virtue-vice', 'Virtue & Vice Formation OS', 'Cultivate virtues, discern vice patterns, resist temptation, and track Spirit fruit.'],
               ['rule-of-life', 'Rule of Life & Holy Habit Engine', 'Build a gentle rule, plan holy habits, practice Sabbath, fasting, and simplicity.'],
+              ['rule-discernment', 'Rule & Discernment Compass', 'Generate sustainable rhythms and test decisions by faith, hope, love, wisdom, and counsel.'],
               ['worldview-formation', 'Worldview Formation OS Expansion', 'Diagnose beliefs, map idols, reframe through the gospel, and discern decisions with wisdom.'],
               ['suffering-care', 'Suffering, Crisis & Healing Formation OS', 'Process suffering, triage crisis, build healing journeys, and coordinate pastoral care.'],
+              ['cross-lament-hope', 'Cross, Lament & Hope', 'Name pain honestly, pray lament, avoid cheap answers, and take one faithful next step.'],
               ['community-discipleship', 'Community, Accountability & Discipleship OS', 'Build discipleship pathways, accountability groups, mentor coaching, and church life rhythms.'],
+              ['sacrament-calendar', 'Sacraments & Church Calendar', 'Connect personal formation to Lord’s Day worship, baptism identity, communion, and seasons.'],
               ['gift-calling', 'Gift, Calling & Mission OS', 'Discern possible gifts, calling patterns, ministry fit, and whole-life mission with guardrails.'],
               ['platform-integration', 'Bible, AI Tutor, Analytics, Productization & Master Build OS', 'Run Batches 9-13: Bible doctrine, AI tutor, analytics, multi-tenant productization, and full integration roadmap.'],
               ['holy-life', 'Holy Life Engine', 'Practice consecration, purpose, presence, speech, charity, examen, and eternal perspective.'],
@@ -264,12 +281,17 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
       )}
 
       {tab === 'scripture-formation' && <ScriptureFormationDashboard userId={userId} />}
+      {tab === 'ordo-amoris' && <OrdoAmorisDashboard userId={userId} token={token} />}
+      {tab === 'creed-catechism' && <CreedCatechismGalaxy userId={userId} token={token} />}
       {tab === 'prayer-communion' && <PrayerCommunionDashboard userId={userId} />}
       {tab === 'virtue-vice' && <VirtueViceDashboard userId={userId} />}
       {tab === 'rule-of-life' && <HolyHabitDashboard userId={userId} />}
+      {tab === 'rule-discernment' && <RuleDiscernmentDashboard userId={userId} token={token} />}
       {tab === 'worldview-formation' && <WorldviewFormationDashboard userId={userId} />}
       {tab === 'suffering-care' && <SufferingCareDashboard userId={userId} />}
+      {tab === 'cross-lament-hope' && <CrossLamentHopeDashboard userId={userId} token={token} />}
       {tab === 'community-discipleship' && <CommunityDiscipleshipDashboard userId={userId} token={token} />}
+      {tab === 'sacrament-calendar' && <SacramentCalendarOrbit userId={userId} token={token} />}
       {tab === 'gift-calling' && <GiftCallingDashboard userId={userId} />}
       {tab === 'platform-integration' && <PlatformIntegrationDashboard userId={userId} token={token} />}
       {tab === 'library' && <SinPatternLibrary />}
@@ -278,7 +300,7 @@ export default function SpiritualFormationPage({ user, token, onBack, initialTab
       {tab === 'horarium' && <HorariumEngine userId={userId} initialTodayLog={data.horariumDayLogs?.find((entry) => entry.date === todayKey())} history={data.horariumDayLogs || []} onSave={(entry) => saveAndRefresh(saveHorariumDayLog, createHorariumDayLogRemote, entry)} />}
       {tab === 'daily' && <DailySpiritualScanForm userId={userId} onSave={(entry) => saveAndRefresh(saveDailyExamen, createDailyExamenRemote, entry)} />}
       {tab === 'thought' && <ThoughtCaptiveFlow userId={userId} onSave={(entry) => saveAndRefresh(saveThoughtCaptiveEntry, createThoughtCaptiveRemote, entry)} />}
-      {tab === 'recovery' && <GraceRecoveryFlow userId={userId} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}
+      {tab === 'recovery' && <GraceRecoveryFlow userId={userId} token={token} onSave={(entry) => saveAndRefresh(saveGraceRecoveryEntry, createGraceRecoveryRemote, entry)} />}
       {tab === 'plans' && <TransformationPlanDashboard userId={userId} plans={data.plans} onSave={(plan) => saveAndRefresh(saveTransformationPlan, createTransformationPlanRemote, plan)} onUpdate={(plan) => saveAndRefresh(updateTransformationPlan, updateTransformationPlanRemote, plan)} />}
       {tab === 'fruit' && <FruitTree dailyExamens={data.dailyExamens} thoughtEntries={data.thoughtEntries} graceRecoveryEntries={data.graceRecoveryEntries} />}
       {tab === 'weekly' && <WeeklyReviewPanel userId={userId} dailyExamens={data.dailyExamens} thoughtEntries={data.thoughtEntries} graceRecoveryEntries={data.graceRecoveryEntries} />}

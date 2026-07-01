@@ -53,6 +53,12 @@ import AgentChatPage from '../AgentChatPage'
 import GospelDiagnosticPage from '../GospelDiagnosticPage'
 import SpiritualCheckupPage from '../SpiritualCheckupPage'
 import SpiritualFormationPage from '../features/spiritual-formation/app/SpiritualFormationPage'
+import NineMarksPage from '../NineMarksPage'
+import OrdoAmorisDashboard from '../features/spiritual-formation/components/ordo-amoris/OrdoAmorisDashboard'
+import CreedCatechismGalaxy from '../features/spiritual-formation/components/creed-catechism/CreedCatechismGalaxy'
+import RuleDiscernmentDashboard from '../features/spiritual-formation/components/rule-discernment/RuleDiscernmentDashboard'
+import CrossLamentHopeDashboard from '../features/spiritual-formation/components/cross-lament-hope/CrossLamentHopeDashboard'
+import SacramentCalendarOrbit from '../features/spiritual-formation/components/sacrament-calendar/SacramentCalendarOrbit'
 
 const MVFE_BASE = API_BASE + '/mvfe'
 
@@ -888,10 +894,20 @@ export default function SoulDashboard({ user }) {
           {overlay === 'checkup' && <SpiritualCheckupPage user={user} onBack={() => setOverlay(null)} />}
           {overlay === 'holy-life' && <SpiritualFormationPage user={user} token={getToken()} initialTab="holy-life" onBack={() => setOverlay(null)} />}
           {overlay === 'spiritual-formation' && <SpiritualFormationPage user={user} token={getToken()} onBack={() => setOverlay(null)} />}
+          {overlay === 'nine-marks' && <NineMarksPage user={user} onBack={() => setOverlay(null)} />}
+          {overlay === 'ordo-amoris' && <div className="sf-page"><BackOverlay onBack={() => setOverlay(null)} /><OrdoAmorisDashboard userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} /></div>}
+          {overlay === 'creed-catechism' && <div className="sf-page"><BackOverlay onBack={() => setOverlay(null)} /><CreedCatechismGalaxy userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} /></div>}
+          {overlay === 'rule-discernment' && <div className="sf-page"><BackOverlay onBack={() => setOverlay(null)} /><RuleDiscernmentDashboard userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} /></div>}
+          {overlay === 'cross-lament-hope' && <div className="sf-page"><BackOverlay onBack={() => setOverlay(null)} /><CrossLamentHopeDashboard userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} /></div>}
+          {overlay === 'sacrament-calendar' && <div className="sf-page"><BackOverlay onBack={() => setOverlay(null)} /><SacramentCalendarOrbit userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} /></div>}
         </div>
       )}
     </div>
   )
+}
+
+function BackOverlay({ onBack }) {
+  return <button type="button" onClick={onBack} style={{ marginBottom: 12, border: '1px solid rgba(255,255,255,0.16)', borderRadius: 10, padding: '8px 12px', background: 'rgba(255,255,255,0.08)', color: '#fff', cursor: 'pointer' }}>← 返回</button>
 }
 
 function DimRow({ dim, score }) {

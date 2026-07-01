@@ -4,6 +4,8 @@ import { t as i18nT } from './i18n/runtime'
 // 本页只订阅消息流处理好友/聊天，并通过 store 发起 1对1 语音通话。
 import { useCallback, useEffect, useRef, useState } from 'react'
 import BackButton from './BackButton'
+import SacramentCalendarOrbit from './features/spiritual-formation/components/sacrament-calendar/SacramentCalendarOrbit'
+import { getToken } from './auth'
 import {
   fetchFriends, requestFriend, acceptFriend, removeFriend,
   fetchChatHistory, markRead,
@@ -40,6 +42,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
   const [draft, setDraft] = useState('')
   const [addEmail, setAddEmail] = useState('')
   const [typingFrom, setTypingFrom] = useState(null)
+  const [showSacrament, setShowSacrament] = useState(false)
 
   const { connected, onlineFriends } = useRealtimeState()
 
@@ -169,6 +172,15 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
   }
 
   // ---------------- Render ----------------
+  if (showSacrament) {
+    return (
+      <div style={{ width: '100%', height: '100%', background: '#000', color: '#fff', overflowY: 'auto' }}>
+        <div style={{ padding: 16 }}><BackButton onClick={() => setShowSacrament(false)} /></div>
+        <SacramentCalendarOrbit userId={user?.id || user?.userId || user?.email || 'local-user'} token={getToken()} />
+      </div>
+    )
+  }
+
   return (
     <div className="communion-page">
       <header className="communion-header glass">
@@ -240,6 +252,7 @@ export default function CommunionPage({ user, onBack, onOpenVoice }) {
             <div className="communion-placeholder">
               <div style={{ fontSize: 40 }}>🕊️</div>
               <p>{i18nT('选择一位弟兄姊妹开始聊天')}</p>
+              <button className="communion-head-call" onClick={() => setShowSacrament(true)}>{i18nT('⛪ 圣礼与教会年历')}</button>
               <button className="communion-head-call" onClick={openGroupVoice}>{i18nT('🎙 多人语音通话')}</button>
             </div>
           ) : (

@@ -365,6 +365,79 @@
   accent-color: #34c759;
 }
 
+.sf-grace-card {
+  margin-bottom: 14px;
+  border-color: rgba(90, 200, 250, 0.22);
+  background: linear-gradient(135deg, rgba(90, 200, 250, 0.08), rgba(52, 199, 89, 0.06));
+}
+
+.sf-grace-card.compact textarea {
+  min-height: 72px;
+}
+
+.sf-orbit-node {
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.sf-orbit-node strong,
+.sf-orbit-node span {
+  overflow-wrap: anywhere;
+}
+
+.sf-orbit-node span {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sf-orbit-node.medium {
+  border-color: rgba(255, 212, 59, 0.35);
+  background: rgba(255, 212, 59, 0.08);
+}
+
+.sf-orbit-node.high {
+  border-color: rgba(90, 200, 250, 0.38);
+  background: rgba(90, 200, 250, 0.1);
+}
+
+.sf-meter-row {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) minmax(120px, 3fr) 42px;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.sf-meter-row i {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sf-meter-row b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #34c759, #5ac8fa);
+}
+
+.sf-meter-row em {
+  color: #8effae;
+  font-style: normal;
+  font-weight: 800;
+  text-align: right;
+}
+
 .sf-choice-block {
   margin: 14px 0;
 }

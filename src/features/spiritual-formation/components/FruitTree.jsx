@@ -12,7 +12,7 @@ export default function FruitTree({ dailyExamens, thoughtEntries, graceRecoveryE
   const max = Math.max(1, ...progress.map((item) => item.count))
   return (
     <section className="sf-section">
-      <div className="sf-section-heading"><h2>Holy Spirit Fruit Tree</h2><p>These are not achievements to boast in. They are areas where you are asking the Holy Spirit to form Christlike life in you.</p></div>
+      <div className="sf-section-heading"><h2>Holy Spirit Fruit Tree</h2><p>These are not achievements to boast in. Fruit is the Spirit's work, not a scorecard for proving yourself.</p></div>
       <div className="sf-fruit-grid">
         {progress.map((item) => (
           <article className="sf-card sf-fruit-card" key={item.fruit}>
