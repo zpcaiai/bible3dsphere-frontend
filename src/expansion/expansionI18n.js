@@ -60,6 +60,18 @@ export const EN = {
   '分辨与呼召': 'Discernment & Calling',
   '门徒与群体': 'Discipleship & Community',
   '华人本土灵修': 'Chinese Devotional Voices',
+  // 补齐模块 / added modules
+  '失序之爱 · 重排': 'Disordered Loves → Reorder',
+  '爱的次序 · 奥古斯丁': 'The order of loves · Augustine',
+  '列出你心里所爱/所看重的（每行一个，或用逗号分隔），例如：工作、家人、被认可、手机': 'List what you love/value (one per line or comma-separated), e.g. work, family, approval, phone',
+  '诸灵分辨': 'Discernment of Spirits',
+  '安慰/枯竭 · 依纳爵': 'Consolation/desolation · Ignatius',
+  '描述你此刻的内在状态，例如「这几天读经祷告都很枯干，提不起劲」': 'Describe your inner state, e.g. "Prayer and reading feel dry and lifeless these days."',
+  '心意更新': 'Renovation of the Heart',
+  '全人塑造 VIM · 魏乐德': 'Whole-person formation, VIM · Willard',
+  '华人本土灵修': 'Chinese Devotional Voices',
+  '倪柝声/王明道/唐崇荣': 'Watchman Nee / Wang Mingdao / Stephen Tong',
+  '说出你此刻的处境或需要，例如「我为信仰受了很多苦，快撑不住了」': 'Share your situation or need, e.g. "I have suffered much for my faith and can barely hold on."',
   // 结果字段标签 / result labels
   '小结': 'Summary', '回应': 'Response', '真理': 'Truth', '经文': 'Scripture', '操练': 'Practice',
   '祷告': 'Prayer', '默想': 'Meditation', '说明': 'Note', '确据': 'Assurance', '鼓励': 'Encouragement',

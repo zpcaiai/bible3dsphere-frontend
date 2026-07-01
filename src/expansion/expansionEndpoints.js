@@ -92,6 +92,19 @@ export const knowgodMeditate = ({ need, attribute } = {}, token) => POST('/knowg
 export const knowgodHistory = (token, limit = 20) => GET(`/knowgod/history?limit=${limit}`, token)
 export const knowgodLatest = (token) => GET('/knowgod/latest', token)
 
+// ── 13) 心意更新 renovation（魏乐德 VIM×五维） ──
+export const renovationMeta = (token) => GET('/renovation/meta', token)
+export const renovationAssess = (ratings, text, token) => POST('/renovation/assess', { ratings, text, use_ai: true }, token)
+export const renovationHistory = (token, limit = 20) => GET(`/renovation/history?limit=${limit}`, token)
+export const renovationLatest = (token) => GET('/renovation/latest', token)
+
+// ── 14) 华人本土灵修 chinese（倪柝声/王明道/唐崇荣/宋尚节） ──
+export const chineseMeta = (token) => GET('/chinese/meta', token)
+export const chineseSearch = (q, author, token) => GET(`/chinese/search?q=${encodeURIComponent(q || '')}${author ? `&author=${encodeURIComponent(author)}` : ''}`, token)
+export const chineseMeditate = (need, token) => POST('/chinese/meditate', { need, use_ai: true }, token)
+export const chineseHistory = (token, limit = 20) => GET(`/chinese/history?limit=${limit}`, token)
+export const chineseLatest = (token) => GET('/chinese/latest', token)
+
 // ── 12) 推荐书目 + 圣诗 resources ──
 export const resourceMeta = (token) => GET('/resources/meta', token)
 export const resourceBooks = (continent, token) => GET(`/resources/books${continent ? `?continent=${encodeURIComponent(continent)}` : ''}`, token)
@@ -112,5 +125,7 @@ export const EXPANSION_MODULES = {
   eh: { prefix: 'eh', action: 'assess', meta: ehMeta, run: ehAssess },
   contentment: { prefix: 'contentment', action: 'analyze', meta: contentmentMeta, run: contentmentAnalyze },
   knowgod: { prefix: 'knowgod', action: 'meditate', meta: knowgodMeta, run: knowgodMeditate },
+  renovation: { prefix: 'renovation', action: 'assess', meta: renovationMeta, run: renovationAssess },
+  chinese: { prefix: 'chinese', action: 'meditate', meta: chineseMeta, run: chineseMeditate },
   resources: { prefix: 'resources', action: null, meta: resourceMeta, run: null },
 }

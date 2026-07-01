@@ -15,10 +15,11 @@ export const EXPANSION_CHIPS = {
 
 // 可选：其余不重叠模块（默认不挂，避免与并行进程客户端引擎重复/界面拥挤）
 export const EXPANSION_CHIPS_OPTIONAL = {
-  '认识自己': [['情感真伪辨', 'exp:affections']],
-  '回到福音': [['温柔谦卑', 'exp:tender']],
+  '认识自己': [['情感真伪辨', 'exp:affections'], ['失序之爱 · 重排', 'exp:ordo']],
+  '回到福音': [['温柔谦卑', 'exp:tender'], ['华人本土灵修', 'exp:chinese']],
   '与神同行': [
     ['认识神 · 属性默想', 'exp:knowgod'],
+    ['心意更新 · 全人塑造', 'exp:renovation'],
     ['以神为乐', 'exp:delight'],
     ['文化礼仪 → 反礼仪', 'exp:liturgy'],
     ['情感健康属灵', 'exp:eh'],

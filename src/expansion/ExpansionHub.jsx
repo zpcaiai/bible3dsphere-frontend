@@ -20,6 +20,10 @@ const FEATURES = [
   { key: 'liturgy', prefix: 'liturgy', action: 'analyze', emoji: '📿', name: '文化礼仪→反礼仪', sub: '你的爱被习惯塑造 · J.K.A.Smith', kind: 'text', field: 'habit', placeholder: '一个反复的日常习惯，例如「总忍不住刷手机比较」' },
   { key: 'affections', prefix: 'affections', action: 'assess', emoji: '❤️', name: '情感真伪辨', sub: '宗教情感 · 爱德华兹', kind: 'ratings', metaKey: 'true_signs' },
   { key: 'eh', prefix: 'eh', action: 'assess', emoji: '🧭', name: '情感健康属灵', sub: '情商与灵命 · Scazzero', kind: 'ratings', metaKey: 'dimensions' },
+  { key: 'ordo', prefix: 'ordo', action: 'analyze', emoji: '⚖️', name: '失序之爱 · 重排', sub: '爱的次序 · 奥古斯丁', kind: 'list', field: 'loves', placeholder: '列出你心里所爱/所看重的（每行一个，或用逗号分隔），例如：工作、家人、被认可、手机' },
+  { key: 'spirits', prefix: 'spirits', action: 'discern', emoji: '🌗', name: '诸灵分辨', sub: '安慰/枯竭 · 依纳爵', kind: 'text', field: 'text', placeholder: '描述你此刻的内在状态，例如「这几天读经祷告都很枯干，提不起劲」' },
+  { key: 'renovation', prefix: 'renovation', action: 'assess', emoji: '🌱', name: '心意更新', sub: '全人塑造 VIM · 魏乐德', kind: 'ratings', metaKey: 'dimensions' },
+  { key: 'chinese', prefix: 'chinese', action: 'meditate', emoji: '🏮', name: '华人本土灵修', sub: '倪柝声/王明道/唐崇荣', kind: 'text', field: 'need', placeholder: '说出你此刻的处境或需要，例如「我为信仰受了很多苦，快撑不住了」' },
   { key: 'resources', emoji: '📚', name: '推荐书目 · 圣诗', sub: '按大陆精选 · 可收藏', kind: 'resources' },
 ]
 
@@ -127,6 +131,7 @@ function FeatureRunner({ feature, onBack }) {
     try {
       let body = { use_ai: true }
       if (feature.kind === 'text') body[feature.field] = text
+      else if (feature.kind === 'list') body[feature.field] = text.split(/[，,、\n]+/).map((x) => x.trim()).filter(Boolean)
       else if (feature.kind === 'ratings') body.ratings = ratings
       else if (feature.kind === 'knowgod') { if (attribute) body.attribute = attribute; else body.need = text }
       const r = await runAction(feature.prefix, feature.action, body)
@@ -144,7 +149,7 @@ function FeatureRunner({ feature, onBack }) {
         {!result ? (
           <>
             <Framework meta={meta} />
-            {feature.kind === 'text' && (
+            {(feature.kind === 'text' || feature.kind === 'list') && (
               <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={i18nT(feature.placeholder)}
                 style={ta} rows={4} />
             )}
