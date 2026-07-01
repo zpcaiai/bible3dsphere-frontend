@@ -1,3 +1,4 @@
+import { t as i18nT } from './i18n/runtime'
 /** OrgConsolePage — 组织管理台 (B12 真·多租户),标签页版:概览/小组/导师/门徒/教会。
  *  每次请求都按 org_id + RBAC 强制;只显示社区数据的计数,成员个人成长内容永不可见。 */
 import { useEffect, useState } from 'react'
@@ -70,11 +71,11 @@ export default function OrgConsolePage({ user, onBack }) {
   return (
     <div style={wrap}>
       <BackButton onClick={onBack} />
-      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>🏛️ 组织管理台</h2>
-      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 12 }}>按组织隔离 · 按角色授权 · 只看社区数据计数,成员个人成长内容不可见</div>
+      <h2 style={{ fontSize: 20, fontWeight: 800, margin: '8px 0 4px' }}>{i18nT('🏛️ 组织管理台')}</h2>
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 12 }}>{i18nT('按组织隔离 · 按角色授权 · 只看社区数据计数,成员个人成长内容不可见')}</div>
       {error && <div style={{ ...card, color: '#ffb4b4' }}>{error}</div>}
 
-      {orgs.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>你还不属于任何组织。可在「计划与组织」创建教会/机构后回到这里。</div>}
+      {orgs.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{i18nT('你还不属于任何组织。可在「计划与组织」创建教会/机构后回到这里。')}</div>}
 
       {orgs.length > 0 && (
         <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
@@ -84,7 +85,7 @@ export default function OrgConsolePage({ user, onBack }) {
 
       {active && (
         <>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>你的角色:<b style={{ color: '#fff' }}>{role || '(非成员/受限)'}</b></div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{i18nT('你的角色:')}<b style={{ color: '#fff' }}>{role || '(非成员/受限)'}</b></div>
           <div style={{ display: 'flex', gap: 4, marginBottom: 12, background: 'rgba(255,255,255,0.03)', borderRadius: 12, padding: 4 }}>
             {TABS.map(([k, label]) => <button key={k} style={tabBtn(tab === k)} onClick={() => setTab(k)}>{label}</button>)}
           </div>
@@ -94,22 +95,22 @@ export default function OrgConsolePage({ user, onBack }) {
             <>
               {sum ? (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>社区概览(近 30 天)</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{i18nT('社区概览(近 30 天)')}</div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    <Metric label="小组" value={sum.groups} />
-                    <Metric label="成员" value={sum.members} />
-                    <Metric label="导师配对" value={sum.mentor_pairings} />
-                    <Metric label="门徒路径" value={sum.discipleship_paths} />
-                    <Metric label="小组打卡" value={sum.group_checkins_30d} />
-                    <Metric label="教会出勤" value={sum.church_checkins_30d} />
+                    <Metric label={i18nT('小组')} value={sum.groups} />
+                    <Metric label={i18nT('成员')} value={sum.members} />
+                    <Metric label={i18nT('导师配对')} value={sum.mentor_pairings} />
+                    <Metric label={i18nT('门徒路径')} value={sum.discipleship_paths} />
+                    <Metric label={i18nT('小组打卡')} value={sum.group_checkins_30d} />
+                    <Metric label={i18nT('教会出勤')} value={sum.church_checkins_30d} />
                   </div>
                 </div>
               ) : (
-                <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>该组织概览需要「管理小组」权限(manage_groups)。当前角色无权查看,这是设计内的隔离。</div>
+                <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>{i18nT('该组织概览需要「管理小组」权限(manage_groups)。当前角色无权查看,这是设计内的隔离。')}</div>
               )}
               {atrend.length > 1 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>社区活跃度趋势 · 近 {atrend.length} 周</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{i18nT('社区活跃度趋势 · 近')} {atrend.length} {i18nT('周')}</div>
                   <svg viewBox="0 0 300 60" width="100%" style={{ display: 'block' }}>
                     {(() => {
                       const mx = Math.max(1, ...atrend.map(w => Math.max(w.church, w.group)))
@@ -120,14 +121,14 @@ export default function OrgConsolePage({ user, onBack }) {
                     })()}
                   </svg>
                   <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
-                    <span><span style={{ color: '#34c759' }}>●</span> 教会出勤</span>
-                    <span><span style={{ color: '#7dd3fc' }}>●</span> 小组打卡</span>
+                    <span><span style={{ color: '#34c759' }}>●</span> {i18nT('教会出勤')}</span>
+                    <span><span style={{ color: '#7dd3fc' }}>●</span> {i18nT('小组打卡')}</span>
                   </div>
                 </div>
               )}
               {members.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>成员名册 · {members.length}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('成员名册 ·')} {members.length}</div>
                   {members.map((m, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0' }}>
                       <span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.email}</span>
@@ -139,7 +140,7 @@ export default function OrgConsolePage({ user, onBack }) {
               {notes.length > 0 && (
                 <div style={{ ...card, borderColor: 'rgba(245,196,81,0.3)', fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>
                   {notes.map((n, i) => <div key={i}>· {n}</div>)}
-                  <div style={{ marginTop: 4, color: 'rgba(255,255,255,0.45)' }}>受限是设计内的:不同角色看到不同范围,跨组织永不可见。</div>
+                  <div style={{ marginTop: 4, color: 'rgba(255,255,255,0.45)' }}>{i18nT('受限是设计内的:不同角色看到不同范围,跨组织永不可见。')}</div>
                 </div>
               )}
             </>
@@ -148,28 +149,28 @@ export default function OrgConsolePage({ user, onBack }) {
           {/* 小组 */}
           {tab === 'groups' && (
             <>
-              {groups.length === 0 && ghealth.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>暂无小组,或当前角色无权查看。</div>}
+              {groups.length === 0 && ghealth.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{i18nT('暂无小组,或当前角色无权查看。')}</div>}
               {groups.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>小组 · {groups.length}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('小组 ·')} {groups.length}</div>
                   {groups.map(g => (
                     <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                       <span>{g.name}</span>
-                      <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>{g.active_members} 人 · 近30天 {g.checkins_30d} 次</span>
+                      <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>{g.active_members} {i18nT('人 · 近30天')} {g.checkins_30d} {i18nT('次')}</span>
                     </div>
                   ))}
                 </div>
               )}
               {ghealth.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>小组健康度 · {ghealth.length}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('小组健康度 ·')} {ghealth.length}</div>
                   {ghealth.map(g => (
                     <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                       <div style={{ fontSize: 13 }}><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 999, background: healthColor(g.health), marginRight: 6 }} />{g.name}</div>
-                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>参与 {g.participation_pct}% · 近30天 {g.checkins_30d}{g.support_flags_30d > 0 ? ' · 求助 ' + g.support_flags_30d : ''}</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{i18nT('参与')} {g.participation_pct}{i18nT('% · 近30天')} {g.checkins_30d}{g.support_flags_30d > 0 ? ' · 求助 ' + g.support_flags_30d : ''}</span>
                     </div>
                   ))}
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>仅参与计数与求助旗标;打卡正文不可见。</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{i18nT('仅参与计数与求助旗标;打卡正文不可见。')}</div>
                 </div>
               )}
             </>
@@ -178,17 +179,17 @@ export default function OrgConsolePage({ user, onBack }) {
           {/* 导师 */}
           {tab === 'mentor' && (
             <>
-              {pairs.length === 0 && mprog.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>暂无导师配对,或当前角色无权查看。</div>}
+              {pairs.length === 0 && mprog.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{i18nT('暂无导师配对,或当前角色无权查看。')}</div>}
               {mprog.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>导师会面进度 · {mprog.length}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('导师会面进度 ·')} {mprog.length}</div>
                   {mprog.map(m => (
                     <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0' }}>
                       <span style={{ color: 'rgba(255,255,255,0.8)' }}>{m.mentor} → {m.mentee}</span>
-                      <span style={{ color: 'rgba(255,255,255,0.55)' }}>{m.sessions} 次{m.last_session ? ' · 最近 ' + m.last_session : ''}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.55)' }}>{m.sessions} {i18nT('次')}{m.last_session ? ' · 最近 ' + m.last_session : ''}</span>
                     </div>
                   ))}
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>仅配对、会面计数与日期;会谈内容不可见。</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{i18nT('仅配对、会面计数与日期;会谈内容不可见。')}</div>
                 </div>
               )}
             </>
@@ -197,10 +198,10 @@ export default function OrgConsolePage({ user, onBack }) {
           {/* 门徒 */}
           {tab === 'discipleship' && (
             <>
-              {disc.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>暂无门徒路径,或当前角色无权查看。</div>}
+              {disc.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{i18nT('暂无门徒路径,或当前角色无权查看。')}</div>}
               {disc.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>门徒路径进度 · {disc.length}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('门徒路径进度 ·')} {disc.length}</div>
                   {disc.map(d => (
                     <div key={d.id} style={{ padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
@@ -212,7 +213,7 @@ export default function OrgConsolePage({ user, onBack }) {
                       </div>
                     </div>
                   ))}
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>仅阶段与完成步数;步骤内容/反思不可见。</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{i18nT('仅阶段与完成步数;步骤内容/反思不可见。')}</div>
                 </div>
               )}
             </>
@@ -221,10 +222,10 @@ export default function OrgConsolePage({ user, onBack }) {
           {/* 教会 */}
           {tab === 'church' && (
             <>
-              {ctrend.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>暂无教会出勤数据,或当前角色无权查看。</div>}
+              {ctrend.length === 0 && <div style={{ ...card, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{i18nT('暂无教会出勤数据,或当前角色无权查看。')}</div>}
               {ctrend.length > 0 && (
                 <div style={card}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>教会出勤趋势 · 近 {ctrend.length} 周</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{i18nT('教会出勤趋势 · 近')} {ctrend.length} {i18nT('周')}</div>
                   <svg viewBox={'0 0 ' + (ctrend.length * 22) + ' 64'} width="100%" style={{ display: 'block' }}>
                     {(() => { const mx = Math.max(1, ...ctrend.map(w => w.total)); return ctrend.map((w, i) => {
                       const h = (w.total / mx) * 48, ah = (w.attended / mx) * 48
@@ -234,7 +235,7 @@ export default function OrgConsolePage({ user, onBack }) {
                       </g>)
                     }) })()}
                   </svg>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>绿色=出勤 · 浅色=签到总数;仅计数</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>{i18nT('绿色=出勤 · 浅色=签到总数;仅计数')}</div>
                 </div>
               )}
             </>
